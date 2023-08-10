@@ -86,7 +86,7 @@ diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/f
 diff --git a/content/public/android/java/src/org/chromium/content/browser/selection/SelectionPopupControllerImpl.java b/content/public/android/java/src/org/chromium/content/browser/selection/SelectionPopupControllerImpl.java
 --- a/content/public/android/java/src/org/chromium/content/browser/selection/SelectionPopupControllerImpl.java
 +++ b/content/public/android/java/src/org/chromium/content/browser/selection/SelectionPopupControllerImpl.java
-@@ -904,7 +904,7 @@ public class SelectionPopupControllerImpl extends ActionModeCallbackHelper
+@@ -884,7 +884,7 @@ public class SelectionPopupControllerImpl extends ActionModeCallbackHelper
       */
      @Override
      public boolean canWebSearch() {

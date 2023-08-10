@@ -46,13 +46,14 @@ Require: bromite-build-utils.patch
  .../content_settings/core/browser/BUILD.gn    |   7 +
  .../bromite_content_settings/placeholder.txt  |   1 +
  .../core/browser/content_settings_registry.cc |   3 +
+ .../core/browser/content_settings_uma_util.cc |   3 +-
  .../core/browser/content_settings_utils.cc    |  12 +
  .../core/browser/website_settings_info.h      |  35 ++
  .../core/browser/website_settings_registry.cc |   6 +
  .../core/browser/website_settings_registry.h  |   1 +
  .../content_settings/core/common/BUILD.gn     |   7 +
  .../bromite_content_settings/placeholder.txt  |   1 +
- .../core/common/content_settings.cc           |  21 +-
+ .../core/common/content_settings.cc           |  18 +
  .../core/common/content_settings.h            |  10 +
  .../core/common/content_settings.mojom        |   6 +
  .../common/content_settings_mojom_traits.cc   |  12 +-
@@ -71,7 +72,7 @@ Require: bromite-build-utils.patch
  .../execution_context/execution_context.cc    |  16 +
  .../execution_context/execution_context.h     |   5 +
  .../WebLayerSiteSettingsDelegate.java         |   3 +
- 60 files changed, 1310 insertions(+), 41 deletions(-)
+ 61 files changed, 1310 insertions(+), 41 deletions(-)
  create mode 100644 components/browser_ui/site_settings/android/java/src/org/chromium/components/browser_ui/site_settings/BromiteCustomContentSetting.java
  create mode 100644 components/browser_ui/site_settings/android/java/src/org/chromium/components/browser_ui/site_settings/BromiteCustomContentSettingImpl.java
  create mode 100644 components/browser_ui/site_settings/android/java/src/org/chromium/components/browser_ui/site_settings/BromiteCustomContentSetting_README.md
@@ -390,7 +391,7 @@ diff --git a/chrome/browser/resources/settings/site_settings_page/site_settings_
 diff --git a/chrome/browser/ui/BUILD.gn b/chrome/browser/ui/BUILD.gn
 --- a/chrome/browser/ui/BUILD.gn
 +++ b/chrome/browser/ui/BUILD.gn
-@@ -1980,6 +1980,7 @@ static_library("ui") {
+@@ -1981,6 +1981,7 @@ static_library("ui") {
        "//components/commerce/core:shopping_service",
        "//components/commerce/core/mojom:mojo_bindings",
        "//components/commerce/core/webui",
@@ -1787,7 +1788,7 @@ diff --git a/components/content_settings/android/BUILD.gn b/components/content_s
 diff --git a/components/content_settings/core/browser/BUILD.gn b/components/content_settings/core/browser/BUILD.gn
 --- a/components/content_settings/core/browser/BUILD.gn
 +++ b/components/content_settings/core/browser/BUILD.gn
-@@ -80,6 +80,13 @@ static_library("browser") {
+@@ -83,6 +83,13 @@ static_library("browser") {
    }
  
    configs += [ "//build/config/compiler:wexit_time_destructors" ]
@@ -1827,6 +1828,20 @@ diff --git a/components/content_settings/core/browser/content_settings_registry.
  }
  
  void ContentSettingsRegistry::Register(
+diff --git a/components/content_settings/core/browser/content_settings_uma_util.cc b/components/content_settings/core/browser/content_settings_uma_util.cc
+--- a/components/content_settings/core/browser/content_settings_uma_util.cc
++++ b/components/content_settings/core/browser/content_settings_uma_util.cc
+@@ -171,8 +171,9 @@ void RecordContentSettingsHistogram(const std::string& name,
+ }
+ 
+ int ContentSettingTypeToHistogramValue(ContentSettingsType content_setting) {
++  if ((true)) return 0;
+   static_assert(kHistogramValue.size() ==
+-                    static_cast<size_t>(ContentSettingsType::NUM_TYPES),
++                    static_cast<size_t>(ContentSettingsType::NUM_TYPES_CHROMIUM),
+                 "Update content settings histogram lookup");
+ 
+   auto* found = kHistogramValue.find(content_setting);
 diff --git a/components/content_settings/core/browser/content_settings_utils.cc b/components/content_settings/core/browser/content_settings_utils.cc
 --- a/components/content_settings/core/browser/content_settings_utils.cc
 +++ b/components/content_settings/core/browser/content_settings_utils.cc
@@ -1961,7 +1976,7 @@ new file mode 100644
 diff --git a/components/content_settings/core/common/content_settings.cc b/components/content_settings/core/common/content_settings.cc
 --- a/components/content_settings/core/common/content_settings.cc
 +++ b/components/content_settings/core/common/content_settings.cc
-@@ -16,6 +16,7 @@
+@@ -15,6 +15,7 @@
  #include "components/content_settings/core/common/content_settings_metadata.h"
  #include "components/content_settings/core/common/content_settings_types.h"
  #include "components/content_settings/core/common/content_settings_utils.h"
@@ -1969,18 +1984,7 @@ diff --git a/components/content_settings/core/common/content_settings.cc b/compo
  
  namespace {
  
-@@ -162,8 +163,9 @@ void RecordContentSettingsHistogram(const char* name,
- }
- 
- int ContentSettingTypeToHistogramValue(ContentSettingsType content_setting) {
-+  if ((true)) return 0;
-   static_assert(kHistogramValue.size() ==
--                    static_cast<size_t>(ContentSettingsType::NUM_TYPES),
-+                    static_cast<size_t>(ContentSettingsType::NUM_TYPES_CHROMIUM),
-                 "Update content settings histogram lookup");
- 
-   auto* found = kHistogramValue.find(content_setting);
-@@ -231,6 +233,13 @@ bool ContentSettingPatternSource::operator==(
+@@ -92,6 +93,13 @@ bool ContentSettingPatternSource::operator==(
  // static
  bool RendererContentSettingRules::IsRendererContentSetting(
      ContentSettingsType content_type) {
@@ -1994,7 +1998,7 @@ diff --git a/components/content_settings/core/common/content_settings.cc b/compo
    return content_type == ContentSettingsType::IMAGES ||
           content_type == ContentSettingsType::JAVASCRIPT ||
           content_type == ContentSettingsType::POPUPS ||
-@@ -240,6 +249,9 @@ bool RendererContentSettingRules::IsRendererContentSetting(
+@@ -101,6 +109,9 @@ bool RendererContentSettingRules::IsRendererContentSetting(
  
  void RendererContentSettingRules::FilterRulesByOutermostMainFrameURL(
      const GURL& outermost_main_frame_url) {
@@ -2004,7 +2008,7 @@ diff --git a/components/content_settings/core/common/content_settings.cc b/compo
    FilterRulesForType(image_rules, outermost_main_frame_url);
    FilterRulesForType(script_rules, outermost_main_frame_url);
    FilterRulesForType(popup_redirect_rules, outermost_main_frame_url);
-@@ -271,3 +283,10 @@ bool RendererContentSettingRules::operator==(
+@@ -132,3 +143,10 @@ bool RendererContentSettingRules::operator==(
                    other.popup_redirect_rules, other.mixed_content_rules,
                    other.auto_dark_content_rules);
  }
@@ -2018,7 +2022,7 @@ diff --git a/components/content_settings/core/common/content_settings.cc b/compo
 diff --git a/components/content_settings/core/common/content_settings.h b/components/content_settings/core/common/content_settings.h
 --- a/components/content_settings/core/common/content_settings.h
 +++ b/components/content_settings/core/common/content_settings.h
-@@ -74,10 +74,20 @@ struct ContentSettingPatternSource {
+@@ -66,10 +66,20 @@ struct ContentSettingPatternSource {
  
  typedef std::vector<ContentSettingPatternSource> ContentSettingsForOneType;
  
@@ -2293,8 +2297,8 @@ diff --git a/components/page_info/page_info.cc b/components/page_info/page_info.
 +#include "components/content_settings/core/browser/website_settings_registry.h"
  #include "components/content_settings/browser/ui/cookie_controls_controller.h"
  #include "components/content_settings/core/browser/content_settings_registry.h"
- #include "components/content_settings/core/browser/content_settings_utils.h"
-@@ -1187,6 +1188,14 @@ void PageInfo::PopulatePermissionInfo(PermissionInfo& permission_info,
+ #include "components/content_settings/core/browser/content_settings_uma_util.h"
+@@ -1193,6 +1194,14 @@ void PageInfo::PopulatePermissionInfo(PermissionInfo& permission_info,
  // applies to permissions listed in |kPermissionType|.
  bool PageInfo::ShouldShowPermission(
      const PageInfo::PermissionInfo& info) const {
@@ -2309,7 +2313,7 @@ diff --git a/components/page_info/page_info.cc b/components/page_info/page_info.
    // Note |ContentSettingsType::ADS| will show up regardless of its default
    // value when it has been activated on the current origin.
    if (info.type == ContentSettingsType::ADS) {
-@@ -1275,7 +1284,19 @@ void PageInfo::PresentSitePermissions() {
+@@ -1281,7 +1290,19 @@ void PageInfo::PresentSitePermissions() {
  
    HostContentSettingsMap* content_settings = GetContentSettings();
    DCHECK(web_contents_);
@@ -2333,15 +2337,15 @@ diff --git a/components/page_info/page_info.cc b/components/page_info/page_info.
 diff --git a/components/page_info/page_info_ui.cc b/components/page_info/page_info_ui.cc
 --- a/components/page_info/page_info_ui.cc
 +++ b/components/page_info/page_info_ui.cc
-@@ -12,6 +12,7 @@
- #include "base/strings/utf_string_conversions.h"
+@@ -13,6 +13,7 @@
  #include "build/build_config.h"
  #include "build/chromeos_buildflags.h"
+ #include "components/content_settings/core/common/content_settings.h"
 +#include "components/content_settings/core/browser/website_settings_registry.h"
  #include "components/omnibox/common/omnibox_features.h"
  #include "components/page_info/core/features.h"
  #include "components/page_info/page_info.h"
-@@ -575,6 +576,12 @@ PageInfoUI::~PageInfoUI() = default;
+@@ -576,6 +577,12 @@ PageInfoUI::~PageInfoUI() = default;
  
  // static
  std::u16string PageInfoUI::PermissionTypeToUIString(ContentSettingsType type) {
@@ -2354,7 +2358,7 @@ diff --git a/components/page_info/page_info_ui.cc b/components/page_info/page_in
    for (const PermissionUIInfo& info : GetContentSettingsUIInfo()) {
      if (info.type == type)
        return l10n_util::GetStringUTF16(info.string_id);
-@@ -586,6 +593,12 @@ std::u16string PageInfoUI::PermissionTypeToUIString(ContentSettingsType type) {
+@@ -587,6 +594,12 @@ std::u16string PageInfoUI::PermissionTypeToUIString(ContentSettingsType type) {
  // static
  std::u16string PageInfoUI::PermissionTypeToUIStringMidSentence(
      ContentSettingsType type) {
@@ -2367,7 +2371,7 @@ diff --git a/components/page_info/page_info_ui.cc b/components/page_info/page_in
    for (const PermissionUIInfo& info : GetContentSettingsUIInfo()) {
      if (info.type == type)
        return l10n_util::GetStringUTF16(info.string_id_mid_sentence);
-@@ -975,6 +988,11 @@ bool PageInfoUI::ContentSettingsTypeInPageInfo(ContentSettingsType type) {
+@@ -977,6 +990,11 @@ bool PageInfoUI::ContentSettingsTypeInPageInfo(ContentSettingsType type) {
      if (info.type == type)
        return true;
    }

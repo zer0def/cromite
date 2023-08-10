@@ -22,7 +22,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tabbed_mode/Tab
 diff --git a/chrome/browser/ui/views/user_education/browser_feature_promo_controller.cc b/chrome/browser/ui/views/user_education/browser_feature_promo_controller.cc
 --- a/chrome/browser/ui/views/user_education/browser_feature_promo_controller.cc
 +++ b/chrome/browser/ui/views/user_education/browser_feature_promo_controller.cc
-@@ -61,6 +61,7 @@ ui::ElementContext BrowserFeaturePromoController::GetAnchorContext() const {
+@@ -63,6 +63,7 @@ ui::ElementContext BrowserFeaturePromoController::GetAnchorContext() const {
  
  bool BrowserFeaturePromoController::CanShowPromo(
      ui::TrackedElement* anchor_element) const {

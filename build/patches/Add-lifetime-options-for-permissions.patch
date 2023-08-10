@@ -140,15 +140,14 @@ diff --git a/chrome/browser/permissions/last_tab_standing_tracker.cc b/chrome/br
 diff --git a/chrome/browser/permissions/one_time_permissions_tracker.cc b/chrome/browser/permissions/one_time_permissions_tracker.cc
 --- a/chrome/browser/permissions/one_time_permissions_tracker.cc
 +++ b/chrome/browser/permissions/one_time_permissions_tracker.cc
-@@ -16,8 +16,35 @@
+@@ -18,8 +18,35 @@
  #include "components/permissions/features.h"
  #include "content/public/browser/visibility.h"
  #include "url/gurl.h"
 +#include "components/content_settings/core/browser/host_content_settings_map.h"
 +#include "components/content_settings/core/common/content_settings_utils.h"
 +#include "components/permissions/permissions_client.h"
- 
--OneTimePermissionsTracker::OneTimePermissionsTracker() = default;
++
 +namespace {
 +  // Remove all sessions content setting by origin and type
 +  void RemoveSessionSettings(HostContentSettingsMap* content_settings,
@@ -171,13 +170,14 @@ diff --git a/chrome/browser/permissions/one_time_permissions_tracker.cc b/chrome
 +    }
 +  }
 +}
-+
+ 
+-OneTimePermissionsTracker::OneTimePermissionsTracker() = default;
 +OneTimePermissionsTracker::OneTimePermissionsTracker(content::BrowserContext* context)
 +    : context_(context) {}
  OneTimePermissionsTracker::~OneTimePermissionsTracker() = default;
  
  OneTimePermissionsTracker::OriginTrackEntry::OriginTrackEntry() = default;
-@@ -91,6 +118,11 @@ void OneTimePermissionsTracker::WebContentsUnloadedOrigin(
+@@ -93,6 +120,11 @@ void OneTimePermissionsTracker::WebContentsUnloadedOrigin(
          observer.OnLastPageFromOriginClosed(origin);
        }
      }
@@ -192,15 +192,15 @@ diff --git a/chrome/browser/permissions/one_time_permissions_tracker.cc b/chrome
 diff --git a/chrome/browser/permissions/one_time_permissions_tracker.h b/chrome/browser/permissions/one_time_permissions_tracker.h
 --- a/chrome/browser/permissions/one_time_permissions_tracker.h
 +++ b/chrome/browser/permissions/one_time_permissions_tracker.h
-@@ -11,6 +11,7 @@
- #include "base/observer_list.h"
+@@ -12,6 +12,7 @@
  #include "base/timer/timer.h"
  #include "chrome/browser/permissions/one_time_permissions_tracker_observer.h"
+ #include "components/content_settings/core/common/content_settings_pattern.h"
 +#include "chrome/browser/profiles/profile.h"
  #include "components/content_settings/core/common/content_settings_types.h"
  #include "components/keyed_service/core/keyed_service.h"
  #include "content/public/browser/visibility.h"
-@@ -23,7 +24,7 @@ class OneTimePermissionsTracker : public KeyedService {
+@@ -24,7 +25,7 @@ class OneTimePermissionsTracker : public KeyedService {
        void (OneTimePermissionsTracker::*)(const url::Origin&);
  
   public:
@@ -209,7 +209,7 @@ diff --git a/chrome/browser/permissions/one_time_permissions_tracker.h b/chrome/
    ~OneTimePermissionsTracker() override;
  
    OneTimePermissionsTracker(const OneTimePermissionsTracker&) = delete;
-@@ -118,7 +119,7 @@ class OneTimePermissionsTracker : public KeyedService {
+@@ -127,7 +128,7 @@ class OneTimePermissionsTracker : public KeyedService {
    base::ObserverList<OneTimePermissionsTrackerObserver> observer_list_;
  
    std::map<url::Origin, OriginTrackEntry> origin_tracker_;
@@ -596,7 +596,7 @@ diff --git a/components/page_info/android/page_info_controller_android.cc b/comp
 diff --git a/components/page_info/page_info.cc b/components/page_info/page_info.cc
 --- a/components/page_info/page_info.cc
 +++ b/components/page_info/page_info.cc
-@@ -1135,6 +1135,8 @@ void PageInfo::PopulatePermissionInfo(PermissionInfo& permission_info,
+@@ -1141,6 +1141,8 @@ void PageInfo::PopulatePermissionInfo(PermissionInfo& permission_info,
    permission_info.source = info.source;
    permission_info.is_one_time = (info.metadata.session_model() ==
                                   content_settings::SessionModel::OneTime);
@@ -1003,7 +1003,7 @@ diff --git a/components/permissions/contexts/geolocation_permission_context_andr
 diff --git a/components/permissions/permission_context_base.cc b/components/permissions/permission_context_base.cc
 --- a/components/permissions/permission_context_base.cc
 +++ b/components/permissions/permission_context_base.cc
-@@ -248,6 +248,20 @@ PermissionContextBase::CreatePermissionRequest(
+@@ -250,6 +250,20 @@ PermissionContextBase::CreatePermissionRequest(
        std::move(delete_callback));
  }
  
@@ -1024,7 +1024,7 @@ diff --git a/components/permissions/permission_context_base.cc b/components/perm
  PermissionResult PermissionContextBase::GetPermissionStatus(
      content::RenderFrameHost* render_frame_host,
      const GURL& requesting_origin,
-@@ -427,7 +441,8 @@ void PermissionContextBase::PermissionDecided(const PermissionRequestID& id,
+@@ -429,7 +443,8 @@ void PermissionContextBase::PermissionDecided(const PermissionRequestID& id,
                                                const GURL& embedding_origin,
                                                ContentSetting content_setting,
                                                bool is_one_time,
@@ -1034,7 +1034,7 @@ diff --git a/components/permissions/permission_context_base.cc b/components/perm
    DCHECK(content_setting == CONTENT_SETTING_ALLOW ||
           content_setting == CONTENT_SETTING_BLOCK ||
           content_setting == CONTENT_SETTING_DEFAULT);
-@@ -442,13 +457,14 @@ void PermissionContextBase::PermissionDecided(const PermissionRequestID& id,
+@@ -444,13 +459,14 @@ void PermissionContextBase::PermissionDecided(const PermissionRequestID& id,
    // missing if a permission prompt was preignored and we already notified an
    // origin about it.
    if (request->second.second) {
@@ -1053,7 +1053,7 @@ diff --git a/components/permissions/permission_context_base.cc b/components/perm
    }
  }
  
-@@ -500,11 +516,27 @@ void PermissionContextBase::NotifyPermissionSet(
+@@ -502,11 +518,27 @@ void PermissionContextBase::NotifyPermissionSet(
      ContentSetting content_setting,
      bool is_one_time,
      bool is_final_decision) {
@@ -1082,7 +1082,7 @@ diff --git a/components/permissions/permission_context_base.cc b/components/perm
    }
  
    if (is_final_decision) {
-@@ -534,6 +566,15 @@ void PermissionContextBase::UpdateContentSetting(const GURL& requesting_origin,
+@@ -536,6 +568,15 @@ void PermissionContextBase::UpdateContentSetting(const GURL& requesting_origin,
                                                   const GURL& embedding_origin,
                                                   ContentSetting content_setting,
                                                   bool is_one_time) {
@@ -1098,7 +1098,7 @@ diff --git a/components/permissions/permission_context_base.cc b/components/perm
    DCHECK_EQ(requesting_origin, requesting_origin.DeprecatedGetOriginAsURL());
    DCHECK_EQ(embedding_origin, embedding_origin.DeprecatedGetOriginAsURL());
    DCHECK(content_setting == CONTENT_SETTING_ALLOW ||
-@@ -543,6 +584,8 @@ void PermissionContextBase::UpdateContentSetting(const GURL& requesting_origin,
+@@ -545,6 +586,8 @@ void PermissionContextBase::UpdateContentSetting(const GURL& requesting_origin,
    constraints.set_session_model(is_one_time
                                      ? content_settings::SessionModel::OneTime
                                      : content_settings::SessionModel::Durable);
@@ -1110,7 +1110,7 @@ diff --git a/components/permissions/permission_context_base.cc b/components/perm
 diff --git a/components/permissions/permission_context_base.h b/components/permissions/permission_context_base.h
 --- a/components/permissions/permission_context_base.h
 +++ b/components/permissions/permission_context_base.h
-@@ -138,6 +138,15 @@ class PermissionContextBase : public content_settings::Observer {
+@@ -143,6 +143,15 @@ class PermissionContextBase : public content_settings::Observer {
  
    // Updates stored content setting if persist is set, updates tab indicators
    // and runs the callback to finish the request.
@@ -1126,7 +1126,7 @@ diff --git a/components/permissions/permission_context_base.h b/components/permi
    virtual void NotifyPermissionSet(const PermissionRequestID& id,
                                     const GURL& requesting_origin,
                                     const GURL& embedding_origin,
-@@ -159,6 +168,11 @@ class PermissionContextBase : public content_settings::Observer {
+@@ -164,6 +173,11 @@ class PermissionContextBase : public content_settings::Observer {
    // Store the decided permission as a content setting.
    // virtual since the permission might be stored with different restrictions
    // (for example for desktop notifications).
@@ -1138,7 +1138,7 @@ diff --git a/components/permissions/permission_context_base.h b/components/permi
    virtual void UpdateContentSetting(const GURL& requesting_origin,
                                      const GURL& embedding_origin,
                                      ContentSetting content_setting,
-@@ -191,6 +205,14 @@ class PermissionContextBase : public content_settings::Observer {
+@@ -196,6 +210,14 @@ class PermissionContextBase : public content_settings::Observer {
        PermissionRequest::PermissionDecidedCallback permission_decided_callback,
        base::OnceClosure delete_callback) const;
  
@@ -1153,7 +1153,7 @@ diff --git a/components/permissions/permission_context_base.h b/components/permi
    ContentSettingsType content_settings_type() const {
      return content_settings_type_;
    }
-@@ -217,7 +239,8 @@ class PermissionContextBase : public content_settings::Observer {
+@@ -222,7 +244,8 @@ class PermissionContextBase : public content_settings::Observer {
                           const GURL& embedding_origin,
                           ContentSetting content_setting,
                           bool is_one_time,
