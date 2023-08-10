@@ -74,7 +74,7 @@ translate-disable-fetching-of-languages-from-server.patch
 Offer-builtin-autocomplete-for-chrome-flags.patch
 Use-4-tile-rows-never-show-logo.patch
 Disable-various-metrics.patch
-Enable-SPPI-for-devices-with-enough-memory.patch
+
 Enable-StrictOriginIsolation-and-SitePerProcess.patch
 Use-64-bit-WebView-processes.patch
 prefs-always-prompt-for-download-directory.patch
@@ -195,8 +195,6 @@ eyeo-beta-114.0.5735.53-v1-extension_api.patch
 00WIN-ADDTO-Add-bookmark-import-export-actions.patch
 00WIN-ADDTO-openH264--enable-ARM-ARM64-optimizati.patch
 00WIN-ADDTO-AImageReader-CFI-crash-mitigations.patch
-00WIN-ADDTO-Remove-binary-blob-integrations.patch
-00WIN-ADDTO-Add-lifetime-options-for-permissions.patch
 00WIN-ADDTO-Disable-various-metrics.patch
 00WIN-ADDTO-Do-not-build-API-keys-infobar.patch
 00WIN-ADDTO-Revert-flags--remove-num-raster-thre.patch
@@ -261,7 +259,6 @@ AudioBuffer-AnalyserNode-fp-mitigations.patch
 00TEMP-Add-a-log-to-track-strange-behavior.patch
 00v113-temp-fix-build.patch
 00114-temp-disable-find-bad-constructs-external-repo.patch
-00115-temp-fix-build.patch
 
 bromite-build-utils.patch
 Content-settings-infrastructure.patch
@@ -285,3 +282,5 @@ Timezone-customization.patch
 00Disable-Feeback-Collector.patch
 00Disable-remote-altsvc-for-h3-connections.patch
 00do-not-block-build-incompatible-profiles.patch
+00Allow-DocumentPiP-if-PopupsAndRedirects-are-active.patch
+00allow-the-download-of-clang-for-windows-crossbuild.patch
