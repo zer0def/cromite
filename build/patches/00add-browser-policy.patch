@@ -3,7 +3,7 @@ Date: Tue, 22 Nov 2022 16:49:58 +0000
 Subject: Add browser policy
 
 ---
- base/win/win_util.cc                          |  63 +--------
+ base/win/win_util.cc                          |  63 +-------
  chrome/android/java/AndroidManifest.xml       |   4 -
  .../privacy_preferences_manager_impl.cc       |   5 +
  .../metrics/chrome_feature_list_creator.cc    |  12 ++
@@ -11,11 +11,11 @@ Subject: Add browser policy
  ...nfiguration_policy_handler_list_factory.cc |   6 +-
  .../account_consistency_mode_manager.cc       |   5 +-
  chrome/browser/signin/chrome_signin_client.cc |   7 +-
- .../ui/webui/policy/policy_ui_handler.cc      | 104 +++++++++++++-
+ .../ui/webui/policy/policy_ui_handler.cc      | 104 ++++++++++++-
  .../ui/webui/policy/policy_ui_handler.h       |   2 +
  .../core/browser/browser_policy_connector.cc  |   3 +
  .../common/command_line_policy_provider.cc    |   3 +
- .../core/common/policy_loader_command_line.cc | 128 +++++++++++++++---
+ .../core/common/policy_loader_command_line.cc | 139 ++++++++++++++++--
  .../policy/core/common/policy_pref_names.cc   |   3 +
  .../policy/core/common/policy_pref_names.h    |   1 +
  .../policy/core/common/policy_service_impl.cc |   3 +
@@ -27,7 +27,7 @@ Subject: Add browser policy
  components/policy_strings.grdp                |   4 +-
  .../gaia_cookie_manager_service.cc            |   4 +
  google_apis/gaia/gaia_auth_fetcher.cc         |   1 +
- 24 files changed, 285 insertions(+), 93 deletions(-)
+ 24 files changed, 296 insertions(+), 93 deletions(-)
 
 diff --git a/base/win/win_util.cc b/base/win/win_util.cc
 --- a/base/win/win_util.cc
@@ -467,7 +467,7 @@ diff --git a/components/policy/core/common/policy_loader_command_line.cc b/compo
  
  namespace policy {
  
-@@ -21,25 +46,96 @@ PolicyLoaderCommandLine::~PolicyLoaderCommandLine() = default;
+@@ -21,25 +46,107 @@ PolicyLoaderCommandLine::~PolicyLoaderCommandLine() = default;
  
  PolicyBundle PolicyLoaderCommandLine::Load() {
    PolicyBundle bundle;
@@ -552,6 +552,17 @@ diff --git a/components/policy/core/common/policy_loader_command_line.cc b/compo
 +
 +  // Disable automatic https upgrade
 +  AddPolicy(disabled_policies_list, policy_map, policy::key::kHttpsUpgradesEnabled, base::Value(false));
++
++  // Check RSA key usage for server certicates issued by local trust anchors
++  // Enforce TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 expects the digitalSignature key usage bit.
++  AddPolicy(disabled_policies_list, policy_map, policy::key::kRSAKeyUsageForLocalAnchorsEnabled, base::Value(true));
++
++  // Disable Insecure Handshake Hashes
++  AddPolicy(disabled_policies_list, policy_map, policy::key::kInsecureHashesInTLSHandshakesEnabled, base::Value(false));
++
++#if !BUILDFLAG(IS_ANDROID)
++  AddPolicy(disabled_policies_list, policy_map, policy::key::kSideSearchEnabled, base::Value(false));
++#endif
 +
 +  // kFirstPartySetsEnabled
 +  // kLensCameraAssistedSearchEnabled
