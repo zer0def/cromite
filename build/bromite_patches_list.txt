@@ -287,3 +287,4 @@ Timezone-customization.patch
 00Temp-disable-predictive-back-gesture.patch
 00Add-option-to-disable-snapshots.patch
 00Disable-PartnerCustomizations.patch
+00Enable-Android-Dynamic-Performance-Framework.patch

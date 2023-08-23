@@ -48,3 +48,4 @@ enable_arcore=false
 enable_openxr=false
 enable_gvr_services=false
 enable_feed_v2=false
+is_high_end_android=true
