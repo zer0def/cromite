@@ -27,7 +27,7 @@ in services/firewall/tools/rules.xml
  services/firewall/tools/codegen.py            |  82 ++++
  services/firewall/tools/decode_template.py    |  85 ++++
  services/firewall/tools/gen_builders.py       |  65 +++
- services/firewall/tools/rules.xml             |  81 ++++
+ services/firewall/tools/rules.xml             |  83 ++++
  services/firewall/tools/rules_model.py        |  35 ++
  services/network/network_context.cc           |  73 +++
  .../network/public/cpp/simple_url_loader.cc   |  18 +
@@ -35,7 +35,7 @@ in services/firewall/tools/rules.xml
  .../loader/fetch/url_loader/url_loader.cc     | 145 +++++-
  .../scripts/auditor/auditor.py                |   1 +
  .../scripts/auditor/util.py                   |   1 +
- 28 files changed, 1500 insertions(+), 16 deletions(-)
+ 28 files changed, 1502 insertions(+), 16 deletions(-)
  create mode 100644 services/firewall/public/BUILD.gn
  create mode 100644 services/firewall/public/firewall_features.cc
  create mode 100644 services/firewall/public/firewall_features.h
@@ -1399,7 +1399,7 @@ diff --git a/services/firewall/tools/rules.xml b/services/firewall/tools/rules.x
 new file mode 100644
 --- /dev/null
 +++ b/services/firewall/tools/rules.xml
-@@ -0,0 +1,81 @@
+@@ -0,0 +1,83 @@
 +<?xml version="1.0"?>
 +<!--
 +    This file is part of Bromite.
@@ -1427,6 +1427,8 @@ new file mode 100644
 + <!-- started by the user -->
 + <item id="download_via_context_menu" allowed="1"/>
 + <item id="offline_pages_download_file" allowed="1"/>
++ <item id="download_web_contents_frame" allowed="1"/>
++ <item id="save_file_manager" allowed="1"/>
 +
 + <!-- Disallow temporarily controlling the revoked list,
 +      suffers from possible privacy problems -->
