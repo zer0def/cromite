@@ -286,3 +286,4 @@ Timezone-customization.patch
 00allow-the-download-of-clang-for-windows-crossbuild.patch
 00Temp-disable-predictive-back-gesture.patch
 00Add-option-to-disable-snapshots.patch
+00Disable-PartnerCustomizations.patch
