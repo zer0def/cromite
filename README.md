@@ -235,7 +235,7 @@ Please note that this project is not free of bugs and that changing the behaviou
 
 # Releases
 
-All built versions are available as [releases](https://github.com/cromite/cromite/releases).
+All built versions are available as [releases](https://github.com/uazo/cromite/releases).
 
 Cromite is currently built for ARM64, ~x86~ (Android SDK version 23+) and Windows x64.
 
