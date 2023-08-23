@@ -7,6 +7,7 @@ Disable reporting of Omnibox suggestions header.
 
 License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 ---
+ android_webview/common/aw_features.cc         |  4 +--
  android_webview/nonembedded/BUILD.gn          |  2 --
  .../services/VariationsSeedServer.java        |  2 --
  .../metrics/chrome_browser_sampling_trials.cc |  4 +++
@@ -17,15 +18,29 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  components/variations/net/BUILD.gn            |  2 --
  .../variations/net/omnibox_http_headers.cc    |  4 +--
  .../variations/net/variations_http_headers.cc |  3 ++
- .../service/variations_field_trial_creator.cc |  3 +-
+ .../service/variations_field_trial_creator.cc |  4 ++-
  .../variations/service/variations_service.cc  | 15 ++-------
  .../browser/loader/url_loader_throttles.cc    |  7 ----
  .../origin_trials/origin_trials_utils.cc      |  2 +-
  content/public/common/content_features.cc     |  4 +--
  .../variations_render_thread_observer.cc      |  9 ------
  .../renderer/core/loader/document_loader.cc   |  7 ----
- 17 files changed, 26 insertions(+), 76 deletions(-)
+ 18 files changed, 29 insertions(+), 78 deletions(-)
 
+diff --git a/android_webview/common/aw_features.cc b/android_webview/common/aw_features.cc
+--- a/android_webview/common/aw_features.cc
++++ b/android_webview/common/aw_features.cc
+@@ -96,8 +96,8 @@ BASE_FEATURE(kWebViewJavaJsBridgeMojo,
+ 
+ // Field trial feature for controlling support of Origin Trials on WebView.
+ BASE_FEATURE(kWebViewOriginTrials,
+-             "WebViewOriginTrials",
+-             base::FEATURE_ENABLED_BY_DEFAULT);
++             "WebViewOriginTrials",                 // disabled
++             base::FEATURE_DISABLED_BY_DEFAULT);    // by default
+ 
+ // Whether to record size of the embedding app's data directory to the UMA
+ // histogram Android.WebView.AppDataDirectorySize.
 diff --git a/android_webview/nonembedded/BUILD.gn b/android_webview/nonembedded/BUILD.gn
 --- a/android_webview/nonembedded/BUILD.gn
 +++ b/android_webview/nonembedded/BUILD.gn
@@ -218,6 +233,14 @@ diff --git a/components/variations/service/variations_field_trial_creator.cc b/c
  #if BUILDFLAG(GOOGLE_CHROME_BRANDING)
    return command_line->HasSwitch(switches::kEnableFieldTrialTestingConfig);
  #else
+@@ -530,6 +531,7 @@ Study::FormFactor VariationsFieldTrialCreator::GetCurrentFormFactor() {
+ }
+ 
+ #if BUILDFLAG(FIELDTRIAL_TESTING_ENABLED)
++#error FIELDTRIAL_TESTING_ENABLED should be disabled.
+ void VariationsFieldTrialCreator::ApplyFieldTrialTestingConfig(
+     base::FeatureList* feature_list) {
+   VLOG(1) << "Applying FieldTrialTestingConfig";
 diff --git a/components/variations/service/variations_service.cc b/components/variations/service/variations_service.cc
 --- a/components/variations/service/variations_service.cc
 +++ b/components/variations/service/variations_service.cc
