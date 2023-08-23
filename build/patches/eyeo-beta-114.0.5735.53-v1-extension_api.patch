@@ -5736,7 +5736,7 @@ diff --git a/tools/metrics/histograms/enums.xml b/tools/metrics/histograms/enums
  -->
  
  <histogram-configuration>
-@@ -34788,7 +34791,7 @@ Called by update_extension_histograms.py.-->
+@@ -34793,7 +34796,7 @@ Called by update_extension_histograms.py.-->
    <int value="19" label="APP_WINDOW_ON_MAXIMIZED"/>
    <int value="20" label="APP_WINDOW_ON_MINIMIZED"/>
    <int value="21" label="APP_WINDOW_ON_RESTORED"/>

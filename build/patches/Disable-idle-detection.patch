@@ -23,7 +23,7 @@ diff --git a/content/public/common/content_features.cc b/content/public/common/c
 diff --git a/third_party/blink/renderer/platform/runtime_enabled_features.json5 b/third_party/blink/renderer/platform/runtime_enabled_features.json5
 --- a/third_party/blink/renderer/platform/runtime_enabled_features.json5
 +++ b/third_party/blink/renderer/platform/runtime_enabled_features.json5
-@@ -2012,10 +2012,9 @@
+@@ -2014,10 +2014,9 @@
        base_feature: "none",
      },
      {
