@@ -42,7 +42,7 @@ diff --git a/content/public/common/content_features.cc b/content/public/common/c
 diff --git a/third_party/blink/renderer/platform/runtime_enabled_features.json5 b/third_party/blink/renderer/platform/runtime_enabled_features.json5
 --- a/third_party/blink/renderer/platform/runtime_enabled_features.json5
 +++ b/third_party/blink/renderer/platform/runtime_enabled_features.json5
-@@ -1589,7 +1589,7 @@
+@@ -1590,7 +1590,7 @@
      {
        name: "FedCm",
        public: true,
