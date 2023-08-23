@@ -30,11 +30,11 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../attribution/request_headers_internal.cc   |   1 +
  .../network/public/cpp/attribution_utils.cc   |   2 +
  services/network/public/cpp/features.cc       |   6 +-
- third_party/blink/common/features.cc          |  14 +-
+ third_party/blink/common/features.cc          |  26 +--
  .../platform/runtime_enabled_features.json5   |   7 +
  ui/base/ui_base_features.cc                   |   2 +-
  ui/events/android/motion_event_android.cc     |   6 +-
- 23 files changed, 72 insertions(+), 209 deletions(-)
+ 23 files changed, 78 insertions(+), 215 deletions(-)
 
 diff --git a/chrome/android/java/AndroidManifest.xml b/chrome/android/java/AndroidManifest.xml
 --- a/chrome/android/java/AndroidManifest.xml
@@ -569,6 +569,36 @@ diff --git a/services/network/public/cpp/features.cc b/services/network/public/c
 diff --git a/third_party/blink/common/features.cc b/third_party/blink/common/features.cc
 --- a/third_party/blink/common/features.cc
 +++ b/third_party/blink/common/features.cc
+@@ -284,8 +284,8 @@ const base::FeatureParam<int> kBoostImagePriorityTightMediumLimit{
+ // https://github.com/patcg-individual-drafts/topics
+ // Kill switch for the Topics API.
+ BASE_FEATURE(kBrowsingTopics,
+-             "BrowsingTopics",
+-             base::FEATURE_DISABLED_BY_DEFAULT);
++             "BrowsingTopics",                      // disabled
++             base::FEATURE_DISABLED_BY_DEFAULT);    // by default
+ 
+ // If enabled, the check for whether the IP address is publicly routable will be
+ // bypassed when determining the eligibility for a page to be included in topics
+@@ -300,14 +300,14 @@ BASE_FEATURE(kBrowsingTopicsBypassIPIsPubliclyRoutableCheck,
+ // either a valid Origin Trial token exists or `kPrivacySandboxAdsAPIsOverride`
+ // is enabled.)
+ BASE_FEATURE(kBrowsingTopicsDocumentAPI,
+-             "BrowsingTopicsDocumentAPI",
+-             base::FEATURE_ENABLED_BY_DEFAULT);
++             "BrowsingTopicsDocumentAPI",           // disabled
++             base::FEATURE_DISABLED_BY_DEFAULT);    // by default
+ 
+ // Decoupled with the main `kBrowsingTopics` feature, so it allows us to
+ // decouple the server side configs.
+ BASE_FEATURE(kBrowsingTopicsParameters,
+-             "BrowsingTopicsParameters",
+-             base::FEATURE_ENABLED_BY_DEFAULT);
++             "BrowsingTopicsParameters",            // disabled
++             base::FEATURE_DISABLED_BY_DEFAULT);    // by default
+ // The number of epochs from where to calculate the topics to give to a
+ // requesting contexts.
+ const base::FeatureParam<int> kBrowsingTopicsNumberOfEpochsToExpose{
 @@ -520,8 +520,8 @@ BASE_FEATURE(kContentCaptureConstantStreaming,
  
  // Controls whether the Conversion Measurement API infrastructure is enabled.
