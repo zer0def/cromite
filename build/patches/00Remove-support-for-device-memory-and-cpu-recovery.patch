@@ -3,14 +3,14 @@ Date: Tue, 27 Jun 2023 11:11:53 +0000
 Subject: Remove support for device memory and cpu recovery
 
 ---
- storage/browser/blob/blob_memory_controller.cc  | 13 +++++++++++--
- .../browser/quota/quota_device_info_helper.cc   | 17 +++++++++++++++--
- .../device_memory/approximated_device_memory.cc |  7 ++++++-
- third_party/blink/common/features.cc            |  4 ++--
- .../core/frame/navigator_concurrent_hardware.cc |  8 ++++++--
- .../blink/renderer/core/timing/memory_info.cc   | 14 +++++++++++---
- .../renderer/core/timing/window_performance.cc  |  2 +-
- 7 files changed, 52 insertions(+), 13 deletions(-)
+ .../browser/blob/blob_memory_controller.cc    | 20 ++++++++++---------
+ .../browser/quota/quota_device_info_helper.cc | 17 ++++++++++++++--
+ .../approximated_device_memory.cc             |  7 ++++++-
+ third_party/blink/common/features.cc          |  4 ++--
+ .../frame/navigator_concurrent_hardware.cc    |  8 ++++++--
+ .../blink/renderer/core/timing/memory_info.cc | 14 ++++++++++---
+ .../core/timing/window_performance.cc         |  2 +-
+ 7 files changed, 52 insertions(+), 20 deletions(-)
 
 diff --git a/storage/browser/blob/blob_memory_controller.cc b/storage/browser/blob/blob_memory_controller.cc
 --- a/storage/browser/blob/blob_memory_controller.cc
@@ -31,7 +31,7 @@ diff --git a/storage/browser/blob/blob_memory_controller.cc b/storage/browser/bl
  File::Error CreateBlobDirectory(const FilePath& blob_storage_dir) {
    File::Error error = File::FILE_OK;
    base::CreateDirectoryAndGetError(blob_storage_dir, &error);
-@@ -78,9 +87,9 @@ BlobStorageLimits CalculateBlobStorageLimitsImpl(
+@@ -78,23 +87,16 @@ BlobStorageLimits CalculateBlobStorageLimitsImpl(
    int64_t disk_size = 0ull;
    uint64_t memory_size = optional_memory_size_for_testing
                               ? optional_memory_size_for_testing.value()
@@ -43,6 +43,20 @@ diff --git a/storage/browser/blob/blob_memory_controller.cc b/storage/browser/bl
  
    BlobStorageLimits limits;
  
+   // Don't do specialty configuration for error size (-1).
+   if (memory_size > 0) {
+-#if !BUILDFLAG(IS_CHROMEOS_ASH) && !BUILDFLAG(IS_ANDROID) && \
+-    defined(ARCH_CPU_64_BITS)
+     constexpr size_t kTwoGigabytes = 2ull * 1024 * 1024 * 1024;
+     limits.max_blob_in_memory_space = kTwoGigabytes;
+-#elif BUILDFLAG(IS_ANDROID)
+-    limits.max_blob_in_memory_space = static_cast<size_t>(memory_size / 100);
+-#else
+-    limits.max_blob_in_memory_space = static_cast<size_t>(memory_size / 5);
+-#endif
+   }
+   // Devices just on the edge (RAM == 256MB) should not fail because
+   // max_blob_in_memory_space turns out smaller than min_page_file_size
 diff --git a/storage/browser/quota/quota_device_info_helper.cc b/storage/browser/quota/quota_device_info_helper.cc
 --- a/storage/browser/quota/quota_device_info_helper.cc
 +++ b/storage/browser/quota/quota_device_info_helper.cc
