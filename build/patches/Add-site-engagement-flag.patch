@@ -2,7 +2,7 @@ From: uazo <uazo@users.noreply.github.com>
 Date: Mon, 2 May 2022 11:48:03 +0000
 Subject: Add site engagement flag
 
-Enabled by default.
+Disabled by default.
 
 Original License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
@@ -139,7 +139,7 @@ new file mode 100644
 +namespace features {
 +
 +const base::Feature kSiteEngagement{"SiteEngagement",
-+                                    base::FEATURE_ENABLED_BY_DEFAULT};
++                                    base::FEATURE_DISABLED_BY_DEFAULT};
 +
 +}  // namespace features
 +}  // namespace site_engagement
