@@ -3,27 +3,29 @@ Date: Mon, 21 Aug 2023 14:03:25 +0000
 Subject: Add option to disable snapshots
 
 ---
- .../tab_management/TabGridViewBinder.java     |  6 ++-
+ .../tab_management/TabGridViewBinder.java     |  8 +++-
  .../java/res/xml/privacy_preferences.xml      |  5 +++
  .../chrome/browser/app/ChromeActivity.java    |  3 +-
  .../layouts/content/TabContentManager.java    |  7 +++-
  .../privacy/settings/PrivacySettings.java     | 42 ++++++++++++++++++-
  .../strings/android_chrome_strings.grd        |  8 ++++
- 6 files changed, 65 insertions(+), 6 deletions(-)
+ 6 files changed, 67 insertions(+), 6 deletions(-)
 
 diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabGridViewBinder.java b/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabGridViewBinder.java
 --- a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabGridViewBinder.java
 +++ b/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabGridViewBinder.java
-@@ -314,8 +314,10 @@ class TabGridViewBinder {
+@@ -314,8 +314,12 @@ class TabGridViewBinder {
                  updateThumbnailMatrix(thumbnail, result, thumbnailSize);
                  thumbnail.setImageBitmap(result);
              } else if (isMostRecentRequest) {
 -                // If the most recent request is a null bitmap ensure a placeholder is visible.
 -                thumbnail.setImageDrawable(null);
 +                TabListFaviconProvider.TabFavicon tabFavicon = model.get(TabProperties.FAVICON);
-+                thumbnail.setScaleType(ImageView.ScaleType.CENTER);
-+                thumbnail.setImageDrawable(
-+                        isSelected ? tabFavicon.getSelectedDrawable() : tabFavicon.getDefaultDrawable());
++                if (tabFavicon != null) {
++                    thumbnail.setScaleType(ImageView.ScaleType.CENTER);
++                    thumbnail.setImageDrawable(
++                            isSelected ? tabFavicon.getSelectedDrawable() : tabFavicon.getDefaultDrawable());
++                }
              }
          };
          if (TabUiFeatureUtilities.isTabGroupsAndroidContinuationEnabled(view.getContext())
