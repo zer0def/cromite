@@ -134,6 +134,11 @@ In addition, Cromite would like to promote greater integration with other non-pr
 * partitioning all cookies by top frame domain [patch](https://github.com/uazo/bromite/blob/master/build/patches/00Partitioning-all-cookies-by-top-frame-domain.patch)
 * fingerprint mitigation for AudioBuffer and AnalyserNode [patch](https://github.com/uazo/bromite/blob/master/build/patches/AudioBuffer-AnalyserNode-fp-mitigations.patch)
 
+##### from [116.0.5845.111](https://github.com/uazo/cromite/issues/205#issuecomment-1690216310)
+* Disable PartnerCustomizations [patch](https://github.com/uazo/cromite/blob/master/build/patches/00Disable-PartnerCustomizations.patch) [#202](https://github.com/uazo/cromite/issues/202)
+* Add option to disable snapshots [patch](https://github.com/uazo/cromite/blob/master/build/patches/00Add-option-to-disable-snapshots.patch) [#201](https://github.com/uazo/cromite/issues/201)
+* Enable Android Dynamic Performance Framework on renderer [patch](https://github.com/uazo/cromite/blob/master/build/patches/00Enable-Android-Dynamic-Performance-Framework.patch) 
+
 #### Windows Cromite-specific features
 
 * enable Network Service Sandbox by default
