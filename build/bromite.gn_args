@@ -49,3 +49,7 @@ enable_openxr=false
 enable_gvr_services=false
 enable_feed_v2=false
 is_high_end_android=true
+
+# Do not compile libmonochrome.so with RELR relocations
+# since supported only on API 28+
+use_relr_relocations=false
