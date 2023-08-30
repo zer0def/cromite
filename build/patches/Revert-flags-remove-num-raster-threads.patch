@@ -58,7 +58,7 @@ diff --git a/chrome/browser/flag-metadata.json b/chrome/browser/flag-metadata.js
 diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descriptions.cc
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -2199,6 +2199,14 @@ const char kOmniboxActionsInSuggestDescription[] =
+@@ -2202,6 +2202,14 @@ const char kOmniboxActionsInSuggestDescription[] =
      "Actions in Suggest permits optional Action Chips to be attached to "
      "Entity suggestions.";
  
@@ -76,7 +76,7 @@ diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descripti
 diff --git a/chrome/browser/flag_descriptions.h b/chrome/browser/flag_descriptions.h
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -1243,6 +1243,13 @@ extern const char kOmitCorsClientCertDescription[];
+@@ -1246,6 +1246,13 @@ extern const char kOmitCorsClientCertDescription[];
  extern const char kOmniboxActionsInSuggestName[];
  extern const char kOmniboxActionsInSuggestDescription[];
  

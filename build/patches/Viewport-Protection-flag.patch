@@ -34,7 +34,7 @@ The feature is controlled by a feature flag (default enabled)
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -10101,6 +10101,11 @@ const FeatureEntry kFeatureEntries[] = {
+@@ -10105,6 +10105,11 @@ const FeatureEntry kFeatureEntries[] = {
       FEATURE_VALUE_TYPE(features::kDesktopPWAsAppHomePage)},
  #endif  // !BUILDFLAG(IS_CHROMEOS) && !BUILDFLAG(IS_ANDROID)
  
@@ -49,7 +49,7 @@ diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descriptions.cc
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -7352,6 +7352,12 @@ const char kPaintPreviewDemoDescription[] =
+@@ -7355,6 +7355,12 @@ const char kPaintPreviewDemoDescription[] =
      "previews.";
  #endif  // ENABLE_PAINT_PREVIEW && BUILDFLAG(IS_ANDROID)
  
@@ -65,7 +65,7 @@ diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descripti
 diff --git a/chrome/browser/flag_descriptions.h b/chrome/browser/flag_descriptions.h
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -4249,6 +4249,9 @@ extern const char kPaintPreviewDemoName[];
+@@ -4252,6 +4252,9 @@ extern const char kPaintPreviewDemoName[];
  extern const char kPaintPreviewDemoDescription[];
  #endif  // ENABLE_PAINT_PREVIEW && BUILDFLAG(IS_ANDROID)
  

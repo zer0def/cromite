@@ -834,7 +834,7 @@ diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -9357,6 +9357,12 @@ const FeatureEntry kFeatureEntries[] = {
+@@ -9361,6 +9361,12 @@ const FeatureEntry kFeatureEntries[] = {
       FEATURE_VALUE_TYPE(features::kRequestDesktopSiteExceptions)},
  #endif
  
@@ -1346,7 +1346,7 @@ diff --git a/chrome/browser/download/android/java/src/org/chromium/chrome/browse
 diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descriptions.cc
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -7343,6 +7343,11 @@ const char kEnableAudioFocusEnforcementDescription[] =
+@@ -7346,6 +7346,11 @@ const char kEnableAudioFocusEnforcementDescription[] =
      "any one time. Requires #enable-media-session-service to be enabled too.";
  #endif  // BUILDFLAG(IS_CHROMEOS_ASH)
  
@@ -1361,7 +1361,7 @@ diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descripti
 diff --git a/chrome/browser/flag_descriptions.h b/chrome/browser/flag_descriptions.h
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -4243,6 +4243,9 @@ extern const char kEnableAudioFocusEnforcementName[];
+@@ -4246,6 +4246,9 @@ extern const char kEnableAudioFocusEnforcementName[];
  extern const char kEnableAudioFocusEnforcementDescription[];
  #endif  // BUILDFLAG(IS_CHROMEOS_ASH)
  

@@ -142,7 +142,7 @@ diff --git a/chrome/browser/flag-metadata.json b/chrome/browser/flag-metadata.js
 diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descriptions.cc
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -4079,6 +4079,10 @@ const char kNotificationPermissionRationaleBottomSheetDescription[] =
+@@ -4082,6 +4082,10 @@ const char kNotificationPermissionRationaleBottomSheetDescription[] =
      "flow. "
      "Only works with builds targeting Android T+.";
  
@@ -156,7 +156,7 @@ diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descripti
 diff --git a/chrome/browser/flag_descriptions.h b/chrome/browser/flag_descriptions.h
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -2372,6 +2372,9 @@ extern const char kNetworkServiceInProcessDescription[];
+@@ -2375,6 +2375,9 @@ extern const char kNetworkServiceInProcessDescription[];
  extern const char kNotificationPermissionRationaleName[];
  extern const char kNotificationPermissionRationaleDescription[];
  

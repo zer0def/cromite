@@ -82,7 +82,7 @@ diff --git a/third_party/blink/renderer/core/dom/document.cc b/third_party/blink
 diff --git a/third_party/blink/renderer/core/dom/element.cc b/third_party/blink/renderer/core/dom/element.cc
 --- a/third_party/blink/renderer/core/dom/element.cc
 +++ b/third_party/blink/renderer/core/dom/element.cc
-@@ -2564,8 +2564,26 @@ void Element::StripScriptingAttributes(
+@@ -2550,8 +2550,26 @@ void Element::StripScriptingAttributes(
    attribute_vector.Shrink(destination);
  }
  
