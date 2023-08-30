@@ -23,7 +23,7 @@ Require: Timezone-customization.patch
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -7460,6 +7460,11 @@ const FeatureEntry kFeatureEntries[] = {
+@@ -7464,6 +7464,11 @@ const FeatureEntry kFeatureEntries[] = {
       flag_descriptions::kFileHandlingIconsDescription, kOsDesktop,
       FEATURE_VALUE_TYPE(blink::features::kFileHandlingIcons)},
  

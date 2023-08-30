@@ -37,7 +37,7 @@ diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descriptions.cc
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -3611,6 +3611,11 @@ const char kWebrtcUseMinMaxVEADimensionsDescription[] =
+@@ -3614,6 +3614,11 @@ const char kWebrtcUseMinMaxVEADimensionsDescription[] =
      "When enabled, WebRTC will only use the Video Encode Accelerator for "
      "video resolutions inside those published as supported.";
  
@@ -52,7 +52,7 @@ diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descripti
 diff --git a/chrome/browser/flag_descriptions.h b/chrome/browser/flag_descriptions.h
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -2083,6 +2083,9 @@ extern const char kWebRtcRemoteEventLogDescription[];
+@@ -2086,6 +2086,9 @@ extern const char kWebRtcRemoteEventLogDescription[];
  extern const char kWebrtcUseMinMaxVEADimensionsName[];
  extern const char kWebrtcUseMinMaxVEADimensionsDescription[];
  

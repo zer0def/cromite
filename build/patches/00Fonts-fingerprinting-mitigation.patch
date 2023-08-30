@@ -32,7 +32,7 @@ fonts-fingerprint-mitigation flag, which is active by default.
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -10012,6 +10012,11 @@ const FeatureEntry kFeatureEntries[] = {
+@@ -10016,6 +10016,11 @@ const FeatureEntry kFeatureEntries[] = {
                                      kClipboardMaximumAgeVariations,
                                      "ClipboardMaximumAge")},
  

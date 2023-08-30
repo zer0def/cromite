@@ -38,7 +38,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActiv
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -9180,6 +9180,10 @@ const FeatureEntry kFeatureEntries[] = {
+@@ -9184,6 +9184,10 @@ const FeatureEntry kFeatureEntries[] = {
       flag_descriptions::kHttpsUpgradesDescription, kOsDesktop | kOsAndroid,
       FEATURE_VALUE_TYPE(features::kHttpsUpgrades)},
  

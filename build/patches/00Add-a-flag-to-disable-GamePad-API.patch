@@ -13,7 +13,7 @@ Adds restrict-gamepad-access flag (default active) to disable GamePad API.
 diff --git a/chrome/browser/flag-metadata.json b/chrome/browser/flag-metadata.json
 --- a/chrome/browser/flag-metadata.json
 +++ b/chrome/browser/flag-metadata.json
-@@ -6837,9 +6837,9 @@
+@@ -6842,9 +6842,9 @@
      "expiry_milestone": 117
    },
    {
@@ -28,7 +28,7 @@ diff --git a/chrome/browser/flag-metadata.json b/chrome/browser/flag-metadata.js
 diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descriptions.cc
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -2981,7 +2981,7 @@ const char kReduceAcceptLanguageDescription[] =
+@@ -2984,7 +2984,7 @@ const char kReduceAcceptLanguageDescription[] =
  
  const char kRestrictGamepadAccessName[] = "Restrict gamepad access";
  const char kRestrictGamepadAccessDescription[] =

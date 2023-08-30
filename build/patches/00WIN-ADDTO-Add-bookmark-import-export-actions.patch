@@ -12,7 +12,7 @@ Subject: WIN ADDTO Add bookmark import/export actions
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -9462,11 +9462,13 @@ const FeatureEntry kFeatureEntries[] = {
+@@ -9466,11 +9466,13 @@ const FeatureEntry kFeatureEntries[] = {
       FEATURE_VALUE_TYPE(net::features::kIsCleartextPermitted)},
  #endif
  
