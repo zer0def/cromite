@@ -66,47 +66,58 @@ body:
         - armeabi-v7a
         - x86
         - x64
+        - windows
     validations:
       required: true
 
   - type: dropdown
-    id: android_version
+    id: platform_version
     attributes:
-      label: Android version
+      label: Platform version
       multiple: false
       description: What version of Android are you running?
       options:
-        - 14
-        - 13
-        - 12.1
-        - 12.0
-        - 11
-        - 10
-        - 9
-        - 8.1
-        - 8.0
-        - 7.1
-        - 7.0
-        - 6
-        - 5.1
-        - 5.0
-        - 4.4
-        - 4.3
-        - 4.2
-        - 4.1
-        - 4.0
+        - Android 14
+        - Android 13
+        - Android 12.1
+        - Android 12.0
+        - Android 11
+        - Android 10
+        - Android 9
+        - Android 8.1
+        - Android 8.0
+        - Android 7.1
+        - Android 7.0
+        - Android Emulator
+        - Windows 10
+        - Windows 11
+        - I prefer not to write it
     validations:
       required: true
 
   - type: input
     id: device_model
     attributes:
-      label: Device model
+      label: Android Device model
       description: What is your device model? This can usually be found in your device's settings in the "About" section.
       placeholder: (e.g. `OnePlus 8 (IN2010)`, or `SM-G960UZKABST`, etc.)
     validations:
       required: true
 
+  - type: dropdown
+    id: is_android_rooted
+    attributes:
+      label: Is the device rooted?
+      description: |
+          The information is important but not essential; it allows additional checks to be made.
+      multiple: false
+      options:
+        - "Yes"
+        - "No"
+        - "I prefer not to write it"
+    validations:
+      required: tru
+      
   - type: textarea
     id: changed_flags
     attributes:
@@ -128,6 +139,7 @@ body:
       options:
         - "Yes"
         - "No"
+        - "Always Incognito Mode"
     validations:
       required: true
 
