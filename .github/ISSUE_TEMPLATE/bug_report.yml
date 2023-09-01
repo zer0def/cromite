@@ -116,7 +116,7 @@ body:
         - "No"
         - "I prefer not to write it"
     validations:
-      required: tru
+      required: true
       
   - type: textarea
     id: changed_flags
