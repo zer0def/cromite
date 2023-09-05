@@ -1,7 +1,8 @@
-From: Your Name <you@example.com>
+From: uazo <uazo@users.noreply.github.com>
 Date: Fri, 17 Feb 2023 16:23:20 +0000
 Subject: WIN Enable Network Service Sandbox and CIG
 
+License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
  chrome/browser/chrome_content_browser_client.cc | 2 +-
  sandbox/policy/features.cc                      | 6 +++++-
@@ -10,7 +11,7 @@ Subject: WIN Enable Network Service Sandbox and CIG
 diff --git a/chrome/browser/chrome_content_browser_client.cc b/chrome/browser/chrome_content_browser_client.cc
 --- a/chrome/browser/chrome_content_browser_client.cc
 +++ b/chrome/browser/chrome_content_browser_client.cc
-@@ -766,7 +766,7 @@ BASE_FEATURE(kRendererCodeIntegrity,
+@@ -774,7 +774,7 @@ BASE_FEATURE(kRendererCodeIntegrity,
  // https://blogs.windows.com/blog/tag/code-integrity-guard/.
  BASE_FEATURE(kNetworkServiceCodeIntegrity,
               "NetworkServiceCodeIntegrity",

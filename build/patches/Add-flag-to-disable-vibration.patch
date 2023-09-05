@@ -19,7 +19,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -7947,6 +7947,10 @@ const FeatureEntry kFeatureEntries[] = {
+@@ -8111,6 +8111,10 @@ const FeatureEntry kFeatureEntries[] = {
       FEATURE_VALUE_TYPE(features::kNewMacNotificationAPI)},
  #endif
  
@@ -33,20 +33,20 @@ diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descriptions.cc
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -6962,6 +6962,9 @@ const char kLacrosMergeIcuDataFileDescription[] =
+@@ -7118,6 +7118,9 @@ const char kLacrosMergeIcuDataFileDescription[] =
      "Enables sharing common areas of icudtl.dat between Ash and Lacros.";
  #endif  // #if BUILDFLAG(IS_CHROMEOS_LACROS)
  
 +const char kEnableVibrationName[] = "Vibration";
 +const char kEnableVibrationDescription[] = "Enable vibration API; an user gesture will still be needed.";
 +
- #if BUILDFLAG(IS_CHROMEOS)
- const char kCrOSDspBasedAecAllowedName[] =
-     "Allow CRAS to use a DSP-based AEC if available";
+ #if BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_LINUX)
+ const char kGetAllScreensMediaName[] = "GetAllScreensMedia API";
+ const char kGetAllScreensMediaDescription[] =
 diff --git a/chrome/browser/flag_descriptions.h b/chrome/browser/flag_descriptions.h
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -4230,6 +4230,8 @@ extern const char kWebUITabStripTabDragIntegrationName[];
+@@ -4338,6 +4338,8 @@ extern const char kWebUITabStripTabDragIntegrationName[];
  extern const char kWebUITabStripTabDragIntegrationDescription[];
  #endif  // BUILDFLAG(ENABLE_WEBUI_TAB_STRIP) && BUILDFLAG(IS_CHROMEOS_ASH)
  
@@ -69,7 +69,7 @@ diff --git a/content/child/runtime_features.cc b/content/child/runtime_features.
 diff --git a/content/public/common/content_features.cc b/content/public/common/content_features.cc
 --- a/content/public/common/content_features.cc
 +++ b/content/public/common/content_features.cc
-@@ -157,6 +157,11 @@ BASE_FEATURE(kBackForwardCacheMemoryControls,
+@@ -169,6 +169,11 @@ BASE_FEATURE(kBackForwardCacheMemoryControls,
  #endif
  );
  
@@ -84,7 +84,7 @@ diff --git a/content/public/common/content_features.cc b/content/public/common/c
 diff --git a/content/public/common/content_features.h b/content/public/common/content_features.h
 --- a/content/public/common/content_features.h
 +++ b/content/public/common/content_features.h
-@@ -344,6 +344,8 @@ CONTENT_EXPORT BASE_DECLARE_FEATURE(kWarmUpNetworkProcess);
+@@ -346,6 +346,8 @@ CONTENT_EXPORT BASE_DECLARE_FEATURE(kWarmUpNetworkProcess);
  CONTENT_EXPORT BASE_DECLARE_FEATURE(kWebNfc);
  
  #endif  // BUILDFLAG(IS_ANDROID)
@@ -141,7 +141,7 @@ diff --git a/third_party/blink/renderer/platform/exported/web_runtime_features.c
 diff --git a/third_party/blink/renderer/platform/runtime_enabled_features.json5 b/third_party/blink/renderer/platform/runtime_enabled_features.json5
 --- a/third_party/blink/renderer/platform/runtime_enabled_features.json5
 +++ b/third_party/blink/renderer/platform/runtime_enabled_features.json5
-@@ -2495,6 +2495,10 @@
+@@ -2461,6 +2461,10 @@
        status: {"Android": "stable"},
        base_feature: "none",
      },

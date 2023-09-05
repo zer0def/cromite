@@ -10,20 +10,20 @@ Send a random key press to circumvent idle status detection
 License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 ---
  third_party/blink/renderer/core/dom/build.gni |  2 +
- .../blink/renderer/core/dom/document.cc       | 65 +++++++++++++++++++
+ .../blink/renderer/core/dom/document.cc       | 64 +++++++++++++++++++
  .../blink/renderer/core/dom/document.h        |  3 +
  .../core/dom/extensions/anti_amp_cure.h       |  6 ++
  .../core/dom/extensions/video_bg_play.h       |  6 ++
  .../renderer/core/html/html_script_element.cc |  5 ++
  .../renderer/core/html/html_script_element.h  |  1 +
- 7 files changed, 88 insertions(+)
+ 7 files changed, 87 insertions(+)
  create mode 100644 third_party/blink/renderer/core/dom/extensions/anti_amp_cure.h
  create mode 100644 third_party/blink/renderer/core/dom/extensions/video_bg_play.h
 
 diff --git a/third_party/blink/renderer/core/dom/build.gni b/third_party/blink/renderer/core/dom/build.gni
 --- a/third_party/blink/renderer/core/dom/build.gni
 +++ b/third_party/blink/renderer/core/dom/build.gni
-@@ -170,6 +170,8 @@ blink_core_sources_dom = [
+@@ -166,6 +166,8 @@ blink_core_sources_dom = [
    "has_invalidation_flags.h",
    "icon_url.cc",
    "icon_url.h",
@@ -35,7 +35,7 @@ diff --git a/third_party/blink/renderer/core/dom/build.gni b/third_party/blink/r
 diff --git a/third_party/blink/renderer/core/dom/document.cc b/third_party/blink/renderer/core/dom/document.cc
 --- a/third_party/blink/renderer/core/dom/document.cc
 +++ b/third_party/blink/renderer/core/dom/document.cc
-@@ -292,6 +292,7 @@
+@@ -293,6 +293,7 @@
  #include "third_party/blink/renderer/core/page/scrolling/root_scroller_controller.h"
  #include "third_party/blink/renderer/core/page/scrolling/scroll_state_callback.h"
  #include "third_party/blink/renderer/core/page/scrolling/scrolling_coordinator.h"
@@ -43,7 +43,7 @@ diff --git a/third_party/blink/renderer/core/dom/document.cc b/third_party/blink
  #include "third_party/blink/renderer/core/page/scrolling/snap_coordinator.h"
  #include "third_party/blink/renderer/core/page/scrolling/top_document_root_scroller_controller.h"
  #include "third_party/blink/renderer/core/page/spatial_navigation_controller.h"
-@@ -368,6 +369,8 @@
+@@ -369,6 +370,8 @@
  #include "third_party/blink/renderer/platform/wtf/text/string_buffer.h"
  #include "third_party/blink/renderer/platform/wtf/text/text_encoding_registry.h"
  
@@ -52,7 +52,7 @@ diff --git a/third_party/blink/renderer/core/dom/document.cc b/third_party/blink
  #ifndef NDEBUG
  using WeakDocumentSet = blink::HeapHashSet<blink::WeakMember<blink::Document>>;
  static WeakDocumentSet& LiveDocumentSet();
-@@ -7489,6 +7492,64 @@ void Document::OnPrepareToStopParsing() {
+@@ -7440,6 +7443,64 @@ void Document::OnPrepareToStopParsing() {
        MilestoneForDelayedAsyncScript::kFinishedParsing);
  }
  
@@ -117,17 +117,16 @@ diff --git a/third_party/blink/renderer/core/dom/document.cc b/third_party/blink
  void Document::FinishedParsing() {
    DCHECK(!GetScriptableDocumentParser() || !parser_->IsParsing());
    DCHECK(!GetScriptableDocumentParser() || ready_state_ != kLoading);
-@@ -7540,6 +7601,10 @@ void Document::FinishedParsing() {
+@@ -7506,6 +7567,9 @@ void Document::FinishedParsing() {
+     }
  
      frame->Loader().FinishedParsing();
- 
 +    if (!IsPrefetchOnly()) {
 +       injectScripts();
 +    }
-+
-     if (ShouldMarkFontPerformance())
-       FontPerformance::MarkDomContentLoaded();
+   }
  
+   // Schedule dropping of the ElementDataCache. We keep it alive for a while
 diff --git a/third_party/blink/renderer/core/dom/document.h b/third_party/blink/renderer/core/dom/document.h
 --- a/third_party/blink/renderer/core/dom/document.h
 +++ b/third_party/blink/renderer/core/dom/document.h

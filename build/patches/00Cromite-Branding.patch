@@ -2,6 +2,7 @@ From: uazo <uazo@users.noreply.github.com>
 Date: Wed, 19 Jul 2023 12:37:39 +0000
 Subject: Cromite Branding
 
+License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
  build/BUILD.gn                                |   8 ++++
  build/config/BUILDCONFIG.gn                   |   4 ++
@@ -81,7 +82,7 @@ diff --git a/build/config/BUILDCONFIG.gn b/build/config/BUILDCONFIG.gn
 diff --git a/chrome/android/java/AndroidManifest.xml b/chrome/android/java/AndroidManifest.xml
 --- a/chrome/android/java/AndroidManifest.xml
 +++ b/chrome/android/java/AndroidManifest.xml
-@@ -172,7 +172,7 @@ by a child template that "extends" this file.
+@@ -170,7 +170,7 @@ by a child template that "extends" this file.
        <application android:name="{% block application_name %}org.chromium.chrome.browser.base.SplitChromeApplication{% endblock %}"
          android:icon="@drawable/ic_launcher"
          android:roundIcon="@drawable/ic_launcher_round"
@@ -9157,18 +9158,18 @@ diff --git a/chrome/app/extensions_strings.grdp b/chrome/app/extensions_strings.
    <message name="IDS_EXTENSIONS_NO_DESCRIPTION" desc="The message shown to the user when an extension does not have any description.">
      No description provided
 @@ -503,7 +503,7 @@
-     Extensions
+     My extensions
    </message>
-   <message name="IDS_EXTENSIONS_SIDEBAR_OPEN_CHROME_WEB_STORE" desc="The text for the link to get more extensions in the extensions page.">
--    Open Chrome Web Store
-+    Open Chromedontreplace Web Store
+   <message name="IDS_EXTENSIONS_SIDEBAR_DISCOVER_MORE" desc="The text displayed in the sidebar to open the Chrome Web Store to get more extensions.">
+-    Discover more extensions and themes on the <ph name="BEGIN_LINK">&lt;a target="_blank" href="$1"&gt;</ph>Chrome Web Store<ph name="END_LINK">&lt;/a&gt; <ex>&lt;/a&gt;</ex> </ph>
++    Discover more extensions and themes on the <ph name="BEGIN_LINK">&lt;a target="_blank" href="$1"&gt;</ph>Chromedontreplace Web Store<ph name="END_LINK">&lt;/a&gt; <ex>&lt;/a&gt;</ex> </ph>
    </message>
    <message name="IDS_EXTENSIONS_SIDEBAR_KEYBOARD_SHORTCUTS" desc="The text for the link to manage keyboard shortcuts for extensions.">
      Keyboard shortcuts
 diff --git a/chrome/app/settings_strings.grdp b/chrome/app/settings_strings.grdp
 --- a/chrome/app/settings_strings.grdp
 +++ b/chrome/app/settings_strings.grdp
-@@ -255,7 +255,7 @@
+@@ -263,7 +263,7 @@
      Change
    </message>
    <message name="IDS_SETTINGS_WEB_STORE" desc="Sub-label about choosing something from the Chrome Web Store.">
@@ -13122,7 +13123,7 @@ e)fqMZZ`3a)Ds&5H<cfp<0000<MNUMnLSTYHt&Yn8
 diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -2000,6 +2000,7 @@ static_library("browser") {
+@@ -2009,6 +2009,7 @@ static_library("browser") {
      "//build:chromeos_buildflags",
      "//build/config/chromebox_for_meetings:buildflags",
      "//build/config/compiler:compiler_buildflags",
@@ -13141,7 +13142,7 @@ diff --git a/chrome/browser/prefs/chrome_pref_service_factory.cc b/chrome/browse
  #include "chrome/browser/browser_process.h"
  #include "chrome/browser/policy/chrome_browser_policy_connector.h"
  #include "chrome/browser/prefs/chrome_command_line_pref_store.h"
-@@ -310,10 +311,7 @@ std::unique_ptr<ProfilePrefStoreManager> CreateProfilePrefStoreManager(
+@@ -304,10 +305,7 @@ std::unique_ptr<ProfilePrefStoreManager> CreateProfilePrefStoreManager(
  #endif
    std::string seed;
    CHECK(ui::ResourceBundle::HasSharedInstance());
@@ -13184,7 +13185,7 @@ diff --git a/chrome/browser/resources/settings/settings_menu/settings_menu.html 
 diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chrome/browser/ui/android/strings/android_chrome_strings.grd
 --- a/chrome/browser/ui/android/strings/android_chrome_strings.grd
 +++ b/chrome/browser/ui/android/strings/android_chrome_strings.grd
-@@ -2152,7 +2152,7 @@ Your Google account may have other forms of browsing history like searches and a
+@@ -2185,7 +2185,7 @@ Your Google account may have other forms of browsing history like searches and a
          About Chrome
        </message>
        <message name="IDS_LEGAL_INFORMATION_SUMMARY" desc="Summary for legal information" meaning="Android">

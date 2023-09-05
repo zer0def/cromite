@@ -10,7 +10,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 diff --git a/chrome/browser/enterprise/util/android/java/src/org/chromium/chrome/browser/enterprise/util/EnterpriseInfo.java b/chrome/browser/enterprise/util/android/java/src/org/chromium/chrome/browser/enterprise/util/EnterpriseInfo.java
 --- a/chrome/browser/enterprise/util/android/java/src/org/chromium/chrome/browser/enterprise/util/EnterpriseInfo.java
 +++ b/chrome/browser/enterprise/util/android/java/src/org/chromium/chrome/browser/enterprise/util/EnterpriseInfo.java
-@@ -81,13 +81,7 @@ public abstract class EnterpriseInfo {
+@@ -83,13 +83,7 @@ public abstract class EnterpriseInfo {
      @CalledByNative
      public static void getManagedStateForNative() {
          Callback<OwnedState> callback = (result) -> {

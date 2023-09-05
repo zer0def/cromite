@@ -2,6 +2,7 @@ From: uazo <uazo@users.noreply.github.com>
 Date: Mon, 1 May 2023 12:08:46 +0000
 Subject: v113 temp fix build
 
+License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
  android_webview/system_webview_bundle.gni | 4 ++++
  chrome/browser/safe_browsing/BUILD.gn     | 1 +
@@ -24,7 +25,7 @@ diff --git a/android_webview/system_webview_bundle.gni b/android_webview/system_
 diff --git a/chrome/browser/safe_browsing/BUILD.gn b/chrome/browser/safe_browsing/BUILD.gn
 --- a/chrome/browser/safe_browsing/BUILD.gn
 +++ b/chrome/browser/safe_browsing/BUILD.gn
-@@ -214,6 +214,7 @@ static_library("safe_browsing") {
+@@ -210,6 +210,7 @@ static_library("safe_browsing") {
        "//components/version_info",
        "//content/public/browser",
        "//services/preferences/public/mojom:mojom",

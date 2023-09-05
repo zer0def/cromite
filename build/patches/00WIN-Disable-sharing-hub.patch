@@ -1,7 +1,8 @@
-From: Your Name <you@example.com>
+From: uazo <uazo@users.noreply.github.com>
 Date: Fri, 17 Feb 2023 16:22:00 +0000
 Subject: WIN Disable sharing hub
 
+License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
  chrome/browser/sharing_hub/sharing_hub_features.cc          | 2 +-
  chrome/browser/ui/browser_command_controller.cc             | 6 +++---
@@ -24,7 +25,7 @@ diff --git a/chrome/browser/sharing_hub/sharing_hub_features.cc b/chrome/browser
 diff --git a/chrome/browser/ui/browser_command_controller.cc b/chrome/browser/ui/browser_command_controller.cc
 --- a/chrome/browser/ui/browser_command_controller.cc
 +++ b/chrome/browser/ui/browser_command_controller.cc
-@@ -1700,10 +1700,10 @@ void BrowserCommandController::UpdateCommandsForFullscreenMode() {
+@@ -1701,10 +1701,10 @@ void BrowserCommandController::UpdateCommandsForFullscreenMode() {
    command_updater_.UpdateCommandEnabled(IDC_CHROME_WHATS_NEW, show_main_ui);
  #endif
    command_updater_.UpdateCommandEnabled(IDC_CONTENT_CONTEXT_SHARING_SUBMENU,
@@ -41,7 +42,7 @@ diff --git a/chrome/browser/ui/browser_command_controller.cc b/chrome/browser/ui
 diff --git a/chrome/browser/ui/browser_commands.cc b/chrome/browser/ui/browser_commands.cc
 --- a/chrome/browser/ui/browser_commands.cc
 +++ b/chrome/browser/ui/browser_commands.cc
-@@ -1479,6 +1479,7 @@ void SendTabToSelfFromPageAction(Browser* browser) {
+@@ -1537,6 +1537,7 @@ void SendTabToSelfFromPageAction(Browser* browser) {
  }
  
  bool CanGenerateQrCode(const Browser* browser) {

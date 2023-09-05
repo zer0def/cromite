@@ -2,6 +2,7 @@ From: uazo <uazo@users.noreply.github.com>
 Date: Mon, 17 Apr 2023 12:43:19 +0000
 Subject: Remove detection of captive portals
 
+License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
  chrome/browser/net/profile_network_context_service.cc | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
@@ -9,7 +10,7 @@ Subject: Remove detection of captive portals
 diff --git a/chrome/browser/net/profile_network_context_service.cc b/chrome/browser/net/profile_network_context_service.cc
 --- a/chrome/browser/net/profile_network_context_service.cc
 +++ b/chrome/browser/net/profile_network_context_service.cc
-@@ -389,7 +389,7 @@ void ProfileNetworkContextService::UpdateAdditionalCertificates() {
+@@ -413,7 +413,7 @@ void ProfileNetworkContextService::UpdateAdditionalCertificates() {
  void ProfileNetworkContextService::RegisterProfilePrefs(
      user_prefs::PrefRegistrySyncable* registry) {
    registry->RegisterBooleanPref(

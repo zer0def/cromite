@@ -2,6 +2,7 @@ From: uazo <uazo@users.noreply.github.com>
 Date: Mon, 17 Jul 2023 15:24:16 +0000
 Subject: Keep Side Panel Companion disabled
 
+License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
  chrome/browser/companion/core/features.cc     | 19 ++++++++++---------
  .../ui/side_search/side_search_prefs.cc       |  2 +-
@@ -39,7 +40,7 @@ diff --git a/chrome/browser/companion/core/features.cc b/chrome/browser/companio
  }  // namespace internal
  
  // When search companion is enabled, show a context menu item that allows the
-@@ -51,6 +51,7 @@ const char kDisableCheckUserPermissionsForCompanion[] =
+@@ -57,6 +57,7 @@ const char kDisableCheckUserPermissionsForCompanion[] =
  const char kForceCompanionPinnedState[] = "force-companion-pinned-state";
  
  bool ShouldOverrideCheckingUserPermissionsForCompanion() {
@@ -62,7 +63,7 @@ diff --git a/chrome/browser/ui/side_search/side_search_prefs.cc b/chrome/browser
 diff --git a/chrome/browser/ui/ui_features.cc b/chrome/browser/ui/ui_features.cc
 --- a/chrome/browser/ui/ui_features.cc
 +++ b/chrome/browser/ui/ui_features.cc
-@@ -95,7 +95,7 @@ BASE_FEATURE(kQuickCommands,
+@@ -112,7 +112,7 @@ BASE_FEATURE(kResponsiveToolbar,
  
  // Enables the side search feature for Google Search. Presents recent Google
  // search results in a browser side panel.
@@ -74,7 +75,7 @@ diff --git a/chrome/browser/ui/ui_features.cc b/chrome/browser/ui/ui_features.cc
 diff --git a/components/search_engines/template_url.cc b/components/search_engines/template_url.cc
 --- a/components/search_engines/template_url.cc
 +++ b/components/search_engines/template_url.cc
-@@ -1823,7 +1823,7 @@ GURL TemplateURL::GenerateSuggestionURL(
+@@ -1829,7 +1829,7 @@ GURL TemplateURL::GenerateSuggestionURL(
  }
  
  bool TemplateURL::IsSideSearchSupported() const {

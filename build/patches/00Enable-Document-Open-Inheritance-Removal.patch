@@ -2,6 +2,7 @@ From: uazo <uazo@users.noreply.github.com>
 Date: Tue, 28 Mar 2023 15:43:18 +0000
 Subject: Enable Document Open Inheritance Removal
 
+License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
  .../blink/renderer/core/dom/document.cc       | 64 -------------------
  .../platform/runtime_enabled_features.json5   |  1 -
@@ -10,7 +11,7 @@ Subject: Enable Document Open Inheritance Removal
 diff --git a/third_party/blink/renderer/core/dom/document.cc b/third_party/blink/renderer/core/dom/document.cc
 --- a/third_party/blink/renderer/core/dom/document.cc
 +++ b/third_party/blink/renderer/core/dom/document.cc
-@@ -3384,70 +3384,6 @@ void Document::open(LocalDOMWindow* entered_window,
+@@ -3397,70 +3397,6 @@ void Document::open(LocalDOMWindow* entered_window,
          // https://chromestatus.com/metrics/feature/timeline/popularity/4375
          CountUse(WebFeature::kDocumentOpenMutateSandbox);
        }
@@ -84,7 +85,7 @@ diff --git a/third_party/blink/renderer/core/dom/document.cc b/third_party/blink
 diff --git a/third_party/blink/renderer/platform/runtime_enabled_features.json5 b/third_party/blink/renderer/platform/runtime_enabled_features.json5
 --- a/third_party/blink/renderer/platform/runtime_enabled_features.json5
 +++ b/third_party/blink/renderer/platform/runtime_enabled_features.json5
-@@ -1439,7 +1439,6 @@
+@@ -1415,7 +1415,6 @@
      {
        name: "DocumentOpenSandboxInheritanceRemoval",
        status: "stable",

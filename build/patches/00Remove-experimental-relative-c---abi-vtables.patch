@@ -1,7 +1,10 @@
-From: Your Name <you@example.com>
+From: uazo <uazo@users.noreply.github.com>
 Date: Mon, 30 Jan 2023 15:20:53 +0000
 Subject: Remove experimental-relative-c++-abi-vtables
 
+although it is really interesting, it breaks execution with CFI active
+
+License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
  build/config/compiler/BUILD.gn | 5 -----
  1 file changed, 5 deletions(-)
@@ -9,7 +12,7 @@ Subject: Remove experimental-relative-c++-abi-vtables
 diff --git a/build/config/compiler/BUILD.gn b/build/config/compiler/BUILD.gn
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -682,11 +682,6 @@ config("compiler") {
+@@ -681,11 +681,6 @@ config("compiler") {
      cflags_cc += [ "-Wno-trigraphs" ]
    }
  

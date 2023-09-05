@@ -2,6 +2,7 @@ From: uazo <uazo@users.noreply.github.com>
 Date: Mon, 5 Jun 2023 17:02:33 +0000
 Subject: Deprecate Data URL in SVGUseElement
 
+License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
  .../blink/renderer/platform/runtime_enabled_features.json5    | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
@@ -9,7 +10,7 @@ Subject: Deprecate Data URL in SVGUseElement
 diff --git a/third_party/blink/renderer/platform/runtime_enabled_features.json5 b/third_party/blink/renderer/platform/runtime_enabled_features.json5
 --- a/third_party/blink/renderer/platform/runtime_enabled_features.json5
 +++ b/third_party/blink/renderer/platform/runtime_enabled_features.json5
-@@ -2967,8 +2967,8 @@
+@@ -2974,8 +2974,8 @@
        base_feature: "none",
      },
      {
@@ -19,6 +20,6 @@ diff --git a/third_party/blink/renderer/platform/runtime_enabled_features.json5 
 +      status: "stable",               // by default
      },
      {
-       name: "RemoveLegacySizeComputation",
+       name: "RemoveMobileViewportDoubleTap",
 --
 2.25.1

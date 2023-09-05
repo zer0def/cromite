@@ -2,29 +2,30 @@ From: uazo <uazo@users.noreply.github.com>
 Date: Sat, 3 Jun 2023 15:04:55 +0000
 Subject: Disable Compression Dictionary Transport
 
+License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
- .../renderer/platform/runtime_enabled_features.json5      | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ .../blink/renderer/platform/runtime_enabled_features.json5  | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
 diff --git a/third_party/blink/renderer/platform/runtime_enabled_features.json5 b/third_party/blink/renderer/platform/runtime_enabled_features.json5
 --- a/third_party/blink/renderer/platform/runtime_enabled_features.json5
 +++ b/third_party/blink/renderer/platform/runtime_enabled_features.json5
-@@ -670,16 +670,16 @@
-       status: "experimental",
+@@ -680,16 +680,18 @@
+       status: "stable",
      },
      {
 -      name: "CompressionDictionaryTransport",
--      base_feature_status: "enabled",
--      copied_from_base_feature_if: "overridden",
 +      name: "CompressionDictionaryTransport", // need to be disabled
+       base_feature: "none",
        origin_trial_feature_name: "CompressionDictionaryTransport",
+       origin_trial_allows_third_party: true,
        public: true,
 +      status: "experimental",
      },
      {
 -      name: "CompressionDictionaryTransportBackend",
 +      name: "CompressionDictionaryTransportBackend", // need to be disabled
-       base_feature_status: "disabled",
+       base_feature: "none",
        public: true,
 +      status: "experimental",
      },

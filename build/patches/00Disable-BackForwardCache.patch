@@ -1,7 +1,8 @@
-From: Your Name <you@example.com>
+From: uazo <uazo@users.noreply.github.com>
 Date: Tue, 14 Feb 2023 16:29:12 +0000
 Subject: Disable BackForwardCache
 
+License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
  content/public/common/content_features.cc | 6 +++---
  1 file changed, 3 insertions(+), 3 deletions(-)
@@ -9,7 +10,7 @@ Subject: Disable BackForwardCache
 diff --git a/content/public/common/content_features.cc b/content/public/common/content_features.cc
 --- a/content/public/common/content_features.cc
 +++ b/content/public/common/content_features.cc
-@@ -97,9 +97,9 @@ BASE_FEATURE(kBackgroundFetch,
+@@ -109,9 +109,9 @@ BASE_FEATURE(kBackgroundFetch,
               base::FEATURE_ENABLED_BY_DEFAULT);
  
  // Enable using the BackForwardCache.

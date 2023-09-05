@@ -4,6 +4,8 @@ Subject: Remove ChromiumNetworkAdapter
 
 Removes from java code the ability to make http connections
 without asking the native code
+
+License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
  .../browser/download/OMADownloadHandler.java  | 38 -------------
  .../browser/feedback/ConnectivityChecker.java | 37 +------------
@@ -17,7 +19,7 @@ without asking the native code
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/download/OMADownloadHandler.java b/chrome/android/java/src/org/chromium/chrome/browser/download/OMADownloadHandler.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/download/OMADownloadHandler.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/download/OMADownloadHandler.java
-@@ -969,44 +969,6 @@ public class OMADownloadHandler extends BroadcastReceiver {
+@@ -968,44 +968,6 @@ public class OMADownloadHandler extends BroadcastReceiver {
          protected Boolean doInBackground() {
              HttpURLConnection urlConnection = null;
              boolean success = false;
@@ -65,7 +67,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/download/OMADow
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/feedback/ConnectivityChecker.java b/chrome/android/java/src/org/chromium/chrome/browser/feedback/ConnectivityChecker.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/feedback/ConnectivityChecker.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/feedback/ConnectivityChecker.java
-@@ -137,42 +137,7 @@ public final class ConnectivityChecker {
+@@ -136,42 +136,7 @@ public final class ConnectivityChecker {
              postResult(callback, ConnectivityCheckResult.ERROR);
              return;
          }
@@ -112,7 +114,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/feedback/Connec
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/net/connectivitydetector/ConnectivityDetector.java b/chrome/android/java/src/org/chromium/chrome/browser/net/connectivitydetector/ConnectivityDetector.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/net/connectivitydetector/ConnectivityDetector.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/net/connectivitydetector/ConnectivityDetector.java
-@@ -389,60 +389,6 @@ public class ConnectivityDetector implements NetworkChangeNotifier.ConnectionTyp
+@@ -390,60 +390,6 @@ public class ConnectivityDetector implements NetworkChangeNotifier.ConnectionTyp
          new AsyncTask<Integer>() {
              @Override
              protected Integer doInBackground() {
@@ -205,8 +207,8 @@ diff --git a/components/minidump_uploader/android/java/src/org/chromium/componen
 diff --git a/components/variations/android/java/src/org/chromium/components/variations/firstrun/VariationsSeedFetcher.java b/components/variations/android/java/src/org/chromium/components/variations/firstrun/VariationsSeedFetcher.java
 --- a/components/variations/android/java/src/org/chromium/components/variations/firstrun/VariationsSeedFetcher.java
 +++ b/components/variations/android/java/src/org/chromium/components/variations/firstrun/VariationsSeedFetcher.java
-@@ -184,14 +184,6 @@ public class VariationsSeedFetcher {
-         sInstance = fetcher;
+@@ -186,14 +186,6 @@ public class VariationsSeedFetcher {
+         ResettersForTesting.register(() -> sInstance = oldValue);
      }
  
 -    @VisibleForTesting
@@ -220,7 +222,7 @@ diff --git a/components/variations/android/java/src/org/chromium/components/vari
      @VisibleForTesting
      protected List<String> getAvailableInstanceManipulations() {
          List<String> compressions = new ArrayList<String>();
-@@ -506,24 +498,8 @@ public class VariationsSeedFetcher {
+@@ -508,24 +500,8 @@ public class VariationsSeedFetcher {
          HttpURLConnection connection = null;
          try {
              long startTimeMillis = SystemClock.elapsedRealtime();

@@ -2,6 +2,7 @@ From: uazo <uazo@users.noreply.github.com>
 Date: Mon, 17 Jul 2023 15:26:11 +0000
 Subject: Show warnings on downloads over HTTP
 
+License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
  chrome/common/chrome_features.cc | 6 +++---
  1 file changed, 3 insertions(+), 3 deletions(-)
@@ -9,7 +10,7 @@ Subject: Show warnings on downloads over HTTP
 diff --git a/chrome/common/chrome_features.cc b/chrome/common/chrome_features.cc
 --- a/chrome/common/chrome_features.cc
 +++ b/chrome/common/chrome_features.cc
-@@ -1129,9 +1129,9 @@ BASE_FEATURE(kTreatUnsafeDownloadsAsActive,
+@@ -1171,9 +1171,9 @@ BASE_FEATURE(kTreatUnsafeDownloadsAsActive,
               base::FEATURE_ENABLED_BY_DEFAULT);
  
  // Show warnings on downloads not delivered over HTTPS.

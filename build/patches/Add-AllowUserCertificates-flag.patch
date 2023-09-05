@@ -5,20 +5,20 @@ Subject: Add AllowUserCertificates flag
 Original License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 ---
- .../src/org/chromium/chrome/browser/app/ChromeActivity.java  | 3 +++
- chrome/browser/about_flags.cc                                | 4 ++++
- chrome/browser/flag_descriptions.cc                          | 5 +++++
- chrome/browser/flag_descriptions.h                           | 3 +++
- chrome/browser/flags/android/chrome_feature_list.cc          | 5 +++++
- chrome/browser/flags/android/chrome_feature_list.h           | 1 +
- .../org/chromium/chrome/browser/flags/ChromeFeatureList.java | 4 ++++
- net/android/java/src/org/chromium/net/X509Util.java          | 5 +++++
- 8 files changed, 30 insertions(+)
+ .../org/chromium/chrome/browser/app/ChromeActivity.java    | 3 +++
+ chrome/browser/about_flags.cc                              | 7 +++++++
+ chrome/browser/flag_descriptions.cc                        | 5 +++++
+ chrome/browser/flag_descriptions.h                         | 3 +++
+ chrome/browser/flags/android/chrome_feature_list.cc        | 5 +++++
+ chrome/browser/flags/android/chrome_feature_list.h         | 1 +
+ .../chromium/chrome/browser/flags/ChromeFeatureList.java   | 4 ++++
+ net/android/java/src/org/chromium/net/X509Util.java        | 5 +++++
+ 8 files changed, 33 insertions(+)
 
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActivity.java b/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActivity.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActivity.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActivity.java
-@@ -231,6 +231,7 @@ import org.chromium.content_public.browser.ScreenOrientationProvider;
+@@ -230,6 +230,7 @@ import org.chromium.content_public.browser.ScreenOrientationProvider;
  import org.chromium.content_public.browser.SelectionPopupController;
  import org.chromium.content_public.browser.WebContents;
  import org.chromium.content_public.common.ContentSwitches;
@@ -26,7 +26,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActiv
  import org.chromium.printing.PrintManagerDelegateImpl;
  import org.chromium.printing.PrintingController;
  import org.chromium.printing.PrintingControllerImpl;
-@@ -973,6 +974,8 @@ public abstract class ChromeActivity<C extends ChromeActivityComponent>
+@@ -981,6 +982,8 @@ public abstract class ChromeActivity<C extends ChromeActivityComponent>
          super.onStartWithNative();
          ChromeActivitySessionTracker.getInstance().onStartWithNative();
          ChromeCachedFlags.getInstance().cacheNativeFlags();
@@ -38,17 +38,20 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActiv
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -9184,6 +9184,10 @@ const FeatureEntry kFeatureEntries[] = {
-      flag_descriptions::kHttpsUpgradesDescription, kOsDesktop | kOsAndroid,
-      FEATURE_VALUE_TYPE(features::kHttpsUpgrades)},
+@@ -9305,6 +9305,13 @@ const FeatureEntry kFeatureEntries[] = {
+      flag_descriptions::kEnableDrDcDescription, kOsAll,
+      FEATURE_VALUE_TYPE(features::kEnableDrDc)},
  
++#if BUILDFLAG(IS_ANDROID)
 +    {"allow-user-certificates",
 +     flag_descriptions::kAllowUserCertificatesName,
 +     flag_descriptions::kAllowUserCertificatesDescription, kOsAndroid,
 +     FEATURE_VALUE_TYPE(chrome::android::kAllowUserCertificates)},
-     {"omnibox-updated-connection-security-indicators",
-      flag_descriptions::kOmniboxUpdatedConnectionSecurityIndicatorsName,
-      flag_descriptions::kOmniboxUpdatedConnectionSecurityIndicatorsDescription,
++#endif  // BUILDFLAG(IS_ANDROID)
++
+     {"force-gpu-main-thread-to-normal-priority-drdc",
+      flag_descriptions::kForceGpuMainThreadToNormalPriorityDrDcName,
+      flag_descriptions::kForceGpuMainThreadToNormalPriorityDrDcDescription,
 diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descriptions.cc
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
@@ -88,7 +91,7 @@ diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browse
      &feed::kInterestFeedV2,
      &feed::kInterestFeedV2Autoplay,
      &feed::kInterestFeedV2Hearts,
-@@ -458,6 +459,10 @@ BASE_FEATURE(kSearchReadyOmniboxFeature,
+@@ -467,6 +468,10 @@ BASE_FEATURE(kSearchReadyOmniboxFeature,
               "SearchReadyOmnibox",
               base::FEATURE_DISABLED_BY_DEFAULT);
  
@@ -102,8 +105,8 @@ diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browse
 diff --git a/chrome/browser/flags/android/chrome_feature_list.h b/chrome/browser/flags/android/chrome_feature_list.h
 --- a/chrome/browser/flags/android/chrome_feature_list.h
 +++ b/chrome/browser/flags/android/chrome_feature_list.h
-@@ -20,6 +20,7 @@ BASE_DECLARE_FEATURE(kAdaptiveButtonInTopToolbarCustomizationV2);
- BASE_DECLARE_FEATURE(kAddToHomescreenIPH);
+@@ -22,6 +22,7 @@ BASE_DECLARE_FEATURE(kAdvancedPeripheralsSupport);
+ BASE_DECLARE_FEATURE(kAdvancedPeripheralsSupportTabStrip);
  BASE_DECLARE_FEATURE(kAllowNewIncognitoTabIntents);
  BASE_DECLARE_FEATURE(kAndroidAppIntegration);
 +BASE_DECLARE_FEATURE(kAllowUserCertificates);
@@ -121,7 +124,7 @@ diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/f
      public static final String ADAPTIVE_BUTTON_IN_TOP_TOOLBAR = "AdaptiveButtonInTopToolbar";
      public static final String ADAPTIVE_BUTTON_IN_TOP_TOOLBAR_TRANSLATE =
              "AdaptiveButtonInTopToolbarTranslate";
-@@ -499,6 +500,8 @@ public abstract class ChromeFeatureList {
+@@ -504,6 +505,8 @@ public abstract class ChromeFeatureList {
      public static final String XSURFACE_METRICS_REPORTING = "XsurfaceMetricsReporting";
  
      /* Alphabetical: */
@@ -130,7 +133,7 @@ diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/f
      public static final CachedFlag sAppMenuMobileSiteOption =
              new CachedFlag(APP_MENU_MOBILE_SITE_OPTION, false);
      public static final CachedFlag sBackGestureActivityTabProvider =
-@@ -622,6 +625,7 @@ public abstract class ChromeFeatureList {
+@@ -629,6 +632,7 @@ public abstract class ChromeFeatureList {
  
      public static final List<CachedFlag> sFlagsCachedFullBrowser = List.of(
              // clang-format off
