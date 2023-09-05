@@ -1,0 +1,48 @@
+From: uazo <uazo@users.noreply.github.com>
+Date: Tue, 5 Sep 2023 12:55:40 +0000
+Subject: Remove GoogleAccountsPrivateApiHost
+
+---
+ .../browser/chrome_content_browser_client_receiver_bindings.cc  | 2 +-
+ chrome/browser/signin/google_accounts_private_api_host.cc       | 2 +-
+ chrome/renderer/chrome_content_renderer_client.cc               | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/chrome/browser/chrome_content_browser_client_receiver_bindings.cc b/chrome/browser/chrome_content_browser_client_receiver_bindings.cc
+--- a/chrome/browser/chrome_content_browser_client_receiver_bindings.cc
++++ b/chrome/browser/chrome_content_browser_client_receiver_bindings.cc
+@@ -543,7 +543,7 @@ void ChromeContentBrowserClient::
+       chrome::mojom::GoogleAccountsPrivateApiExtension>(base::BindRepeating(
+       [](content::RenderFrameHost* render_frame_host,
+          mojo::PendingAssociatedReceiver<
+-             chrome::mojom::GoogleAccountsPrivateApiExtension> receiver) {
++             chrome::mojom::GoogleAccountsPrivateApiExtension_UAZO_REMOVE_IT> receiver) {
+         GoogleAccountsPrivateApiHost::BindHost(std::move(receiver),
+                                                render_frame_host);
+       },
+diff --git a/chrome/browser/signin/google_accounts_private_api_host.cc b/chrome/browser/signin/google_accounts_private_api_host.cc
+--- a/chrome/browser/signin/google_accounts_private_api_host.cc
++++ b/chrome/browser/signin/google_accounts_private_api_host.cc
+@@ -9,7 +9,7 @@
+ #include "content/public/browser/navigation_handle.h"
+ #include "content/public/browser/render_frame_host.h"
+ 
+-GoogleAccountsPrivateApiHost::GoogleAccountsPrivateApiHost(
++GoogleAccountsPrivateApiHost::GoogleAccountsPrivateApiHost_UAZO_REMOVE_IT(
+     content::RenderFrameHost* rfh,
+     base::RepeatingCallback<void(const std::string&)>
+         on_consent_result_callback)
+diff --git a/chrome/renderer/chrome_content_renderer_client.cc b/chrome/renderer/chrome_content_renderer_client.cc
+--- a/chrome/renderer/chrome_content_renderer_client.cc
++++ b/chrome/renderer/chrome_content_renderer_client.cc
+@@ -644,7 +644,7 @@ void ChromeContentRendererClient::RenderFrameCreated(
+ #endif
+ 
+   TrustedVaultEncryptionKeysExtension::Create(render_frame);
+-  GoogleAccountsPrivateApiExtension::Create(render_frame);
++  GoogleAccountsPrivateApiExtension::Create(render_frame); (UAZO) REMOVE IT
+ 
+   if (render_frame->IsMainFrame())
+     new webapps::WebPageMetadataAgent(render_frame);
+--
+2.25.1
