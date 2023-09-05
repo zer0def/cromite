@@ -1,3 +1,10 @@
+eyeo-117.0.5938.0-base.patch
+eyeo-117.0.5938.0-chrome_integration.patch
+eyeo-117.0.5938.0-android_api.patch
+eyeo-117.0.5938.0-android_settings.patch
+eyeo-117.0.5938.0-extension_api.patch
+00Eyeo-Adblock-Remove-Privacy-Issues.patch
+
 Remove-EV-certificates.patch
 do-not-hide-.orig-files.patch
 Do-not-link-with-libatomic.patch
@@ -74,7 +81,6 @@ translate-disable-fetching-of-languages-from-server.patch
 Offer-builtin-autocomplete-for-chrome-flags.patch
 Use-4-tile-rows-never-show-logo.patch
 Disable-various-metrics.patch
-
 Enable-StrictOriginIsolation-and-SitePerProcess.patch
 Use-64-bit-WebView-processes.patch
 prefs-always-prompt-for-download-directory.patch
@@ -184,24 +190,6 @@ Enable-third-party-storage-partitioning.patch
 Restore-adaptive-button-in-top-toolbar-customization.patch
 Add-kill-switch-for-unsupported-clangd-flags.patch
 
-eyeo-beta-114.0.5735.53-v1-base.patch
-eyeo-beta-114.0.5735.53-v1-android_settings.patch
-eyeo-beta-114.0.5735.53-v1-extension_api.patch
-00Eyeo-Adblock-Remove-Privacy-Issues.patch
-
-00WIN-ADDTO-Experimental-user-scripts-support.patch
-00WIN-ADDTO-ungoogled-chr--Disable-profile-avatar.patch
-00WIN-ADDTO-Add-a-proxy-configuration-page.patch
-00WIN-ADDTO-Add-bookmark-import-export-actions.patch
-00WIN-ADDTO-openH264--enable-ARM-ARM64-optimizati.patch
-00WIN-ADDTO-AImageReader-CFI-crash-mitigations.patch
-00WIN-ADDTO-Disable-various-metrics.patch
-00WIN-ADDTO-Do-not-build-API-keys-infobar.patch
-00WIN-ADDTO-Revert-flags--remove-num-raster-thre.patch
-00WIN-ADDTO-Restore-Search-Ready-Omnibox-flag.patch
-00WIN-ADDTO-Disable-requests-for-single-word-Omni.patch
-00WIN-ADDTO-Logcat-crash-reports-UI.patch
-00WIN-ADDTO-Add-AllowUserCertificates-flag.patch
 00WIN-enable-pdf-plugin.patch
 00WIN-disable-annotate-downloads.patch
 00WIN-enable-HighEfficiencyMode-by-default.patch
@@ -288,3 +276,4 @@ Timezone-customization.patch
 00Add-option-to-disable-snapshots.patch
 00Disable-PartnerCustomizations.patch
 00Enable-Android-Dynamic-Performance-Framework.patch
+00Remove-GoogleAccountsPrivateApiHost.patch
