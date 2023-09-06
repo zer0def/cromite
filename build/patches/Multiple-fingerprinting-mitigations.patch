@@ -478,7 +478,7 @@ diff --git a/third_party/blink/renderer/modules/canvas/canvas2d/base_rendering_c
  #include "third_party/blink/renderer/platform/graphics/skia/skia_utils.h"
  #include "third_party/blink/renderer/platform/graphics/stroke_data.h"
  #include "third_party/blink/renderer/platform/graphics/video_frame_image_util.h"
-@@ -2184,6 +2185,10 @@ ImageData* BaseRenderingContext2D::getImageDataInternal(
+@@ -2183,6 +2184,10 @@ ImageData* BaseRenderingContext2D::getImageDataInternal(
            snapshot->PaintImageForCurrentFrame().GetSkImageInfo().bounds();
        DCHECK(!bounds.intersect(SkIRect::MakeXYWH(sx, sy, sw, sh)));
      }
