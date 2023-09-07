@@ -318,7 +318,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tab/TabViewAndr
 diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -2580,6 +2580,13 @@ static_library("browser") {
+@@ -2576,6 +2576,13 @@ static_library("browser") {
      deps += [ "//chrome/browser/error_reporting" ]
    }
  

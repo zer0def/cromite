@@ -14,11 +14,12 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../core/loader/frame_fetch_context.h         |  1 +
  .../core/loader/worker_fetch_context.cc       | 21 +++++++++++++
  .../core/loader/worker_fetch_context.h        |  1 +
+ .../core/workers/installed_scripts_manager.cc |  4 +--
  .../background_fetch_manager.cc               | 31 +++++++++++++++++++
  .../websockets/websocket_channel_impl.cc      |  5 +++
- .../modules/websockets/websocket_common.cc    | 29 +++++++++++++++++
+ .../modules/websockets/websocket_common.cc    | 30 ++++++++++++++++++
  .../modules/websockets/websocket_common.h     |  4 +++
- 11 files changed, 130 insertions(+)
+ 12 files changed, 133 insertions(+), 2 deletions(-)
 
 diff --git a/third_party/blink/renderer/core/execution_context/execution_context.cc b/third_party/blink/renderer/core/execution_context/execution_context.cc
 --- a/third_party/blink/renderer/core/execution_context/execution_context.cc
@@ -33,8 +34,8 @@ diff --git a/third_party/blink/renderer/core/execution_context/execution_context
 +    case network::mojom::IPAddressSpace::kUnknown:
 +      return "public";
 +
-+    case network::mojom::IPAddressSpace::kLoopback:
-+      return "loopback";
++    case network::mojom::IPAddressSpace::kPrivate:
++      return "private";
 +
 +    case network::mojom::IPAddressSpace::kLocal:
 +      return "local";
@@ -82,9 +83,9 @@ diff --git a/third_party/blink/renderer/core/loader/frame_fetch_context.cc b/thi
 +  network::mojom::IPAddressSpace target_space =
 +      network::mojom::IPAddressSpace::kPublic;
 +  if (network_utils::IsReservedIPAddress(request_url.Host()))
-+    target_space = network::mojom::IPAddressSpace::kLocal;
++    target_space = network::mojom::IPAddressSpace::kPrivate;
 +  if (SecurityOrigin::Create(request_url)->IsLocalhost())
-+    target_space = network::mojom::IPAddressSpace::kLoopback;
++    target_space = network::mojom::IPAddressSpace::kLocal;
 +
 +  bool is_external_request = requestor_space > target_space;
 +  if (is_external_request)
@@ -131,9 +132,9 @@ diff --git a/third_party/blink/renderer/core/loader/worker_fetch_context.cc b/th
 +  network::mojom::IPAddressSpace target_space =
 +      network::mojom::IPAddressSpace::kPublic;
 +  if (network_utils::IsReservedIPAddress(request_url.Host()))
-+    target_space = network::mojom::IPAddressSpace::kLocal;
++    target_space = network::mojom::IPAddressSpace::kPrivate;
 +  if (SecurityOrigin::Create(request_url)->IsLocalhost())
-+    target_space = network::mojom::IPAddressSpace::kLoopback;
++    target_space = network::mojom::IPAddressSpace::kLocal;
 +
 +  bool is_external_request = requestor_space > target_space;
 +  if (is_external_request)
@@ -156,6 +157,21 @@ diff --git a/third_party/blink/renderer/core/loader/worker_fetch_context.h b/thi
    bool ShouldBlockFetchByMixedContentCheck(
        mojom::blink::RequestContextType request_context,
        network::mojom::blink::IPAddressSpace target_address_space,
+diff --git a/third_party/blink/renderer/core/workers/installed_scripts_manager.cc b/third_party/blink/renderer/core/workers/installed_scripts_manager.cc
+--- a/third_party/blink/renderer/core/workers/installed_scripts_manager.cc
++++ b/third_party/blink/renderer/core/workers/installed_scripts_manager.cc
+@@ -33,9 +33,9 @@ InstalledScriptsManager::ScriptData::ScriptData(
+   // place so that this is shareable out of worker code.
+   response_address_space_ = network::mojom::IPAddressSpace::kPublic;
+   if (network_utils::IsReservedIPAddress(script_url_.Host()))
+-    response_address_space_ = network::mojom::IPAddressSpace::kLocal;
++    response_address_space_ = network::mojom::IPAddressSpace::kPrivate;
+   if (SecurityOrigin::Create(script_url_)->IsLocalhost())
+-    response_address_space_ = network::mojom::IPAddressSpace::kLoopback;
++    response_address_space_ = network::mojom::IPAddressSpace::kLocal;
+ }
+ 
+ ContentSecurityPolicyResponseHeaders
 diff --git a/third_party/blink/renderer/modules/background_fetch/background_fetch_manager.cc b/third_party/blink/renderer/modules/background_fetch/background_fetch_manager.cc
 --- a/third_party/blink/renderer/modules/background_fetch/background_fetch_manager.cc
 +++ b/third_party/blink/renderer/modules/background_fetch/background_fetch_manager.cc
@@ -176,9 +192,9 @@ diff --git a/third_party/blink/renderer/modules/background_fetch/background_fetc
 +    network::mojom::IPAddressSpace target_space =
 +        network::mojom::IPAddressSpace::kPublic;
 +    if (network_utils::IsReservedIPAddress(request_url.Host()))
-+      target_space = network::mojom::IPAddressSpace::kLocal;
++      target_space = network::mojom::IPAddressSpace::kPrivate;
 +    if (SecurityOrigin::Create(request_url)->IsLocalhost())
-+      target_space = network::mojom::IPAddressSpace::kLoopback;
++      target_space = network::mojom::IPAddressSpace::kLocal;
 +
 +    bool is_external_request = requestor_space > target_space;
 +    if (is_external_request)
@@ -222,7 +238,7 @@ diff --git a/third_party/blink/renderer/modules/websockets/websocket_channel_imp
 diff --git a/third_party/blink/renderer/modules/websockets/websocket_common.cc b/third_party/blink/renderer/modules/websockets/websocket_common.cc
 --- a/third_party/blink/renderer/modules/websockets/websocket_common.cc
 +++ b/third_party/blink/renderer/modules/websockets/websocket_common.cc
-@@ -125,9 +125,38 @@ WebSocketCommon::ConnectResult WebSocketCommon::Connect(
+@@ -125,9 +125,39 @@ WebSocketCommon::ConnectResult WebSocketCommon::Connect(
      return ConnectResult::kException;
    }
  
@@ -231,7 +247,8 @@ diff --git a/third_party/blink/renderer/modules/websockets/websocket_common.cc b
 +  if (ShouldBlockGateWayAttacks(requestor_space, url_)) {
 +    state_ = kClosed;
 +    exception_state.ThrowSecurityError(
-+        "Access to address of '" + url_.Host() + "' is not allowed from '" + execution_context->addressSpaceForBindings() + "' address space.");
++        "Access to address of '" + url_.Host() +
++        "' is not allowed from current address space.");
 +    return ConnectResult::kException;
 +  }
 +
@@ -247,9 +264,9 @@ diff --git a/third_party/blink/renderer/modules/websockets/websocket_common.cc b
 +  network::mojom::IPAddressSpace target_space =
 +      network::mojom::IPAddressSpace::kPublic;
 +  if (network_utils::IsReservedIPAddress(request_url.Host()))
-+    target_space = network::mojom::IPAddressSpace::kLocal;
++    target_space = network::mojom::IPAddressSpace::kPrivate;
 +  if (SecurityOrigin::Create(request_url)->IsLocalhost())
-+    target_space = network::mojom::IPAddressSpace::kLoopback;
++    target_space = network::mojom::IPAddressSpace::kLocal;
 +
 +  bool is_external_request = requestor_space > target_space;
 +  if (is_external_request)

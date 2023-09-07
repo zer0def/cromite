@@ -84,7 +84,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../user_scripts/browser/user_script_prefs.h  |  62 ++
  .../browser/userscripts_browser_client.cc     |  78 ++
  .../browser/userscripts_browser_client.h      |  62 ++
- components/user_scripts/common/BUILD.gn       |  49 ++
+ components/user_scripts/common/BUILD.gn       |  48 ++
  components/user_scripts/common/constants.h    |  15 +
  components/user_scripts/common/error_utils.cc |  54 ++
  components/user_scripts/common/error_utils.h  |  24 +
@@ -135,7 +135,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../renderer/web_ui_injection_host.h          |  27 +
  .../strings/userscripts_strings.grdp          |  54 ++
  tools/gritsettings/resource_ids.spec          |   6 +
- 108 files changed, 9489 insertions(+), 1 deletion(-)
+ 108 files changed, 9488 insertions(+), 1 deletion(-)
  create mode 100644 components/user_scripts/README.md
  create mode 100755 components/user_scripts/android/BUILD.gn
  create mode 100644 components/user_scripts/android/java/res/layout/accept_script_item.xml
@@ -321,7 +321,7 @@ diff --git a/chrome/android/java_sources.gni b/chrome/android/java_sources.gni
 diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -3567,6 +3567,13 @@ static_library("browser") {
+@@ -3563,6 +3563,13 @@ static_library("browser") {
        ]
        deps += [ "//chrome/android/modules/dev_ui/provider:native" ]
      }
@@ -963,8 +963,8 @@ new file mode 100755
 +    "//third_party/androidx:androidx_core_core_java",
 +    "//ui/android:ui_java",
 +  ]
++  srcjar_deps = [ ":user_scripts_jni_headers" ]
 +  resources_package = "org.chromium.components.user_scripts"
-+  annotation_processor_deps = [ "//base/android/jni_generator:jni_processor" ]
 +}
 +
 +source_set("android") {
@@ -4375,7 +4375,7 @@ diff --git a/components/user_scripts/common/BUILD.gn b/components/user_scripts/c
 new file mode 100755
 --- /dev/null
 +++ b/components/user_scripts/common/BUILD.gn
-@@ -0,0 +1,49 @@
+@@ -0,0 +1,48 @@
 +# Copyright 2014 The Chromium Authors. All rights reserved.
 +# Use of this source code is governed by a BSD-style license that can be
 +# found in the LICENSE file.
@@ -4411,7 +4411,6 @@ new file mode 100755
 +  ]
 +
 +  public_deps = [
-+    "//components/services/app_service/public/cpp:app_file_handling",
 +    "//content/public/common",
 +    "//ipc",
 +    "//skia",
@@ -10490,7 +10489,7 @@ new file mode 100755
 diff --git a/tools/gritsettings/resource_ids.spec b/tools/gritsettings/resource_ids.spec
 --- a/tools/gritsettings/resource_ids.spec
 +++ b/tools/gritsettings/resource_ids.spec
-@@ -915,6 +915,12 @@
+@@ -911,6 +911,12 @@
    "components/autofill/core/browser/autofill_address_rewriter_resources.grd":{
      "includes": [6220]
    },

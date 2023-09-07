@@ -23,18 +23,18 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../attribution_storage_sql.cc                |   8 +-
  content/browser/storage_partition_impl.cc     |   8 +-
  content/public/android/BUILD.gn               |   2 -
- .../browser/AttributionOsLevelManager.java    | 219 ++----------------
+ .../browser/AttributionOsLevelManager.java    | 225 ++----------------
  .../public/browser/navigation_controller.cc   |   1 -
  content/public/common/content_features.cc     |   4 +-
  content/renderer/render_thread_impl.cc        |   5 +-
  .../attribution/request_headers_internal.cc   |   1 +
  .../network/public/cpp/attribution_utils.cc   |   2 +
  services/network/public/cpp/features.cc       |   6 +-
- third_party/blink/common/features.cc          |  26 +--
+ third_party/blink/common/features.cc          |  26 +-
  .../platform/runtime_enabled_features.json5   |   7 +
  ui/base/ui_base_features.cc                   |   2 +-
  ui/events/android/motion_event_android.cc     |   6 +-
- 23 files changed, 89 insertions(+), 255 deletions(-)
+ 23 files changed, 89 insertions(+), 261 deletions(-)
 
 diff --git a/chrome/android/java/AndroidManifest.xml b/chrome/android/java/AndroidManifest.xml
 --- a/chrome/android/java/AndroidManifest.xml
@@ -498,10 +498,16 @@ diff --git a/content/public/android/java/src/org/chromium/content/browser/Attrib
          if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
              AttributionOsLevelManagerJni.get().onMeasurementStateReturned(0);
              return;
-@@ -356,32 +195,6 @@ public class AttributionOsLevelManager {
+@@ -350,38 +189,6 @@ public class AttributionOsLevelManager {
              AttributionOsLevelManagerJni.get().onMeasurementStateReturned(0);
              return;
          }
+-        MeasurementManagerFutures mm =
+-                MeasurementManagerFutures.from(ContextUtils.getApplicationContext());
+-        if (mm == null) {
+-            AttributionOsLevelManagerJni.get().onMeasurementStateReturned(0);
+-            return;
+-        }
 -
 -        ListenableFuture<Integer> future = null;
 -        try {

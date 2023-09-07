@@ -10,6 +10,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 ---
  chrome/browser/about_flags.cc                       |  5 +++++
  chrome/browser/browser_features.cc                  | 13 +++++++------
+ chrome/browser/browser_features.h                   |  1 +
  chrome/browser/flag_descriptions.cc                 |  4 ++++
  chrome/browser/flag_descriptions.h                  |  3 +++
  .../browser/net/system_network_context_manager.cc   |  6 +-----
@@ -19,7 +20,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  net/url_request/report_sender.cc                    |  3 ++-
  services/network/network_context.cc                 |  2 +-
  .../network/sct_auditing/sct_auditing_handler.cc    |  2 ++
- 11 files changed, 35 insertions(+), 23 deletions(-)
+ 12 files changed, 36 insertions(+), 23 deletions(-)
 
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 --- a/chrome/browser/about_flags.cc
@@ -66,6 +67,17 @@ diff --git a/chrome/browser/browser_features.cc b/chrome/browser/browser_feature
  
  BASE_FEATURE(kLargeFaviconFromGoogle,
               "LargeFaviconFromGoogle",
+diff --git a/chrome/browser/browser_features.h b/chrome/browser/browser_features.h
+--- a/chrome/browser/browser_features.h
++++ b/chrome/browser/browser_features.h
+@@ -57,6 +57,7 @@ BASE_DECLARE_FEATURE(kTabCaptureBlueBorderCrOS);
+ 
+ BASE_DECLARE_FEATURE(kWebUsbDeviceDetection);
+ 
++BASE_DECLARE_FEATURE(kCertificateTransparency);
+ BASE_DECLARE_FEATURE(kCertificateTransparencyAskBeforeEnabling);
+ 
+ BASE_DECLARE_FEATURE(kLargeFaviconFromGoogle);
 diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descriptions.cc
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc

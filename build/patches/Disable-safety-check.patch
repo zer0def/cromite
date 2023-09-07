@@ -66,8 +66,8 @@ diff --git a/chrome/android/java/res/xml/main_preferences.xml b/chrome/android/j
 -        android:order="12"
 -        android:title="@string/prefs_safety_check"/>
      <Preference
-         android:fragment="org.chromium.chrome.browser.settings.AdBlockPreferences"
-         android:key="adblock"
+         android:fragment="org.chromium.components.adblock.settings.AdblockSettingsFragment"
+         android:key="eyeo_adblock"
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/settings/SettingsActivity.java b/chrome/android/java/src/org/chromium/chrome/browser/settings/SettingsActivity.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/settings/SettingsActivity.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/settings/SettingsActivity.java
@@ -119,7 +119,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/settings/Settin
 diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -3404,7 +3404,6 @@ static_library("browser") {
+@@ -3400,7 +3400,6 @@ static_library("browser") {
        "//chrome/browser/reading_list/android",
        "//chrome/browser/recent_tabs:jni_headers",
        "//chrome/browser/safe_browsing/android:safe_browsing_enums",

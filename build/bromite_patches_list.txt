@@ -3,7 +3,9 @@ eyeo-117.0.5938.0-chrome_integration.patch
 eyeo-117.0.5938.0-android_api.patch
 eyeo-117.0.5938.0-android_settings.patch
 eyeo-117.0.5938.0-extension_api.patch
+00Fix-eyeo-Browser-Ad-filtering-patches.patch
 00Eyeo-Adblock-Remove-Privacy-Issues.patch
+00AdblockPlus-add-blocking-in-service-workers.patch
 
 Remove-EV-certificates.patch
 do-not-hide-.orig-files.patch
@@ -202,7 +204,6 @@ Add-kill-switch-for-unsupported-clangd-flags.patch
 00WIN-Add-some-prefs-to-secure-preferences.patch
 00WIN-Disable-search-for-image.patch
 
-00Temp-Disable-kAutomaticLazyFrameLoadingToEmbeds.patch
 00Remove-experimental-relative-c---abi-vtables.patch
 AudioBuffer-AnalyserNode-fp-mitigations.patch
 00Disable-Component-Updates.patch
@@ -244,10 +245,6 @@ AudioBuffer-AnalyserNode-fp-mitigations.patch
 00Disallow-Android-App-Scheme-as-referrer.patch
 00Deprecate-Data-URL-in-SVGUseElement.patch
 
-00TEMP-Add-a-log-to-track-strange-behavior.patch
-00v113-temp-fix-build.patch
-00114-temp-disable-find-bad-constructs-external-repo.patch
-
 bromite-build-utils.patch
 Content-settings-infrastructure.patch
 Add-autoplay-site-setting.patch
@@ -272,8 +269,13 @@ Timezone-customization.patch
 00do-not-block-build-incompatible-profiles.patch
 00Allow-DocumentPiP-if-PopupsAndRedirects-are-active.patch
 00allow-the-download-of-clang-for-windows-crossbuild.patch
-00Temp-disable-predictive-back-gesture.patch
 00Add-option-to-disable-snapshots.patch
 00Disable-PartnerCustomizations.patch
 00Enable-Android-Dynamic-Performance-Framework.patch
 00Remove-GoogleAccountsPrivateApiHost.patch
+00Fix-crash-on-customize-profile-ui.patch
+
+00Temp-Disable-kAutomaticLazyFrameLoadingToEmbeds.patch
+00Temp-disable-predictive-back-gesture.patch
+00TEMP-Add-a-log-to-track-strange-behavior.patch
+00Fix-chromium-build-bugs.patch

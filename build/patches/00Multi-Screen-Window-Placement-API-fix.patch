@@ -8,8 +8,8 @@ granted by user
 License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
  .../blink/renderer/core/frame/screen.cc       | 25 +++++++++++++++++--
- .../blink/renderer/core/frame/screen.h        |  8 ++++++
- 2 files changed, 31 insertions(+), 2 deletions(-)
+ .../blink/renderer/core/frame/screen.h        | 10 ++++++++
+ 2 files changed, 33 insertions(+), 2 deletions(-)
 
 diff --git a/third_party/blink/renderer/core/frame/screen.cc b/third_party/blink/renderer/core/frame/screen.cc
 --- a/third_party/blink/renderer/core/frame/screen.cc
@@ -70,7 +70,7 @@ diff --git a/third_party/blink/renderer/core/frame/screen.cc b/third_party/blink
 diff --git a/third_party/blink/renderer/core/frame/screen.h b/third_party/blink/renderer/core/frame/screen.h
 --- a/third_party/blink/renderer/core/frame/screen.h
 +++ b/third_party/blink/renderer/core/frame/screen.h
-@@ -33,12 +33,20 @@
+@@ -33,10 +33,14 @@
  #include "third_party/blink/renderer/core/dom/events/event_target.h"
  #include "third_party/blink/renderer/core/execution_context/execution_context_lifecycle_observer.h"
  #include "third_party/blink/renderer/platform/heap/garbage_collected.h"
@@ -80,16 +80,23 @@ diff --git a/third_party/blink/renderer/core/frame/screen.h b/third_party/blink/
  #include "third_party/blink/renderer/platform/wtf/text/atomic_string.h"
  #include "ui/gfx/geometry/rect.h"
  
++#include "third_party/blink/public/mojom/permissions/permission.mojom-blink.h"
++
  namespace display {
  struct ScreenInfo;
+ }
+@@ -91,6 +95,12 @@ class CORE_EXPORT Screen : public EventTarget,
+ 
+   // The internal id of the underlying display, to support multi-screen devices.
+   int64_t display_id_;
 +
 + private:
 +  void DidGetPermissionState(mojom::blink::PermissionStatus status);
 +
 +  bool has_permission_ = false;
 +  HeapMojoRemote<mojom::blink::PermissionService> permission_service_;
- }
+ };
  
- namespace blink {
+ }  // namespace blink
 --
 2.25.1

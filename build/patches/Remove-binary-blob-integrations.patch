@@ -89,7 +89,8 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  components/signin/public/android/BUILD.gn     |   3 -
  .../signin/AccountRenameChecker.java          |  16 -
  components/webauthn/android/BUILD.gn          |  11 -
- .../webauthn/AuthenticatorImpl.java           |  89 +--
+ .../webauthn/AuthenticatorImpl.java           |  93 +--
+ .../webauthn/CredManMetricsHelper.java        |  17 -
  .../webauthn/Fido2ApiCallHelper.java          |  58 +-
  .../push_messaging/push_messaging_manager.cc  |   2 +-
  content/public/android/BUILD.gn               |   4 -
@@ -105,7 +106,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  third_party/cardboard/BUILD.gn                |   4 -
  weblayer/browser/java/BUILD.gn                |   1 -
  weblayer/public/java/BUILD.gn                 |   1 -
- 81 files changed, 96 insertions(+), 1991 deletions(-)
+ 82 files changed, 96 insertions(+), 2012 deletions(-)
 
 diff --git a/android_webview/expectations/system_webview_bundle.AndroidManifest.expected b/android_webview/expectations/system_webview_bundle.AndroidManifest.expected
 --- a/android_webview/expectations/system_webview_bundle.AndroidManifest.expected
@@ -1085,7 +1086,7 @@ diff --git a/chrome/browser/ui/BUILD.gn b/chrome/browser/ui/BUILD.gn
      "webui/internals/internals_ui.cc",
      "webui/internals/internals_ui.h",
      "webui/interstitials/interstitial_ui.cc",
-@@ -520,7 +518,6 @@ static_library("ui") {
+@@ -514,7 +512,6 @@ static_library("ui") {
      "//components/feedback/redaction_tool",
      "//components/find_in_page",
      "//components/flags_ui",
@@ -3124,23 +3125,22 @@ diff --git a/components/webauthn/android/java/src/org/chromium/components/webaut
      private MakeCredential_Response mMakeCredentialCallback;
      private GetAssertion_Response mGetAssertionCallback;
      // A queue is used to store pending IsUserVerifyingPlatformAuthenticatorAvailable request
-@@ -70,15 +66,8 @@ public final class AuthenticatorImpl implements Authenticator {
+@@ -70,14 +66,6 @@ public final class AuthenticatorImpl implements Authenticator {
      // situation does not matter because all pending requests will return the same value.
      private Queue<org.chromium.mojo.bindings.Callbacks.Callback1<Boolean>>
              mIsUserVerifyingPlatformAuthenticatorAvailableCallbackQueue = new LinkedList<>();
 -    private Fido2CredentialRequest mPendingFido2CredentialRequest;
-     private Set<Fido2CredentialRequest> mUnclosedFido2CredentialRequests = new HashSet<>();
- 
+-    private Set<Fido2CredentialRequest> mUnclosedFido2CredentialRequests = new HashSet<>();
+-
 -    // StaticFieldLeak complains that this is a memory leak because
 -    // `Fido2CredentialRequest` contains a `Context`. But this field is only
 -    // used in tests so a memory leak is irrelevent.
 -    @SuppressLint("StaticFieldLeak")
 -    private static Fido2CredentialRequest sFido2CredentialRequestOverrideForTesting;
--
+ 
      /**
       * Builds the Authenticator service implementation.
-      *
-@@ -97,21 +86,6 @@ public final class AuthenticatorImpl implements Authenticator {
+@@ -97,21 +85,6 @@ public final class AuthenticatorImpl implements Authenticator {
          mRenderFrameHost = renderFrameHost;
          mOrigin = mRenderFrameHost.getLastCommittedOrigin();
          mTopOrigin = topOrigin;
@@ -3162,7 +3162,7 @@ diff --git a/components/webauthn/android/java/src/org/chromium/components/webaut
      }
  
      /**
-@@ -141,17 +115,9 @@ public final class AuthenticatorImpl implements Authenticator {
+@@ -141,17 +114,9 @@ public final class AuthenticatorImpl implements Authenticator {
  
          mMakeCredentialCallback = callback;
          mIsOperationPending = true;
@@ -3182,7 +3182,7 @@ diff --git a/components/webauthn/android/java/src/org/chromium/components/webaut
      }
  
      @Override
-@@ -165,16 +131,8 @@ public final class AuthenticatorImpl implements Authenticator {
+@@ -165,16 +130,8 @@ public final class AuthenticatorImpl implements Authenticator {
          mGetAssertionCallback = callback;
          mIsOperationPending = true;
  
@@ -3201,7 +3201,7 @@ diff --git a/components/webauthn/android/java/src/org/chromium/components/webaut
      }
  
      @Override
-@@ -186,15 +144,8 @@ public final class AuthenticatorImpl implements Authenticator {
+@@ -186,15 +143,8 @@ public final class AuthenticatorImpl implements Authenticator {
              callback.call(isUvpaa);
          };
  
@@ -3219,7 +3219,7 @@ diff --git a/components/webauthn/android/java/src/org/chromium/components/webaut
      }
  
      /**
-@@ -203,7 +154,7 @@ public final class AuthenticatorImpl implements Authenticator {
+@@ -203,7 +153,7 @@ public final class AuthenticatorImpl implements Authenticator {
       * version.
       */
      public boolean isGetMatchingCredentialIdsSupported() {
@@ -3228,7 +3228,7 @@ diff --git a/components/webauthn/android/java/src/org/chromium/components/webaut
      }
  
      /**
-@@ -217,32 +168,13 @@ public final class AuthenticatorImpl implements Authenticator {
+@@ -217,32 +167,13 @@ public final class AuthenticatorImpl implements Authenticator {
       */
      public void getMatchingCredentialIds(String relyingPartyId, byte[][] credentialIds,
              boolean requireThirdPartyPayment, GetMatchingCredentialIdsResponseCallback callback) {
@@ -3263,7 +3263,7 @@ diff --git a/components/webauthn/android/java/src/org/chromium/components/webaut
      }
  
      @Override
-@@ -254,8 +186,6 @@ public final class AuthenticatorImpl implements Authenticator {
+@@ -254,8 +185,6 @@ public final class AuthenticatorImpl implements Authenticator {
          if (!mIsOperationPending || mGetAssertionCallback == null) {
              return;
          }
@@ -3272,7 +3272,15 @@ diff --git a/components/webauthn/android/java/src/org/chromium/components/webaut
      }
  
      /**
-@@ -305,7 +235,6 @@ public final class AuthenticatorImpl implements Authenticator {
+@@ -297,7 +226,6 @@ public final class AuthenticatorImpl implements Authenticator {
+         } else if (mGetAssertionCallback != null) {
+             mGetAssertionCallback.call(status, null, null);
+         }
+-        if (mPendingFido2CredentialRequest != null) mPendingFido2CredentialRequest.destroyBridge();
+         cleanupRequest();
+     }
+ 
+@@ -305,13 +233,10 @@ public final class AuthenticatorImpl implements Authenticator {
          mIsOperationPending = false;
          mMakeCredentialCallback = null;
          mGetAssertionCallback = null;
@@ -3280,6 +3288,44 @@ diff --git a/components/webauthn/android/java/src/org/chromium/components/webaut
      }
  
      @Override
+     public void close() {
+-        mUnclosedFido2CredentialRequests.forEach(Fido2CredentialRequest::destroyBridge);
+-        mUnclosedFido2CredentialRequests.clear();
+         cleanupRequest();
+     }
+ 
+diff --git a/components/webauthn/android/java/src/org/chromium/components/webauthn/CredManMetricsHelper.java b/components/webauthn/android/java/src/org/chromium/components/webauthn/CredManMetricsHelper.java
+--- a/components/webauthn/android/java/src/org/chromium/components/webauthn/CredManMetricsHelper.java
++++ b/components/webauthn/android/java/src/org/chromium/components/webauthn/CredManMetricsHelper.java
+@@ -7,7 +7,6 @@ package org.chromium.components.webauthn;
+ import androidx.annotation.IntDef;
+ 
+ import org.chromium.base.metrics.RecordHistogram;
+-import org.chromium.components.webauthn.Fido2CredentialRequest.ConditionalUiState;
+ 
+ /**
+  * This class is responsible for emitting histograms regarding CredMan usage in
+@@ -77,20 +76,4 @@ public class CredManMetricsHelper {
+         RecordHistogram.recordTimesHistogram(
+                 "WebAuthentication.Android.CredManPrepareRequestDuration", durationMs);
+     }
+-
+-    public void reportGetCredentialMetrics(
+-            @CredManGetRequestEnum int value, ConditionalUiState conditionalUiState) {
+-        assert !(conditionalUiState == ConditionalUiState.NONE)
+-                || !(value == CredManGetRequestEnum.SUCCESS_PASSWORD)
+-            : "Passwords cannot be received from modal requests!";
+-        if (conditionalUiState == ConditionalUiState.NONE) {
+-            RecordHistogram.recordEnumeratedHistogram(
+-                    "WebAuthentication.Android.CredManModalRequests", value,
+-                    CredManGetRequestEnum.NUM_ENTRIES);
+-            return;
+-        }
+-        RecordHistogram.recordEnumeratedHistogram(
+-                "WebAuthentication.Android.CredManConditionalRequest", value,
+-                CredManGetRequestEnum.NUM_ENTRIES);
+-    }
+ }
 diff --git a/components/webauthn/android/java/src/org/chromium/components/webauthn/Fido2ApiCallHelper.java b/components/webauthn/android/java/src/org/chromium/components/webauthn/Fido2ApiCallHelper.java
 --- a/components/webauthn/android/java/src/org/chromium/components/webauthn/Fido2ApiCallHelper.java
 +++ b/components/webauthn/android/java/src/org/chromium/components/webauthn/Fido2ApiCallHelper.java

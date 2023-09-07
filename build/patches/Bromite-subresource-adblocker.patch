@@ -248,10 +248,10 @@ new file mode 100644
 diff --git a/chrome/android/java/res/xml/main_preferences.xml b/chrome/android/java/res/xml/main_preferences.xml
 --- a/chrome/android/java/res/xml/main_preferences.xml
 +++ b/chrome/android/java/res/xml/main_preferences.xml
-@@ -66,6 +66,11 @@
-         android:key="safety_check"
-         android:order="12"
-         android:title="@string/prefs_safety_check"/>
+@@ -71,6 +71,11 @@
+         android:key="eyeo_adblock"
+         android:order="13"
+         android:title="@string/adblock_settings_title" />
 +    <Preference
 +        android:fragment="org.chromium.chrome.browser.settings.AdBlockPreferences"
 +        android:key="adblock"
@@ -656,7 +656,7 @@ diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chro
  
 +      <!-- AdBlock settings -->
 +      <message name="IDS_PREFS_ADBLOCK" desc="Title of the AdBlock Settings screen. [CHAR-LIMIT=32]">
-+        AdBlock settings
++        Legacy Adblock settings
 +      </message>
 +      <message name="IDS_OPTIONS_ADBLOCK_EDIT_TITLE" desc="The title of the screen that allows users to change the URL that is used to fetch the ad blocker filters.">
 +        Edit filters URL

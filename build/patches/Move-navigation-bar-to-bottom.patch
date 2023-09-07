@@ -207,7 +207,7 @@ diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser
 diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabGroupUiMediator.java b/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabGroupUiMediator.java
 --- a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabGroupUiMediator.java
 +++ b/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabGroupUiMediator.java
-@@ -46,6 +46,12 @@ import org.chromium.url.GURL;
+@@ -47,6 +47,12 @@ import org.chromium.url.GURL;
  
  import java.util.List;
  
@@ -220,7 +220,7 @@ diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser
  /**
   * A mediator for the TabGroupUi. Responsible for managing the internal state of the component.
   */
-@@ -115,6 +121,11 @@ public class TabGroupUiMediator implements BackPressHandler {
+@@ -116,6 +122,11 @@ public class TabGroupUiMediator implements BackPressHandler {
      private boolean mIsTabGroupUiVisible;
      private boolean mIsShowingOverViewMode;
  
@@ -232,7 +232,7 @@ diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser
      TabGroupUiMediator(Context context, BottomControlsVisibilityController visibilityController,
              ResetHandler resetHandler, PropertyModel model, TabModelSelector tabModelSelector,
              TabCreatorManager tabCreatorManager,
-@@ -122,7 +133,9 @@ public class TabGroupUiMediator implements BackPressHandler {
+@@ -123,7 +134,9 @@ public class TabGroupUiMediator implements BackPressHandler {
              IncognitoStateProvider incognitoStateProvider,
              @Nullable OneshotSupplier<TabGridDialogMediator.DialogController>
                      dialogControllerSupplier,
@@ -243,7 +243,7 @@ diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser
          mContext = context;
          mResetHandler = resetHandler;
          mModel = model;
-@@ -143,10 +156,29 @@ public class TabGroupUiMediator implements BackPressHandler {
+@@ -144,10 +157,29 @@ public class TabGroupUiMediator implements BackPressHandler {
              mIsShowingOverViewMode = true;
          }
  
@@ -273,7 +273,7 @@ diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser
                  if (TabUiFeatureUtilities.isTabGroupsAndroidEnabled(mContext)
                          && getTabsToShowForId(lastId).contains(tab)) {
                      return;
-@@ -199,6 +231,7 @@ public class TabGroupUiMediator implements BackPressHandler {
+@@ -200,6 +232,7 @@ public class TabGroupUiMediator implements BackPressHandler {
                      return;
                  }
                  resetTabStripWithRelatedTabsForId(currentTab.getId());
@@ -281,7 +281,7 @@ diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser
              }
  
              @Override
-@@ -314,6 +347,8 @@ public class TabGroupUiMediator implements BackPressHandler {
+@@ -315,6 +348,8 @@ public class TabGroupUiMediator implements BackPressHandler {
              resetTabStripWithRelatedTabsForId(tab.getId());
          }
  
@@ -290,7 +290,7 @@ diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser
          mBackPressStateSupplier = new ObservableSupplierImpl<>();
          if (mTabGridDialogControllerSupplier != null) {
              mTabGridDialogControllerSupplier.onAvailable(controller -> {
-@@ -327,6 +362,18 @@ public class TabGroupUiMediator implements BackPressHandler {
+@@ -328,6 +363,18 @@ public class TabGroupUiMediator implements BackPressHandler {
          mModel.set(TabGroupUiProperties.LEFT_BUTTON_DRAWABLE_ID, drawableId);
      }
  
@@ -309,7 +309,7 @@ diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser
      void setupLeftButtonOnClickListener(View.OnClickListener listener) {
          mModel.set(TabGroupUiProperties.LEFT_BUTTON_ON_CLICK_LISTENER, listener);
      }
-@@ -437,6 +484,7 @@ public class TabGroupUiMediator implements BackPressHandler {
+@@ -442,6 +489,7 @@ public class TabGroupUiMediator implements BackPressHandler {
      }
  
      public void destroy() {

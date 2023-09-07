@@ -384,7 +384,7 @@ diff --git a/chrome/browser/profiles/android/profile_manager_utils.cc b/chrome/b
 diff --git a/chrome/browser/profiles/profile_manager.cc b/chrome/browser/profiles/profile_manager.cc
 --- a/chrome/browser/profiles/profile_manager.cc
 +++ b/chrome/browser/profiles/profile_manager.cc
-@@ -1449,6 +1449,19 @@ void ProfileManager::DoFinalInit(ProfileInfo* profile_info,
+@@ -1451,6 +1451,19 @@ void ProfileManager::DoFinalInit(ProfileInfo* profile_info,
    }
  }
  
