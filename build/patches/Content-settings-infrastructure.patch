@@ -391,7 +391,7 @@ diff --git a/chrome/browser/resources/settings/site_settings_page/site_settings_
 diff --git a/chrome/browser/ui/BUILD.gn b/chrome/browser/ui/BUILD.gn
 --- a/chrome/browser/ui/BUILD.gn
 +++ b/chrome/browser/ui/BUILD.gn
-@@ -1921,6 +1921,7 @@ static_library("ui") {
+@@ -1923,6 +1923,7 @@ static_library("ui") {
        "//components/commerce/core:shopping_service",
        "//components/commerce/core/mojom:mojo_bindings",
        "//components/commerce/core/webui",

@@ -276,7 +276,7 @@ diff --git a/components/autofill/core/browser/ui/suggestion_selection.cc b/compo
 diff --git a/components/autofill/core/browser/webdata/autofill_table.cc b/components/autofill/core/browser/webdata/autofill_table.cc
 --- a/components/autofill/core/browser/webdata/autofill_table.cc
 +++ b/components/autofill/core/browser/webdata/autofill_table.cc
-@@ -412,12 +412,12 @@ void InsertBuilder(sql::Database* db,
+@@ -413,12 +413,12 @@ void InsertBuilder(sql::Database* db,
  }
  
  // Renames the table `from` into `to` and returns true if successful.

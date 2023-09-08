@@ -64,7 +64,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedAct
  import org.chromium.chrome.browser.compositor.layouts.Layout;
  import org.chromium.chrome.browser.compositor.layouts.LayoutManagerChrome;
  import org.chromium.chrome.browser.compositor.layouts.LayoutManagerChromePhone;
-@@ -2278,6 +2279,8 @@ public class ChromeTabbedActivity extends ChromeActivity<ChromeActivityComponent
+@@ -2288,6 +2289,8 @@ public class ChromeTabbedActivity extends ChromeActivity<ChromeActivityComponent
                      getTabModelSelectorSupplier().get(),
                      () -> getTabModelSelector().closeAllTabs());
              RecordUserAction.record("MobileMenuCloseAllTabs");
@@ -73,7 +73,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedAct
          } else if (id == R.id.close_all_incognito_tabs_menu_id) {
              // Close only incognito tabs
              CloseAllTabsDialog.show(this, getModalDialogManagerSupplier(),
-@@ -2343,6 +2346,27 @@ public class ChromeTabbedActivity extends ChromeActivity<ChromeActivityComponent
+@@ -2353,6 +2356,27 @@ public class ChromeTabbedActivity extends ChromeActivity<ChromeActivityComponent
          getTabModalLifetimeHandler().onOmniboxFocusChanged(hasFocus);
      }
  

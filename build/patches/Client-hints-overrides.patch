@@ -151,7 +151,7 @@ diff --git a/third_party/blink/common/client_hints/enabled_client_hints.cc b/thi
 diff --git a/third_party/blink/renderer/platform/runtime_enabled_features.json5 b/third_party/blink/renderer/platform/runtime_enabled_features.json5
 --- a/third_party/blink/renderer/platform/runtime_enabled_features.json5
 +++ b/third_party/blink/renderer/platform/runtime_enabled_features.json5
-@@ -3694,8 +3694,8 @@
+@@ -3695,8 +3695,8 @@
        public: true,
      },
      {

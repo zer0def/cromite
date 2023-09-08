@@ -132,7 +132,7 @@ diff --git a/components/external_intents/android/java/src/org/chromium/component
 diff --git a/components/external_intents/android/java/src/org/chromium/components/external_intents/ExternalNavigationHandler.java b/components/external_intents/android/java/src/org/chromium/components/external_intents/ExternalNavigationHandler.java
 --- a/components/external_intents/android/java/src/org/chromium/components/external_intents/ExternalNavigationHandler.java
 +++ b/components/external_intents/android/java/src/org/chromium/components/external_intents/ExternalNavigationHandler.java
-@@ -1556,6 +1556,12 @@ public class ExternalNavigationHandler {
+@@ -1566,6 +1566,12 @@ public class ExternalNavigationHandler {
                  || ignoreBackForwardNav(params);
      }
  
@@ -145,7 +145,7 @@ diff --git a/components/external_intents/android/java/src/org/chromium/component
      private OverrideUrlLoadingResult shouldOverrideUrlLoadingInternal(
              ExternalNavigationParams params, Intent targetIntent, GURL browserFallbackUrl,
              MutableBoolean canLaunchExternalFallbackResult) {
-@@ -1609,6 +1615,21 @@ public class ExternalNavigationHandler {
+@@ -1619,6 +1625,21 @@ public class ExternalNavigationHandler {
              return OverrideUrlLoadingResult.forNoOverride();
          }
  
