@@ -27,6 +27,12 @@ jobs:
       OUTPUTFILE_X64: /storage/images/${{ github.event.inputs.sha }}/android/false/x64/
         
     steps:
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      
       - name: Prepare container
         run: |
           wget https://github.com/ericchiang/pup/releases/download/v0.4.0/pup_v0.4.0_linux_amd64.zip
@@ -154,4 +160,7 @@ jobs:
 
           $GH release edit $VERSION-$BROMITE_SHA -t $VERSION-$BROMITE_SHA
           $GH release edit $VERSION-$BROMITE_SHA --draft=false
-        
+
+          docker push uazo/cromite:$VERSION
+          docker push uazo/cromite-build:$VERSION
+
