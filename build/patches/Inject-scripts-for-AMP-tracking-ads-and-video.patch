@@ -52,7 +52,7 @@ diff --git a/third_party/blink/renderer/core/dom/document.cc b/third_party/blink
  #ifndef NDEBUG
  using WeakDocumentSet = blink::HeapHashSet<blink::WeakMember<blink::Document>>;
  static WeakDocumentSet& LiveDocumentSet();
-@@ -7440,6 +7443,64 @@ void Document::OnPrepareToStopParsing() {
+@@ -7442,6 +7445,64 @@ void Document::OnPrepareToStopParsing() {
        MilestoneForDelayedAsyncScript::kFinishedParsing);
  }
  
@@ -117,7 +117,7 @@ diff --git a/third_party/blink/renderer/core/dom/document.cc b/third_party/blink
  void Document::FinishedParsing() {
    DCHECK(!GetScriptableDocumentParser() || !parser_->IsParsing());
    DCHECK(!GetScriptableDocumentParser() || ready_state_ != kLoading);
-@@ -7506,6 +7567,9 @@ void Document::FinishedParsing() {
+@@ -7508,6 +7569,9 @@ void Document::FinishedParsing() {
      }
  
      frame->Loader().FinishedParsing();
