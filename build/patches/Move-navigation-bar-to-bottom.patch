@@ -69,7 +69,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../suggestions/AutocompleteCoordinator.java  | 16 +++-
  .../suggestions/AutocompleteMediator.java     |  7 +-
  .../DropdownItemViewInfoListManager.java      | 15 +++-
- .../OmniboxSuggestionsDropdown.java           | 28 ++++++-
+ .../OmniboxSuggestionsDropdown.java           | 30 +++++--
  .../OmniboxSuggestionsDropdownEmbedder.java   |  9 +++
  .../strings/android_chrome_strings.grd        |  6 ++
  chrome/browser/ui/android/toolbar/BUILD.gn    |  1 +
@@ -88,7 +88,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../accessibility/AccessibilitySettings.java  | 16 ++++
  .../AccessibilitySettingsDelegate.java        |  6 ++
  .../render_widget_host_view_android.cc        |  3 +
- 76 files changed, 899 insertions(+), 64 deletions(-)
+ 76 files changed, 900 insertions(+), 65 deletions(-)
 
 diff --git a/cc/base/features.cc b/cc/base/features.cc
 --- a/cc/base/features.cc
@@ -2265,12 +2265,13 @@ diff --git a/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/brow
                  TimingMetric metric = OmniboxMetrics.recordSuggestionListMeasureTime()) {
              OmniboxAlignment omniboxAlignment = mEmbedder.getCurrentAlignment();
 -            maybeUpdateLayoutParams(omniboxAlignment.top);
+-            boolean useAlignmentSpecifiedHeight = OmniboxFeatures.omniboxConsumesImeInsets();
 +            int top = omniboxAlignment.top;
 +            if (ChromeFeatureList.sMoveTopToolbarToBottom.isEnabled()) {
 +                top = 0;
 +            }
 +            maybeUpdateLayoutParams(top);
-             boolean useAlignmentSpecifiedHeight = OmniboxFeatures.omniboxConsumesImeInsets();
++            boolean useAlignmentSpecifiedHeight = false;
              int availableViewportHeight = useAlignmentSpecifiedHeight
                      ? omniboxAlignment.height
 -                    : calculateAvailableViewportHeight() - omniboxAlignment.top;
@@ -2663,7 +2664,7 @@ diff --git a/components/browser_ui/accessibility/android/java/res/xml/accessibil
          android:key="captions"
          android:title="@string/accessibility_captions_title"/>
  
-+    <org.chromium.components.browser_ui.settings.ChromeBaseCheckBoxPreference
++    <org.chromium.components.browser_ui.settings.ChromeSwitchPreference
 +        android:key="move_toolbar_bottom"
 +        android:summary="@string/move_toolbar_bottom_summary"
 +        android:title="@string/move_toolbar_bottom_title" />
@@ -2671,7 +2672,7 @@ diff --git a/components/browser_ui/accessibility/android/java/res/xml/accessibil
 diff --git a/components/browser_ui/accessibility/android/java/src/org/chromium/components/browser_ui/accessibility/AccessibilitySettings.java b/components/browser_ui/accessibility/android/java/src/org/chromium/components/browser_ui/accessibility/AccessibilitySettings.java
 --- a/components/browser_ui/accessibility/android/java/src/org/chromium/components/browser_ui/accessibility/AccessibilitySettings.java
 +++ b/components/browser_ui/accessibility/android/java/src/org/chromium/components/browser_ui/accessibility/AccessibilitySettings.java
-@@ -36,6 +36,7 @@ public class AccessibilitySettings extends PreferenceFragmentCompat
+@@ -35,6 +35,7 @@ public class AccessibilitySettings extends PreferenceFragmentCompat
  
      private BooleanPreferenceDelegate mForceTabletUIDelegate;
      static final String PREF_FORCE_TABLET_UI = "force_tablet_ui";
@@ -2679,7 +2680,7 @@ diff --git a/components/browser_ui/accessibility/android/java/src/org/chromium/c
      private TextScalePreference mTextScalePref;
      private PageZoomPreference mPageZoomDefaultZoomPref;
      private ChromeSwitchPreference mPageZoomAlwaysShowPref;
-@@ -45,6 +46,7 @@ public class AccessibilitySettings extends PreferenceFragmentCompat
+@@ -44,6 +45,7 @@ public class AccessibilitySettings extends PreferenceFragmentCompat
      private BooleanPreferenceDelegate mReaderForAccessibilityDelegate;
      private BooleanPreferenceDelegate mAccessibilityTabSwitcherDelegate;
      private double mPageZoomLatestDefaultZoomPrefValue;
@@ -2687,7 +2688,7 @@ diff --git a/components/browser_ui/accessibility/android/java/src/org/chromium/c
  
      private FontSizePrefs mFontSizePrefs;
      private FontSizePrefsObserver mFontSizePrefsObserver = new FontSizePrefsObserver() {
-@@ -64,6 +66,10 @@ public class AccessibilitySettings extends PreferenceFragmentCompat
+@@ -63,6 +65,10 @@ public class AccessibilitySettings extends PreferenceFragmentCompat
          mFontSizePrefs = FontSizePrefs.getInstance(delegate.getBrowserContextHandle());
      }
  
@@ -2698,12 +2699,12 @@ diff --git a/components/browser_ui/accessibility/android/java/src/org/chromium/c
      @Override
      public void onActivityCreated(Bundle savedInstanceState) {
          super.onActivityCreated(savedInstanceState);
-@@ -131,6 +137,12 @@ public class AccessibilitySettings extends PreferenceFragmentCompat
+@@ -130,6 +136,12 @@ public class AccessibilitySettings extends PreferenceFragmentCompat
              getPreferenceScreen().removePreference(accessibilityTabSwitcherPref);
          }
  
-+        ChromeBaseCheckBoxPreference mMoveToolbarToBottomPref =
-+                (ChromeBaseCheckBoxPreference) findPreference(PREF_MOVE_TOOLBAR_TO_BOTTOM);
++        ChromeSwitchPreference mMoveToolbarToBottomPref =
++                (ChromeSwitchPreference) findPreference(PREF_MOVE_TOOLBAR_TO_BOTTOM);
 +        mMoveTopToolbarToBottomDelegate = mDelegate.getMoveTopToolbarToBottomDelegate();
 +        mMoveToolbarToBottomPref.setChecked(mMoveTopToolbarToBottomDelegate.isEnabled());
 +        mMoveToolbarToBottomPref.setOnPreferenceChangeListener(this);
@@ -2711,7 +2712,7 @@ diff --git a/components/browser_ui/accessibility/android/java/src/org/chromium/c
          Preference captions = findPreference(PREF_CAPTIONS);
          captions.setOnPreferenceClickListener(preference -> {
              Intent intent = new Intent(Settings.ACTION_CAPTIONING_SETTINGS);
-@@ -190,7 +202,11 @@ public class AccessibilitySettings extends PreferenceFragmentCompat
+@@ -189,7 +201,11 @@ public class AccessibilitySettings extends PreferenceFragmentCompat
                      mDelegate.getBrowserContextHandle(), (Integer) newValue);
          } else if (PREF_PAGE_ZOOM_ALWAYS_SHOW.equals(preference.getKey())) {
              PageZoomUtils.setShouldAlwaysShowZoomMenuItem((Boolean) newValue);
