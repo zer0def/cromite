@@ -251,7 +251,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedAct
  import org.chromium.chrome.browser.IntentHandler.IntentHandlerDelegate;
  import org.chromium.chrome.browser.IntentHandler.TabOpenType;
  import org.chromium.chrome.browser.accessibility_tab_switcher.OverviewListLayout;
-@@ -580,9 +584,14 @@ public class ChromeTabbedActivity extends ChromeActivity<ChromeActivityComponent
+@@ -579,9 +583,14 @@ public class ChromeTabbedActivity extends ChromeActivity<ChromeActivityComponent
              mTabModelOrchestrator.onNativeLibraryReady(getTabContentManager());
  
              // For saving non-incognito tab closures for Recent Tabs.
@@ -269,7 +269,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedAct
              // Defer initialization of this helper so it triggers after TabModelFilter
              // observers.
              UndoRefocusHelper.initialize(
-@@ -1929,8 +1938,9 @@ public class ChromeTabbedActivity extends ChromeActivity<ChromeActivityComponent
+@@ -1928,8 +1937,9 @@ public class ChromeTabbedActivity extends ChromeActivity<ChromeActivityComponent
          Bundle savedInstanceState = getSavedInstanceState();
  
          // We determine the model as soon as possible so every systems get initialized coherently.
@@ -1856,7 +1856,7 @@ diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chro
        </message>
 +      <!-- always incognito -->
 +      <message name="IDS_INCOGNITO_SETTINGS_TITLE" desc="Title for incognito mode settings">
-+        Incognito mode
++        Always incognito mode
 +      </message>
 +      <message name="IDS_INCOGNITO_SETTINGS_SUMMARY" desc="Summary for incognito mode settings">
 +        Incognito navigation settings
