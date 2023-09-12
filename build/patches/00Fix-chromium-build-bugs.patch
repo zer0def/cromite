@@ -21,10 +21,11 @@ Subject: Fix chromium build bugs
  .../core/browser/webdata/autofill_table.cc      | 12 ++++++------
  .../omnibox/browser/omnibox_field_trial.cc      |  4 ++--
  .../phishing_image_embedder.cc                  | 14 +++-----------
+ content/browser/browser_interface_binders.cc    |  1 +
  crypto/BUILD.gn                                 |  1 +
  net/BUILD.gn                                    |  1 +
  third_party/libevent/BUILD.gn                   |  2 ++
- 21 files changed, 38 insertions(+), 51 deletions(-)
+ 22 files changed, 39 insertions(+), 51 deletions(-)
 
 diff --git a/android_webview/system_webview_bundle.gni b/android_webview/system_webview_bundle.gni
 --- a/android_webview/system_webview_bundle.gni
@@ -276,7 +277,7 @@ diff --git a/components/autofill/core/browser/ui/suggestion_selection.cc b/compo
 diff --git a/components/autofill/core/browser/webdata/autofill_table.cc b/components/autofill/core/browser/webdata/autofill_table.cc
 --- a/components/autofill/core/browser/webdata/autofill_table.cc
 +++ b/components/autofill/core/browser/webdata/autofill_table.cc
-@@ -413,12 +413,12 @@ void InsertBuilder(sql::Database* db,
+@@ -412,12 +412,12 @@ void InsertBuilder(sql::Database* db,
  }
  
  // Renames the table `from` into `to` and returns true if successful.
@@ -336,6 +337,17 @@ diff --git a/components/safe_browsing/content/renderer/phishing_classifier/phish
  }
  
  void PhishingImageEmbedder::CancelPendingImageEmbedding() {
+diff --git a/content/browser/browser_interface_binders.cc b/content/browser/browser_interface_binders.cc
+--- a/content/browser/browser_interface_binders.cc
++++ b/content/browser/browser_interface_binders.cc
+@@ -350,6 +350,7 @@ void BindDateTimeChooserForFrame(
+ void BindTextSuggestionHostForFrame(
+     RenderFrameHost* host,
+     mojo::PendingReceiver<blink::mojom::TextSuggestionHost> receiver) {
++  if ((true)) return;
+   auto* view = static_cast<RenderWidgetHostViewAndroid*>(host->GetView());
+   if (!view || !view->text_suggestion_host())
+     return;
 diff --git a/crypto/BUILD.gn b/crypto/BUILD.gn
 --- a/crypto/BUILD.gn
 +++ b/crypto/BUILD.gn
