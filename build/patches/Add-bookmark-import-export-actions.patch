@@ -12,6 +12,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 ---
  chrome/android/java/AndroidManifest.xml       |   1 -
  .../java/res/menu/bookmark_toolbar_menu.xml   |  14 +
+ .../menu/bookmark_toolbar_menu_improved.xml   |  14 +
  .../browser/TabbedModeTabDelegateFactory.java |   5 +-
  .../app/bookmarks/BookmarkActivity.java       |  32 ++
  .../browser/bookmarks/BookmarkBridge.java     | 278 +++++++++++++++++
@@ -51,7 +52,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../select_file_dialog_android.cc             |   6 +
  ui/shell_dialogs/select_file_dialog_android.h |   2 +
  ui/shell_dialogs/select_file_dialog_win.cc    |   5 +
- 41 files changed, 901 insertions(+), 29 deletions(-)
+ 42 files changed, 915 insertions(+), 29 deletions(-)
 
 diff --git a/chrome/android/java/AndroidManifest.xml b/chrome/android/java/AndroidManifest.xml
 --- a/chrome/android/java/AndroidManifest.xml
@@ -69,6 +70,30 @@ diff --git a/chrome/android/java/res/menu/bookmark_toolbar_menu.xml b/chrome/and
 +++ b/chrome/android/java/res/menu/bookmark_toolbar_menu.xml
 @@ -23,6 +23,20 @@ found in the LICENSE file.
              android:visible="false"
+             app:showAsAction="ifRoom"
+             app:iconTint="@color/default_icon_color_secondary_tint_list" />
++        <item
++            android:id="@+id/import_menu_id"
++            android:icon="@drawable/ic_folder_blue_24dp"
++            android:title="@string/import_bookmarks"
++            android:visible="true"
++            app:showAsAction="ifRoom"
++            app:iconTint="@color/default_icon_color_tint_list" />
++        <item
++            android:id="@+id/export_menu_id"
++            android:icon="@drawable/ic_file_download_white_24dp"
++            android:title="@string/export_bookmarks"
++            android:visible="true"
++            app:showAsAction="ifRoom"
++            app:iconTint="@color/default_icon_color_tint_list" />
+         <item
+             android:id="@+id/close_menu_id"
+             android:icon="@drawable/btn_close"
+diff --git a/chrome/android/java/res/menu/bookmark_toolbar_menu_improved.xml b/chrome/android/java/res/menu/bookmark_toolbar_menu_improved.xml
+--- a/chrome/android/java/res/menu/bookmark_toolbar_menu_improved.xml
++++ b/chrome/android/java/res/menu/bookmark_toolbar_menu_improved.xml
+@@ -49,6 +49,20 @@ found in the LICENSE file.
+             android:title="@string/create_new_folder"
              app:showAsAction="ifRoom"
              app:iconTint="@color/default_icon_color_secondary_tint_list" />
 +        <item

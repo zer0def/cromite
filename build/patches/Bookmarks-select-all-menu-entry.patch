@@ -5,15 +5,33 @@ Subject: Bookmarks select all menu entry
 License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 ---
  .../java/res/menu/bookmark_toolbar_menu.xml       |  7 +++++++
+ .../res/menu/bookmark_toolbar_menu_improved.xml   |  7 +++++++
  .../chrome/browser/bookmarks/BookmarkToolbar.java | 15 +++++++++++++++
  .../ui/android/strings/android_chrome_strings.grd |  3 +++
- 3 files changed, 25 insertions(+)
+ 4 files changed, 32 insertions(+)
 
 diff --git a/chrome/android/java/res/menu/bookmark_toolbar_menu.xml b/chrome/android/java/res/menu/bookmark_toolbar_menu.xml
 --- a/chrome/android/java/res/menu/bookmark_toolbar_menu.xml
 +++ b/chrome/android/java/res/menu/bookmark_toolbar_menu.xml
 @@ -23,6 +23,13 @@ found in the LICENSE file.
              android:visible="false"
+             app:showAsAction="ifRoom"
+             app:iconTint="@color/default_icon_color_secondary_tint_list" />
++        <item
++            android:id="@+id/select_all_menu_id"
++            android:icon="@drawable/ic_done_blue"
++            android:title="@string/select_all_bookmarks"
++            android:visible="true"
++            app:showAsAction="ifRoom"
++            app:iconTint="@color/default_icon_color_tint_list" />
+         <item
+             android:id="@+id/import_menu_id"
+             android:icon="@drawable/ic_folder_blue_24dp"
+diff --git a/chrome/android/java/res/menu/bookmark_toolbar_menu_improved.xml b/chrome/android/java/res/menu/bookmark_toolbar_menu_improved.xml
+--- a/chrome/android/java/res/menu/bookmark_toolbar_menu_improved.xml
++++ b/chrome/android/java/res/menu/bookmark_toolbar_menu_improved.xml
+@@ -49,6 +49,13 @@ found in the LICENSE file.
+             android:title="@string/create_new_folder"
              app:showAsAction="ifRoom"
              app:iconTint="@color/default_icon_color_secondary_tint_list" />
 +        <item
