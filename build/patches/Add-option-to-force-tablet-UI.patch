@@ -12,11 +12,11 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../toolbar/top/ToolbarControlContainer.java  |  5 ++---
  components/BUILD.gn                           |  6 +++---
  .../res/xml/accessibility_preferences.xml     |  5 +++++
- .../accessibility/AccessibilitySettings.java  | 11 +++++++++++
+ .../accessibility/AccessibilitySettings.java  | 10 ++++++++++
  .../AccessibilitySettingsDelegate.java        |  2 ++
  ui/android/BUILD.gn                           |  2 ++
  .../chromium/ui/base/DeviceFormFactor.java    |  5 +++++
- 12 files changed, 58 insertions(+), 7 deletions(-)
+ 12 files changed, 57 insertions(+), 7 deletions(-)
 
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/ChromeAccessibilitySettingsDelegate.java b/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/ChromeAccessibilitySettingsDelegate.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/ChromeAccessibilitySettingsDelegate.java
@@ -149,7 +149,7 @@ diff --git a/components/browser_ui/accessibility/android/java/res/xml/accessibil
          android:summary="@string/accessibility_tab_switcher_summary"
          android:title="@string/accessibility_tab_switcher_title" />
  
-+    <org.chromium.components.browser_ui.settings.ChromeBaseCheckBoxPreference
++    <org.chromium.components.browser_ui.settings.ChromeSwitchPreference
 +        android:key="force_tablet_ui"
 +        android:summary="@string/force_tablet_ui_summary"
 +        android:title="@string/force_tablet_ui_title" />
@@ -160,15 +160,7 @@ diff --git a/components/browser_ui/accessibility/android/java/res/xml/accessibil
 diff --git a/components/browser_ui/accessibility/android/java/src/org/chromium/components/browser_ui/accessibility/AccessibilitySettings.java b/components/browser_ui/accessibility/android/java/src/org/chromium/components/browser_ui/accessibility/AccessibilitySettings.java
 --- a/components/browser_ui/accessibility/android/java/src/org/chromium/components/browser_ui/accessibility/AccessibilitySettings.java
 +++ b/components/browser_ui/accessibility/android/java/src/org/chromium/components/browser_ui/accessibility/AccessibilitySettings.java
-@@ -14,6 +14,7 @@ import androidx.preference.PreferenceFragmentCompat;
- import org.chromium.base.ContextUtils;
- import org.chromium.components.browser_ui.accessibility.AccessibilitySettingsDelegate.BooleanPreferenceDelegate;
- import org.chromium.components.browser_ui.accessibility.FontSizePrefs.FontSizePrefsObserver;
-+import org.chromium.components.browser_ui.settings.ChromeBaseCheckBoxPreference;
- import org.chromium.components.browser_ui.settings.ChromeSwitchPreference;
- import org.chromium.components.browser_ui.settings.CustomDividerFragment;
- import org.chromium.components.browser_ui.settings.SettingsUtils;
-@@ -30,6 +31,8 @@ public class AccessibilitySettings extends PreferenceFragmentCompat
+@@ -30,6 +30,8 @@ public class AccessibilitySettings extends PreferenceFragmentCompat
      public static final String PREF_READER_FOR_ACCESSIBILITY = "reader_for_accessibility";
      public static final String PREF_CAPTIONS = "captions";
  
@@ -177,12 +169,12 @@ diff --git a/components/browser_ui/accessibility/android/java/src/org/chromium/c
      private TextScalePreference mTextScalePref;
      private PageZoomPreference mPageZoomDefaultZoomPref;
      private ChromeSwitchPreference mPageZoomAlwaysShowPref;
-@@ -109,6 +112,12 @@ public class AccessibilitySettings extends PreferenceFragmentCompat
+@@ -109,6 +111,12 @@ public class AccessibilitySettings extends PreferenceFragmentCompat
              getPreferenceScreen().removePreference(readerForAccessibilityPref);
          }
  
-+        ChromeBaseCheckBoxPreference forceTabletUiPref =
-+                (ChromeBaseCheckBoxPreference) findPreference(PREF_FORCE_TABLET_UI);
++        ChromeSwitchPreference forceTabletUiPref =
++                (ChromeSwitchPreference) findPreference(PREF_FORCE_TABLET_UI);
 +        mForceTabletUIDelegate = mDelegate.getForceTabletUIDelegate();
 +        forceTabletUiPref.setChecked(mForceTabletUIDelegate.isEnabled());
 +        forceTabletUiPref.setOnPreferenceChangeListener(this);
@@ -190,7 +182,7 @@ diff --git a/components/browser_ui/accessibility/android/java/src/org/chromium/c
          ChromeSwitchPreference accessibilityTabSwitcherPref =
                  (ChromeSwitchPreference) findPreference(
                          AccessibilityConstants.ACCESSIBILITY_TAB_SWITCHER);
-@@ -165,6 +174,8 @@ public class AccessibilitySettings extends PreferenceFragmentCompat
+@@ -165,6 +173,8 @@ public class AccessibilitySettings extends PreferenceFragmentCompat
              mFontSizePrefs.setUserFontScaleFactor((Float) newValue);
          } else if (PREF_FORCE_ENABLE_ZOOM.equals(preference.getKey())) {
              mFontSizePrefs.setForceEnableZoomFromUser((Boolean) newValue);
