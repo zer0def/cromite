@@ -279,7 +279,7 @@ diff --git a/components/browser_ui/accessibility/android/java/res/xml/accessibil
 diff --git a/components/browser_ui/accessibility/android/java/src/org/chromium/components/browser_ui/accessibility/AccessibilitySettings.java b/components/browser_ui/accessibility/android/java/src/org/chromium/components/browser_ui/accessibility/AccessibilitySettings.java
 --- a/components/browser_ui/accessibility/android/java/src/org/chromium/components/browser_ui/accessibility/AccessibilitySettings.java
 +++ b/components/browser_ui/accessibility/android/java/src/org/chromium/components/browser_ui/accessibility/AccessibilitySettings.java
-@@ -37,6 +37,7 @@ public class AccessibilitySettings extends PreferenceFragmentCompat
+@@ -36,6 +36,7 @@ public class AccessibilitySettings extends PreferenceFragmentCompat
      private BooleanPreferenceDelegate mForceTabletUIDelegate;
      static final String PREF_FORCE_TABLET_UI = "force_tablet_ui";
      static final String PREF_MOVE_TOOLBAR_TO_BOTTOM = "move_toolbar_bottom";
@@ -287,7 +287,7 @@ diff --git a/components/browser_ui/accessibility/android/java/src/org/chromium/c
      private TextScalePreference mTextScalePref;
      private PageZoomPreference mPageZoomDefaultZoomPref;
      private ChromeSwitchPreference mPageZoomAlwaysShowPref;
-@@ -47,6 +48,7 @@ public class AccessibilitySettings extends PreferenceFragmentCompat
+@@ -46,6 +47,7 @@ public class AccessibilitySettings extends PreferenceFragmentCompat
      private BooleanPreferenceDelegate mAccessibilityTabSwitcherDelegate;
      private double mPageZoomLatestDefaultZoomPrefValue;
      private BooleanPreferenceDelegate mMoveTopToolbarToBottomDelegate;
@@ -295,7 +295,7 @@ diff --git a/components/browser_ui/accessibility/android/java/src/org/chromium/c
  
      private FontSizePrefs mFontSizePrefs;
      private FontSizePrefsObserver mFontSizePrefsObserver = new FontSizePrefsObserver() {
-@@ -143,6 +145,12 @@ public class AccessibilitySettings extends PreferenceFragmentCompat
+@@ -142,6 +144,12 @@ public class AccessibilitySettings extends PreferenceFragmentCompat
          mMoveToolbarToBottomPref.setChecked(mMoveTopToolbarToBottomDelegate.isEnabled());
          mMoveToolbarToBottomPref.setOnPreferenceChangeListener(this);
  
@@ -308,7 +308,7 @@ diff --git a/components/browser_ui/accessibility/android/java/src/org/chromium/c
          Preference captions = findPreference(PREF_CAPTIONS);
          captions.setOnPreferenceClickListener(preference -> {
              Intent intent = new Intent(Settings.ACTION_CAPTIONING_SETTINGS);
-@@ -205,6 +213,9 @@ public class AccessibilitySettings extends PreferenceFragmentCompat
+@@ -204,6 +212,9 @@ public class AccessibilitySettings extends PreferenceFragmentCompat
          } else if (PREF_MOVE_TOOLBAR_TO_BOTTOM.equals(preference.getKey())) {
              mMoveTopToolbarToBottomDelegate.setEnabled((Boolean) newValue);
              mDelegate.requestRestart(getActivity());
