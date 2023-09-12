@@ -39,13 +39,14 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../settings/settings_menu/settings_menu.html |   5 ++-
  .../strings/android_chrome_strings.grd        |   2 +-
  chrome/common/url_constants.cc                |   4 +-
+ .../strings/android/browser_ui_strings.grd    |   2 +-
  .../drawable-hdpi/fre_product_logo.png        | Bin 3912 -> 22295 bytes
  .../drawable-mdpi/fre_product_logo.png        | Bin 2490 -> 12171 bytes
  .../drawable-xhdpi/fre_product_logo.png       | Bin 5151 -> 34576 bytes
  .../drawable-xxhdpi/fre_product_logo.png      | Bin 7720 -> 60959 bytes
  .../drawable-xxxhdpi/fre_product_logo.png     | Bin 10740 -> 93273 bytes
  tools/grit/grit/grd_reader.py                 |  35 +++++++++++++++++
- 41 files changed, 101 insertions(+), 55 deletions(-)
+ 42 files changed, 102 insertions(+), 56 deletions(-)
 
 diff --git a/build/BUILD.gn b/build/BUILD.gn
 --- a/build/BUILD.gn
@@ -13215,6 +13216,18 @@ diff --git a/chrome/common/url_constants.cc b/chrome/common/url_constants.cc
  
  const char kContentSettingsExceptionsLearnMoreURL[] =
      "https://support.google.com/chrome/?p=settings_manage_exceptions";
+diff --git a/components/browser_ui/strings/android/browser_ui_strings.grd b/components/browser_ui/strings/android/browser_ui_strings.grd
+--- a/components/browser_ui/strings/android/browser_ui_strings.grd
++++ b/components/browser_ui/strings/android/browser_ui_strings.grd
+@@ -978,7 +978,7 @@
+ 
+       <!-- Accessibility preferences -->
+       <message name="IDS_PREFS_ACCESSIBILITY" desc="Title of Accessibility settings, which allows the user to change webpage font sizes. [CHAR_LIMIT=32]">
+-        Accessibility
++        Accessibility and UI
+       </message>
+       <message name="IDS_FONT_SIZE" desc="Title for font size preference.">
+         Text scaling
 diff --git a/components/browser_ui/styles/android/java/res_chromium/drawable-hdpi/fre_product_logo.png b/components/browser_ui/styles/android/java/res_chromium/drawable-hdpi/fre_product_logo.png
 index 2353496bafc8f8559a8fcbf6d609302327dc820c..9d123a8918eea5e93f6139534d7dc01a88c4278f 100644
 GIT binary patch
