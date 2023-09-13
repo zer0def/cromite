@@ -31,14 +31,8 @@ if (target_os == "android") {
     symbol_level = 1
     strip_debug_info = false
     generate_linker_map = false
-
-    # since is_cfi require use_thin_lto
-    # but not work in debug mode
-    is_cfi = false # disable it
-    use_cfi_cast = false # disable it
   } else {
     generate_linker_map = true
-    use_relative_vtables_abi = false
   }
 }
 
