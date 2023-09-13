@@ -3,6 +3,7 @@ Date: Fri, 21 Apr 2023 13:10:20 +0000
 Subject: Add a flag to disable GamePad API
 
 Adds restrict-gamepad-access flag (default active) to disable GamePad API.
+License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
  chrome/browser/flag-metadata.json                           | 4 ++--
  chrome/browser/flag_descriptions.cc                         | 2 +-
@@ -13,7 +14,7 @@ Adds restrict-gamepad-access flag (default active) to disable GamePad API.
 diff --git a/chrome/browser/flag-metadata.json b/chrome/browser/flag-metadata.json
 --- a/chrome/browser/flag-metadata.json
 +++ b/chrome/browser/flag-metadata.json
-@@ -6845,9 +6845,9 @@
+@@ -7094,9 +7094,9 @@
      "expiry_milestone": 117
    },
    {
@@ -28,7 +29,7 @@ diff --git a/chrome/browser/flag-metadata.json b/chrome/browser/flag-metadata.js
 diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descriptions.cc
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -2984,7 +2984,7 @@ const char kReduceAcceptLanguageDescription[] =
+@@ -3038,7 +3038,7 @@ const char kReduceAcceptLanguageDescription[] =
  
  const char kRestrictGamepadAccessName[] = "Restrict gamepad access";
  const char kRestrictGamepadAccessDescription[] =
@@ -41,7 +42,7 @@ diff --git a/device/gamepad/public/cpp/gamepad_features.cc b/device/gamepad/publ
 --- a/device/gamepad/public/cpp/gamepad_features.cc
 +++ b/device/gamepad/public/cpp/gamepad_features.cc
 @@ -27,8 +27,8 @@ BASE_FEATURE(kEnableWindowsGamingInputDataFetcher,
-              base::FEATURE_DISABLED_BY_DEFAULT);
+              base::FEATURE_ENABLED_BY_DEFAULT);
  
  BASE_FEATURE(kRestrictGamepadAccess,
 -             "RestrictGamepadAccess",

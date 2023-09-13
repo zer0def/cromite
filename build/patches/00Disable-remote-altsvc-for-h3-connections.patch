@@ -3,6 +3,8 @@ Date: Tue, 1 Aug 2023 13:56:42 +0000
 Subject: Disable remote altsvc for h3 connections
 
 and only sets the use of port 443
+
+License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
  net/http/http_server_properties_manager.cc     | 2 +-
  net/http/http_stream_factory_job_controller.cc | 9 ++-------
@@ -50,7 +52,7 @@ diff --git a/net/http/http_stream_factory_job_controller.cc b/net/http/http_stre
 diff --git a/net/quic/quic_context.h b/net/quic/quic_context.h
 --- a/net/quic/quic_context.h
 +++ b/net/quic/quic_context.h
-@@ -177,7 +177,7 @@ struct NET_EXPORT QuicParams {
+@@ -179,7 +179,7 @@ struct NET_EXPORT QuicParams {
    bool allow_server_migration = false;
    // If true, allows QUIC to use alternative services with a different
    // hostname from the origin.

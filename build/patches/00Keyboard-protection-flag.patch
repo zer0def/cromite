@@ -5,6 +5,8 @@ Subject: Keyboard protection flag
 Hides user preference on the system keyboard by setting the standard
 eng layout and removing the layout information from the javascript
 keyboard events.
+
+License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
  chrome/browser/about_flags.cc                 |  3 +
  chrome/browser/flag_descriptions.cc           |  6 ++
@@ -13,16 +15,15 @@ keyboard events.
  .../renderer/core/events/keyboard_event.h     |  3 +
  ui/base/ui_base_features.cc                   |  8 +++
  ui/base/ui_base_features.h                    |  2 +
- ui/events/event.cc                            |  3 +-
  .../dom/dom_keyboard_layout_map_win.cc        | 13 ++++
  .../keycodes/keyboard_code_conversion.cc      | 10 ++-
  ui/events/keycodes/keyboard_code_conversion.h |  2 +-
- 11 files changed, 115 insertions(+), 4 deletions(-)
+ 10 files changed, 113 insertions(+), 3 deletions(-)
 
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -5080,6 +5080,9 @@ const FeatureEntry kFeatureEntries[] = {
+@@ -5140,6 +5140,9 @@ const FeatureEntry kFeatureEntries[] = {
      {"system-keyboard-lock", flag_descriptions::kSystemKeyboardLockName,
       flag_descriptions::kSystemKeyboardLockDescription, kOsDesktop,
       FEATURE_VALUE_TYPE(features::kSystemKeyboardLock)},
@@ -35,7 +36,7 @@ diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descriptions.cc
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -3245,6 +3245,12 @@ const char kSystemKeyboardLockDescription[] =
+@@ -3311,6 +3311,12 @@ const char kSystemKeyboardLockDescription[] =
      "keyboard shortcuts and have the events routed directly to the website "
      "when in fullscreen mode.";
  
@@ -51,7 +52,7 @@ diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descripti
 diff --git a/chrome/browser/flag_descriptions.h b/chrome/browser/flag_descriptions.h
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -1836,6 +1836,9 @@ extern const char kSuppressToolbarCapturesDescription[];
+@@ -1888,6 +1888,9 @@ extern const char kSuppressToolbarCapturesDescription[];
  extern const char kSystemKeyboardLockName[];
  extern const char kSystemKeyboardLockDescription[];
  
@@ -185,7 +186,7 @@ diff --git a/third_party/blink/renderer/core/events/keyboard_event.h b/third_par
 diff --git a/ui/base/ui_base_features.cc b/ui/base/ui_base_features.cc
 --- a/ui/base/ui_base_features.cc
 +++ b/ui/base/ui_base_features.cc
-@@ -174,6 +174,14 @@ BASE_FEATURE(kSystemKeyboardLock,
+@@ -180,6 +180,14 @@ BASE_FEATURE(kSystemKeyboardLock,
               "SystemKeyboardLock",
               base::FEATURE_ENABLED_BY_DEFAULT);
  
@@ -212,20 +213,6 @@ diff --git a/ui/base/ui_base_features.h b/ui/base/ui_base_features.h
  COMPONENT_EXPORT(UI_BASE_FEATURES)
  BASE_DECLARE_FEATURE(kUiCompositorScrollWithLayers);
  
-diff --git a/ui/events/event.cc b/ui/events/event.cc
---- a/ui/events/event.cc
-+++ b/ui/events/event.cc
-@@ -1096,8 +1096,9 @@ char16_t KeyEvent::GetCharacter() const {
-         // consult the keyboard layout to retrieve the shifted character but we
-         // only supported US layout for this case in the past, so we only
-         // support this behavior.
-+        int need_shit;
-         if (char16_t maybe_character = DomCodeToUsLayoutCharacter(
--                UsLayoutDomKeyToDomCode(key_), EF_SHIFT_DOWN);
-+                UsLayoutDomKeyToDomCode(key_, &need_shit), EF_SHIFT_DOWN);
-             maybe_character) {
-           shifted_character = maybe_character;
-         }
 diff --git a/ui/events/keycodes/dom/dom_keyboard_layout_map_win.cc b/ui/events/keycodes/dom/dom_keyboard_layout_map_win.cc
 --- a/ui/events/keycodes/dom/dom_keyboard_layout_map_win.cc
 +++ b/ui/events/keycodes/dom/dom_keyboard_layout_map_win.cc
@@ -259,7 +246,7 @@ diff --git a/ui/events/keycodes/dom/dom_keyboard_layout_map_win.cc b/ui/events/k
 diff --git a/ui/events/keycodes/keyboard_code_conversion.cc b/ui/events/keycodes/keyboard_code_conversion.cc
 --- a/ui/events/keycodes/keyboard_code_conversion.cc
 +++ b/ui/events/keycodes/keyboard_code_conversion.cc
-@@ -216,16 +216,22 @@ int ModifierDomKeyToEventFlag(DomKey key) {
+@@ -293,16 +293,22 @@ int ModifierDomKeyToEventFlag(DomKey key) {
    //   DomKey::SYMBOL_LOCK
  }
  
@@ -287,7 +274,7 @@ diff --git a/ui/events/keycodes/keyboard_code_conversion.cc b/ui/events/keycodes
 diff --git a/ui/events/keycodes/keyboard_code_conversion.h b/ui/events/keycodes/keyboard_code_conversion.h
 --- a/ui/events/keycodes/keyboard_code_conversion.h
 +++ b/ui/events/keycodes/keyboard_code_conversion.h
-@@ -99,7 +99,7 @@ EVENTS_BASE_EXPORT int ModifierDomKeyToEventFlag(DomKey key);
+@@ -111,7 +111,7 @@ EVENTS_BASE_EXPORT int ModifierDomKeyToEventFlag(DomKey key);
  
  // Returns the physical DOM code along with a corresponding non-located
  // Windows-based key_code.

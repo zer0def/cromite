@@ -2,6 +2,7 @@ From: uazo <uazo@users.noreply.github.com>
 Date: Tue, 14 Mar 2023 15:58:00 +0000
 Subject: WIN Disable TabHoverCard images
 
+License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
  chrome/browser/ui/ui_features.cc | 4 ----
  1 file changed, 4 deletions(-)
@@ -9,7 +10,7 @@ Subject: WIN Disable TabHoverCard images
 diff --git a/chrome/browser/ui/ui_features.cc b/chrome/browser/ui/ui_features.cc
 --- a/chrome/browser/ui/ui_features.cc
 +++ b/chrome/browser/ui/ui_features.cc
-@@ -186,11 +186,7 @@ BASE_FEATURE(kTabHoverCardImageSettings,
+@@ -203,11 +203,7 @@ BASE_FEATURE(kTabHoverCardImageSettings,
  // https://crbug.com/928954
  BASE_FEATURE(kTabHoverCardImages,
               "TabHoverCardImages",

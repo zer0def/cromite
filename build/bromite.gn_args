@@ -48,6 +48,7 @@ enable_arcore=false
 enable_openxr=false
 enable_gvr_services=false
 enable_feed_v2=false
+enable_cardboard=false
 is_high_end_android=true
 
 # Do not compile libmonochrome.so with RELR relocations

@@ -2,6 +2,7 @@ From: uazo <uazo@users.noreply.github.com>
 Date: Wed, 2 Aug 2023 15:15:48 +0000
 Subject: Do not block the build for incompatible profiles
 
+License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
  .gitignore  | 1 -
  v8/BUILD.gn | 2 +-
@@ -10,7 +11,7 @@ Subject: Do not block the build for incompatible profiles
 diff --git a/.gitignore b/.gitignore
 --- a/.gitignore
 +++ b/.gitignore
-@@ -345,7 +345,6 @@ vs-chromium-project.txt
+@@ -348,7 +348,6 @@ vs-chromium-project.txt
  /ui/surface/surface.xml
  /ui/surface/surface_gpu_tests.xml
  /ui/webui/internal
@@ -21,14 +22,14 @@ diff --git a/.gitignore b/.gitignore
 diff --git a/v8/BUILD.gn b/v8/BUILD.gn
 --- a/v8/BUILD.gn
 +++ b/v8/BUILD.gn
-@@ -2293,7 +2293,7 @@ template("run_mksnapshot") {
+@@ -2347,7 +2347,7 @@ template("run_mksnapshot") {
  
          # Replace this with --warn-about-builtin-profile-data to see the full
          # list of builtins with incompatible profiles.
 -        "--abort-on-bad-builtin-profile-data",
 +        "--warn-about-builtin-profile-data",
        ]
-     }
  
+       if (!v8_enable_builtins_profiling && v8_enable_builtins_reordering) {
 --
 2.25.1

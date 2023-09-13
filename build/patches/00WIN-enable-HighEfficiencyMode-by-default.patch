@@ -1,7 +1,8 @@
-From: Your Name <you@example.com>
+From: uazo <uazo@users.noreply.github.com>
 Date: Wed, 28 Dec 2022 15:47:58 +0000
 Subject: WIN enable HighEfficiencyMode by default
 
+License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
  components/performance_manager/user_tuning/prefs.cc | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
@@ -9,8 +10,8 @@ Subject: WIN enable HighEfficiencyMode by default
 diff --git a/components/performance_manager/user_tuning/prefs.cc b/components/performance_manager/user_tuning/prefs.cc
 --- a/components/performance_manager/user_tuning/prefs.cc
 +++ b/components/performance_manager/user_tuning/prefs.cc
-@@ -35,13 +35,13 @@ const char kManagedTabDiscardingExceptions[] =
-     "performance_tuning.tab_discarding.exceptions_managed";
+@@ -12,13 +12,13 @@
+ namespace performance_manager::user_tuning::prefs {
  
  void RegisterLocalStatePrefs(PrefRegistrySimple* registry) {
 -  registry->RegisterBooleanPref(kHighEfficiencyModeEnabled, false);

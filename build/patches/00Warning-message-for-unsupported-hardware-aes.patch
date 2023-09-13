@@ -27,7 +27,7 @@ you can remove the message by going to chrome://flags/#no-hw-aes-warning
 diff --git a/base/base_switches.cc b/base/base_switches.cc
 --- a/base/base_switches.cc
 +++ b/base/base_switches.cc
-@@ -176,6 +176,8 @@ extern const char kEnableCrashpad[] = "enable-crashpad";
+@@ -171,6 +171,8 @@ extern const char kEnableCrashpad[] = "enable-crashpad";
  
  const char kDesktopModeViewportMetaEnabled[] = "dm-viewport-meta-enabled";
  
@@ -39,7 +39,7 @@ diff --git a/base/base_switches.cc b/base/base_switches.cc
 diff --git a/base/base_switches.h b/base/base_switches.h
 --- a/base/base_switches.h
 +++ b/base/base_switches.h
-@@ -35,6 +35,7 @@ extern const char kTraceToFileName[];
+@@ -34,6 +34,7 @@ extern const char kTraceToFileName[];
  extern const char kV[];
  extern const char kVModule[];
  extern const char kWaitForDebugger[];
@@ -50,7 +50,7 @@ diff --git a/base/base_switches.h b/base/base_switches.h
 diff --git a/chrome/BUILD.gn b/chrome/BUILD.gn
 --- a/chrome/BUILD.gn
 +++ b/chrome/BUILD.gn
-@@ -452,6 +452,7 @@ if (is_win) {
+@@ -448,6 +448,7 @@ if (is_win) {
        "//components/policy:generated",
        "//content/public/app",
        "//crypto",
@@ -58,7 +58,7 @@ diff --git a/chrome/BUILD.gn b/chrome/BUILD.gn
        "//headless:headless_non_renderer",
        "//headless:headless_shell_browser_lib",
        "//net:net_resources",
-@@ -1696,6 +1697,8 @@ if (is_android) {
+@@ -1713,6 +1714,8 @@ if (is_android) {
        "//chrome/common/profiler",
        "//chrome/gpu",
        "//chrome/renderer",
@@ -97,7 +97,7 @@ diff --git a/chrome/app/chrome_main_delegate.cc b/chrome/app/chrome_main_delegat
 diff --git a/chrome/app/generated_resources.grd b/chrome/app/generated_resources.grd
 --- a/chrome/app/generated_resources.grd
 +++ b/chrome/app/generated_resources.grd
-@@ -6699,6 +6699,10 @@ Keep your key file in a safe place. You will need it to create new versions of y
+@@ -7004,6 +7004,10 @@ Keep your key file in a safe place. You will need it to create new versions of y
          You are using an unsupported feature flag: <ph name="BAD_FLAG">$1<ex>SignedHTTPExchange</ex></ph>. Stability and security will suffer.
        </message>
  
@@ -111,9 +111,9 @@ diff --git a/chrome/app/generated_resources.grd b/chrome/app/generated_resources
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -7935,6 +7935,10 @@ const FeatureEntry kFeatureEntries[] = {
-      flag_descriptions::kDevicePostureDescription, kOsAll,
-      FEATURE_VALUE_TYPE(features::kDevicePosture)},
+@@ -8093,6 +8093,10 @@ const FeatureEntry kFeatureEntries[] = {
+      flag_descriptions::kViewportSegmentsDescription, kOsAll,
+      FEATURE_VALUE_TYPE(features::kViewportSegments)},
  
 +    {"no-hw-aes-warning", flag_descriptions::kNoAESHardwareMessageName,
 +     flag_descriptions::kNoAESHardwareMessageDescription, kOsDesktop | kOsAndroid,
@@ -125,9 +125,9 @@ diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descriptions.cc
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -840,6 +840,10 @@ const char kDevicePostureName[] = "Device Posture API";
- const char kDevicePostureDescription[] =
-     "Enables Device Posture API (foldable devices)";
+@@ -882,6 +882,10 @@ const char kViewportSegmentsDescription[] =
+     "Enable the viewport segment API, giving information about the logical "
+     "segments of the device (dual screen and foldable devices)";
  
 +const char kNoAESHardwareMessageName[] = "Enable no aes warning message";
 +const char kNoAESHardwareMessageDescription[] =
@@ -139,20 +139,20 @@ diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descripti
 diff --git a/chrome/browser/flag_descriptions.h b/chrome/browser/flag_descriptions.h
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -612,6 +612,9 @@ extern const char kDeviceForceScheduledRebootDescription[];
+@@ -636,6 +636,9 @@ extern const char kDeviceForceScheduledRebootDescription[];
  extern const char kDevicePostureName[];
  extern const char kDevicePostureDescription[];
  
 +extern const char kNoAESHardwareMessageName[];
 +extern const char kNoAESHardwareMessageDescription[];
 +
- extern const char kEnablePreinstalledWebAppDuplicationFixerName[];
- extern const char kEnablePreinstalledWebAppDuplicationFixerDescription[];
+ extern const char kEnableTLS13EarlyDataName[];
+ extern const char kEnableTLS13EarlyDataDescription[];
  
 diff --git a/chrome/browser/ui/startup/bad_flags_prompt.cc b/chrome/browser/ui/startup/bad_flags_prompt.cc
 --- a/chrome/browser/ui/startup/bad_flags_prompt.cc
 +++ b/chrome/browser/ui/startup/bad_flags_prompt.cc
-@@ -221,6 +221,15 @@ void ShowBadFlagsPrompt(content::WebContents* web_contents) {
+@@ -227,6 +227,15 @@ void ShowBadFlagsPrompt(content::WebContents* web_contents) {
        return;
      }
    }
@@ -171,18 +171,18 @@ diff --git a/chrome/browser/ui/startup/bad_flags_prompt.cc b/chrome/browser/ui/s
 diff --git a/content/browser/renderer_host/render_process_host_impl.cc b/content/browser/renderer_host/render_process_host_impl.cc
 --- a/content/browser/renderer_host/render_process_host_impl.cc
 +++ b/content/browser/renderer_host/render_process_host_impl.cc
-@@ -3727,6 +3727,7 @@ void RenderProcessHostImpl::PropagateBrowserCommandLineToRenderer(
+@@ -3747,6 +3747,7 @@ void RenderProcessHostImpl::PropagateBrowserCommandLineToRenderer(
      switches::kLacrosUseChromeosProtectedAv1,
  #endif
      switches::kDesktopModeViewportMetaEnabled,
 +    switches::kNoAESHardware,
    };
-   renderer_cmd->CopySwitchesFrom(browser_cmd, kSwitchNames,
-                                  std::size(kSwitchNames));
+   renderer_cmd->CopySwitchesFrom(browser_cmd, kSwitchNames);
+ 
 diff --git a/content/public/common/content_features.cc b/content/public/common/content_features.cc
 --- a/content/public/common/content_features.cc
 +++ b/content/public/common/content_features.cc
-@@ -766,6 +766,11 @@ BASE_FEATURE(kNoStatePrefetchHoldback,
+@@ -728,6 +728,11 @@ BASE_FEATURE(kNoStatePrefetchHoldback,
               "NoStatePrefetchHoldback",
               base::FEATURE_DISABLED_BY_DEFAULT);
  
@@ -197,7 +197,7 @@ diff --git a/content/public/common/content_features.cc b/content/public/common/c
 diff --git a/content/public/common/content_features.h b/content/public/common/content_features.h
 --- a/content/public/common/content_features.h
 +++ b/content/public/common/content_features.h
-@@ -170,6 +170,7 @@ CONTENT_EXPORT BASE_DECLARE_FEATURE(kNetworkServiceInProcess);
+@@ -163,6 +163,7 @@ CONTENT_EXPORT BASE_DECLARE_FEATURE(kNetworkServiceInProcess);
  CONTENT_EXPORT BASE_DECLARE_FEATURE(kNotificationContentImage);
  CONTENT_EXPORT BASE_DECLARE_FEATURE(kNotificationTriggers);
  CONTENT_EXPORT BASE_DECLARE_FEATURE(kNoStatePrefetchHoldback);

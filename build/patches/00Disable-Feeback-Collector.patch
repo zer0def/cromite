@@ -2,6 +2,7 @@ From: uazo <uazo@users.noreply.github.com>
 Date: Sat, 22 Jul 2023 13:58:40 +0000
 Subject: Disable Feeback Collector
 
+License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
  .../browser/feedback/FeedbackCollector.java   | 27 +++----------------
  1 file changed, 3 insertions(+), 24 deletions(-)
@@ -32,7 +33,7 @@ diff --git a/chrome/browser/feedback/android/java/src/org/chromium/chrome/browse
 -                    identityManager.getPrimaryAccountInfo(ConsentLevel.SIGNIN));
 -        }
 -
--        // Sanity check in case a source is added to the wrong list.
+-        // Validation check in case a source is added to the wrong list.
 -        for (FeedbackSource source : mSynchronousSources) {
 -            assert !(source instanceof AsyncFeedbackSource);
 -        }

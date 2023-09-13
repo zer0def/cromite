@@ -1,7 +1,8 @@
-From: Your Name <you@example.com>
+From: uazo <uazo@users.noreply.github.com>
 Date: Tue, 14 Feb 2023 16:26:17 +0000
 Subject: Disable FedCm
 
+License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
  content/public/common/content_features.cc              | 10 +++++-----
  .../renderer/platform/runtime_enabled_features.json5   |  2 +-
@@ -10,7 +11,7 @@ Subject: Disable FedCm
 diff --git a/content/public/common/content_features.cc b/content/public/common/content_features.cc
 --- a/content/public/common/content_features.cc
 +++ b/content/public/common/content_features.cc
-@@ -389,7 +389,7 @@ BASE_FEATURE(kExtraSafelistedRequestHeadersForOutOfBlinkCors,
+@@ -387,7 +387,7 @@ BASE_FEATURE(kExtraSafelistedRequestHeadersForOutOfBlinkCors,
  // by the flag in RuntimeEnabledFeatures on the blink side. See also
  // the use of kSetOnlyIfOverridden in content/child/runtime_features.cc.
  // We enable it here by default to support use in origin trials.
@@ -19,7 +20,7 @@ diff --git a/content/public/common/content_features.cc b/content/public/common/c
  
  // Field trial boolean parameter which indicates whether FedCM IDP sign-out
  // is enabled.
-@@ -453,15 +453,15 @@ BASE_FEATURE(kFedCmLoginHint,
+@@ -421,15 +421,15 @@ BASE_FEATURE(kFedCmSelectiveDisclosure,
  // Enables metrics collection for signin status mismatches. Also enables
  // parsing the signin status HTTP headers.
  // kFedCmIdpSigninStatusEnabled takes precedence over this feature flag.
@@ -37,12 +38,12 @@ diff --git a/content/public/common/content_features.cc b/content/public/common/c
 -             base::FEATURE_DISABLED_BY_DEFAULT);    // on bromite
 +             base::FEATURE_ENABLED_BY_DEFAULT);     // on bromite
  
- // Enables the MDocs API in the IdentityCredential.
- BASE_FEATURE(kWebIdentityMDocs,
+ // Enables bypassing the well-known file enforcement.
+ BASE_FEATURE(kFedCmWithoutWellKnownEnforcement,
 diff --git a/third_party/blink/renderer/platform/runtime_enabled_features.json5 b/third_party/blink/renderer/platform/runtime_enabled_features.json5
 --- a/third_party/blink/renderer/platform/runtime_enabled_features.json5
 +++ b/third_party/blink/renderer/platform/runtime_enabled_features.json5
-@@ -1590,7 +1590,7 @@
+@@ -1560,7 +1560,7 @@
      {
        name: "FedCm",
        public: true,

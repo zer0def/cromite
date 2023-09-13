@@ -2,6 +2,7 @@ From: uazo <uazo@users.noreply.github.com>
 Date: Wed, 23 Aug 2023 13:49:19 +0000
 Subject: Enable Android Dynamic Performance Framework
 
+License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
  chrome/version.gni                | 2 +-
  components/viz/common/features.cc | 5 +++--
@@ -22,7 +23,7 @@ diff --git a/chrome/version.gni b/chrome/version.gni
 diff --git a/components/viz/common/features.cc b/components/viz/common/features.cc
 --- a/components/viz/common/features.cc
 +++ b/components/viz/common/features.cc
-@@ -286,9 +286,10 @@ const base::FeatureParam<double> kADPFMidFrameBoostDurationMultiplier{
+@@ -298,9 +298,10 @@ const base::FeatureParam<double> kADPFMidFrameBoostDurationMultiplier{
  
  // If enabled, Chrome includes the Renderer Main thread(s) into the
  // ADPF(Android Dynamic Performance Framework) hint session.
@@ -33,7 +34,7 @@ diff --git a/components/viz/common/features.cc b/components/viz/common/features.
 +             "EnableADPFRendererMain",           // enabled
 +             base::FEATURE_ENABLED_BY_DEFAULT);  // by default
  
- bool IsDelegatedCompositingEnabled() {
-   return base::FeatureList::IsEnabled(kDelegatedCompositing);
+ // If enabled, surface activation and draw do not block on dependencies.
+ BASE_FEATURE(kDrawImmediatelyWhenInteractive,
 --
 2.25.1
