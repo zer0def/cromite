@@ -43,7 +43,7 @@ In addition, Cromite would like to promote greater integration with other non-pr
 * disable smart search by default, allow web search from incognito mode
 * always-visible cookies, javascript and ads site settings from address bar popup
 * remove Play integration binary blobs
-* use [CFI](https://en.wikipedia.org/wiki/Control-flow_integrity) on all architectures except x86 and Windows
+* ~use [CFI](https://en.wikipedia.org/wiki/Control-flow_integrity) on all architectures except x86 and Windows~ dropped from v117 see https://github.com/uazo/cromite/discussions/292
 * enable trivial auto var init
 * disable media router and remoting by default
 * disable dynamic module loading
@@ -138,6 +138,12 @@ In addition, Cromite would like to promote greater integration with other non-pr
 * Disable PartnerCustomizations [patch](https://github.com/uazo/cromite/blob/master/build/patches/00Disable-PartnerCustomizations.patch) [#202](https://github.com/uazo/cromite/issues/202)
 * Add option to disable snapshots [patch](https://github.com/uazo/cromite/blob/master/build/patches/00Add-option-to-disable-snapshots.patch) [#201](https://github.com/uazo/cromite/issues/201)
 * Enable Android Dynamic Performance Framework on renderer [patch](https://github.com/uazo/cromite/blob/master/build/patches/00Enable-Android-Dynamic-Performance-Framework.patch) 
+
+##### from [117.0.5938.63](https://github.com/uazo/cromite/issues/293)
+* Added support for block websocket and webtrasport in AdblockPlus #254 [patch](https://github.com/uazo/cromite/blob/master/build/patches/00AdblockPlus-add-blocking-in-service-workers.patch)
+* Drop CFI support (see https://github.com/uazo/cromite/discussions/292)
+* Enabled Improved Bookmarks UI by default [patch](https://github.com/uazo/cromite/blob/master/build/patches/00Enable-ImprovedBookmarks-by-default.patch)
+* Removed Google private API from accounts.google.com [patch](https://github.com/uazo/cromite/blob/master/build/patches/00Remove-GoogleAccountsPrivateApiHost.patch)
 
 #### Windows Cromite-specific features
 
