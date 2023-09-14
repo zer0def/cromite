@@ -161,6 +161,7 @@ jobs:
           $GH release edit $VERSION-$BROMITE_SHA -t $VERSION-$BROMITE_SHA
           $GH release edit $VERSION-$BROMITE_SHA --draft=false
 
+          VERSION=$(cat ${{ env.OUTPUTFILE_ARM64 }}/RELEASE)
           docker push uazo/cromite:$VERSION-$BROMITE_SHA
           docker push uazo/cromite-build:$VERSION-$BROMITE_SHA
 
