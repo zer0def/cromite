@@ -140,7 +140,7 @@ In addition, Cromite would like to promote greater integration with other non-pr
 * Enable Android Dynamic Performance Framework on renderer [patch](https://github.com/uazo/cromite/blob/master/build/patches/00Enable-Android-Dynamic-Performance-Framework.patch) 
 
 ##### from [117.0.5938.63](https://github.com/uazo/cromite/issues/293)
-* Added support for block websocket and webtrasport in AdblockPlus #254 [patch](https://github.com/uazo/cromite/blob/master/build/patches/00AdblockPlus-add-blocking-in-service-workers.patch)
+* Added support for blocking in service workers in AdblockPlus #254 [patch](https://github.com/uazo/cromite/blob/master/build/patches/00AdblockPlus-add-blocking-in-service-workers.patch)
 * Drop CFI support (see https://github.com/uazo/cromite/discussions/292)
 * Enabled Improved Bookmarks UI by default [patch](https://github.com/uazo/cromite/blob/master/build/patches/00Enable-ImprovedBookmarks-by-default.patch)
 * Removed Google private API from accounts.google.com [patch](https://github.com/uazo/cromite/blob/master/build/patches/00Remove-GoogleAccountsPrivateApiHost.patch)
