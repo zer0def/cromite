@@ -239,7 +239,7 @@ jobs:
           gn args out/bromite/ --list >out/bromite/gn_list
           echo "::endgroup::"
 
-          autoninja -C out/bromite chrome_public_apk
+          ninja -C out/bromite chrome_public_apk
 
           cp ../../bromite/build/RELEASE out/bromite
 
@@ -267,7 +267,7 @@ jobs:
           gn args out/bromite_win/ --list >out/bromite_win/gn_list
           echo "::endgroup::"
 
-          autoninja -C out/bromite_win chrome
+          ninja -C out/bromite_win chrome
 
           cp ../../bromite/build/RELEASE out/bromite_win
 
@@ -295,7 +295,7 @@ jobs:
           gn args out/bromite_x64/ --list >out/bromite_x64/gn_list
           echo "::endgroup::"
 
-          autoninja -C out/bromite_x64 chrome_public_apk
+          ninja -C out/bromite_x64 chrome_public_apk
 
           cp ../../bromite/build/RELEASE out/bromite_x64
 
@@ -316,7 +316,7 @@ jobs:
           cd $WORKSPACE/chromium/src
           
           echo "::group::-------- generating breakpad symbols"
-          autoninja -C out/bromite minidump_stackwalk dump_syms
+          ninja -C out/bromite minidump_stackwalk dump_syms
           components/crash/content/tools/generate_breakpad_symbols.py --build-dir=out/bromite \
              --symbols-dir=out/bromite/symbols/ --binary=out/bromite/lib.unstripped/libchrome.so \
              --platform=android --clear --verbose
