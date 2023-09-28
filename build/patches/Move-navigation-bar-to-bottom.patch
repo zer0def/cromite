@@ -56,7 +56,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  chrome/browser/flag_descriptions.cc           |  4 +
  chrome/browser/flag_descriptions.h            |  3 +
  .../flags/android/cached_feature_flags.cc     | 18 +++++
- .../flags/android/chrome_feature_list.cc      |  2 +
+ .../flags/android/chrome_feature_list.cc      |  6 +-
  .../browser/flags/CachedFeatureFlags.java     | 18 +++++
  .../chrome/browser/flags/CachedFlag.java      |  6 ++
  .../browser/flags/ChromeFeatureList.java      |  5 ++
@@ -88,7 +88,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../accessibility/AccessibilitySettings.java  | 16 ++++
  .../AccessibilitySettingsDelegate.java        |  6 ++
  .../render_widget_host_view_android.cc        |  3 +
- 76 files changed, 900 insertions(+), 65 deletions(-)
+ 76 files changed, 902 insertions(+), 67 deletions(-)
 
 diff --git a/cc/base/features.cc b/cc/base/features.cc
 --- a/cc/base/features.cc
@@ -1787,6 +1787,17 @@ diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browse
      &kNotificationPermissionVariant,
      &kNotificationPermissionBottomSheet,
      &kOfflineIndicatorV2,
+@@ -870,8 +872,8 @@ BASE_FEATURE(kOmniboxCacheSuggestionResources,
+              base::FEATURE_DISABLED_BY_DEFAULT);
+ 
+ BASE_FEATURE(kOmniboxConsumesImeInsets,
+-             "OmniboxConsumesImeInsets",
+-             base::FEATURE_ENABLED_BY_DEFAULT);
++             "OmniboxConsumesImeInsets",         // disabled
++             base::FEATURE_DISABLED_BY_DEFAULT); // by default
+ 
+ BASE_FEATURE(kOmniboxNoopEditUrlSuggestionClicks,
+              "OmniboxNoopEditUrlSuggestionClicks",
 diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/CachedFeatureFlags.java b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/CachedFeatureFlags.java
 --- a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/CachedFeatureFlags.java
 +++ b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/CachedFeatureFlags.java
