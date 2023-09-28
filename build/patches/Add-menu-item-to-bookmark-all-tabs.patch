@@ -488,7 +488,7 @@ diff --git a/components/bookmarks/browser/bookmark_codec.cc b/components/bookmar
  
    if (!DecodeMetaInfo(*roots, &model_meta_info_map_))
      return false;
-@@ -510,11 +522,13 @@ void BookmarkCodec::DecodeMetaInfoHelper(
+@@ -497,11 +509,13 @@ void BookmarkCodec::DecodeMetaInfoHelper(
  
  void BookmarkCodec::ReassignIDs(BookmarkNode* bb_node,
                                  BookmarkNode* other_node,
