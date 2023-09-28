@@ -52,3 +52,7 @@ is_high_end_android=true
 # Do not compile libmonochrome.so with RELR relocations
 # since supported only on API 28+
 use_relr_relocations=false
+
+# disabled the use of the context snapshot
+# see https://github.com/uazo/cromite/pull/317 for context
+use_v8_context_snapshot = false
