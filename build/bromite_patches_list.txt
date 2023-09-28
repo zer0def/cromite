@@ -274,6 +274,8 @@ Timezone-customization.patch
 00Remove-GoogleAccountsPrivateApiHost.patch
 00Fix-crash-on-customize-profile-ui.patch
 00Enable-ImprovedBookmarks-by-default.patch
+00Partition-MediaDeviceId-by-default.patch
+00Keep-disabled-FetchLaterAPI.patch
 
 00Temp-Disable-kAutomaticLazyFrameLoadingToEmbeds.patch
 00Temp-disable-predictive-back-gesture.patch
