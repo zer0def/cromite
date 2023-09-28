@@ -28,6 +28,8 @@ body:
           required: true
         - label: "I have searched [existing issues](https://github.com/uazo/cromite/issues) for my feature request. This is a new issue (NOT a duplicate) and is not related to another issue."
           required: true
+        - label: "I have searched [wont fix issues](https://github.com/uazo/cromite/issues?q=label%3Awontfix) and this request is not among them
+          required: true
         - label: "This is a feature request for the Cromite browser; not the website nor F-Droid nor anything else."
           required: true
 
