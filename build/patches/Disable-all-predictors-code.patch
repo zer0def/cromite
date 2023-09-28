@@ -5,7 +5,7 @@ Subject: Disable all predictors code
 Original License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 ---
- chrome/browser/browser_features.cc            | 12 ++---
+ chrome/browser/browser_features.cc            | 16 +++----
  .../ranking/history_clusters_module_ranker.cc |  3 +-
  .../chrome_hints_manager.cc                   |  1 +
  .../optimization_guide_keyed_service.cc       |  1 -
@@ -22,12 +22,12 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  components/permissions/features.cc            |  8 ++--
  third_party/blink/common/features.cc          |  8 +---
  .../platform/runtime_enabled_features.json5   |  2 +-
- 17 files changed, 61 insertions(+), 68 deletions(-)
+ 17 files changed, 63 insertions(+), 70 deletions(-)
 
 diff --git a/chrome/browser/browser_features.cc b/chrome/browser/browser_features.cc
 --- a/chrome/browser/browser_features.cc
 +++ b/chrome/browser/browser_features.cc
-@@ -239,13 +239,13 @@ BASE_FEATURE(kIncomingCallNotifications,
+@@ -239,22 +239,22 @@ BASE_FEATURE(kIncomingCallNotifications,
  
  // Enables omnibox trigger prerendering.
  BASE_FEATURE(kOmniboxTriggerForPrerender2,
@@ -45,8 +45,10 @@ diff --git a/chrome/browser/browser_features.cc b/chrome/browser/browser_feature
  
  // Enables New Tab Page trigger prerendering.
  BASE_FEATURE(kNewTabPageTriggerForPrerender2,
-@@ -253,8 +253,8 @@ BASE_FEATURE(kNewTabPageTriggerForPrerender2,
-              base::FEATURE_DISABLED_BY_DEFAULT);
+-             "NewTabPageTriggerForPrerender2",
+-             base::FEATURE_DISABLED_BY_DEFAULT);
++             "NewTabPageTriggerForPrerender2",      // always disabled
++             base::FEATURE_DISABLED_BY_DEFAULT);    // in bromite
  
  BASE_FEATURE(kSupportSearchSuggestionForPrerender2,
 -             "SupportSearchSuggestionForPrerender2",
@@ -215,7 +217,7 @@ diff --git a/components/optimization_guide/core/hints_fetcher.cc b/components/op
 diff --git a/components/optimization_guide/core/hints_manager.cc b/components/optimization_guide/core/hints_manager.cc
 --- a/components/optimization_guide/core/hints_manager.cc
 +++ b/components/optimization_guide/core/hints_manager.cc
-@@ -383,6 +383,7 @@ void HintsManager::Shutdown() {
+@@ -358,6 +358,7 @@ void HintsManager::Shutdown() {
  OptimizationGuideDecision
  HintsManager::GetOptimizationGuideDecisionFromOptimizationTypeDecision(
      OptimizationTypeDecision optimization_type_decision) {
@@ -223,15 +225,15 @@ diff --git a/components/optimization_guide/core/hints_manager.cc b/components/op
    switch (optimization_type_decision) {
      case OptimizationTypeDecision::kAllowedByOptimizationFilter:
      case OptimizationTypeDecision::kAllowedByHint:
-@@ -1091,6 +1092,7 @@ void HintsManager::CanApplyOptimizationOnDemand(
+@@ -1066,6 +1067,7 @@ void HintsManager::CanApplyOptimizationOnDemand(
      proto::RequestContext request_context,
      OnDemandOptimizationGuideDecisionRepeatingCallback callback) {
    DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
 +  if ((true)) return; // no consent on bromite
  
-   InsertionOrderedSet<GURL> urls_to_fetch;
-   InsertionOrderedSet<std::string> hosts_to_fetch;
-@@ -1363,6 +1365,9 @@ OptimizationTypeDecision HintsManager::CanApplyOptimization(
+   // This set contains URLs that require some information to be fetched, whether
+   // that be a URL-keyed hint or a host-keyed hint.
+@@ -1386,6 +1388,9 @@ OptimizationTypeDecision HintsManager::CanApplyOptimization(
      bool skip_cache,
      OptimizationMetadata* optimization_metadata) {
    DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
