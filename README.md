@@ -145,6 +145,9 @@ In addition, Cromite would like to promote greater integration with other non-pr
 * Enabled Improved Bookmarks UI by default [patch](https://github.com/uazo/cromite/blob/master/build/patches/00Enable-ImprovedBookmarks-by-default.patch)
 * Removed Google private API from accounts.google.com [patch](https://github.com/uazo/cromite/blob/master/build/patches/00Remove-GoogleAccountsPrivateApiHost.patch)
 
+##### from [117.0.5938.140](https://github.com/uazo/cromite/issues/349#issuecomment-1740388786)
+* Partition MediaDeviceId by default [patch](https://github.com/uazo/cromite/blob/master/build/patches/00Partition-MediaDeviceId-by-default.patch)
+
 #### Windows Cromite-specific features
 
 * enable Network Service Sandbox by default
