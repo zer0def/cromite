@@ -36,7 +36,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedAct
  import org.chromium.base.IntentUtils;
  import org.chromium.base.Log;
  import org.chromium.base.MemoryPressureListener;
-@@ -1265,8 +1266,10 @@ public class ChromeTabbedActivity extends ChromeActivity<ChromeActivityComponent
+@@ -1268,8 +1269,10 @@ public class ChromeTabbedActivity extends ChromeActivity<ChromeActivityComponent
              boolean hadCipherData =
                      CipherFactory.getInstance().restoreFromBundle(getSavedInstanceState());
  
