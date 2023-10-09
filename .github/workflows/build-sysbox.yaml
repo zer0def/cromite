@@ -32,6 +32,7 @@ jobs:
 
           cd sysbox-runc/
           git apply --ignore-whitespace ../../cromite/tools/images/sysbox/add-x86-x32-arch.patch
+          git status
           cd ..
 
           make sysbox-static TARGET_ARCH=x64
@@ -42,4 +43,4 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: build.zip
-          path: build.zip
+          path: sysbox/build.zip
