@@ -22,7 +22,7 @@ jobs:
         with:
           path: cromite
           fetch-depth: 1
-		  
+
       - name: Build patched sysbox
         run: |
           git clone --recursive https://github.com/nestybox/sysbox.git
