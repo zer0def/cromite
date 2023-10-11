@@ -328,7 +328,7 @@ Please submit issues following the issue template; beware that GitHub does not d
 
 Patches are welcome and accepted if they match the project goals.
 
-For any usage or development discussion please use GitHub Discussions: https://github.com/bromite/bromite/discussions
+For any usage or development discussion please use GitHub Discussions: https://github.com/uazo/cromite/discussions
 
 # Credits
 
