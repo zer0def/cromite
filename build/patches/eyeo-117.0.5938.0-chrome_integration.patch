@@ -272,7 +272,7 @@ diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
      "//chrome/browser/ui/webui/app_service_internals:mojo_bindings",
      "//chrome/browser/ui/webui/feed:mojo_bindings",
      "//chrome/browser/ui/webui/internals/user_education:mojo_bindings",
-@@ -2084,6 +2108,12 @@ static_library("browser") {
+@@ -2086,6 +2110,12 @@ static_library("browser") {
      "//chrome/common/notifications",
      "//chrome/installer/util:with_no_strings",
      "//chrome/services/speech/buildflags",
@@ -285,7 +285,7 @@ diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
      "//components/assist_ranker",
      "//components/autofill/content/browser",
      "//components/autofill/core/browser",
-@@ -3339,7 +3369,9 @@ static_library("browser") {
+@@ -3340,7 +3370,9 @@ static_library("browser") {
        "webauthn/android/chrome_webauthn_client_android.h",
        "webauthn/android/webauthn_request_delegate_android.cc",
        "webauthn/android/webauthn_request_delegate_android.h",
@@ -5311,7 +5311,7 @@ diff --git a/chrome/browser/chrome_browser_interface_binders.cc b/chrome/browser
  #include "chrome/browser/ui/webui/browsing_topics/browsing_topics_internals_ui.h"
  #include "chrome/browser/ui/webui/engagement/site_engagement_ui.h"
  #include "chrome/browser/ui/webui/internals/internals_ui.h"
-@@ -1009,6 +1014,10 @@ void PopulateChromeWebUIFrameBinders(
+@@ -1032,6 +1037,10 @@ void PopulateChromeWebUIFrameBinders(
        media::mojom::MediaEngagementScoreDetailsProvider, MediaEngagementUI>(
        map);
  

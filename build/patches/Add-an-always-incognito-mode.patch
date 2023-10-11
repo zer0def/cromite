@@ -1165,7 +1165,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/webapps/WebappI
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -5152,6 +5152,10 @@ const FeatureEntry kFeatureEntries[] = {
+@@ -5153,6 +5153,10 @@ const FeatureEntry kFeatureEntries[] = {
       flag_descriptions::kOfflinePagesLivePageSharingName,
       flag_descriptions::kOfflinePagesLivePageSharingDescription, kOsAndroid,
       FEATURE_VALUE_TYPE(offline_pages::kOfflinePagesLivePageSharingFeature)},

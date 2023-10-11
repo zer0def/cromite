@@ -142,7 +142,7 @@ diff --git a/chrome/android/BUILD.gn b/chrome/android/BUILD.gn
 diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -3370,6 +3370,20 @@ static_library("browser") {
+@@ -3371,6 +3371,20 @@ static_library("browser") {
        "webauthn/android/webauthn_request_delegate_android.cc",
        "webauthn/android/webauthn_request_delegate_android.h",
  

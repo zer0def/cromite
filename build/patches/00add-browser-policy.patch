@@ -442,7 +442,7 @@ diff --git a/components/commerce/core/commerce_feature_list.cc b/components/comm
  #else
  BASE_FEATURE(kCommercePriceTrackingRegionLaunched,
               "CommercePriceTrackingRegionLaunched",
-@@ -210,8 +210,8 @@ BASE_FEATURE(kShoppingList, "ShoppingList", base::FEATURE_DISABLED_BY_DEFAULT);
+@@ -207,8 +207,8 @@ BASE_FEATURE(kShoppingList, "ShoppingList", base::FEATURE_DISABLED_BY_DEFAULT);
  #if BUILDFLAG(IS_ANDROID) || BUILDFLAG(IS_WIN) || BUILDFLAG(IS_MAC) || \
      BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
  BASE_FEATURE(kShoppingListRegionLaunched,
@@ -453,7 +453,7 @@ diff --git a/components/commerce/core/commerce_feature_list.cc b/components/comm
  #else
  BASE_FEATURE(kShoppingListRegionLaunched,
               "ShoppingListRegionLaunched",
-@@ -260,8 +260,8 @@ BASE_FEATURE(kCommerceHintAndroid,
+@@ -257,8 +257,8 @@ BASE_FEATURE(kCommerceHintAndroid,
               base::FEATURE_DISABLED_BY_DEFAULT);
  
  BASE_FEATURE(kMerchantWidePromotion,

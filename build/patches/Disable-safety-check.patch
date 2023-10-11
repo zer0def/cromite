@@ -119,7 +119,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/settings/Settin
 diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -3443,7 +3443,6 @@ static_library("browser") {
+@@ -3444,7 +3444,6 @@ static_library("browser") {
        "//chrome/browser/reading_list/android",
        "//chrome/browser/recent_tabs:jni_headers",
        "//chrome/browser/safe_browsing/android:safe_browsing_enums",

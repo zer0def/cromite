@@ -1610,7 +1610,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ui/system/Statu
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -8130,6 +8130,11 @@ const FeatureEntry kFeatureEntries[] = {
+@@ -8131,6 +8131,11 @@ const FeatureEntry kFeatureEntries[] = {
       flag_descriptions::kWindowsScrollingPersonalityDescription, kOsAll,
       FEATURE_VALUE_TYPE(features::kWindowsScrollingPersonality)},
  

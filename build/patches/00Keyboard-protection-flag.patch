@@ -23,7 +23,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -5156,6 +5156,9 @@ const FeatureEntry kFeatureEntries[] = {
+@@ -5157,6 +5157,9 @@ const FeatureEntry kFeatureEntries[] = {
      {"system-keyboard-lock", flag_descriptions::kSystemKeyboardLockName,
       flag_descriptions::kSystemKeyboardLockDescription, kOsDesktop,
       FEATURE_VALUE_TYPE(features::kSystemKeyboardLock)},
