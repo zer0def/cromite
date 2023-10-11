@@ -73,3 +73,6 @@ gclient runhooks
 
 echo -e ${RED} -------- download objdump ${NC}
 tools/clang/scripts/update.py --package=objdump
+
+echo -e ${RED} -------- remove non-useful big stuffs ${NC}
+rm -rf third_party/angle/third_party/VK-GL-CTS/
