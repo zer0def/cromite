@@ -17,6 +17,10 @@ on:
         description: 'chromium version'
         required: false
         default: ''
+      type:
+        description: 'runner?'
+        required: false
+        default: 'ubuntu-latest'        
   schedule:
    - cron: '0 1 * * *'
 
@@ -28,9 +32,10 @@ name: Builds and pushes tagged image to DockerHub
 jobs:
   generate_build_deps:
     name: Generate Build Deps
-    runs-on: ubuntu-latest
+    runs-on: ${{ github.event.inputs.type }}    
     steps:
       - name: Reclaiming disk space on / by removing dotnet/android/ghc
+        if: ${{ github.event.inputs.type == 'ubuntu-latest' }}
         run: |
           sudo rm -rf /usr/share/dotnet
           sudo rm -rf /usr/local/lib/android
