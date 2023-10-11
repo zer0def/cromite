@@ -14,7 +14,7 @@ Subject: Fix eyeo Browser Ad filtering patches
 diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -2108,12 +2108,8 @@ static_library("browser") {
+@@ -2110,12 +2110,8 @@ static_library("browser") {
      "//chrome/common/notifications",
      "//chrome/installer/util:with_no_strings",
      "//chrome/services/speech/buildflags",

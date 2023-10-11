@@ -15,7 +15,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -395,6 +395,17 @@ const FeatureEntry::Choice kOverlayStrategiesChoices[] = {
+@@ -396,6 +396,17 @@ const FeatureEntry::Choice kOverlayStrategiesChoices[] = {
       "single-fullscreen,single-on-top,underlay"},
  };
  
@@ -33,7 +33,7 @@ diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
  const FeatureEntry::Choice kTouchTextSelectionStrategyChoices[] = {
      {flags_ui::kGenericExperimentChoiceDefault, "", ""},
      {flag_descriptions::kTouchSelectionStrategyCharacter,
-@@ -4842,6 +4853,9 @@ const FeatureEntry kFeatureEntries[] = {
+@@ -4843,6 +4854,9 @@ const FeatureEntry kFeatureEntries[] = {
       FEATURE_VALUE_TYPE(mojo::core::kMojoLinuxChannelSharedMem)},
  #endif
  #if BUILDFLAG(IS_ANDROID)

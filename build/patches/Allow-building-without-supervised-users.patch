@@ -43,7 +43,7 @@ diff --git a/chrome/android/chrome_java_sources.gni b/chrome/android/chrome_java
 diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -3109,8 +3109,6 @@ static_library("browser") {
+@@ -3110,8 +3110,6 @@ static_library("browser") {
        "feed/android/refresh_task_scheduler_impl.cc",
        "feed/android/refresh_task_scheduler_impl.h",
        "feed/android/web_feed_bridge.cc",
@@ -52,7 +52,7 @@ diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
        "file_select_helper_contacts_android.cc",
        "file_select_helper_contacts_android.h",
        "first_run/android/first_run_prefs.cc",
-@@ -3327,10 +3325,6 @@ static_library("browser") {
+@@ -3328,10 +3326,6 @@ static_library("browser") {
        "ssl/chrome_security_state_model_delegate.h",
        "ssl/known_interception_disclosure_infobar.cc",
        "ssl/known_interception_disclosure_infobar.h",

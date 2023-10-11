@@ -25,7 +25,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -9581,6 +9581,11 @@ const FeatureEntry kFeatureEntries[] = {
+@@ -9582,6 +9582,11 @@ const FeatureEntry kFeatureEntries[] = {
       flag_descriptions::kWebMidiDescription, kOsAll,
       FEATURE_VALUE_TYPE(features::kWebMidi)},
  

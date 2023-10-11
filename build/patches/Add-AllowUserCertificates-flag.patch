@@ -38,7 +38,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActiv
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -9366,6 +9366,13 @@ const FeatureEntry kFeatureEntries[] = {
+@@ -9367,6 +9367,13 @@ const FeatureEntry kFeatureEntries[] = {
       flag_descriptions::kEnableDrDcDescription, kOsAll,
       FEATURE_VALUE_TYPE(features::kEnableDrDc)},
  

@@ -318,7 +318,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tab/TabViewAndr
 diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -2612,6 +2612,13 @@ static_library("browser") {
+@@ -2613,6 +2613,13 @@ static_library("browser") {
      deps += [ "//chrome/browser/error_reporting" ]
    }
  
@@ -349,7 +349,7 @@ diff --git a/chrome/browser/android/tab_android.cc b/chrome/browser/android/tab_
  using base::android::AttachCurrentThread;
  using base::android::ConvertUTF8ToJavaString;
  using base::android::JavaParamRef;
-@@ -506,3 +513,11 @@ static void JNI_TabImpl_Init(JNIEnv* env,
+@@ -510,3 +517,11 @@ static void JNI_TabImpl_Init(JNIEnv* env,
    // This will automatically bind to the Java object and pass ownership there.
    new TabAndroid(env, obj, profile, id);
  }
