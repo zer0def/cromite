@@ -32,7 +32,7 @@ name: Builds and pushes tagged image to DockerHub
 jobs:
   generate_build_deps:
     name: Generate Build Deps
-    runs-on: ${{ fromJSON('["ubuntu-latest", "' + github.event.inputs.type + '"]')[github.event.inputs.type != ''] }}
+    runs-on: ${{ fromJSON( format('["ubuntu-latest", "{0}"]', github.event.inputs.type) )[github.event.inputs.type != ''] }}
     steps:
       - name: Reclaiming disk space on / by removing dotnet/android/ghc
         if: ${{ github.event.inputs.type == 'ubuntu-latest' }}
