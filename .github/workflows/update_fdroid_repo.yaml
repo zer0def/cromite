@@ -16,6 +16,7 @@ jobs:
             mkdir -p  ~/.config/rclone
             echo "${{ secrets.RCLONE_CONF }}" > ~/.config/rclone/rclone.conf
 
+            test -d /usr/share/man/man1 || sudo mkdir -p /usr/share/man/man1
             DEBIAN_FRONTEND=noninteractive sudo apt install -y fdroidserver rclone wget
 
             rclone sync ftp:www.cromite.org/fdroid fdroid --log-level INFO
