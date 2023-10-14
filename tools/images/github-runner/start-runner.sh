@@ -21,9 +21,9 @@ docker run --rm -d --runtime=sysbox-runc \
   -e "REMOTEEXEC_ADDR=$REMOTEEXEC_ADDR" \
   -v $GHRUNNERHOME/tmp/proxy:/tmp/proxy:rw \
   -v $GHRUNNERHOME/tmp/forward-proxy:/tmp/forward-proxy:rw \
-  uazo/squid
-
-docker logs gh-proxy
+  uazo/squid && \
+  docker logs gh-proxy && \
+  sleep 30s
 
 while true
 do

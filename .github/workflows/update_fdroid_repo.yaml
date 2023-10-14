@@ -11,6 +11,8 @@ jobs:
        - name: Update fdroid repo
          shell: bash
          run: |
+            socat TCP-LISTEN:21,reuseaddr,fork UNIX-CLIENT:/tmp/proxy/ftp.sock &
+
             mkdir -p  ~/.config/rclone
             echo "${{ secrets.RCLONE_CONF }}" > ~/.config/rclone/rclone.conf
 
