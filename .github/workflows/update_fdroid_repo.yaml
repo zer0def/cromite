@@ -14,7 +14,7 @@ jobs:
             mkdir -p  ~/.config/rclone
             echo "${{ secrets.RCLONE_CONF }}" > ~/.config/rclone/rclone.conf
 
-            DEBIAN_FRONTEND=noninteractive apt install -y fdroidserver rclone wget
+            DEBIAN_FRONTEND=noninteractive sudo apt install -y fdroidserver rclone wget
 
             rclone sync ftp:www.cromite.org/fdroid fdroid --log-level INFO
 
