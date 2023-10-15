@@ -12,10 +12,10 @@ test -e /tmp/proxy/bots.sock && sudo rm /tmp/proxy/bots.sock
 socat UNIX-LISTEN:/tmp/proxy/bots.sock,reuseaddr,fork TCP4:$REMOTEEXEC_ADDR &
 sudo chmod 777 /tmp/proxy/bots.sock
 
-echo Connect /tmp/proxy/ftp.sock to 127.0.0.1:1090
+echo Connect /tmp/forward-proxy/ftp.sock to 127.0.0.1:1090
 /usr/sbin/danted &
-test -e /tmp/proxy/ftp.sock && sudo rm /tmp/proxy/ftp.sock
-socat UNIX-LISTEN:/tmp/proxy/ftp.sock,reuseaddr,fork TCP4:127.0.0.1:1080 &
-sudo chmod 777 /tmp/proxy/ftp.sock
+test -e /tmp/forward-proxy/ftp.sock && sudo rm /tmp/forward-proxy/ftp.sock
+socat UNIX-LISTEN:/tmp/forward-proxy/ftp.sock,reuseaddr,fork TCP4:127.0.0.1:1080 &
+sudo chmod 777 /tmp/forward-proxy/ftp.sock
 
 squid -N

@@ -3,15 +3,32 @@ name: Update fdroid repo
 on:
   workflow_dispatch:
 
+env:
+  REMOVEDOCKERSUPPORT: true
+  USELOCALIMAGE: true
+  USEINTERNALNETWORK: true
+
 jobs:
   update-fdroid:
     runs-on: ci2
+
+    container:
+      image: uazo/fdroidserver:latest
+      volumes:
+        - /tmp/forward-proxy:/tmp/forward-proxy
 
     steps:
        - name: Update fdroid repo
          shell: bash
          run: |
-            socat TCP-LISTEN:1080,reuseaddr,fork UNIX-CLIENT:/tmp/proxy/ftp.sock &
+            alias sudo=
+            export https_proxy=http://127.0.0.1:8118
+            socat TCP-LISTEN:8118,reuseaddr,fork UNIX-CLIENT:/tmp/forward-proxy/proxy.sock &
+            socat TCP-LISTEN:1080,reuseaddr,fork UNIX-CLIENT:/tmp/forward-proxy/ftp.sock &
+            touch /etc/apt/apt.conf.d/proxy.conf
+            echo "Acquire::http::Proxy \"$https_proxy\";" >/etc/apt/apt.conf.d/proxy.conf
+
+            sudo apt update
 
             DEBIAN_FRONTEND=noninteractive sudo apt update && sudo apt install -y wget
             wget https://github.com/rclone/rclone/releases/download/v1.64.0/rclone-v1.64.0-linux-amd64.zip
@@ -43,8 +60,8 @@ jobs:
             rm config.yml keystore.p12
             cd ..
 
-            test -f fdroid/config.yml || exit 1
-            test -f fdroid/keystore.p12 || exit 1
+            test -f fdroid/config.yml && exit 1
+            test -f fdroid/keystore.p12 && exit 1
 
             $rclone sync fdroid ftp:www.cromite.org/fdroid --log-level INFO --ftp-socks-proxy 127.0.0.1:1080
             $rclone sync fdroid ftp:www.cromite.org/fdroid --log-level INFO --ftp-socks-proxy 127.0.0.1:1080
