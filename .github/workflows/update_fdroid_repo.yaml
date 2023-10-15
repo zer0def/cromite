@@ -13,7 +13,7 @@ jobs:
          run: |
             socat TCP-LISTEN:1080,reuseaddr,fork UNIX-CLIENT:/tmp/proxy/ftp.sock &
 
-            DEBIAN_FRONTEND=noninteractive sudo apt install -y wget
+            DEBIAN_FRONTEND=noninteractive sudo apt update && sudo apt install -y wget
             wget https://github.com/rclone/rclone/releases/download/v1.64.0/rclone-v1.64.0-linux-amd64.zip
             unzip rclone-v1.64.0-linux-amd64.zip
             export rclone=rclone-v1.64.0-linux-amd64/rclone
