@@ -21,16 +21,15 @@ jobs:
        - name: Update fdroid repo
          shell: bash
          run: |
-            alias sudo=
             export https_proxy=http://127.0.0.1:8118
             socat TCP-LISTEN:8118,reuseaddr,fork UNIX-CLIENT:/tmp/forward-proxy/proxy.sock &
             socat TCP-LISTEN:1080,reuseaddr,fork UNIX-CLIENT:/tmp/forward-proxy/ftp.sock &
             touch /etc/apt/apt.conf.d/proxy.conf
             echo "Acquire::http::Proxy \"$https_proxy\";" >/etc/apt/apt.conf.d/proxy.conf
 
-            sudo apt update
+            apt update
 
-            DEBIAN_FRONTEND=noninteractive sudo apt update && sudo apt install -y wget
+            DEBIAN_FRONTEND=noninteractive apt update && apt install -y wget
             wget https://github.com/rclone/rclone/releases/download/v1.64.0/rclone-v1.64.0-linux-amd64.zip
             unzip rclone-v1.64.0-linux-amd64.zip
             export rclone=rclone-v1.64.0-linux-amd64/rclone
@@ -40,8 +39,8 @@ jobs:
 
             $rclone sync ftp:www.cromite.org/fdroid fdroid --log-level INFO --ftp-socks-proxy 127.0.0.1:1080
 
-            test -d /usr/share/man/man1 || sudo mkdir -p /usr/share/man/man1
-            DEBIAN_FRONTEND=noninteractive sudo apt install -y fdroidserver
+            test -d /usr/share/man/man1 || mkdir -p /usr/share/man/man1
+            DEBIAN_FRONTEND=noninteractive apt install -y fdroidserver
 
             cd fdroid/repo/
             wget https://github.com/uazo/cromite/releases/latest/download/arm_ChromePublic.apk
