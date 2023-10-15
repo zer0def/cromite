@@ -1,7 +1,6 @@
 #!/bin/bash
 
-sudo apt update
-sudo apt upgrade
+sudo apt update && sudo apt upgrade
 
 echo Connect /tmp/forward-proxy/proxy.sock to 127.0.0.1:8118
 test -e /tmp/forward-proxy/proxy.sock && sudo rm /tmp/forward-proxy/proxy.sock
@@ -13,9 +12,10 @@ test -e /tmp/proxy/bots.sock && sudo rm /tmp/proxy/bots.sock
 socat UNIX-LISTEN:/tmp/proxy/bots.sock,reuseaddr,fork TCP4:$REMOTEEXEC_ADDR &
 sudo chmod 777 /tmp/proxy/bots.sock
 
-echo Connect /tmp/proxy/ftp.sock to ftp.cromite.org
+echo Connect /tmp/proxy/ftp.sock to 127.0.0.1:1090
+/usr/sbin/danted &
 test -e /tmp/proxy/ftp.sock && sudo rm /tmp/proxy/ftp.sock
-socat UNIX-LISTEN:/tmp/proxy/ftp.sock,reuseaddr,fork TCP4:ftp.cromite.org:21 &
+socat UNIX-LISTEN:/tmp/proxy/ftp.sock,reuseaddr,fork TCP4:127.0.0.1:1080 &
 sudo chmod 777 /tmp/proxy/ftp.sock
 
 squid -N

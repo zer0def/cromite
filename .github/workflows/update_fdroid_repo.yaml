@@ -11,15 +11,19 @@ jobs:
        - name: Update fdroid repo
          shell: bash
          run: |
-            socat TCP-LISTEN:21,reuseaddr,fork UNIX-CLIENT:/tmp/proxy/ftp.sock &
+            socat TCP-LISTEN:1080,reuseaddr,fork UNIX-CLIENT:/tmp/proxy/ftp.sock &
+
+            DEBIAN_FRONTEND=noninteractive sudo apt install -y wget
+            wget https://github.com/rclone/rclone/releases/download/v1.64.0/rclone-v1.64.0-linux-amd64.zip
+            unzip rclone-v1.64.0-linux-amd64.zip
+            export rclone=rclone-v1.64.0-linux-amd64/rclone
 
             mkdir -p  ~/.config/rclone
             echo "${{ secrets.RCLONE_CONF }}" > ~/.config/rclone/rclone.conf
 
-            test -d /usr/share/man/man1 || sudo mkdir -p /usr/share/man/man1
-            DEBIAN_FRONTEND=noninteractive sudo apt install -y fdroidserver rclone wget
+            $rclone sync ftp:www.cromite.org/fdroid fdroid --log-level INFO --ftp-socks-proxy 127.0.0.1:1080
 
-            rclone sync ftp:www.cromite.org/fdroid fdroid --log-level INFO
+            DEBIAN_FRONTEND=noninteractive sudo apt install -y fdroidserver
 
             cd fdroid/repo/
             wget https://github.com/uazo/cromite/releases/latest/download/arm_ChromePublic.apk
@@ -41,5 +45,5 @@ jobs:
             test -f fdroid/config.yml || exit 1
             test -f fdroid/keystore.p12 || exit 1
 
-            rclone sync fdroid ftp:www.cromite.org/fdroid --log-level INFO
-            rclone sync fdroid ftp:www.cromite.org/fdroid --log-level INFO
+            $rclone sync fdroid ftp:www.cromite.org/fdroid --log-level INFO --ftp-socks-proxy 127.0.0.1:1080
+            $rclone sync fdroid ftp:www.cromite.org/fdroid --log-level INFO --ftp-socks-proxy 127.0.0.1:1080
