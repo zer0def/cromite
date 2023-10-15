@@ -251,11 +251,14 @@ Please note that this project is not free of bugs and that changing the behaviou
 
 All built versions are available as [releases](https://github.com/uazo/cromite/releases).
 
-Cromite is currently built for ARM64, ~x86~ (Android SDK version 23+) and Windows x64.
+Cromite is currently built for ARM64, x86 (Android SDK version 23+) and Windows x64.
 
 You will automatically receive notifications about new updates (and be able to install them) via the auto updater functionality (enabled by default), see [related wiki page](https://github.com/bromite/bromite/wiki/AutomaticUpdates).
 
-For F-droid: work in progress https://github.com/uazo/cromite/issues/64
+### F-droid
+
+Official F-droid repo url:
+https://www.cromite.org/fdroid/repo/?fingerprint=49F37E74DEE483DCA2B991334FB5A0200787430D0B5F9A783DD5F13695E9517B
 
 ### Auto-update setup for windows
 
