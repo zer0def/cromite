@@ -23,6 +23,7 @@ jobs:
 
             $rclone sync ftp:www.cromite.org/fdroid fdroid --log-level INFO --ftp-socks-proxy 127.0.0.1:1080
 
+            test -d /usr/share/man/man1 || sudo mkdir -p /usr/share/man/man1
             DEBIAN_FRONTEND=noninteractive sudo apt install -y fdroidserver
 
             cd fdroid/repo/
