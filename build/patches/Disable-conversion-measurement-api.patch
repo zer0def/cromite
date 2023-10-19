@@ -30,11 +30,11 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../attribution/request_headers_internal.cc   |   1 +
  .../network/public/cpp/attribution_utils.cc   |   2 +
  services/network/public/cpp/features.cc       |   6 +-
- third_party/blink/common/features.cc          |  26 +-
+ third_party/blink/common/features.cc          |  42 ++--
  .../platform/runtime_enabled_features.json5   |   7 +
  ui/base/ui_base_features.cc                   |   2 +-
  ui/events/android/motion_event_android.cc     |   6 +-
- 23 files changed, 89 insertions(+), 261 deletions(-)
+ 23 files changed, 97 insertions(+), 269 deletions(-)
 
 diff --git a/chrome/android/java/AndroidManifest.xml b/chrome/android/java/AndroidManifest.xml
 --- a/chrome/android/java/AndroidManifest.xml
@@ -633,6 +633,25 @@ diff --git a/services/network/public/cpp/features.cc b/services/network/public/c
 diff --git a/third_party/blink/common/features.cc b/third_party/blink/common/features.cc
 --- a/third_party/blink/common/features.cc
 +++ b/third_party/blink/common/features.cc
+@@ -36,14 +36,14 @@ BASE_FEATURE(kAcceleratedStaticBitmapImageSerialization,
+ 
+ // Enable the Protected Audience's reporting with ad macro API.
+ BASE_FEATURE(kAdAuctionReportingWithMacroApi,
+-             "AdAuctionReportingWithMacroApi",
+-             base::FEATURE_ENABLED_BY_DEFAULT);
++             "AdAuctionReportingWithMacroApi",   // disabled
++             base::FEATURE_DISABLED_BY_DEFAULT); // by default
+ 
+ // Controls the capturing of the Ad-Auction-Signals header, and the maximum
+ // allowed Ad-Auction-Signals header value.
+ BASE_FEATURE(kAdAuctionSignals,
+-             "AdAuctionSignals",
+-             base::FEATURE_ENABLED_BY_DEFAULT);
++             "AdAuctionSignals",                 // disabled
++             base::FEATURE_DISABLED_BY_DEFAULT); // by default
+ const base::FeatureParam<int> kAdAuctionSignalsMaxSizeBytes{
+     &kAdAuctionSignals, "ad-auction-signals-max-size-bytes", 10000};
+ 
 @@ -302,8 +302,8 @@ const base::FeatureParam<int> kBoostImagePriorityTightMediumLimit{
  // https://github.com/patcg-individual-drafts/topics
  // Kill switch for the Topics API.
@@ -674,6 +693,28 @@ diff --git a/third_party/blink/common/features.cc b/third_party/blink/common/fea
  
  BASE_FEATURE(kCorrectFloatExtensionTestForWebGL,
               "CorrectFloatExtensionTestForWebGL",
+@@ -807,8 +807,8 @@ BASE_FEATURE(kFledge, "Fledge", base::FEATURE_DISABLED_BY_DEFAULT);
+ // See
+ // https://github.com/WICG/turtledove/blob/main/FLEDGE_browser_bidding_and_auction_API.md
+ BASE_FEATURE(kFledgeBiddingAndAuctionServer,
+-             "FledgeBiddingAndAuctionServer",
+-             base::FEATURE_DISABLED_BY_DEFAULT);
++             "FledgeBiddingAndAuctionServer",       // disabled
++             base::FEATURE_DISABLED_BY_DEFAULT);    // by default
+ const base::FeatureParam<std::string> kFledgeBiddingAndAuctionKeyURL{
+     &kFledgeBiddingAndAuctionServer, "FledgeBiddingAndAuctionKeyURL", ""};
+ 
+@@ -973,8 +973,8 @@ const char kIntensiveWakeUpThrottling_GracePeriodSeconds_Name[] =
+ // Kill switch for the Interest Group API, i.e. if disabled, the
+ // API exposure will be disabled regardless of the OT config.
+ BASE_FEATURE(kInterestGroupStorage,
+-             "InterestGroupStorage",
+-             base::FEATURE_DISABLED_BY_DEFAULT);
++             "InterestGroupStorage",              // disabled
++             base::FEATURE_DISABLED_BY_DEFAULT);  // by default
+ // TODO(crbug.com/1197209): Adjust these limits in response to usage.
+ const base::FeatureParam<int> kInterestGroupStorageMaxOwners{
+     &kInterestGroupStorage, "max_owners", 1000};
 @@ -1367,16 +1367,16 @@ const base::FeatureParam<bool> kPrewarmFantasy = {&kPrewarmDefaultFontFamilies,
                                                    "prewarm_fantasy", false};
  #endif
