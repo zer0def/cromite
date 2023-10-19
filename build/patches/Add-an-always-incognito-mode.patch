@@ -48,7 +48,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../browser/toolbar/ToolbarManager.java       |   4 +-
  .../webapps/WebappIntentDataProvider.java     |  14 ++
  chrome/browser/about_flags.cc                 |   4 +
- .../browser/android/historical_tab_saver.cc   |  22 ++-
+ .../browser/android/historical_tab_saver.cc   |  24 ++-
  .../chrome_autocomplete_provider_client.cc    |   9 +
  .../chrome_autocomplete_provider_client.h     |   1 +
  .../remote_suggestions_service_factory.cc     |   5 +
@@ -86,7 +86,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../omnibox/browser/base_search_provider.cc   |   2 +-
  components/omnibox/browser/search_provider.cc |   4 +-
  .../host_content_settings_map_factory.cc      |   1 +
- 67 files changed, 759 insertions(+), 91 deletions(-)
+ 67 files changed, 760 insertions(+), 92 deletions(-)
  create mode 100644 chrome/android/java/res/xml/incognito_preferences.xml
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/AlwaysIncognitoLinkInterceptor.java
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/IncognitoSettings.java
@@ -1218,6 +1218,15 @@ diff --git a/chrome/browser/android/historical_tab_saver.cc b/chrome/browser/and
    if (!service) {
      return;
    }
+@@ -99,7 +110,7 @@ void CreateHistoricalBulkClosure(
+     std::vector<int> per_tab_android_group_id,
+     std::vector<TabAndroid*> tabs,
+     std::vector<WebContentsStateByteBuffer> web_contents_state) {
+-  DCHECK(model);
++  if (!model) return;
+   DCHECK_EQ(android_group_ids.size(), group_titles.size());
+   DCHECK_EQ(per_tab_android_group_id.size(), tabs.size());
+ 
 @@ -230,11 +241,12 @@ static void JNI_HistoricalTabSaverImpl_CreateHistoricalTab(
      JNIEnv* env,
      const JavaParamRef<jobject>& jtab_android,
