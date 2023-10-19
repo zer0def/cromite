@@ -44,6 +44,7 @@ suit Bromite logic
  .../browser/adblock_webcontents_observer.cc   |   25 +-
  .../browser/adblock_webcontents_observer.h    |    5 +-
  .../content_security_policy_injector_impl.cc  |    1 +
+ .../content/browser/element_hider_impl.cc     |    4 +-
  .../subscription_service_factory_base.cc      |   11 +-
  .../subscription_service_factory_base.h       |    1 +
  components/adblock/core/BUILD.gn              |   39 -
@@ -107,7 +108,7 @@ suit Bromite logic
  .../renderer/core/exported/web_document.cc    |   13 +-
  tools/gritsettings/resource_ids.spec          |    9 +-
  .../definitions/adblock_private.d.ts          |   14 +
- 102 files changed, 5079 insertions(+), 1083 deletions(-)
+ 103 files changed, 5081 insertions(+), 1085 deletions(-)
  create mode 100644 chrome/browser/resources/settings/adblock_page/adblock_page.html
  create mode 100644 chrome/browser/resources/settings/adblock_page/adblock_page.ts
  rename components/adblock/android/java/res/xml/{adblock_preferences.xml => eyeo_adblock_preferences.xml} (56%)
@@ -2042,6 +2043,24 @@ diff --git a/components/adblock/content/browser/content_security_policy_injector
    for (const auto& collection : subscription_collections) {
      const auto injection =
          collection->GetCspInjections(request_url, frame_hierarchy_chain);
+diff --git a/components/adblock/content/browser/element_hider_impl.cc b/components/adblock/content/browser/element_hider_impl.cc
+--- a/components/adblock/content/browser/element_hider_impl.cc
++++ b/components/adblock/content/browser/element_hider_impl.cc
+@@ -190,12 +190,12 @@ void InsertUserCSSAndApplyElemHidingEmuJS(
+   if (!frame_host) {
+     // Render frame host was destroyed before element hiding could be applied.
+     // This is not a bug, just legitimate a race condition.
+-    std::move(on_finished).Run(std::move(input));
++    //std::move(on_finished).Run(ElementHider::ElemhideInjectionData{});
+     return;
+   }
+   auto* info = ElementHiderInfo::GetOrCreateForCurrentDocument(frame_host);
+   if (info->IsElementHidingDone()) {
+-    std::move(on_finished).Run(ElementHider::ElemhideInjectionData{});
++    //std::move(on_finished).Run(ElementHider::ElemhideInjectionData{});
+     return;
+   } else {
+     info->SetElementHidingDone();
 diff --git a/components/adblock/content/browser/subscription_service_factory_base.cc b/components/adblock/content/browser/subscription_service_factory_base.cc
 --- a/components/adblock/content/browser/subscription_service_factory_base.cc
 +++ b/components/adblock/content/browser/subscription_service_factory_base.cc
