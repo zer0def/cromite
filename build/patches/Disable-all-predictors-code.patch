@@ -16,6 +16,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../predictors/loading_predictor_config.cc    |  4 +-
  .../browser/predictors/predictors_features.cc | 14 +---
  chrome/common/chrome_features.cc              | 10 +--
+ .../browser/autofill_optimization_guide.cc    |  5 +-
  .../optimization_guide/core/hints_fetcher.cc  |  1 +
  .../optimization_guide/core/hints_manager.cc  |  5 ++
  .../core/optimization_guide_features.cc       | 72 +++++++------------
@@ -25,7 +26,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  components/permissions/features.cc            |  8 +--
  third_party/blink/common/features.cc          | 12 ++--
  .../platform/runtime_enabled_features.json5   |  2 +-
- 20 files changed, 76 insertions(+), 107 deletions(-)
+ 21 files changed, 79 insertions(+), 109 deletions(-)
 
 diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 --- a/chrome/browser/BUILD.gn
@@ -254,6 +255,35 @@ diff --git a/chrome/common/chrome_features.cc b/chrome/common/chrome_features.cc
  
  #if BUILDFLAG(IS_CHROMEOS)
  // Enable improved printer state and error state messaging for Print Preview.
+diff --git a/components/autofill/core/browser/autofill_optimization_guide.cc b/components/autofill/core/browser/autofill_optimization_guide.cc
+--- a/components/autofill/core/browser/autofill_optimization_guide.cc
++++ b/components/autofill/core/browser/autofill_optimization_guide.cc
+@@ -94,6 +94,7 @@ void AutofillOptimizationGuide::OnDidParseForm(
+   // If we do not have any optimization types to register, do not do anything.
+   if (!optimization_types.empty()) {
+     // Register all optimization types that we need based on `form_structure`.
++    if (decider_)
+     decider_->RegisterOptimizationTypes(
+         std::vector<optimization_guide::proto::OptimizationType>(
+             std::move(optimization_types).extract()));
+@@ -105,7 +106,7 @@ bool AutofillOptimizationGuide::ShouldBlockSingleFieldSuggestions(
+     AutofillField* field) const {
+   // If the field's storable type is `IBAN_VALUE`, check whether IBAN
+   // suggestions should be blocked based on `url`.
+-  if (field->Type().GetStorableType() == IBAN_VALUE) {
++  if (decider_ && field->Type().GetStorableType() == IBAN_VALUE) {
+     optimization_guide::OptimizationGuideDecision decision =
+         decider_->CanApplyOptimization(
+             url, optimization_guide::proto::IBAN_AUTOFILL_BLOCKED,
+@@ -136,7 +137,7 @@ bool AutofillOptimizationGuide::ShouldBlockFormFieldSuggestion(
+ 
+   if (auto optimization_type =
+           GetVcnMerchantOptOutOptimizationTypeForCard(card);
+-      optimization_type != optimization_guide::proto::TYPE_UNSPECIFIED) {
++      decider_ && optimization_type != optimization_guide::proto::TYPE_UNSPECIFIED) {
+     optimization_guide::OptimizationGuideDecision decision =
+         decider_->CanApplyOptimization(url, optimization_type,
+                                        /*optimization_metadata=*/nullptr);
 diff --git a/components/optimization_guide/core/hints_fetcher.cc b/components/optimization_guide/core/hints_fetcher.cc
 --- a/components/optimization_guide/core/hints_fetcher.cc
 +++ b/components/optimization_guide/core/hints_fetcher.cc
