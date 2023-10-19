@@ -240,7 +240,7 @@ diff --git a/third_party/blink/renderer/core/dom/document.h b/third_party/blink/
    AtomicString visibilityState() const;
    bool IsPageVisible() const;
    bool hidden() const;
-@@ -2416,6 +2420,9 @@ class CORE_EXPORT Document : public ContainerNode,
+@@ -2418,6 +2422,9 @@ class CORE_EXPORT Document : public ContainerNode,
  
    base::ElapsedTimer start_time_;
  
