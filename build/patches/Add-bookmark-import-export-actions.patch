@@ -51,8 +51,10 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  ui/shell_dialogs/select_file_dialog.h         |   2 +
  .../select_file_dialog_android.cc             |   6 +
  ui/shell_dialogs/select_file_dialog_android.h |   2 +
+ ui/shell_dialogs/select_file_dialog_linux.cc  |   4 +
+ ui/shell_dialogs/select_file_dialog_linux.h   |   2 +
  ui/shell_dialogs/select_file_dialog_win.cc    |   5 +
- 42 files changed, 915 insertions(+), 29 deletions(-)
+ 44 files changed, 921 insertions(+), 29 deletions(-)
 
 diff --git a/chrome/android/java/AndroidManifest.xml b/chrome/android/java/AndroidManifest.xml
 --- a/chrome/android/java/AndroidManifest.xml
@@ -1836,6 +1838,32 @@ diff --git a/ui/shell_dialogs/select_file_dialog_android.h b/ui/shell_dialogs/se
   protected:
    ~SelectFileDialogImpl() override;
  
+diff --git a/ui/shell_dialogs/select_file_dialog_linux.cc b/ui/shell_dialogs/select_file_dialog_linux.cc
+--- a/ui/shell_dialogs/select_file_dialog_linux.cc
++++ b/ui/shell_dialogs/select_file_dialog_linux.cc
+@@ -31,6 +31,10 @@ void SelectFileDialogLinux::ListenerDestroyed() {
+   listener_ = nullptr;
+ }
+ 
++void SelectFileDialogLinux::ShowToast(const std::string& message) {
++  // nothing to do, used only on android
++}
++
+ bool SelectFileDialogLinux::CallDirectoryExistsOnUIThread(
+     const base::FilePath& path) {
+   base::ScopedAllowBlocking scoped_allow_blocking;
+diff --git a/ui/shell_dialogs/select_file_dialog_linux.h b/ui/shell_dialogs/select_file_dialog_linux.h
+--- a/ui/shell_dialogs/select_file_dialog_linux.h
++++ b/ui/shell_dialogs/select_file_dialog_linux.h
+@@ -33,6 +33,8 @@ class SHELL_DIALOGS_EXPORT SelectFileDialogLinux : public SelectFileDialog {
+   // BaseShellDialog implementation.
+   void ListenerDestroyed() override;
+ 
++  void ShowToast(const std::string& message) override;
++
+  protected:
+   explicit SelectFileDialogLinux(Listener* listener,
+                                  std::unique_ptr<ui::SelectFilePolicy> policy);
 diff --git a/ui/shell_dialogs/select_file_dialog_win.cc b/ui/shell_dialogs/select_file_dialog_win.cc
 --- a/ui/shell_dialogs/select_file_dialog_win.cc
 +++ b/ui/shell_dialogs/select_file_dialog_win.cc
