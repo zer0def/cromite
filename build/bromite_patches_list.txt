@@ -244,7 +244,6 @@ AudioBuffer-AnalyserNode-fp-mitigations.patch
 00Disable-Compression-Dictionary-Transport.patch
 00Disallow-Android-App-Scheme-as-referrer.patch
 00Deprecate-Data-URL-in-SVGUseElement.patch
-
 Content-settings-infrastructure.patch
 Add-autoplay-site-setting.patch
 Site-setting-for-images.patch
@@ -277,6 +276,8 @@ Timezone-customization.patch
 00Partition-MediaDeviceId-by-default.patch
 00Keep-disabled-FetchLaterAPI.patch
 00Disable-ranker-url-fetcher.patch
+00Show-full-urls-for-bookmark.patch
+00Disable-prefers-reduced-transparency-media-query.patch
 
 00Temp-PerformanceNavigationTiming-privacy-fix.patch
 00Temp-remove-support-for-shared-workers.patch
