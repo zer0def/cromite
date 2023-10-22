@@ -253,7 +253,7 @@ jobs:
         shell: bash
         run: |
           cd $WORKSPACE
-          $WORKSPACE/ninjatracing/ninjatracing $WORKSPACE/chromium/src/out/arm64/.ninja_log >$WORKSPACE/chromium/src/out/arm64/ninja_log_trace.json
+          $WORKSPACE/ninjatracing/ninjatracing -a $WORKSPACE/chromium/src/out/arm64/.ninja_log >$WORKSPACE/chromium/src/out/arm64/ninja_log_trace.json
           python3 $WORKSPACE/chromium/src/third_party/catapult/tracing/bin/trace2html $WORKSPACE/chromium/src/out/arm64/ninja_log_trace.json
 
       - name: Build Bromite Windows x64
@@ -281,7 +281,7 @@ jobs:
         shell: bash
         run: |
           cd $WORKSPACE
-          $WORKSPACE/ninjatracing/ninjatracing $WORKSPACE/chromium/src/out/win64/.ninja_log >$WORKSPACE/chromium/src/out/win64/ninja_log_trace.json
+          $WORKSPACE/ninjatracing/ninjatracing -a $WORKSPACE/chromium/src/out/win64/.ninja_log >$WORKSPACE/chromium/src/out/win64/ninja_log_trace.json
           python3 $WORKSPACE/chromium/src/third_party/catapult/tracing/bin/trace2html $WORKSPACE/chromium/src/out/win64/ninja_log_trace.json
 
       - name: Build Bromite Android x64
@@ -309,7 +309,7 @@ jobs:
         shell: bash
         run: |
           cd $WORKSPACE
-          $WORKSPACE/ninjatracing/ninjatracing $WORKSPACE/chromium/src/out/x64/.ninja_log >$WORKSPACE/chromium/src/out/x64/ninja_log_trace.json
+          $WORKSPACE/ninjatracing/ninjatracing -a $WORKSPACE/chromium/src/out/x64/.ninja_log >$WORKSPACE/chromium/src/out/x64/ninja_log_trace.json
           python3 $WORKSPACE/chromium/src/third_party/catapult/tracing/bin/trace2html $WORKSPACE/chromium/src/out/x64/ninja_log_trace.json
 
       - name: Generate breakpad symbols for Android arm64
@@ -363,7 +363,7 @@ jobs:
         shell: bash
         run: |
           cd $WORKSPACE
-          $WORKSPACE/ninjatracing/ninjatracing $WORKSPACE/chromium/src/out/arm/.ninja_log >$WORKSPACE/chromium/src/out/arm/ninja_log_trace.json
+          $WORKSPACE/ninjatracing/ninjatracing -a $WORKSPACE/chromium/src/out/arm/.ninja_log >$WORKSPACE/chromium/src/out/arm/ninja_log_trace.json
           python3 $WORKSPACE/chromium/src/third_party/catapult/tracing/bin/trace2html $WORKSPACE/chromium/src/out/arm/ninja_log_trace.json
 
       - name: Generate clangd index for Android arm64
