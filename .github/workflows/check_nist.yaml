@@ -30,6 +30,7 @@ jobs:
           export HOME=$GITHUB_WORKSPACE
           cd ~/cromite/tools
           test -d cves || mkdir -p cves
+          cd cves
 
           CY=$(date +%Y)
           docker run --rm --name tapir stratosphereips/tapir:latest \
@@ -40,6 +41,7 @@ jobs:
 
       - name: Check differences
         run: |
+          export HOME=$GITHUB_WORKSPACE
           cd ~/cromite
           CHANGES=0 && git diff --quiet || CHANGES=1
           echo "CHANGES=$CHANGES" >> $GITHUB_ENV
@@ -58,7 +60,7 @@ jobs:
           base: ${{ env.BRANCH }}
           #push-to-fork: uazo/cromite
           add-paths: |
-            build/patches/*.patch
+            tools/cves/*.txt
           commit-message: 'AUTOMATED - CVE results'
           title: New CVE results
           delete-branch: true
