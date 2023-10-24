@@ -6,7 +6,7 @@ NC='\033[0m' # No Color
 WORKSPACE=/home/lg/working_dir
 PATH=$WORKSPACE/chromium/src/third_party/llvm-build/Release+Asserts/bin:$WORKSPACE/depot_tools/:/usr/local/go/bin:$PATH
 
-sudo apt-get install -y lsof libgoogle-glog-dev libprotobuf17 libgrpc++1 parallel golang-go
+sudo apt-get install -y lsof libgoogle-glog-dev libprotobuf17 libgrpc++1 parallel golang-go nano
 
 echo -e ${RED} -------- download mtool ${NC}
 git clone https://github.com/bromite/mtool
