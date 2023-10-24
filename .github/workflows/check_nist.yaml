@@ -24,7 +24,8 @@ jobs:
 
       - name: Get data
         run: |
-          sudo apt update && sudo apt install colorized-logs
+          sudo apt update
+          DEBIAN_FRONTEND=noninteractive sudo apt install -y colorized-logs
           cd ~/cromite/tools
           test -d cves || mkdir -p cves
 
