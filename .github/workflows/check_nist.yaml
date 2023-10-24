@@ -26,6 +26,8 @@ jobs:
         run: |
           sudo apt update
           DEBIAN_FRONTEND=noninteractive sudo apt install -y sed
+
+          export HOME=$GITHUB_WORKSPACE
           cd ~/cromite/tools
           test -d cves || mkdir -p cves
 
