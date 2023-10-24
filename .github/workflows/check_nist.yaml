@@ -47,7 +47,7 @@ jobs:
           echo "CHANGES=$CHANGES" >> $GITHUB_ENV
 
           if [[ CHANGES -eq 1 ]]; then
-              git add cves/*.txt
+              git add tools/cves/*.txt
               git diff --name-only --staged
           fi
 
