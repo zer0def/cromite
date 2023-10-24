@@ -25,7 +25,7 @@ jobs:
       - name: Get data
         run: |
           sudo apt update
-          DEBIAN_FRONTEND=noninteractive sudo apt install -y colorized-logs
+          DEBIAN_FRONTEND=noninteractive sudo apt install -y sed
           cd ~/cromite/tools
           test -d cves || mkdir -p cves
 
@@ -33,7 +33,7 @@ jobs:
           docker run --rm --name tapir stratosphereips/tapir:latest \
              bash -c "python3 tapir.py -y 2020-$CY libjxl -s" >libjxl.ansi
 
-          ansi2txt <libjxl.ansi >libjxl.txt
+          sed -e 's/\x1b\[[0-9;]*m//g' <libjxl.ansi >libjxl.txt
           rm libjxl.ansi
 
       - name: Check differences
