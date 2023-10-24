@@ -1,0 +1,62 @@
+name: 'Check NIST database'
+
+on:
+  schedule:
+    - cron: '30 1 * * *'
+
+  workflow_dispatch:
+
+permissions:
+    issues: write
+    pull-requests: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 'uazo/cromite' ${{ env.BRANCH }}
+        uses: actions/checkout@v2
+        with:
+            repository: 'uazo/cromite'
+            ref: ${{ github.event.inputs.rtag }}
+            path: 'cromite'
+            fetch-depth: 1
+
+      - name: Get data
+        run: |
+          sudo apt update && sudo apt install colorized-logs
+          cd ~/cromite/tools
+          test -d cves || mkdir -p cves
+
+          CY=$(date +%Y)
+          docker run --rm --name tapir stratosphereips/tapir:latest \
+             bash -c "python3 tapir.py -y 2020-$CY libjxl -s" >libjxl.ansi
+
+          ansi2txt <libjxl.ansi >libjxl.txt
+          rm libjxl.ansi
+
+      - name: Check differences
+        run: |
+          cd ~/cromite
+          CHANGES=0 && git diff --quiet || CHANGES=1
+          echo "CHANGES=$CHANGES" >> $GITHUB_ENV
+
+          if [[ CHANGES -eq 1 ]]; then
+              git add cves/*.txt
+              git diff --name-only --staged
+          fi
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@dcd5fd746d53dd8de555c0f10bca6c35628be47a #v3.12.0
+        if: env.CHANGES == '1'
+        with:
+          token: ${{ secrets.CROMITE_PULLS }}
+          path: cromite
+          base: ${{ env.BRANCH }}
+          #push-to-fork: uazo/cromite
+          add-paths: |
+            build/patches/*.patch
+          commit-message: 'AUTOMATED - CVE results'
+          title: New CVE results
+          delete-branch: true
+          branch-suffix: short-commit-hash
