@@ -291,9 +291,9 @@ new file mode 100644
 + #include "net/test/embedded_test_server/http_request.h"
 + #include "third_party/blink/public/common/buildflags.h"
 ++#include "third_party/blink/public/common/features.h"
-+ 
++
 + using ChromeAcceptHeaderTest = InProcessBrowserTest;
-+ 
++
 +-#if BUILDFLAG(ENABLE_AV1_DECODER)
 ++#if BUILDFLAG(ENABLE_AV1_DECODER) || BUILDFLAG(ENABLE_JXL_DECODER)
 + namespace {
@@ -312,7 +312,7 @@ new file mode 100644
 + }  // namespace
 +-#endif  // BUILDFLAG(ENABLE_AV1_DECODER)
 ++#endif  // BUILDFLAG(ENABLE_AV1_DECODER) || BUILDFLAG(ENABLE_JXL_DECODER)
-+ 
++
 + IN_PROC_BROWSER_TEST_F(ChromeAcceptHeaderTest, Check) {
 +   net::EmbeddedTestServer server(net::EmbeddedTestServer::TYPE_HTTP);
 +@@ -55,7 +63,7 @@
@@ -325,7 +325,7 @@ new file mode 100644
 +       "text/html,application/xhtml+xml,application/xml;q=0.9," +
 +       GetOptionalImageCodecs() +
 +@@ -66,7 +74,7 @@
-+ 
++
 +   std::string expected_favicon_accept_header =
 +       "image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8";
 +-#if BUILDFLAG(ENABLE_AV1_DECODER)
@@ -353,7 +353,7 @@ new file mode 100644
 +@@ -71,13 +72,20 @@
 +     return it->second;
 +   }
-+ 
++
 +-#if BUILDFLAG(ENABLE_AV1_DECODER)
 ++#if BUILDFLAG(ENABLE_AV1_DECODER) || BUILDFLAG(ENABLE_JXL_DECODER)
 +   std::string GetOptionalImageCodecs() const {
@@ -370,7 +370,7 @@ new file mode 100644
 +   }
 +-#endif  // BUILDFLAG(ENABLE_AV1_DECODER)
 ++#endif  // BUILDFLAG(ENABLE_AV1_DECODER) || BUILDFLAG(ENABLE_JXL_DECODER)
-+ 
++
 +  private:
 +   void Monitor(const net::test_server::HttpRequest& request) {
 +@@ -113,7 +121,7 @@
@@ -2424,7 +2424,7 @@ diff --git a/third_party/blink/web_tests/TestExpectations b/third_party/blink/we
 diff --git a/third_party/blink/web_tests/VirtualTestSuites b/third_party/blink/web_tests/VirtualTestSuites
 --- a/third_party/blink/web_tests/VirtualTestSuites
 +++ b/third_party/blink/web_tests/VirtualTestSuites
-@@ -449,6 +449,15 @@
+@@ -450,6 +450,15 @@
               "--disable-threaded-compositing", "--disable-threaded-animation"],
      "expires": "Jul 1, 2023"
    },
