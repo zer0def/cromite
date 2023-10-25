@@ -35,7 +35,7 @@ jobs:
     runs-on: ${{ fromJSON( format('["ubuntu-latest", "{0}"]', github.event.inputs.type) )[github.event.inputs.type != ''] }}
     steps:
       - name: Reclaiming disk space on / by removing dotnet/android/ghc
-        if: ${{ github.event.inputs.type == '' }}
+        #if: ${{ github.event.inputs.type == '' }}
         run: |
           sudo rm -rf /usr/share/dotnet
           sudo rm -rf /usr/local/lib/android
