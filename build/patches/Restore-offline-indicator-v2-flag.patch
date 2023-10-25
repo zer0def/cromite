@@ -127,7 +127,7 @@ diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 diff --git a/chrome/browser/flag-metadata.json b/chrome/browser/flag-metadata.json
 --- a/chrome/browser/flag-metadata.json
 +++ b/chrome/browser/flag-metadata.json
-@@ -5936,6 +5936,11 @@
+@@ -5946,6 +5946,11 @@
      "owners": [ "//components/search/OWNERS" ],
      "expiry_milestone": 118
    },

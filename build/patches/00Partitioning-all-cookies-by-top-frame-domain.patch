@@ -83,7 +83,7 @@ diff --git a/net/base/features.cc b/net/base/features.cc
  
  // Enables partitioning of third party storage (IndexedDB, CacheStorage, etc.)
  // by the top level site to reduce fingerprinting.
-@@ -490,8 +490,8 @@ BASE_FEATURE(kDigestAuthEnableSecureAlgorithms,
+@@ -491,8 +491,8 @@ BASE_FEATURE(kDigestAuthEnableSecureAlgorithms,
  // third-party cookies are disabled due to a specific rule.
  // TODO(crbug.com/1468277): Default enable when UI work is complete.
  BASE_FEATURE(kThirdPartyPartitionedStorageAllowedByDefault,

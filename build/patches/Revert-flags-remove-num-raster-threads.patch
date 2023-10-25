@@ -46,7 +46,7 @@ diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 diff --git a/chrome/browser/flag-metadata.json b/chrome/browser/flag-metadata.json
 --- a/chrome/browser/flag-metadata.json
 +++ b/chrome/browser/flag-metadata.json
-@@ -5542,6 +5542,10 @@
+@@ -5552,6 +5552,10 @@
      "owners": [ "lazzzis", "aishwaryarj" ],
      "expiry_milestone": 120
    },

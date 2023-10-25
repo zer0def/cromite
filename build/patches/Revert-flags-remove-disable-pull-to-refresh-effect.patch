@@ -30,7 +30,7 @@ diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 diff --git a/chrome/browser/flag-metadata.json b/chrome/browser/flag-metadata.json
 --- a/chrome/browser/flag-metadata.json
 +++ b/chrome/browser/flag-metadata.json
-@@ -1765,6 +1765,10 @@
+@@ -1770,6 +1770,10 @@
        "yangsharon@google.com", "alexmos@google.com", "creis@google.com" ],
      "expiry_milestone": 122
    },
