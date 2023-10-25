@@ -236,7 +236,7 @@ diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 diff --git a/chrome/browser/flag-metadata.json b/chrome/browser/flag-metadata.json
 --- a/chrome/browser/flag-metadata.json
 +++ b/chrome/browser/flag-metadata.json
-@@ -3038,6 +3038,11 @@
+@@ -3043,6 +3043,11 @@
      // This flag is used by web developers to test upcoming javascript features.
      "expiry_milestone": -1
    },
@@ -2848,7 +2848,7 @@ diff --git a/tools/metrics/histograms/enums.xml b/tools/metrics/histograms/enums
  </enum>
  
  <enum name="DecodeSwapChainNotUsedReason">
-@@ -64976,6 +64976,7 @@ from previous Chrome versions.
+@@ -64986,6 +64986,7 @@ from previous Chrome versions.
    <int value="188610022" label="NewMessageListView:enabled"/>
    <int value="189728101" label="FasterLocationReload:disabled"/>
    <int value="189777537" label="DisableInitialMostVisitedFadeIn:enabled"/>
