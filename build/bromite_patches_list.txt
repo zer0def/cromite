@@ -278,6 +278,8 @@ Timezone-customization.patch
 00Disable-ranker-url-fetcher.patch
 00Show-full-urls-for-bookmark.patch
 00Disable-prefers-reduced-transparency-media-query.patch
+00libjxl-0-8-2.patch
+00Add-support-to-jxl.patch
 
 00Temp-PerformanceNavigationTiming-privacy-fix.patch
 00Temp-remove-support-for-shared-workers.patch
