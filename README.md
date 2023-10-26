@@ -148,6 +148,11 @@ In addition, Cromite would like to promote greater integration with other non-pr
 ##### from [117.0.5938.140](https://github.com/uazo/cromite/issues/349#issuecomment-1740388786)
 * Partition MediaDeviceId by default [patch](https://github.com/uazo/cromite/blob/master/build/patches/00Partition-MediaDeviceId-by-default.patch)
 
+##### from [118.0.5993.118](https://github.com/uazo/cromite/issues/458#issuecomment-1780511486)
+* Add support for jpeg xl [patch](https://github.com/uazo/cromite/blob/master/build/patches/00Add-support-to-jxl.patch) https://github.com/uazo/cromite/issues/351
+* Disable prefers-reduced-transparency media query [patch](https://github.com/uazo/cromite/blob/master/build/patches/00Disable-prefers-reduced-transparency-media-query.patch) https://github.com/uazo/cromite/issues/437
+* Show full urls for bookmark [patch](https://github.com/uazo/cromite/blob/master/build/patches/00Show-full-urls-for-bookmark.patch) https://github.com/uazo/cromite/issues/434
+
 #### Windows Cromite-specific features
 
 * enable Network Service Sandbox by default
@@ -211,6 +216,7 @@ Flags which have been retired from upstream Chromium but are still available in 
 * `#enable-image-reader`, enabled by default
 * `#enable-tab-groups` and `#enable-tab-groups-ui-improvements`
 * `#offline-indicator-v2`
+* `#enable-jxl`
 
 New flags:
 
