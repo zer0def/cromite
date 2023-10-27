@@ -96,8 +96,7 @@ jobs:
           git commit -m $VERSION
           git tag -a $VERSION -m $VERSION
 
-          git add -f v8
-          git commit -m ":NOEXPORT: v8"
+          git add -f v8 && git commit -m ":NOEXPORT: v8" || true
 
       - name: Apply patches ${{ github.event.inputs.rtag }}
         run: |
