@@ -15,7 +15,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../browser/predictors/loading_predictor.cc   |  4 +-
  .../predictors/loading_predictor_config.cc    |  4 +-
  .../browser/predictors/predictors_features.cc | 14 +---
- chrome/common/chrome_features.cc              | 10 +--
+ chrome/common/chrome_features.cc              |  6 +-
  .../browser/autofill_optimization_guide.cc    |  5 +-
  .../optimization_guide/core/hints_fetcher.cc  |  1 +
  .../optimization_guide/core/hints_manager.cc  |  5 ++
@@ -23,15 +23,15 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../core/prediction_model_download_manager.cc |  6 +-
  .../core/prediction_model_fetcher_impl.cc     |  1 +
  components/optimization_guide/features.gni    |  3 +-
- components/permissions/features.cc            |  8 +--
+ components/permissions/features.cc            | 16 ++---
  third_party/blink/common/features.cc          | 12 ++--
  .../platform/runtime_enabled_features.json5   |  2 +-
- 21 files changed, 79 insertions(+), 109 deletions(-)
+ 21 files changed, 81 insertions(+), 111 deletions(-)
 
 diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -890,10 +890,10 @@ static_library("browser") {
+@@ -891,10 +891,10 @@ static_library("browser") {
      "navigation_predictor/navigation_predictor_metrics_document_data.h",
      "navigation_predictor/navigation_predictor_preconnect_client.cc",
      "navigation_predictor/navigation_predictor_preconnect_client.h",
@@ -49,7 +49,7 @@ diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 diff --git a/chrome/browser/browser_features.cc b/chrome/browser/browser_features.cc
 --- a/chrome/browser/browser_features.cc
 +++ b/chrome/browser/browser_features.cc
-@@ -239,22 +239,22 @@ BASE_FEATURE(kIncomingCallNotifications,
+@@ -255,22 +255,22 @@ BASE_FEATURE(kIncomingCallNotifications,
  
  // Enables omnibox trigger prerendering.
  BASE_FEATURE(kOmniboxTriggerForPrerender2,
@@ -139,7 +139,7 @@ diff --git a/chrome/browser/optimization_guide/chrome_hints_manager.cc b/chrome/
 diff --git a/chrome/browser/optimization_guide/optimization_guide_keyed_service.cc b/chrome/browser/optimization_guide/optimization_guide_keyed_service.cc
 --- a/chrome/browser/optimization_guide/optimization_guide_keyed_service.cc
 +++ b/chrome/browser/optimization_guide/optimization_guide_keyed_service.cc
-@@ -333,7 +333,6 @@ void OptimizationGuideKeyedService::RemoveObserverForOptimizationTargetModel(
+@@ -343,7 +343,6 @@ void OptimizationGuideKeyedService::RemoveObserverForOptimizationTargetModel(
  void OptimizationGuideKeyedService::RegisterOptimizationTypes(
      const std::vector<optimization_guide::proto::OptimizationType>&
          optimization_types) {
@@ -224,29 +224,7 @@ diff --git a/chrome/browser/predictors/predictors_features.cc b/chrome/browser/p
 diff --git a/chrome/common/chrome_features.cc b/chrome/common/chrome_features.cc
 --- a/chrome/common/chrome_features.cc
 +++ b/chrome/common/chrome_features.cc
-@@ -1008,8 +1008,8 @@ BASE_FEATURE(kPermissionAuditing,
- // Enables using the prediction service for permission prompts. We will keep
- // this feature in order to allow us to update the holdback chance via finch.
- BASE_FEATURE(kPermissionPredictions,
--             "PermissionPredictions",
--             base::FEATURE_ENABLED_BY_DEFAULT);
-+             "PermissionPredictions",               // disabled by default
-+             base::FEATURE_DISABLED_BY_DEFAULT);    // in Bromite
- 
- // The holdback chance is 30% but it can also be configured/updated
- // through finch if needed.
-@@ -1020,8 +1020,8 @@ const base::FeatureParam<double> kPermissionPredictionsHoldbackChance(
- 
- // Enables using the prediction service for geolocation permission prompts.
- BASE_FEATURE(kPermissionGeolocationPredictions,
--             "PermissionGeolocationPredictions",
--             base::FEATURE_ENABLED_BY_DEFAULT);
-+             "PermissionGeolocationPredictions",        // disabled by default
-+             base::FEATURE_DISABLED_BY_DEFAULT);        // in Bromite
- 
- const base::FeatureParam<double>
-     kPermissionGeolocationPredictionsHoldbackChance(
-@@ -1037,7 +1037,7 @@ BASE_FEATURE(kPluginVm, "PluginVm", base::FEATURE_DISABLED_BY_DEFAULT);
+@@ -1044,7 +1044,7 @@ BASE_FEATURE(kPluginVm, "PluginVm", base::FEATURE_DISABLED_BY_DEFAULT);
  // Allows Chrome to do preconnect when prerender fails.
  BASE_FEATURE(kPrerenderFallbackToPreconnect,
               "PrerenderFallbackToPreconnect",
@@ -255,6 +233,17 @@ diff --git a/chrome/common/chrome_features.cc b/chrome/common/chrome_features.cc
  
  #if BUILDFLAG(IS_CHROMEOS)
  // Enable improved printer state and error state messaging for Print Preview.
+@@ -1105,8 +1105,8 @@ BASE_FEATURE(kSafetyCheckExtensions,
+ 
+ // Enables notification permission module in Safety Check.
+ BASE_FEATURE(kSafetyCheckNotificationPermissions,
+-             "SafetyCheckNotificationPermissions",
+-             base::FEATURE_ENABLED_BY_DEFAULT);
++             "SafetyCheckNotificationPermissions",        // disabled by default
++             base::FEATURE_DISABLED_BY_DEFAULT);        // in Bromite
+ 
+ const base::FeatureParam<int>
+     kSafetyCheckNotificationPermissionsMinEnagementLimit{
 diff --git a/components/autofill/core/browser/autofill_optimization_guide.cc b/components/autofill/core/browser/autofill_optimization_guide.cc
 --- a/components/autofill/core/browser/autofill_optimization_guide.cc
 +++ b/components/autofill/core/browser/autofill_optimization_guide.cc
@@ -287,7 +276,7 @@ diff --git a/components/autofill/core/browser/autofill_optimization_guide.cc b/c
 diff --git a/components/optimization_guide/core/hints_fetcher.cc b/components/optimization_guide/core/hints_fetcher.cc
 --- a/components/optimization_guide/core/hints_fetcher.cc
 +++ b/components/optimization_guide/core/hints_fetcher.cc
-@@ -185,6 +185,7 @@ bool HintsFetcher::FetchOptimizationGuideServiceHints(
+@@ -178,6 +178,7 @@ bool HintsFetcher::FetchOptimizationGuideServiceHints(
      const std::string& access_token,
      bool skip_cache,
      HintsFetchedCallback hints_fetched_callback) {
@@ -327,7 +316,7 @@ diff --git a/components/optimization_guide/core/hints_manager.cc b/components/op
 diff --git a/components/optimization_guide/core/optimization_guide_features.cc b/components/optimization_guide/core/optimization_guide_features.cc
 --- a/components/optimization_guide/core/optimization_guide_features.cc
 +++ b/components/optimization_guide/core/optimization_guide_features.cc
-@@ -33,13 +33,6 @@ namespace features {
+@@ -34,13 +34,6 @@ namespace features {
  
  namespace {
  
@@ -341,7 +330,7 @@ diff --git a/components/optimization_guide/core/optimization_guide_features.cc b
  constexpr auto enabled_by_default_mobile_only =
  #if BUILDFLAG(IS_ANDROID) || BUILDFLAG(IS_IOS)
      true;
-@@ -47,13 +40,6 @@ constexpr auto enabled_by_default_mobile_only =
+@@ -48,13 +41,6 @@ constexpr auto enabled_by_default_mobile_only =
      false;
  #endif
  
@@ -355,7 +344,7 @@ diff --git a/components/optimization_guide/core/optimization_guide_features.cc b
  // Returns whether |locale| is a supported locale for |feature|.
  //
  // This matches |locale| with the "supported_locales" feature param value in
-@@ -99,17 +85,17 @@ bool IsSupportedLocaleForFeature(
+@@ -149,17 +135,17 @@ std::set<std::string> GetOauthScopesForFeature(const base::Feature& feature) {
  // Enables the syncing of the Optimization Hints component, which provides
  // hints for what optimizations can be applied on a page load.
  BASE_FEATURE(kOptimizationHints,
@@ -379,7 +368,7 @@ diff --git a/components/optimization_guide/core/optimization_guide_features.cc b
  
  // Enables performance info in the context menu and fetching from a remote
  // Optimization Guide Service.
-@@ -119,33 +105,29 @@ BASE_FEATURE(kContextMenuPerformanceInfoAndRemoteHintFetching,
+@@ -169,33 +155,29 @@ BASE_FEATURE(kContextMenuPerformanceInfoAndRemoteHintFetching,
  
  // Enables the prediction of optimization targets.
  BASE_FEATURE(kOptimizationTargetPrediction,
@@ -410,7 +399,7 @@ diff --git a/components/optimization_guide/core/optimization_guide_features.cc b
  // Enables fetching page metadata from the remote Optimization Guide service.
  BASE_FEATURE(kRemotePageMetadata,
 -             "RemotePageMetadata",
--             base::FEATURE_DISABLED_BY_DEFAULT);
+-             enabled_by_default_desktop_only);
 +             "RemotePageMetadata",                // disabled by default
 +             base::FEATURE_DISABLED_BY_DEFAULT);  // in Bromite
  
@@ -423,7 +412,7 @@ diff --git a/components/optimization_guide/core/optimization_guide_features.cc b
  // Enables the page visibility model to be annotated on every page load.
  BASE_FEATURE(kPageVisibilityPageContentAnnotations,
               "PageVisibilityPageContentAnnotations",
-@@ -168,8 +150,8 @@ BASE_FEATURE(kPageEntitiesModelResetOnShutdown,
+@@ -218,8 +200,8 @@ BASE_FEATURE(kPageEntitiesModelResetOnShutdown,
  
  // Enables push notification of hints.
  BASE_FEATURE(kPushNotifications,
@@ -434,7 +423,7 @@ diff --git a/components/optimization_guide/core/optimization_guide_features.cc b
  
  // This feature flag does not turn off any behavior, it is only used for
  // experiment parameters.
-@@ -182,21 +164,21 @@ BASE_FEATURE(kOptimizationGuideMetadataValidation,
+@@ -232,21 +214,21 @@ BASE_FEATURE(kOptimizationGuideMetadataValidation,
               "OptimizationGuideMetadataValidation",
               base::FEATURE_DISABLED_BY_DEFAULT);
  
@@ -462,7 +451,7 @@ diff --git a/components/optimization_guide/core/optimization_guide_features.cc b
  
  BASE_FEATURE(kOptimizationGuideUseContinueOnShutdownForPageContentAnnotations,
               "OptimizationGuideUseContinueOnShutdownForPageContentAnnotations",
-@@ -231,8 +213,8 @@ BASE_FEATURE(kPageContentAnnotationsPersistSalientImageMetadata,
+@@ -281,8 +263,8 @@ BASE_FEATURE(kPageContentAnnotationsPersistSalientImageMetadata,
  // Killswitch for fetching on search results from a remote Optimization Guide
  // Service.
  BASE_FEATURE(kOptimizationGuideFetchingForSRP,
@@ -473,7 +462,7 @@ diff --git a/components/optimization_guide/core/optimization_guide_features.cc b
  
  // Enables the model store to save relative paths computed from the base model
  // store dir. Storing as relative path in the model store is needed for IOS,
-@@ -511,7 +493,7 @@ size_t MaxURLKeyedHintCacheSize() {
+@@ -566,7 +548,7 @@ size_t MaxURLKeyedHintCacheSize() {
  
  bool ShouldPersistHintsToDisk() {
    return GetFieldTrialParamByFeatureAsBool(kOptimizationHints,
@@ -546,7 +535,7 @@ diff --git a/components/optimization_guide/features.gni b/components/optimizatio
 diff --git a/components/permissions/features.cc b/components/permissions/features.cc
 --- a/components/permissions/features.cc
 +++ b/components/permissions/features.cc
-@@ -92,12 +92,12 @@ BASE_FEATURE(kFailFastQuietChip,
+@@ -93,24 +93,24 @@ BASE_FEATURE(kFailFastQuietChip,
  // When enabled, use the value of the `service_url` FeatureParam as the url
  // for the Web Permission Predictions Service.
  BASE_FEATURE(kPermissionPredictionServiceUseUrlOverride,
@@ -562,11 +551,27 @@ diff --git a/components/permissions/features.cc b/components/permissions/feature
 +             base::FEATURE_DISABLED_BY_DEFAULT);                 // in Bromite
  
  BASE_FEATURE(kPermissionOnDeviceGeolocationPredictions,
-              "PermissionOnDeviceGeolocationPredictions",
+-             "PermissionOnDeviceGeolocationPredictions",
+-             base::FEATURE_ENABLED_BY_DEFAULT);
++             "PermissionOnDeviceGeolocationPredictions",         // disabled by default
++             base::FEATURE_DISABLED_BY_DEFAULT);                 // in Bromite
+ 
+ BASE_FEATURE(kPermissionDedicatedCpssSetting,
+              "PermissionDedicatedCpssSettings",
+              base::FEATURE_DISABLED_BY_DEFAULT);
+ 
+ BASE_FEATURE(kPermissionPredictionsV2,
+-             "PermissionPredictionsV2",
+-             base::FEATURE_DISABLED_BY_DEFAULT);
++             "PermissionPredictionsV2",           // disabled by default
++             base::FEATURE_DISABLED_BY_DEFAULT);  // in Bromite
+ 
+ #if BUILDFLAG(IS_ANDROID)
+ 
 diff --git a/third_party/blink/common/features.cc b/third_party/blink/common/features.cc
 --- a/third_party/blink/common/features.cc
 +++ b/third_party/blink/common/features.cc
-@@ -1181,12 +1181,8 @@ BASE_FEATURE(kMemoryCacheStrongReferenceSingleUnload,
+@@ -1217,12 +1217,8 @@ BASE_FEATURE(kMemoryCacheStrongReferenceSingleUnload,
  // in the first viewport after the page load and the metrics of the clicked
  // anchor element will be extracted and recorded.
  BASE_FEATURE(kNavigationPredictor,
@@ -581,7 +586,7 @@ diff --git a/third_party/blink/common/features.cc b/third_party/blink/common/fea
  );
  
  BASE_FEATURE(kNewBaseUrlInheritanceBehavior,
-@@ -1323,8 +1319,8 @@ BASE_FEATURE(kPrefetchPrivacyChanges,
+@@ -1359,8 +1355,8 @@ BASE_FEATURE(kPrefetchPrivacyChanges,
               base::FEATURE_ENABLED_BY_DEFAULT);   // in Bromite
  
  BASE_FEATURE(kPreloadingHeuristicsMLModel,
@@ -595,7 +600,7 @@ diff --git a/third_party/blink/common/features.cc b/third_party/blink/common/fea
 diff --git a/third_party/blink/renderer/platform/runtime_enabled_features.json5 b/third_party/blink/renderer/platform/runtime_enabled_features.json5
 --- a/third_party/blink/renderer/platform/runtime_enabled_features.json5
 +++ b/third_party/blink/renderer/platform/runtime_enabled_features.json5
-@@ -2954,7 +2954,7 @@
+@@ -3014,7 +3014,7 @@
      {
        // https://crbug.com/1126305
        name: "Prerender2",

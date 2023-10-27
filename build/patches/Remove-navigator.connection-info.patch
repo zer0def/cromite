@@ -73,7 +73,7 @@ diff --git a/third_party/blink/renderer/platform/network/network_state_notifier.
 diff --git a/third_party/blink/renderer/platform/network/network_state_notifier.h b/third_party/blink/renderer/platform/network/network_state_notifier.h
 --- a/third_party/blink/renderer/platform/network/network_state_notifier.h
 +++ b/third_party/blink/renderer/platform/network/network_state_notifier.h
-@@ -123,7 +123,7 @@ class PLATFORM_EXPORT NetworkStateNotifier {
+@@ -124,7 +124,7 @@ class PLATFORM_EXPORT NetworkStateNotifier {
      scoped_refptr<base::SingleThreadTaskRunner> task_runner_;
    };
  

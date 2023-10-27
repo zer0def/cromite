@@ -11,7 +11,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 diff --git a/gpu/config/gpu_finch_features.cc b/gpu/config/gpu_finch_features.cc
 --- a/gpu/config/gpu_finch_features.cc
 +++ b/gpu/config/gpu_finch_features.cc
-@@ -284,7 +284,7 @@ BASE_FEATURE(kEnableDrDcVulkan,
+@@ -283,7 +283,7 @@ BASE_FEATURE(kForceGpuMainThreadToNormalPriorityDrDc,
  // Enable WebGPU on gpu service side only. This is used with origin trial and
  // enabled by default on supported platforms.
  #if BUILDFLAG(IS_MAC) || BUILDFLAG(IS_WIN) || BUILDFLAG(IS_CHROMEOS_ASH)

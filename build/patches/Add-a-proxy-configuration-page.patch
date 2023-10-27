@@ -19,7 +19,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../java/res/xml/privacy_preferences.xml      |   4 +
  .../privacy/settings/PrivacySettings.java     |   1 +
  .../chrome_autocomplete_provider_client.cc    |   2 +
- chrome/browser/browser_resources.grd          |   4 +-
+ chrome/browser/browser_resources.grd          |   3 +
  .../extensions/api/proxy/proxy_api_helpers.cc |   2 +-
  chrome/browser/net/proxy_service_factory.cc   |  24 +-
  chrome/browser/net/proxy_service_factory.h    |   3 +
@@ -40,7 +40,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../proxy_config/proxy_policy_handler.cc      |   2 +-
  net/proxy_resolution/proxy_config.cc          |  52 ++-
  net/proxy_resolution/proxy_config.h           |   3 +
- 25 files changed, 981 insertions(+), 18 deletions(-)
+ 25 files changed, 981 insertions(+), 17 deletions(-)
  create mode 100644 chrome/browser/resources/proxy_config.css
  create mode 100644 chrome/browser/resources/proxy_config.html
  create mode 100644 chrome/browser/resources/proxy_config.js
@@ -77,7 +77,7 @@ diff --git a/chrome/android/java/res/xml/privacy_preferences.xml b/chrome/androi
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/PrivacySettings.java b/chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/PrivacySettings.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/PrivacySettings.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/PrivacySettings.java
-@@ -82,6 +82,7 @@ public class PrivacySettings extends PreferenceFragmentCompat
+@@ -77,6 +77,7 @@ public class PrivacySettings
      private static final String PREF_SAFE_BROWSING = "safe_browsing";
      private static final String PREF_SYNC_AND_SERVICES_LINK = "sync_and_services_link";
      private static final String PREF_PRIVACY_SANDBOX = "privacy_sandbox";
@@ -100,7 +100,7 @@ diff --git a/chrome/browser/autocomplete/chrome_autocomplete_provider_client.cc 
 diff --git a/chrome/browser/browser_resources.grd b/chrome/browser/browser_resources.grd
 --- a/chrome/browser/browser_resources.grd
 +++ b/chrome/browser/browser_resources.grd
-@@ -275,11 +275,13 @@
+@@ -252,6 +252,9 @@
          <include name="IDR_PREF_HASH_SEED_BIN" file="resources\settings_internal\pref_hash_seed.bin" type="BINDATA" />
          <include name="IDR_ADDITIONAL_MODULE_IDS" file="${additional_modules_list_file}" use_base_dir="false" type="BINDATA" />
        </if>
@@ -108,13 +108,8 @@ diff --git a/chrome/browser/browser_resources.grd b/chrome/browser/browser_resou
 +      <include name="IDR_PROXY_CONFIG_HTML" file="resources\proxy_config.html" flattenhtml="true" type="BINDATA" compress="gzip" />
 +      <include name="IDR_PROXY_CONFIG_JS" file="resources\proxy_config.js" type="BINDATA" compress="gzip" />
        <if expr="not is_android">
-         <include name="IDR_ABOUT_SYS_HTML" file="resources\about_sys\about_sys.html" type="BINDATA" />
-         <include name="IDR_ABOUT_SYS_CSS" file="resources\about_sys\about_sys.css" type="BINDATA" />
-         <include name="IDR_ABOUT_SYS_JS" file="resources\about_sys\about_sys.js" preprocess="true" type="BINDATA" />
--
          <!-- Page not available for guest. -->
          <include name="IDR_PAGE_NOT_AVAILABLE_FOR_GUEST_APP_HTML" file="resources\page_not_available_for_guest\app.html" type="BINDATA" />
-         <include name="IDR_MEDIA_ROUTER_INTERNALS_HTML" file="resources\media_router\internals\media_router_internals.html" type="BINDATA" />
 diff --git a/chrome/browser/extensions/api/proxy/proxy_api_helpers.cc b/chrome/browser/extensions/api/proxy/proxy_api_helpers.cc
 --- a/chrome/browser/extensions/api/proxy/proxy_api_helpers.cc
 +++ b/chrome/browser/extensions/api/proxy/proxy_api_helpers.cc
@@ -202,7 +197,7 @@ diff --git a/chrome/browser/net/proxy_service_factory.h b/chrome/browser/net/pro
 diff --git a/chrome/browser/prefs/browser_prefs.cc b/chrome/browser/prefs/browser_prefs.cc
 --- a/chrome/browser/prefs/browser_prefs.cc
 +++ b/chrome/browser/prefs/browser_prefs.cc
-@@ -181,6 +181,8 @@
+@@ -185,6 +185,8 @@
  #include "rlz/buildflags/buildflags.h"
  #include "third_party/abseil-cpp/absl/types/optional.h"
  
@@ -211,7 +206,7 @@ diff --git a/chrome/browser/prefs/browser_prefs.cc b/chrome/browser/prefs/browse
  #if BUILDFLAG(ENABLE_BACKGROUND_MODE)
  #include "chrome/browser/background/background_mode_manager.h"
  #endif
-@@ -1306,6 +1308,8 @@ void RegisterLocalState(PrefRegistrySimple* registry) {
+@@ -1389,6 +1391,8 @@ void RegisterLocalState(PrefRegistrySimple* registry) {
    component_updater::RegisterPrefs(registry);
    domain_reliability::RegisterPrefs(registry);
    embedder_support::OriginTrialPrefs::RegisterPrefs(registry);
@@ -666,7 +661,7 @@ new file mode 100644
 diff --git a/chrome/browser/ui/BUILD.gn b/chrome/browser/ui/BUILD.gn
 --- a/chrome/browser/ui/BUILD.gn
 +++ b/chrome/browser/ui/BUILD.gn
-@@ -309,6 +309,8 @@ static_library("ui") {
+@@ -301,6 +301,8 @@ static_library("ui") {
      "webui/metrics_internals/metrics_internals_ui.h",
      "webui/net_export_ui.cc",
      "webui/net_export_ui.h",
@@ -678,7 +673,7 @@ diff --git a/chrome/browser/ui/BUILD.gn b/chrome/browser/ui/BUILD.gn
 diff --git a/chrome/browser/ui/webui/chrome_web_ui_controller_factory.cc b/chrome/browser/ui/webui/chrome_web_ui_controller_factory.cc
 --- a/chrome/browser/ui/webui/chrome_web_ui_controller_factory.cc
 +++ b/chrome/browser/ui/webui/chrome_web_ui_controller_factory.cc
-@@ -64,6 +64,7 @@
+@@ -63,6 +63,7 @@
  #include "chrome/browser/ui/webui/ntp_tiles_internals_ui.h"
  #include "chrome/browser/ui/webui/omnibox/omnibox_ui.h"
  #include "chrome/browser/ui/webui/policy/policy_ui.h"
@@ -686,7 +681,7 @@ diff --git a/chrome/browser/ui/webui/chrome_web_ui_controller_factory.cc b/chrom
  #include "chrome/browser/ui/webui/predictors/predictors_ui.h"
  #include "chrome/browser/ui/webui/segmentation_internals/segmentation_internals_ui.h"
  #include "chrome/browser/ui/webui/signin_internals_ui.h"
-@@ -499,6 +500,8 @@ WebUIFactoryFunction GetWebUIFactoryFunction(WebUI* web_ui,
+@@ -496,6 +497,8 @@ WebUIFactoryFunction GetWebUIFactoryFunction(WebUI* web_ui,
      return &NewWebUI<MetricsInternalsUI>;
    if (url.host_piece() == chrome::kChromeUINetExportHost)
      return &NewWebUI<NetExportUI>;
@@ -1141,7 +1136,7 @@ diff --git a/chrome/common/webui_url_constants.cc b/chrome/common/webui_url_cons
  const char kChromeUIChromeURLsHost[] = "chrome-urls";
  const char kChromeUIChromeURLsURL[] = "chrome://chrome-urls/";
  const char kChromeUIComponentsHost[] = "components";
-@@ -449,6 +451,7 @@ bool IsSystemWebUIHost(base::StringPiece host) {
+@@ -450,6 +452,7 @@ bool IsSystemWebUIHost(base::StringPiece host) {
      kChromeUILockScreenNetworkHost,
      kChromeUILockScreenStartReauthHost,
      kChromeUIMobileSetupHost,
@@ -1149,7 +1144,7 @@ diff --git a/chrome/common/webui_url_constants.cc b/chrome/common/webui_url_cons
      kChromeUIMultiDeviceSetupHost,
      kChromeUINetworkHost,
      kChromeUINotificationTesterHost,
-@@ -755,6 +758,7 @@ const char* const kChromeHostURLs[] = {
+@@ -759,6 +762,7 @@ const char* const kChromeHostURLs[] = {
  #if !BUILDFLAG(IS_ANDROID)
  #if !BUILDFLAG(IS_CHROMEOS)
      kChromeUIAppLauncherPageHost,
@@ -1160,7 +1155,7 @@ diff --git a/chrome/common/webui_url_constants.cc b/chrome/common/webui_url_cons
 diff --git a/chrome/common/webui_url_constants.h b/chrome/common/webui_url_constants.h
 --- a/chrome/common/webui_url_constants.h
 +++ b/chrome/common/webui_url_constants.h
-@@ -143,6 +143,8 @@ extern const char kChromeUINTPTilesInternalsHost[];
+@@ -142,6 +142,8 @@ extern const char kChromeUINTPTilesInternalsHost[];
  extern const char kChromeUINaClHost[];
  extern const char kChromeUINetExportHost[];
  extern const char kChromeUINetExportURL[];

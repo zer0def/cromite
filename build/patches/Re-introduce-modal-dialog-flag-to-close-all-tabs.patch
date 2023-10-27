@@ -43,7 +43,7 @@ diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -9640,6 +9640,13 @@ const FeatureEntry kFeatureEntries[] = {
+@@ -9934,6 +9934,13 @@ const FeatureEntry kFeatureEntries[] = {
       FEATURE_VALUE_TYPE(base::i18n::kLacrosMergeIcuDataFile)},
  #endif
  
@@ -60,7 +60,7 @@ diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descriptions.cc
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -3920,6 +3920,11 @@ const char kChimeAndroidSdkDescription[] =
+@@ -3976,6 +3976,11 @@ const char kChimeAndroidSdkDescription[] =
      "Enable Chime SDK to receive push notification.";
  const char kChimeAndroidSdkName[] = "Use Chime SDK";
  
@@ -75,7 +75,7 @@ diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descripti
 diff --git a/chrome/browser/flag_descriptions.h b/chrome/browser/flag_descriptions.h
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -45,6 +45,9 @@ namespace flag_descriptions {
+@@ -46,6 +46,9 @@ namespace flag_descriptions {
  extern const char kAccelerated2dCanvasName[];
  extern const char kAccelerated2dCanvasDescription[];
  
@@ -88,15 +88,15 @@ diff --git a/chrome/browser/flag_descriptions.h b/chrome/browser/flag_descriptio
 diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browser/flags/android/chrome_feature_list.cc
 --- a/chrome/browser/flags/android/chrome_feature_list.cc
 +++ b/chrome/browser/flags/android/chrome_feature_list.cc
-@@ -180,6 +180,7 @@ const base::Feature* const kFeaturesExposedToJava[] = {
+@@ -183,6 +183,7 @@ const base::Feature* const kFeaturesExposedToJava[] = {
      &kBackGestureActivityTabProvider,
      &kBackGestureRefactorActivityAndroid,
      &kBackGestureRefactorAndroid,
 +    &kCloseAllTabsModalDialog,
      &kBackgroundThreadPool,
      &kBaselineGM3SurfaceColors,
-     &kCacheActivityTaskID,
-@@ -524,6 +525,10 @@ BASE_FEATURE(kCacheActivityTaskID,
+     &kBlockIntentsWhileLocked,
+@@ -536,6 +537,10 @@ BASE_FEATURE(kCacheActivityTaskID,
               "CacheActivityTaskID",
               base::FEATURE_ENABLED_BY_DEFAULT);
  
@@ -107,7 +107,7 @@ diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browse
  // Used in downstream code.
  BASE_FEATURE(kCastDeviceFilter,
               "CastDeviceFilter",
-@@ -534,8 +539,8 @@ BASE_FEATURE(kClearOmniboxFocusAfterNavigation,
+@@ -546,8 +551,8 @@ BASE_FEATURE(kClearOmniboxFocusAfterNavigation,
               base::FEATURE_ENABLED_BY_DEFAULT);
  
  BASE_FEATURE(kCloseTabSuggestions,
@@ -121,8 +121,8 @@ diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browse
 diff --git a/chrome/browser/flags/android/chrome_feature_list.h b/chrome/browser/flags/android/chrome_feature_list.h
 --- a/chrome/browser/flags/android/chrome_feature_list.h
 +++ b/chrome/browser/flags/android/chrome_feature_list.h
-@@ -38,6 +38,7 @@ BASE_DECLARE_FEATURE(kBackgroundThreadPool);
- BASE_DECLARE_FEATURE(kBaselineGM3SurfaceColors);
+@@ -41,6 +41,7 @@ BASE_DECLARE_FEATURE(kBaselineGM3SurfaceColors);
+ BASE_DECLARE_FEATURE(kBlockIntentsWhileLocked);
  BASE_DECLARE_FEATURE(kCacheActivityTaskID);
  BASE_DECLARE_FEATURE(kClearOmniboxFocusAfterNavigation);
 +BASE_DECLARE_FEATURE(kCloseAllTabsModalDialog);
@@ -132,7 +132,7 @@ diff --git a/chrome/browser/flags/android/chrome_feature_list.h b/chrome/browser
 diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 --- a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 +++ b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
-@@ -203,6 +203,7 @@ public abstract class ChromeFeatureList {
+@@ -197,6 +197,7 @@ public abstract class ChromeFeatureList {
      public static final String CCT_RESIZABLE_90_MAXIMUM_HEIGHT = "CCTResizable90MaximumHeight";
      public static final String CCT_RESIZABLE_ALLOW_RESIZE_BY_USER_GESTURE =
              "CCTResizableAllowResizeByUserGesture";

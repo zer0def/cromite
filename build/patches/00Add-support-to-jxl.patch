@@ -16,9 +16,6 @@ Enabled by default
  chrome/browser/flag-metadata.json             |   5 +
  chrome/browser/flag_descriptions.cc           |   7 +
  chrome/browser/flag_descriptions.h            |   5 +
- .../chrome_accept_header_browsertest.cc.rej   |  48 ++
- .../network/accept_header_browsertest.cc      |   1 +
- .../network/accept_header_browsertest.cc.rej  |  51 ++
  content/common/content_constants_internal.cc  |  11 +-
  content/common/content_constants_internal.h   |   3 +-
  content/public/browser/frame_accept_header.cc |  13 +-
@@ -62,10 +59,8 @@ Enabled by default
  third_party/libjxl/README.chromium            |  15 +
  .../libjxl/gen_headers/jxl/jxl_export.h       |  11 +
  tools/metrics/histograms/enums.xml            |   3 +-
- 57 files changed, 2110 insertions(+), 17 deletions(-)
+ 54 files changed, 2010 insertions(+), 17 deletions(-)
  create mode 100644 build/linux/unbundle/libjxl.gn
- create mode 100644 chrome/browser/net/chrome_accept_header_browsertest.cc.rej
- create mode 100644 content/browser/network/accept_header_browsertest.cc.rej
  create mode 100644 third_party/blink/renderer/platform/image-decoders/jxl/jxl_image_decoder.cc
  create mode 100644 third_party/blink/renderer/platform/image-decoders/jxl/jxl_image_decoder.h
  create mode 100644 third_party/blink/renderer/platform/image-decoders/jxl/jxl_image_decoder_test.cc
@@ -87,7 +82,7 @@ Enabled by default
 diff --git a/DEPS b/DEPS
 --- a/DEPS
 +++ b/DEPS
-@@ -519,6 +519,10 @@ vars = {
+@@ -515,6 +515,10 @@ vars = {
    # Three lines of non-changing comments so that
    # the commit queue can handle CLs rolling feed
    # and whatever else without interference from each other.
@@ -98,7 +93,7 @@ diff --git a/DEPS b/DEPS
    'highway_revision': '8f20644eca693cfb74aa795b0006b6779c370e7a',
    # Three lines of non-changing comments so that
    # the commit queue can handle CLs rolling ffmpeg
-@@ -1209,6 +1213,9 @@ deps = {
+@@ -1205,6 +1209,9 @@ deps = {
    'src/third_party/dawn':
      Var('dawn_git') + '/dawn.git' + '@' +  Var('dawn_revision'),
  
@@ -161,20 +156,13 @@ diff --git a/build/linux/unbundle/replace_gn_files.py b/build/linux/unbundle/rep
 diff --git a/cc/base/devtools_instrumentation.cc b/cc/base/devtools_instrumentation.cc
 --- a/cc/base/devtools_instrumentation.cc
 +++ b/cc/base/devtools_instrumentation.cc
-@@ -73,6 +73,9 @@ ScopedImageUploadTask::~ScopedImageUploadTask() {
+@@ -90,6 +90,12 @@ ScopedImageDecodeTask::~ScopedImageDecodeTask() {
    auto duration = base::TimeTicks::Now() - start_time_;
    const char* histogram_name = nullptr;
    switch (image_type_) {
 +    case ImageType::kJxl:
 +      histogram_name = "Renderer4.ImageUploadTaskDurationUs.Jxl";
 +      break;
-     case ImageType::kAvif:
-       histogram_name = "Renderer4.ImageUploadTaskDurationUs.Avif";
-       break;
-@@ -122,6 +125,9 @@ ScopedImageDecodeTask::~ScopedImageDecodeTask() {
-   auto duration = base::TimeTicks::Now() - start_time_;
-   const char* histogram_name = nullptr;
-   switch (image_type_) {
 +    case ImageType::kJxl:
 +      histogram_name = "Renderer4.ImageUploadTaskDurationUs.Jxl";
 +      break;
@@ -220,7 +208,7 @@ diff --git a/cc/tiles/image_decode_cache.h b/cc/tiles/image_decode_cache.h
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -8656,6 +8656,12 @@ const FeatureEntry kFeatureEntries[] = {
+@@ -8918,6 +8918,12 @@ const FeatureEntry kFeatureEntries[] = {
       FEATURE_VALUE_TYPE(download::features::kSmartSuggestionForLargeDownloads)},
  #endif  // BUILDFLAG(IS_ANDROID)
  
@@ -236,7 +224,7 @@ diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 diff --git a/chrome/browser/flag-metadata.json b/chrome/browser/flag-metadata.json
 --- a/chrome/browser/flag-metadata.json
 +++ b/chrome/browser/flag-metadata.json
-@@ -3043,6 +3043,11 @@
+@@ -3090,6 +3090,11 @@
      // This flag is used by web developers to test upcoming javascript features.
      "expiry_milestone": -1
    },
@@ -251,7 +239,7 @@ diff --git a/chrome/browser/flag-metadata.json b/chrome/browser/flag-metadata.js
 diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descriptions.cc
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -7605,6 +7605,13 @@ const char kDcheckIsFatalDescription[] =
+@@ -7709,6 +7709,13 @@ const char kDcheckIsFatalDescription[] =
      "rather than crashing. If enabled, DCHECKs will crash the calling process.";
  #endif  // BUILDFLAG(DCHECK_IS_CONFIGURABLE)
  
@@ -268,7 +256,7 @@ diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descripti
 diff --git a/chrome/browser/flag_descriptions.h b/chrome/browser/flag_descriptions.h
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -4393,6 +4393,11 @@ extern const char kDcheckIsFatalName[];
+@@ -4456,6 +4456,11 @@ extern const char kDcheckIsFatalName[];
  extern const char kDcheckIsFatalDescription[];
  #endif  // BUILDFLAG(DCHECK_IS_CONFIGURABLE)
  
@@ -280,126 +268,6 @@ diff --git a/chrome/browser/flag_descriptions.h b/chrome/browser/flag_descriptio
  #if BUILDFLAG(ENABLE_CARDBOARD)
  extern const char kEnableCardboardName[];
  extern const char kEnableCardboardDescription[];
-diff --git a/chrome/browser/net/chrome_accept_header_browsertest.cc.rej b/chrome/browser/net/chrome_accept_header_browsertest.cc.rej
-new file mode 100644
---- /dev/null
-+++ b/chrome/browser/net/chrome_accept_header_browsertest.cc.rej
-@@ -0,0 +1,48 @@
-+diff a/chrome/browser/net/chrome_accept_header_browsertest.cc b/chrome/browser/net/chrome_accept_header_browsertest.cc	(rejected hunks)
-+@@ -11,18 +11,26 @@
-+ #include "media/media_buildflags.h"
-+ #include "net/test/embedded_test_server/http_request.h"
-+ #include "third_party/blink/public/common/buildflags.h"
-++#include "third_party/blink/public/common/features.h"
-+
-+ using ChromeAcceptHeaderTest = InProcessBrowserTest;
-+
-+-#if BUILDFLAG(ENABLE_AV1_DECODER)
-++#if BUILDFLAG(ENABLE_AV1_DECODER) || BUILDFLAG(ENABLE_JXL_DECODER)
-+ namespace {
-+ std::string GetOptionalImageCodecs() {
-+   std::string result;
-++#if BUILDFLAG(ENABLE_JXL_DECODER)
-++  if (base::FeatureList::IsEnabled(blink::features::kJXL)) {
-++    result.append("image/jxl,");
-++  }
-++#endif
-++#if BUILDFLAG(ENABLE_AV1_DECODER)
-+   result.append("image/avif,");
-++#endif
-+   return result;
-+ }
-+ }  // namespace
-+-#endif  // BUILDFLAG(ENABLE_AV1_DECODER)
-++#endif  // BUILDFLAG(ENABLE_AV1_DECODER) || BUILDFLAG(ENABLE_JXL_DECODER)
-+
-+ IN_PROC_BROWSER_TEST_F(ChromeAcceptHeaderTest, Check) {
-+   net::EmbeddedTestServer server(net::EmbeddedTestServer::TYPE_HTTP);
-+@@ -55,7 +63,7 @@
-+   std::string expected_plugin_accept_header =
-+       "text/html,application/xhtml+xml,application/xml;q=0.9,image/"
-+       "webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9";
-+-#if BUILDFLAG(ENABLE_AV1_DECODER)
-++#if BUILDFLAG(ENABLE_AV1_DECODER) || BUILDFLAG(ENABLE_JXL_DECODER)
-+   expected_plugin_accept_header =
-+       "text/html,application/xhtml+xml,application/xml;q=0.9," +
-+       GetOptionalImageCodecs() +
-+@@ -66,7 +74,7 @@
-+
-+   std::string expected_favicon_accept_header =
-+       "image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8";
-+-#if BUILDFLAG(ENABLE_AV1_DECODER)
-++#if BUILDFLAG(ENABLE_AV1_DECODER) || BUILDFLAG(ENABLE_JXL_DECODER)
-+   expected_favicon_accept_header =
-+       GetOptionalImageCodecs() +
-+       "image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8";
-diff --git a/content/browser/network/accept_header_browsertest.cc b/content/browser/network/accept_header_browsertest.cc
---- a/content/browser/network/accept_header_browsertest.cc
-+++ b/content/browser/network/accept_header_browsertest.cc
-@@ -22,6 +22,7 @@
- #include "net/test/embedded_test_server/http_request.h"
- #include "ppapi/buildflags/buildflags.h"
- #include "third_party/blink/public/common/buildflags.h"
-+#include "third_party/blink/public/common/features.h"
- #include "third_party/blink/public/mojom/manifest/manifest.mojom.h"
- 
- #if BUILDFLAG(ENABLE_PPAPI)
-diff --git a/content/browser/network/accept_header_browsertest.cc.rej b/content/browser/network/accept_header_browsertest.cc.rej
-new file mode 100644
---- /dev/null
-+++ b/content/browser/network/accept_header_browsertest.cc.rej
-@@ -0,0 +1,51 @@
-+diff a/content/browser/network/accept_header_browsertest.cc b/content/browser/network/accept_header_browsertest.cc	(rejected hunks)
-+@@ -71,13 +72,20 @@
-+     return it->second;
-+   }
-+
-+-#if BUILDFLAG(ENABLE_AV1_DECODER)
-++#if BUILDFLAG(ENABLE_AV1_DECODER) || BUILDFLAG(ENABLE_JXL_DECODER)
-+   std::string GetOptionalImageCodecs() const {
-+     std::string result;
-++#if BUILDFLAG(ENABLE_JXL_DECODER)
-++    if (base::FeatureList::IsEnabled(blink::features::kJXL)) {
-++      result.append("image/jxl,");
-++    }
-++#endif
-++#if BUILDFLAG(ENABLE_AV1_DECODER)
-+     result.append("image/avif,");
-++#endif
-+     return result;
-+   }
-+-#endif  // BUILDFLAG(ENABLE_AV1_DECODER)
-++#endif  // BUILDFLAG(ENABLE_AV1_DECODER) || BUILDFLAG(ENABLE_JXL_DECODER)
-+
-+  private:
-+   void Monitor(const net::test_server::HttpRequest& request) {
-+@@ -113,7 +121,7 @@
-+   std::string expected_main_frame_accept_header =
-+       "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,"
-+       "image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9";
-+-#if BUILDFLAG(ENABLE_AV1_DECODER)
-++#if BUILDFLAG(ENABLE_AV1_DECODER) || BUILDFLAG(ENABLE_JXL_DECODER)
-+   expected_main_frame_accept_header =
-+       "text/html,application/xhtml+xml,application/xml;q=0.9," +
-+       GetOptionalImageCodecs() +
-+@@ -126,7 +134,7 @@
-+   std::string expected_sub_frame_accept_header =
-+       "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,"
-+       "image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9";
-+-#if BUILDFLAG(ENABLE_AV1_DECODER)
-++#if BUILDFLAG(ENABLE_AV1_DECODER) || BUILDFLAG(ENABLE_JXL_DECODER)
-+   expected_sub_frame_accept_header =
-+       "text/html,application/xhtml+xml,application/xml;q=0.9," +
-+       GetOptionalImageCodecs() +
-+@@ -144,7 +152,7 @@
-+   // ResourceType::kImage
-+   std::string expected_image_accept_header =
-+       "image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8";
-+-#if BUILDFLAG(ENABLE_AV1_DECODER)
-++#if BUILDFLAG(ENABLE_AV1_DECODER) || BUILDFLAG(ENABLE_JXL_DECODER)
-+   expected_image_accept_header =
-+       GetOptionalImageCodecs() +
-+       "image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8";
 diff --git a/content/common/content_constants_internal.cc b/content/common/content_constants_internal.cc
 --- a/content/common/content_constants_internal.cc
 +++ b/content/common/content_constants_internal.cc
@@ -514,18 +382,18 @@ diff --git a/net/base/mime_util_unittest.cc b/net/base/mime_util_unittest.cc
 diff --git a/third_party/.gitignore b/third_party/.gitignore
 --- a/third_party/.gitignore
 +++ b/third_party/.gitignore
-@@ -179,6 +179,7 @@
- /libipp/libipp
+@@ -97,6 +97,7 @@
+ /libgifcodec
  /libjingle/source
- /libjpeg_turbo
+ /libupnp
 +#/libjxl/src
- /liblouis/src
- /libphonenumber/dist
- /libprotobuf-mutator/src
+ /llvm
+ /llvm-allocated-type
+ /llvm-bootstrap
 diff --git a/third_party/blink/common/features.cc b/third_party/blink/common/features.cc
 --- a/third_party/blink/common/features.cc
 +++ b/third_party/blink/common/features.cc
-@@ -411,6 +411,9 @@ BASE_FEATURE(kCORSErrorsIssueOnly,
+@@ -422,6 +422,9 @@ BASE_FEATURE(kCORSErrorsIssueOnly,
               "CORSErrorsIssueOnly",
               base::FEATURE_DISABLED_BY_DEFAULT);
  
@@ -630,7 +498,7 @@ diff --git a/third_party/blink/public/common/BUILD.gn b/third_party/blink/public
 diff --git a/third_party/blink/public/common/features.h b/third_party/blink/public/common/features.h
 --- a/third_party/blink/public/common/features.h
 +++ b/third_party/blink/public/common/features.h
-@@ -142,6 +142,8 @@ BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE(kBackgroundResourceFetch);
+@@ -145,6 +145,8 @@ BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE(kBackgroundResourceFetch);
  
  BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE(kShowAlwaysContextMenuOnLinks);
  
@@ -642,7 +510,7 @@ diff --git a/third_party/blink/public/common/features.h b/third_party/blink/publ
 diff --git a/third_party/blink/public/devtools_protocol/browser_protocol.pdl b/third_party/blink/public/devtools_protocol/browser_protocol.pdl
 --- a/third_party/blink/public/devtools_protocol/browser_protocol.pdl
 +++ b/third_party/blink/public/devtools_protocol/browser_protocol.pdl
-@@ -4103,6 +4103,7 @@ domain Emulation
+@@ -4133,6 +4133,7 @@ domain Emulation
    experimental type DisabledImageType extends string
      enum
        avif
@@ -682,7 +550,7 @@ diff --git a/third_party/blink/renderer/core/inspector/inspector_emulation_agent
      header.Replace(String(type + ","), "");
    }
    return AtomicString(header);
-@@ -837,6 +837,7 @@ protocol::Response InspectorEmulationAgent::setDisabledImageTypes(
+@@ -842,6 +842,7 @@ protocol::Response InspectorEmulationAgent::setDisabledImageTypes(
    namespace DisabledImageTypeEnum = protocol::Emulation::DisabledImageTypeEnum;
    for (protocol::Emulation::DisabledImageType type : *disabled_types) {
      if (DisabledImageTypeEnum::Avif == type ||
@@ -785,9 +653,9 @@ diff --git a/third_party/blink/renderer/modules/webcodecs/image_decoder_fuzzer.c
  #include "third_party/blink/renderer/bindings/core/v8/to_v8_traits.h"
  #include "third_party/blink/renderer/bindings/core/v8/v8_binding_for_core.h"
  #include "third_party/blink/renderer/bindings/core/v8/v8_union_arraybufferallowshared_arraybufferviewallowshared_readablestream.h"
-@@ -88,6 +90,9 @@ DEFINE_BINARY_PROTO_FUZZER(
-   // Request a full GC upon returning.
-   auto scoped_gc = MakeScopedGarbageCollectionRequest();
+@@ -89,6 +91,9 @@ DEFINE_BINARY_PROTO_FUZZER(
+   auto scoped_gc =
+       MakeScopedGarbageCollectionRequest(test_support.GetIsolate());
  
 +  base::test::ScopedFeatureList scoped_feature_list;
 +  scoped_feature_list.InitAndEnableFeature(features::kJXL);
@@ -798,8 +666,8 @@ diff --git a/third_party/blink/renderer/modules/webcodecs/image_decoder_fuzzer.c
 diff --git a/third_party/blink/renderer/platform/BUILD.gn b/third_party/blink/renderer/platform/BUILD.gn
 --- a/third_party/blink/renderer/platform/BUILD.gn
 +++ b/third_party/blink/renderer/platform/BUILD.gn
-@@ -1827,6 +1827,15 @@ component("platform") {
-     ]
+@@ -1816,6 +1816,15 @@ component("platform") {
+     sources += [ "text/hyphenation/hyphenation_null.cc" ]
    }
  
 +  if (enable_jxl_decoder) {
@@ -814,8 +682,8 @@ diff --git a/third_party/blink/renderer/platform/BUILD.gn b/third_party/blink/re
    if (current_cpu == "x86" || current_cpu == "x64") {
      deps += [ ":blink_x86_avx" ]
      sources += [ "audio/cpu/x86/delay_sse2.cc" ]
-@@ -2264,6 +2273,10 @@ source_set("blink_platform_unittests_sources") {
-     sources += [ "image-decoders/avif/avif_image_decoder_test.cc" ]
+@@ -2232,6 +2241,10 @@ source_set("blink_platform_unittests_sources") {
+     sources += [ "text/locale_icu_test.cc" ]
    }
  
 +  if (enable_jxl_decoder) {
@@ -825,7 +693,7 @@ diff --git a/third_party/blink/renderer/platform/BUILD.gn b/third_party/blink/re
    sources += [ "testing/run_all_tests.cc" ]
  
    configs += [
-@@ -2306,6 +2319,7 @@ source_set("blink_platform_unittests_sources") {
+@@ -2275,6 +2288,7 @@ source_set("blink_platform_unittests_sources") {
      "//third_party/blink/renderer/platform/scheduler:unit_tests",
      "//third_party/blink/renderer/platform/wtf",
      "//third_party/libavif:libavif",
@@ -869,7 +737,7 @@ diff --git a/third_party/blink/renderer/platform/graphics/bitmap_image_metrics.c
 diff --git a/third_party/blink/renderer/platform/graphics/bitmap_image_metrics.h b/third_party/blink/renderer/platform/graphics/bitmap_image_metrics.h
 --- a/third_party/blink/renderer/platform/graphics/bitmap_image_metrics.h
 +++ b/third_party/blink/renderer/platform/graphics/bitmap_image_metrics.h
-@@ -30,8 +30,8 @@ class PLATFORM_EXPORT BitmapImageMetrics {
+@@ -29,8 +29,8 @@ class PLATFORM_EXPORT BitmapImageMetrics {
      kICO = 5,
      kBMP = 6,
      kAVIF = 7,
@@ -883,14 +751,15 @@ diff --git a/third_party/blink/renderer/platform/graphics/bitmap_image_metrics.h
 diff --git a/third_party/blink/renderer/platform/image-decoders/image_decoder.cc b/third_party/blink/renderer/platform/image-decoders/image_decoder.cc
 --- a/third_party/blink/renderer/platform/image-decoders/image_decoder.cc
 +++ b/third_party/blink/renderer/platform/image-decoders/image_decoder.cc
-@@ -23,12 +23,14 @@
+@@ -23,6 +23,7 @@
  #include <memory>
  
  #include "base/logging.h"
 +#include "base/feature_list.h"
  #include "base/numerics/safe_conversions.h"
  #include "base/sys_byteorder.h"
- #include "build/build_config.h"
+ #include "base/trace_event/trace_event.h"
+@@ -30,6 +31,7 @@
  #include "media/media_buildflags.h"
  #include "skia/ext/cicp.h"
  #include "third_party/blink/public/common/buildflags.h"
@@ -920,7 +789,7 @@ diff --git a/third_party/blink/renderer/platform/image-decoders/image_decoder.cc
  #endif
    return cc::ImageType::kInvalid;
  }
-@@ -192,6 +202,12 @@ String SniffMimeTypeInternal(scoped_refptr<SegmentReader> reader) {
+@@ -191,6 +201,12 @@ String SniffMimeTypeInternal(scoped_refptr<SegmentReader> reader) {
      return "image/avif";
    }
  #endif
@@ -933,7 +802,7 @@ diff --git a/third_party/blink/renderer/platform/image-decoders/image_decoder.cc
  
    return String();
  }
-@@ -297,6 +313,13 @@ std::unique_ptr<ImageDecoder> ImageDecoder::CreateByMimeType(
+@@ -296,6 +312,13 @@ std::unique_ptr<ImageDecoder> ImageDecoder::CreateByMimeType(
      decoder = std::make_unique<AVIFImageDecoder>(
          alpha_option, high_bit_depth_decoding_option, color_behavior,
          max_decoded_bytes, animation_option);
@@ -2397,7 +2266,7 @@ new file mode 100644
 diff --git a/third_party/blink/tools/commit_stats/git-dirs.txt b/third_party/blink/tools/commit_stats/git-dirs.txt
 --- a/third_party/blink/tools/commit_stats/git-dirs.txt
 +++ b/third_party/blink/tools/commit_stats/git-dirs.txt
-@@ -76,6 +76,7 @@
+@@ -75,6 +75,7 @@
  ./third_party/angle/third_party/glmark2/src,ANGLE
  ./third_party/openh264/src,OpenH264
  ./third_party/googletest/src,GoogleTest
@@ -2408,7 +2277,7 @@ diff --git a/third_party/blink/tools/commit_stats/git-dirs.txt b/third_party/bli
 diff --git a/third_party/blink/web_tests/TestExpectations b/third_party/blink/web_tests/TestExpectations
 --- a/third_party/blink/web_tests/TestExpectations
 +++ b/third_party/blink/web_tests/TestExpectations
-@@ -4744,6 +4744,12 @@ crbug.com/1199522 http/tests/devtools/layers/layers-3d-view-hit-testing.js [ Fai
+@@ -4781,6 +4781,12 @@ crbug.com/1199522 http/tests/devtools/layers/layers-3d-view-hit-testing.js [ Fai
  # Started failing after rolling new version of check-layout-th.js
  css3/flexbox/perpendicular-writing-modes-inside-flex-item.html [ Failure ]
  
@@ -2424,7 +2293,7 @@ diff --git a/third_party/blink/web_tests/TestExpectations b/third_party/blink/we
 diff --git a/third_party/blink/web_tests/VirtualTestSuites b/third_party/blink/web_tests/VirtualTestSuites
 --- a/third_party/blink/web_tests/VirtualTestSuites
 +++ b/third_party/blink/web_tests/VirtualTestSuites
-@@ -450,6 +450,15 @@
+@@ -447,6 +447,15 @@
               "--disable-threaded-compositing", "--disable-threaded-animation"],
      "expires": "Jul 1, 2023"
    },
@@ -2839,7 +2708,7 @@ new file mode 100644
 diff --git a/tools/metrics/histograms/enums.xml b/tools/metrics/histograms/enums.xml
 --- a/tools/metrics/histograms/enums.xml
 +++ b/tools/metrics/histograms/enums.xml
-@@ -26394,7 +26394,7 @@ Called by update_debug_scenarios.py.-->
+@@ -26495,7 +26495,7 @@ Called by update_debug_scenarios.py.-->
    <int value="5" label="kImageICO"/>
    <int value="6" label="kImageBMP"/>
    <int value="7" label="kImageAVIF"/>
@@ -2848,7 +2717,7 @@ diff --git a/tools/metrics/histograms/enums.xml b/tools/metrics/histograms/enums
  </enum>
  
  <enum name="DecodeSwapChainNotUsedReason">
-@@ -64986,6 +64986,7 @@ from previous Chrome versions.
+@@ -65578,6 +65578,7 @@ from previous Chrome versions.
    <int value="188610022" label="NewMessageListView:enabled"/>
    <int value="189728101" label="FasterLocationReload:disabled"/>
    <int value="189777537" label="DisableInitialMostVisitedFadeIn:enabled"/>

@@ -15,7 +15,7 @@ diff --git a/net/base/features.cc b/net/base/features.cc
  
  BASE_FEATURE(kSHA1ServerSignature,
 -             "SHA1ServerSignature",
--             base::FEATURE_ENABLED_BY_DEFAULT);
+-             base::FEATURE_DISABLED_BY_DEFAULT);
 +             "SHA1ServerSignature",                  // disabled
 +             base::FEATURE_DISABLED_BY_DEFAULT);     // in bromite
  

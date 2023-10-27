@@ -27,7 +27,7 @@ Requires patch: Adds-support-for-writing-URIs.patch
 Original License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 ---
- chrome/android/BUILD.gn                       |   4 +
+ chrome/android/BUILD.gn                       |   7 +-
  .../android/java/res/xml/main_preferences.xml |   5 +
  .../browser/download/DownloadUtils.java       |   6 +
  .../init/ProcessInitializationHandler.java    |   3 +
@@ -135,7 +135,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../renderer/web_ui_injection_host.h          |  27 +
  .../strings/userscripts_strings.grdp          |  54 ++
  tools/gritsettings/resource_ids.spec          |   6 +
- 108 files changed, 9488 insertions(+), 1 deletion(-)
+ 108 files changed, 9490 insertions(+), 2 deletions(-)
  create mode 100644 components/user_scripts/README.md
  create mode 100755 components/user_scripts/android/BUILD.gn
  create mode 100644 components/user_scripts/android/java/res/layout/accept_script_item.xml
@@ -225,17 +225,20 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 diff --git a/chrome/android/BUILD.gn b/chrome/android/BUILD.gn
 --- a/chrome/android/BUILD.gn
 +++ b/chrome/android/BUILD.gn
-@@ -242,6 +242,9 @@ if (current_toolchain == default_toolchain) {
-       "//third_party/androidx:androidx_gridlayout_gridlayout_java",
-       "//third_party/androidx:androidx_preference_preference_java",
-     ]
+@@ -179,7 +179,11 @@ if (current_toolchain == default_toolchain) {
+     sources = chrome_java_resources
+     sources += [ "//chrome/android/java/res_app/layout/main.xml" ]
+ 
+-    deps = [
 +    # this need to be into android_resources("chrome_app_java_resources") section because
 +    # android:java_resources are packed *_percent.pak and placed in the executable folder
-+    deps += [ "//components/user_scripts/android:java_resources" ]
-   }
- 
-   android_library("app_hooks_java") {
-@@ -570,6 +573,7 @@ if (current_toolchain == default_toolchain) {
++    deps = [ "//components/user_scripts/android:java_resources" ]
++
++    deps += [
+       ":chrome_base_module_resources",
+       ":ui_locale_string_resources",
+       "//chrome/android/webapk/libs/common:splash_resources",
+@@ -582,6 +586,7 @@ if (current_toolchain == default_toolchain) {
        "//components/ukm/android:java",
        "//components/url_formatter/android:url_formatter_java",
        "//components/user_prefs/android:java",
@@ -261,7 +264,7 @@ diff --git a/chrome/android/java/res/xml/main_preferences.xml b/chrome/android/j
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/download/DownloadUtils.java b/chrome/android/java/src/org/chromium/chrome/browser/download/DownloadUtils.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/download/DownloadUtils.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/download/DownloadUtils.java
-@@ -73,6 +73,7 @@ import org.chromium.ui.UiUtils;
+@@ -75,6 +75,7 @@ import org.chromium.ui.UiUtils;
  import org.chromium.ui.base.DeviceFormFactor;
  import org.chromium.ui.widget.Toast;
  import org.chromium.url.GURL;
@@ -269,7 +272,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/download/Downlo
  
  import java.io.File;
  
-@@ -421,6 +422,11 @@ public class DownloadUtils {
+@@ -456,6 +457,11 @@ public class DownloadUtils {
      public static boolean openFile(String filePath, String mimeType, String downloadGuid,
              OTRProfileID otrProfileID, String originalUrl, String referrer,
              @DownloadOpenSource int source, Context context) {
@@ -284,7 +287,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/download/Downlo
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/init/ProcessInitializationHandler.java b/chrome/android/java/src/org/chromium/chrome/browser/init/ProcessInitializationHandler.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/init/ProcessInitializationHandler.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/init/ProcessInitializationHandler.java
-@@ -121,6 +121,8 @@ import java.util.ArrayList;
+@@ -124,6 +124,8 @@ import java.util.ArrayList;
  import java.util.Date;
  import java.util.List;
  
@@ -293,7 +296,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/init/ProcessIni
  /**
   * Handles the initialization dependences of the browser process.  This is meant to handle the
   * initialization that is not tied to any particular Activity, and the logic that should only be
-@@ -321,6 +323,7 @@ public class ProcessInitializationHandler {
+@@ -331,6 +333,7 @@ public class ProcessInitializationHandler {
  
                  DefaultBrowserInfo.initBrowserFetcher();
  
@@ -321,7 +324,7 @@ diff --git a/chrome/android/java_sources.gni b/chrome/android/java_sources.gni
 diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -3606,6 +3606,13 @@ static_library("browser") {
+@@ -3684,6 +3684,13 @@ static_library("browser") {
        ]
        deps += [ "//chrome/android/modules/dev_ui/provider:native" ]
      }
@@ -338,7 +341,7 @@ diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -164,6 +164,7 @@
+@@ -165,6 +165,7 @@
  #include "components/ui_devtools/switches.h"
  #include "components/variations/service/google_groups_updater_service.h"
  #include "components/variations/variations_switches.h"
@@ -346,8 +349,8 @@ diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
  #include "components/version_info/version_info.h"
  #include "components/viz/common/features.h"
  #include "components/viz/common/switches.h"
-@@ -8339,6 +8340,12 @@ const FeatureEntry kFeatureEntries[] = {
-      FEATURE_VALUE_TYPE(ash::features::kClipboardHistoryUrlTitles)},
+@@ -8622,6 +8623,12 @@ const FeatureEntry kFeatureEntries[] = {
+      FEATURE_VALUE_TYPE(ash::features::kClipboardHistoryWebContentsPaste)},
  #endif  // BUILDFLAG(IS_CHROMEOS_ASH)
  
 +#if BUILDFLAG(IS_ANDROID)
@@ -362,7 +365,7 @@ diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descriptions.cc
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -7489,6 +7489,11 @@ const char kUseOutOfProcessVideoDecodingDescription[] =
+@@ -7593,6 +7593,11 @@ const char kUseOutOfProcessVideoDecodingDescription[] =
      "enabled in ash-chrome).";
  #endif  // BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
  
@@ -377,7 +380,7 @@ diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descripti
 diff --git a/chrome/browser/flag_descriptions.h b/chrome/browser/flag_descriptions.h
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -4292,6 +4292,9 @@ extern const char kQuickCommandsDescription[];
+@@ -4355,6 +4355,9 @@ extern const char kQuickCommandsDescription[];
  #endif  // BUILDFLAG(IS_WIN) || BUILDFLAG(IS_MAC) || BUILDFLAG(IS_LINUX) ||
          // defined (OS_FUCHSIA)
  
@@ -390,7 +393,7 @@ diff --git a/chrome/browser/flag_descriptions.h b/chrome/browser/flag_descriptio
 diff --git a/chrome/browser/prefs/browser_prefs.cc b/chrome/browser/prefs/browser_prefs.cc
 --- a/chrome/browser/prefs/browser_prefs.cc
 +++ b/chrome/browser/prefs/browser_prefs.cc
-@@ -260,6 +260,7 @@
+@@ -270,6 +270,7 @@
  #include "components/permissions/contexts/geolocation_permission_context_android.h"
  #include "components/query_tiles/tile_service_prefs.h"
  #include "components/webapps/browser/android/install_prompt_prefs.h"
@@ -398,7 +401,7 @@ diff --git a/chrome/browser/prefs/browser_prefs.cc b/chrome/browser/prefs/browse
  #else  // BUILDFLAG(IS_ANDROID)
  #include "chrome/browser/cart/cart_service.h"
  #include "chrome/browser/companion/core/promo_handler.h"
-@@ -1627,6 +1628,9 @@ void RegisterProfilePrefs(user_prefs::PrefRegistrySyncable* registry,
+@@ -1716,6 +1717,9 @@ void RegisterProfilePrefs(user_prefs::PrefRegistrySyncable* registry,
    translate::TranslatePrefs::RegisterProfilePrefs(registry);
    omnibox::RegisterProfilePrefs(registry);
    ZeroSuggestProvider::RegisterProfilePrefs(registry);
@@ -424,7 +427,7 @@ diff --git a/chrome/browser/profiles/BUILD.gn b/chrome/browser/profiles/BUILD.gn
 diff --git a/chrome/browser/profiles/chrome_browser_main_extra_parts_profiles.cc b/chrome/browser/profiles/chrome_browser_main_extra_parts_profiles.cc
 --- a/chrome/browser/profiles/chrome_browser_main_extra_parts_profiles.cc
 +++ b/chrome/browser/profiles/chrome_browser_main_extra_parts_profiles.cc
-@@ -483,6 +483,10 @@
+@@ -494,6 +494,10 @@
  #include "chrome/browser/offline_pages/request_coordinator_factory.h"
  #endif
  
@@ -435,7 +438,7 @@ diff --git a/chrome/browser/profiles/chrome_browser_main_extra_parts_profiles.cc
  namespace chrome {
  
  void AddProfilesExtraParts(ChromeBrowserMainParts* main_parts) {
-@@ -1166,6 +1170,9 @@ void ChromeBrowserMainExtraPartsProfiles::
+@@ -1206,6 +1210,9 @@ void ChromeBrowserMainExtraPartsProfiles::
  #endif
    WebDataServiceFactory::GetInstance();
    webrtc_event_logging::WebRtcEventLogManagerKeyedServiceFactory::GetInstance();
@@ -540,14 +543,14 @@ diff --git a/chrome/browser/ui/webui/chrome_web_ui_controller_factory.cc b/chrom
 --- a/chrome/browser/ui/webui/chrome_web_ui_controller_factory.cc
 +++ b/chrome/browser/ui/webui/chrome_web_ui_controller_factory.cc
 @@ -107,6 +107,7 @@
- #include "components/signin/public/base/signin_switches.h"
+ #include "components/signin/public/base/signin_buildflags.h"
  #include "components/site_engagement/content/site_engagement_service.h"
  #include "components/supervised_user/core/common/buildflags.h"
 +#include "components/user_scripts/browser/ui/user_scripts_ui.h"
  #include "content/public/browser/web_contents.h"
  #include "content/public/browser/web_ui.h"
  #include "content/public/common/content_client.h"
-@@ -538,6 +539,10 @@ WebUIFactoryFunction GetWebUIFactoryFunction(WebUI* web_ui,
+@@ -535,6 +536,10 @@ WebUIFactoryFunction GetWebUIFactoryFunction(WebUI* web_ui,
      return &NewWebUI<UserActionsUI>;
    if (url.host_piece() == chrome::kChromeUIVersionHost)
      return &NewWebUI<VersionUI>;
@@ -562,14 +565,14 @@ diff --git a/chrome/chrome_paks.gni b/chrome/chrome_paks.gni
 --- a/chrome/chrome_paks.gni
 +++ b/chrome/chrome_paks.gni
 @@ -121,6 +121,7 @@ template("chrome_extra_paks") {
-       "$root_gen_dir/skia/skia_resources.pak",
+       "$root_gen_dir/net/net_resources.pak",
        "$root_gen_dir/third_party/blink/public/resources/blink_resources.pak",
        "$root_gen_dir/third_party/blink/public/resources/inspector_overlay_resources.pak",
 +      "$root_gen_dir/chrome/userscripts_browser_resources.pak",
        "$root_gen_dir/ui/resources/webui_resources.pak",
      ]
      deps = [
-@@ -139,6 +140,7 @@ template("chrome_extra_paks") {
+@@ -138,6 +139,7 @@ template("chrome_extra_paks") {
        "//third_party/blink/public:devtools_inspector_resources",
        "//third_party/blink/public:resources",
        "//ui/resources",
@@ -591,7 +594,7 @@ diff --git a/chrome/common/renderer_configuration.mojom b/chrome/common/renderer
 diff --git a/chrome/renderer/BUILD.gn b/chrome/renderer/BUILD.gn
 --- a/chrome/renderer/BUILD.gn
 +++ b/chrome/renderer/BUILD.gn
-@@ -233,6 +233,12 @@ static_library("renderer") {
+@@ -234,6 +234,12 @@ static_library("renderer") {
      "//v8",
    ]
  
@@ -729,7 +732,7 @@ diff --git a/chrome/renderer/chrome_render_thread_observer.cc b/chrome/renderer/
 diff --git a/components/components_strings.grd b/components/components_strings.grd
 --- a/components/components_strings.grd
 +++ b/components/components_strings.grd
-@@ -335,6 +335,7 @@
+@@ -336,6 +336,7 @@
        <part file="user_education_strings.grdp" />
        <part file="version_ui_strings.grdp" />
        <part file="webapps_strings.grdp" />
@@ -10489,7 +10492,7 @@ new file mode 100755
 diff --git a/tools/gritsettings/resource_ids.spec b/tools/gritsettings/resource_ids.spec
 --- a/tools/gritsettings/resource_ids.spec
 +++ b/tools/gritsettings/resource_ids.spec
-@@ -927,6 +927,12 @@
+@@ -954,6 +954,12 @@
    "components/autofill/core/browser/autofill_address_rewriter_resources.grd":{
      "includes": [6220]
    },

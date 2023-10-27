@@ -27,7 +27,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -5105,7 +5105,10 @@ const FeatureEntry kFeatureEntries[] = {
+@@ -5361,7 +5361,10 @@ const FeatureEntry kFeatureEntries[] = {
       flag_descriptions::kWebShareDescription, kOsWin | kOsCrOS | kOsMac,
       FEATURE_VALUE_TYPE(features::kWebShare)},
  #endif  // BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_WIN) || BUILDFLAG(IS_MAC)
@@ -42,7 +42,7 @@ diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 diff --git a/third_party/blink/renderer/core/dom/document.cc b/third_party/blink/renderer/core/dom/document.cc
 --- a/third_party/blink/renderer/core/dom/document.cc
 +++ b/third_party/blink/renderer/core/dom/document.cc
-@@ -4552,6 +4552,14 @@ void Document::ProcessBaseElement() {
+@@ -4563,6 +4563,14 @@ void Document::ProcessBaseElement() {
    KURL base_element_url;
    if (href) {
      String stripped_href = StripLeadingAndTrailingHTMLSpaces(*href);
@@ -57,7 +57,7 @@ diff --git a/third_party/blink/renderer/core/dom/document.cc b/third_party/blink
      if (!stripped_href.empty())
        base_element_url = KURL(FallbackBaseURL(), stripped_href);
    }
-@@ -4570,6 +4578,14 @@ void Document::ProcessBaseElement() {
+@@ -4581,6 +4589,14 @@ void Document::ProcessBaseElement() {
          !GetExecutionContext()->GetSecurityOrigin()->CanRequest(
              base_element_url)) {
        UseCounter::Count(*this, WebFeature::kBaseWithCrossOriginHref);
@@ -72,7 +72,7 @@ diff --git a/third_party/blink/renderer/core/dom/document.cc b/third_party/blink
      }
    }
  
-@@ -4589,6 +4605,8 @@ void Document::ProcessBaseElement() {
+@@ -4600,6 +4616,8 @@ void Document::ProcessBaseElement() {
      if (target->Contains('<'))
        UseCounter::Count(*this, WebFeature::kBaseWithOpenBracketInTarget);
      base_target_ = *target;
@@ -84,7 +84,7 @@ diff --git a/third_party/blink/renderer/core/dom/document.cc b/third_party/blink
 diff --git a/third_party/blink/renderer/core/dom/element.cc b/third_party/blink/renderer/core/dom/element.cc
 --- a/third_party/blink/renderer/core/dom/element.cc
 +++ b/third_party/blink/renderer/core/dom/element.cc
-@@ -2577,8 +2577,26 @@ void Element::StripScriptingAttributes(
+@@ -2574,8 +2574,26 @@ void Element::StripScriptingAttributes(
    attribute_vector.Shrink(destination);
  }
  
@@ -116,7 +116,7 @@ diff --git a/third_party/blink/renderer/core/dom/element.h b/third_party/blink/r
 --- a/third_party/blink/renderer/core/dom/element.h
 +++ b/third_party/blink/renderer/core/dom/element.h
 @@ -575,7 +575,8 @@ class CORE_EXPORT Element : public ContainerNode, public Animatable {
-   virtual const QualifiedName& SubResourceAttributeName() const;
+   virtual bool HasLegalLinkAttribute(const QualifiedName&) const;
  
    // Only called by the parser immediately after element construction.
 -  void ParserSetAttributes(const Vector<Attribute, kAttributePrealloc>&);
@@ -254,8 +254,8 @@ diff --git a/third_party/blink/renderer/core/loader/frame_load_request.cc b/thir
 +#include "third_party/blink/renderer/core/inspector/console_message.h"
  #include "third_party/blink/renderer/core/fileapi/public_url_manager.h"
  #include "third_party/blink/renderer/core/frame/local_dom_window.h"
- #include "third_party/blink/renderer/platform/bindings/dom_wrapper_world.h"
-@@ -134,6 +135,14 @@ const LocalFrameToken* FrameLoadRequest::GetInitiatorFrameToken() const {
+ #include "third_party/blink/renderer/core/html/forms/html_form_element.h"
+@@ -145,6 +146,14 @@ const LocalFrameToken* FrameLoadRequest::GetInitiatorFrameToken() const {
  const AtomicString& FrameLoadRequest::CleanNavigationTarget(
      const AtomicString& target) const {
    if (ContainsNewLineAndLessThan(target)) {
@@ -319,7 +319,7 @@ diff --git a/third_party/blink/renderer/core/page/frame_tree.cc b/third_party/bl
 diff --git a/third_party/blink/renderer/platform/runtime_enabled_features.json5 b/third_party/blink/renderer/platform/runtime_enabled_features.json5
 --- a/third_party/blink/renderer/platform/runtime_enabled_features.json5
 +++ b/third_party/blink/renderer/platform/runtime_enabled_features.json5
-@@ -1522,8 +1522,8 @@
+@@ -1525,8 +1525,8 @@
        // Experiment with preventing some instances of mutation XSS
        // by escaping "<" and ">" in attribute values.
        // See: crbug.com/1175016
@@ -330,7 +330,7 @@ diff --git a/third_party/blink/renderer/platform/runtime_enabled_features.json5 
      },
      {
        name: "EventTimingInteractionCount",
-@@ -2263,6 +2263,12 @@
+@@ -2296,6 +2296,12 @@
        // Use LongAnimationFrameMonitor to emit longtask entries
        name: "LongTaskFromLongAnimationFrame"
      },

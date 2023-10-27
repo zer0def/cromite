@@ -83,7 +83,7 @@ diff --git a/build/config/BUILDCONFIG.gn b/build/config/BUILDCONFIG.gn
 diff --git a/chrome/android/java/AndroidManifest.xml b/chrome/android/java/AndroidManifest.xml
 --- a/chrome/android/java/AndroidManifest.xml
 +++ b/chrome/android/java/AndroidManifest.xml
-@@ -170,7 +170,7 @@ by a child template that "extends" this file.
+@@ -171,7 +171,7 @@ by a child template that "extends" this file.
        <application android:name="{% block application_name %}org.chromium.chrome.browser.base.SplitChromeApplication{% endblock %}"
          android:icon="@drawable/ic_launcher"
          android:roundIcon="@drawable/ic_launcher_round"
@@ -13124,7 +13124,7 @@ e)fqMZZ`3a)Ds&5H<cfp<0000<MNUMnLSTYHt&Yn8
 diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -2033,6 +2033,7 @@ static_library("browser") {
+@@ -2078,6 +2078,7 @@ static_library("browser") {
      "//build:chromeos_buildflags",
      "//build/config/chromebox_for_meetings:buildflags",
      "//build/config/compiler:compiler_buildflags",
@@ -13143,7 +13143,7 @@ diff --git a/chrome/browser/prefs/chrome_pref_service_factory.cc b/chrome/browse
  #include "chrome/browser/browser_process.h"
  #include "chrome/browser/policy/chrome_browser_policy_connector.h"
  #include "chrome/browser/prefs/chrome_command_line_pref_store.h"
-@@ -304,10 +305,7 @@ std::unique_ptr<ProfilePrefStoreManager> CreateProfilePrefStoreManager(
+@@ -285,10 +286,7 @@ std::unique_ptr<ProfilePrefStoreManager> CreateProfilePrefStoreManager(
  #endif
    std::string seed;
    CHECK(ui::ResourceBundle::HasSharedInstance());
@@ -13158,7 +13158,7 @@ diff --git a/chrome/browser/prefs/chrome_pref_service_factory.cc b/chrome/browse
 diff --git a/chrome/browser/profiles/profile_shortcut_manager_win.cc b/chrome/browser/profiles/profile_shortcut_manager_win.cc
 --- a/chrome/browser/profiles/profile_shortcut_manager_win.cc
 +++ b/chrome/browser/profiles/profile_shortcut_manager_win.cc
-@@ -75,7 +75,7 @@ const int kMaxProfileShortcutFileNameLength = 64;
+@@ -77,7 +77,7 @@ const int kMaxProfileShortcutFileNameLength = 64;
  // Incrementing this number will cause profile icons to be regenerated on
  // profile startup (it should be incremented whenever the product/avatar icons
  // change, etc).
@@ -13186,7 +13186,7 @@ diff --git a/chrome/browser/resources/settings/settings_menu/settings_menu.html 
 diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chrome/browser/ui/android/strings/android_chrome_strings.grd
 --- a/chrome/browser/ui/android/strings/android_chrome_strings.grd
 +++ b/chrome/browser/ui/android/strings/android_chrome_strings.grd
-@@ -2255,7 +2255,7 @@ Your Google account may have other forms of browsing history like searches and a
+@@ -2296,7 +2296,7 @@ Your Google account may have other forms of browsing history like searches and a
          About Chrome
        </message>
        <message name="IDS_LEGAL_INFORMATION_SUMMARY" desc="Summary for legal information" meaning="Android">
@@ -13207,7 +13207,7 @@ diff --git a/chrome/common/url_constants.cc b/chrome/common/url_constants.cc
  #if BUILDFLAG(IS_CHROMEOS_ASH)
  const char kChromeOsHelpViaWebUIURL[] =
  #if BUILDFLAG(GOOGLE_CHROME_BRANDING)
-@@ -109,7 +109,7 @@ const char kChromeSearchScheme[] = "chrome-search";
+@@ -111,7 +111,7 @@ const char kChromeSearchScheme[] = "chrome-search";
  const char kChromeUIUntrustedNewTabPageUrl[] =
      "chrome-untrusted://new-tab-page/";
  

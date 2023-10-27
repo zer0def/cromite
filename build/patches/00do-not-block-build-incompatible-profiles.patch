@@ -4,25 +4,13 @@ Subject: Do not block the build for incompatible profiles
 
 License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
- .gitignore  | 1 -
  v8/BUILD.gn | 2 +-
- 2 files changed, 1 insertion(+), 2 deletions(-)
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/.gitignore b/.gitignore
---- a/.gitignore
-+++ b/.gitignore
-@@ -347,7 +347,6 @@ vs-chromium-project.txt
- /ui/surface/surface.xml
- /ui/surface/surface_gpu_tests.xml
- /ui/webui/internal
--/v8
- /webkit/data
- /webpagereplay_logs/
- /x86-generic_out/
 diff --git a/v8/BUILD.gn b/v8/BUILD.gn
 --- a/v8/BUILD.gn
 +++ b/v8/BUILD.gn
-@@ -2372,7 +2372,7 @@ template("run_mksnapshot") {
+@@ -2369,7 +2369,7 @@ template("run_mksnapshot") {
  
          # Replace this with --warn-about-builtin-profile-data to see the full
          # list of builtins with incompatible profiles.

@@ -15,7 +15,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -3929,6 +3929,10 @@ const FeatureEntry kFeatureEntries[] = {
+@@ -4192,6 +4192,10 @@ const FeatureEntry kFeatureEntries[] = {
           chrome::android::kContextualSearchSuppressShortView,
           kContextualSearchSuppressShortViewVariations,
           "ContextualSearchSuppressShortView")},
@@ -29,7 +29,7 @@ diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descriptions.cc
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -1458,6 +1458,11 @@ const char kEnableManagedConfigurationWebApiDescription[] =
+@@ -1472,6 +1472,11 @@ const char kEnableManagedConfigurationWebApiDescription[] =
      "Allows website to access a managed configuration provided by the device "
      "administrator for the origin.";
  
@@ -44,7 +44,7 @@ diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descripti
 diff --git a/chrome/browser/flag_descriptions.h b/chrome/browser/flag_descriptions.h
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -802,6 +802,9 @@ extern const char kEnablePenetratingImageSelectionDescription[];
+@@ -811,6 +811,9 @@ extern const char kEnablePenetratingImageSelectionDescription[];
  extern const char kEnablePerfettoSystemTracingName[];
  extern const char kEnablePerfettoSystemTracingDescription[];
  
@@ -57,7 +57,7 @@ diff --git a/chrome/browser/flag_descriptions.h b/chrome/browser/flag_descriptio
 diff --git a/media/base/media_switches.cc b/media/base/media_switches.cc
 --- a/media/base/media_switches.cc
 +++ b/media/base/media_switches.cc
-@@ -357,12 +357,8 @@ BASE_FEATURE(kPreloadMetadataLazyLoad,
+@@ -360,12 +360,8 @@ BASE_FEATURE(kPreloadMetadataLazyLoad,
  // Let videos be resumed via remote controls (for example, the notification)
  // when in background.
  BASE_FEATURE(kResumeBackgroundVideo,
@@ -71,6 +71,6 @@ diff --git a/media/base/media_switches.cc b/media/base/media_switches.cc
 +             base::FEATURE_DISABLED_BY_DEFAULT    // in Bromite
  );
  
- // When enabled, MediaCapabilities will check with GPU Video Accelerator
+ #if BUILDFLAG(IS_MAC)
 --
 2.25.1

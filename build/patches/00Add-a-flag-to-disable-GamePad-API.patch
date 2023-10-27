@@ -14,7 +14,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 diff --git a/chrome/browser/flag-metadata.json b/chrome/browser/flag-metadata.json
 --- a/chrome/browser/flag-metadata.json
 +++ b/chrome/browser/flag-metadata.json
-@@ -7205,9 +7205,9 @@
+@@ -7331,9 +7331,9 @@
      "expiry_milestone": 121
    },
    {
@@ -29,7 +29,7 @@ diff --git a/chrome/browser/flag-metadata.json b/chrome/browser/flag-metadata.js
 diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descriptions.cc
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -3051,7 +3051,7 @@ const char kReduceAcceptLanguageDescription[] =
+@@ -3071,7 +3071,7 @@ const char kReduceAcceptLanguageDescription[] =
  
  const char kRestrictGamepadAccessName[] = "Restrict gamepad access";
  const char kRestrictGamepadAccessDescription[] =
@@ -66,7 +66,7 @@ diff --git a/third_party/blink/renderer/modules/gamepad/navigator_gamepad.cc b/t
    if (!navigator.DomWindow()) {
      // Using an existing NavigatorGamepad if one exists, but don't create one
      // for a detached window, as its subclasses depend on a non-null window.
-@@ -430,6 +434,8 @@ void NavigatorGamepad::SampleAndCompareGamepadState() {
+@@ -435,6 +439,8 @@ void NavigatorGamepad::SampleAndCompareGamepadState() {
  
  void NavigatorGamepad::DispatchGamepadEvent(const AtomicString& event_name,
                                              Gamepad* gamepad) {

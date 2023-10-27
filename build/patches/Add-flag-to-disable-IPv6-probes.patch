@@ -18,7 +18,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -6605,6 +6605,10 @@ const FeatureEntry kFeatureEntries[] = {
+@@ -6866,6 +6866,10 @@ const FeatureEntry kFeatureEntries[] = {
      {"enable-reader-mode-in-cct", flag_descriptions::kReaderModeInCCTName,
       flag_descriptions::kReaderModeInCCTDescription, kOsAndroid,
       FEATURE_VALUE_TYPE(chrome::android::kReaderModeInCCT)},
@@ -32,9 +32,9 @@ diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descriptions.cc
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -3895,6 +3895,10 @@ const char kCCTTextFragmentLookupApiEnabledName[] =
- const char kCCTTextFragmentLookupApiEnabledDescription[] =
-     "Enable CCT API to lookup text fragments";
+@@ -3951,6 +3951,10 @@ const char kAccountReauthenticationRecentTimeWindow0mins[] = "0 mins";
+ const char kAccountReauthenticationRecentTimeWindow1mins[] = "1 mins";
+ const char kAccountReauthenticationRecentTimeWindow5mins[] = "5 mins";
  
 +const char kIPv6ProbingName[] = "Enable IPv6 probing.";
 +const char kIPv6ProbingDescription[] =
@@ -46,7 +46,7 @@ diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descripti
 diff --git a/chrome/browser/flag_descriptions.h b/chrome/browser/flag_descriptions.h
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -879,6 +879,9 @@ extern const char kEnableWasmStringrefName[];
+@@ -889,6 +889,9 @@ extern const char kEnableWasmStringrefName[];
  extern const char kEnableWasmStringrefDescription[];
  
  extern const char kEnableWasmTieringName[];
@@ -59,7 +59,7 @@ diff --git a/chrome/browser/flag_descriptions.h b/chrome/browser/flag_descriptio
 diff --git a/net/BUILD.gn b/net/BUILD.gn
 --- a/net/BUILD.gn
 +++ b/net/BUILD.gn
-@@ -1096,6 +1096,7 @@ component("net") {
+@@ -1094,6 +1094,7 @@ component("net") {
      "//build:chromeos_buildflags",
      "//net/data/ssl/chrome_root_store:gen_root_store_inc",
      "//net/http:transport_security_state_generated_files",
@@ -132,7 +132,7 @@ diff --git a/net/dns/host_resolver_manager.cc b/net/dns/host_resolver_manager.cc
 diff --git a/services/network/public/cpp/features.cc b/services/network/public/cpp/features.cc
 --- a/services/network/public/cpp/features.cc
 +++ b/services/network/public/cpp/features.cc
-@@ -31,6 +31,11 @@ BASE_FEATURE(kThrottleDelayable,
+@@ -32,6 +32,11 @@ BASE_FEATURE(kThrottleDelayable,
               "ThrottleDelayable",
               base::FEATURE_ENABLED_BY_DEFAULT);
  
@@ -147,7 +147,7 @@ diff --git a/services/network/public/cpp/features.cc b/services/network/public/c
 diff --git a/services/network/public/cpp/features.h b/services/network/public/cpp/features.h
 --- a/services/network/public/cpp/features.h
 +++ b/services/network/public/cpp/features.h
-@@ -17,6 +17,7 @@ namespace features {
+@@ -16,6 +16,7 @@ namespace features {
  COMPONENT_EXPORT(NETWORK_CPP) BASE_DECLARE_FEATURE(kNetworkErrorLogging);
  COMPONENT_EXPORT(NETWORK_CPP) BASE_DECLARE_FEATURE(kReporting);
  COMPONENT_EXPORT(NETWORK_CPP) BASE_DECLARE_FEATURE(kThrottleDelayable);

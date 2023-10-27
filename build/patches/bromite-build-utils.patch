@@ -129,7 +129,7 @@ diff --git a/build/android/gyp/java_cpp_enum.py b/build/android/gyp/java_cpp_enu
 diff --git a/build/android/gyp/util/build_utils.py b/build/android/gyp/util/build_utils.py
 --- a/build/android/gyp/util/build_utils.py
 +++ b/build/android/gyp/util/build_utils.py
-@@ -498,4 +498,27 @@ def ReadSourcesList(sources_list_file_name):
+@@ -499,4 +499,27 @@ def ReadSourcesList(sources_list_file_name):
    Note that this function should not be used to parse response files.
    """
    with open(sources_list_file_name) as f:
@@ -413,7 +413,7 @@ diff --git a/build/config/BUILDCONFIG.gn b/build/config/BUILDCONFIG.gn
 diff --git a/build/config/android/rules.gni b/build/config/android/rules.gni
 --- a/build/config/android/rules.gni
 +++ b/build/config/android/rules.gni
-@@ -286,7 +286,7 @@ if (enable_java_templates && is_android) {
+@@ -212,7 +212,7 @@ if (enable_java_templates && is_android) {
    #   }
    template("java_cpp_enum") {
      action_with_pydeps(target_name) {
@@ -422,7 +422,7 @@ diff --git a/build/config/android/rules.gni b/build/config/android/rules.gni
  
        # The sources aren't compiled so don't check their dependencies.
        check_includes = false
-@@ -297,6 +297,10 @@ if (enable_java_templates && is_android) {
+@@ -223,6 +223,10 @@ if (enable_java_templates && is_android) {
        _rebased_sources = rebase_path(invoker.sources, root_build_dir)
  
        args = [ "--srcjar=$_rebased_srcjar_path" ] + _rebased_sources
@@ -436,7 +436,7 @@ diff --git a/build/config/android/rules.gni b/build/config/android/rules.gni
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/ChromeAccessibilitySettingsDelegate.java b/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/ChromeAccessibilitySettingsDelegate.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/ChromeAccessibilitySettingsDelegate.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/ChromeAccessibilitySettingsDelegate.java
-@@ -15,6 +15,12 @@ import org.chromium.components.browser_ui.accessibility.PageZoomUtils;
+@@ -23,6 +23,12 @@ import org.chromium.components.browser_ui.site_settings.SiteSettingsCategory;
  import org.chromium.components.user_prefs.UserPrefs;
  import org.chromium.content_public.browser.BrowserContextHandle;
  
@@ -452,8 +452,8 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/accessibility/s
 diff --git a/chrome/browser/flags/BUILD.gn b/chrome/browser/flags/BUILD.gn
 --- a/chrome/browser/flags/BUILD.gn
 +++ b/chrome/browser/flags/BUILD.gn
-@@ -5,7 +5,8 @@
- import("//build/config/android/rules.gni")
+@@ -6,7 +6,8 @@ import("//build/config/android/rules.gni")
+ import("//third_party/jni_zero/jni_zero.gni")
  
  android_library("java") {
 -  sources = [
@@ -461,8 +461,8 @@ diff --git a/chrome/browser/flags/BUILD.gn b/chrome/browser/flags/BUILD.gn
 +  sources += [
      "android/java/src/org/chromium/chrome/browser/flags/AllCachedFieldTrialParameters.java",
      "android/java/src/org/chromium/chrome/browser/flags/BooleanCachedFieldTrialParameter.java",
-     "android/java/src/org/chromium/chrome/browser/flags/CachedFeatureFlags.java",
-@@ -41,7 +42,8 @@ android_library("java") {
+     "android/java/src/org/chromium/chrome/browser/flags/CachedFieldTrialParameter.java",
+@@ -42,7 +43,8 @@ android_library("java") {
  }
  
  generate_jni("jni_headers") {
@@ -472,7 +472,7 @@ diff --git a/chrome/browser/flags/BUILD.gn b/chrome/browser/flags/BUILD.gn
      "android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureMap.java",
      "android/java/src/org/chromium/chrome/browser/flags/ChromeSessionState.java",
    ]
-@@ -49,6 +51,10 @@ generate_jni("jni_headers") {
+@@ -50,6 +52,10 @@ generate_jni("jni_headers") {
  
  static_library("flags_android") {
    sources = [

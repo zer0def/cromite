@@ -14,7 +14,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chrome/browser/ui/android/strings/android_chrome_strings.grd
 --- a/chrome/browser/ui/android/strings/android_chrome_strings.grd
 +++ b/chrome/browser/ui/android/strings/android_chrome_strings.grd
-@@ -1791,6 +1791,12 @@ Your Google account may have other forms of browsing history like searches and a
+@@ -1826,6 +1826,12 @@ Your Google account may have other forms of browsing history like searches and a
        <message name="IDS_SAFETY_CHECK_BUTTON" desc="Text for the button to start Safety check.">
          Check now
        </message>
@@ -45,7 +45,7 @@ diff --git a/components/browser_ui/accessibility/android/java/res/xml/accessibil
 diff --git a/components/browser_ui/accessibility/android/java/src/org/chromium/components/browser_ui/accessibility/AccessibilitySettings.java b/components/browser_ui/accessibility/android/java/src/org/chromium/components/browser_ui/accessibility/AccessibilitySettings.java
 --- a/components/browser_ui/accessibility/android/java/src/org/chromium/components/browser_ui/accessibility/AccessibilitySettings.java
 +++ b/components/browser_ui/accessibility/android/java/src/org/chromium/components/browser_ui/accessibility/AccessibilitySettings.java
-@@ -21,6 +21,9 @@ import org.chromium.components.user_prefs.UserPrefs;
+@@ -20,6 +20,9 @@ import org.chromium.components.browser_ui.settings.SettingsUtils;
  import org.chromium.content_public.browser.ContentFeatureList;
  import org.chromium.content_public.browser.ContentFeatureMap;
  
