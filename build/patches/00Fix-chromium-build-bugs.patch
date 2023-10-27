@@ -7,7 +7,6 @@ Subject: Fix chromium build bugs
  .../AutofillSaveCardBottomSheetBridge.java         |  2 +-
  .../org/chromium/chrome/browser/tab/TabImpl.java   |  2 +-
  ...me_browser_main_extra_parts_nacl_deprecation.cc |  2 ++
- chrome/browser/download/download_ui_model.cc       |  2 ++
  .../api/autofill_private/autofill_util.cc          |  2 ++
  .../api/reading_list/reading_list_event_router.h   |  2 +-
  .../navigation_predictor_metrics_document_data.h   |  2 ++
@@ -20,7 +19,6 @@ Subject: Fix chromium build bugs
  chrome/browser/usb/chrome_usb_delegate.cc          |  2 ++
  .../autofill/core/browser/data_model/address.cc    |  4 ++--
  components/autofill/core/browser/form_structure.cc |  2 ++
- .../core/browser/ui/suggestion_selection.cc        | 12 +-----------
  .../core/browser/webdata/autofill_table.cc         | 12 ++++++------
  components/omnibox/browser/omnibox_field_trial.cc  |  4 ++--
  .../phishing_classifier/phishing_image_embedder.cc | 14 +++-----------
@@ -28,7 +26,7 @@ Subject: Fix chromium build bugs
  crypto/BUILD.gn                                    |  3 +++
  net/BUILD.gn                                       |  1 +
  third_party/libevent/BUILD.gn                      |  2 ++
- 25 files changed, 48 insertions(+), 45 deletions(-)
+ 23 files changed, 45 insertions(+), 34 deletions(-)
 
 diff --git a/BUILD.gn b/BUILD.gn
 --- a/BUILD.gn
@@ -56,7 +54,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/autofill/Autofi
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tab/TabImpl.java b/chrome/android/java/src/org/chromium/chrome/browser/tab/TabImpl.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/tab/TabImpl.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/tab/TabImpl.java
-@@ -385,7 +385,7 @@ public class TabImpl implements Tab {
+@@ -401,7 +401,7 @@ public class TabImpl implements Tab {
      }
  
      @Override
@@ -84,29 +82,10 @@ diff --git a/chrome/browser/chrome_browser_main_extra_parts_nacl_deprecation.cc 
  
  }  // namespace
  
-diff --git a/chrome/browser/download/download_ui_model.cc b/chrome/browser/download/download_ui_model.cc
---- a/chrome/browser/download/download_ui_model.cc
-+++ b/chrome/browser/download/download_ui_model.cc
-@@ -177,6 +177,7 @@ bool ShouldShowWarningForNoSafeBrowsing(Profile* profile) {
- #endif
- }
- 
-+#if !BUILDFLAG(IS_ANDROID)
- bool CanUserTurnOnSafeBrowsing(Profile* profile) {
- #if BUILDFLAG(FULL_SAFE_BROWSING)
-   return !safe_browsing::IsSafeBrowsingPolicyManaged(*profile->GetPrefs());
-@@ -184,6 +185,7 @@ bool CanUserTurnOnSafeBrowsing(Profile* profile) {
-   return false;
- #endif
- }
-+#endif
- 
- }  // namespace
- 
 diff --git a/chrome/browser/extensions/api/autofill_private/autofill_util.cc b/chrome/browser/extensions/api/autofill_private/autofill_util.cc
 --- a/chrome/browser/extensions/api/autofill_private/autofill_util.cc
 +++ b/chrome/browser/extensions/api/autofill_private/autofill_util.cc
-@@ -42,6 +42,7 @@ namespace {
+@@ -43,6 +43,7 @@ namespace {
  // Get the multi-valued element for |type| and return it as a |vector|.
  // TODO(khorimoto): remove this function since multi-valued types are
  // deprecated.
@@ -114,7 +93,7 @@ diff --git a/chrome/browser/extensions/api/autofill_private/autofill_util.cc b/c
  std::vector<std::string> GetList(const autofill::AutofillProfile& profile,
                                   autofill::ServerFieldType type) {
    std::vector<std::string> list;
-@@ -65,6 +66,7 @@ std::vector<std::string> GetList(const autofill::AutofillProfile& profile,
+@@ -66,6 +67,7 @@ std::vector<std::string> GetList(const autofill::AutofillProfile& profile,
  
    return list;
  }
@@ -149,7 +128,7 @@ diff --git a/chrome/browser/navigation_predictor/navigation_predictor_metrics_do
 diff --git a/chrome/browser/safe_browsing/BUILD.gn b/chrome/browser/safe_browsing/BUILD.gn
 --- a/chrome/browser/safe_browsing/BUILD.gn
 +++ b/chrome/browser/safe_browsing/BUILD.gn
-@@ -210,6 +210,7 @@ static_library("safe_browsing") {
+@@ -182,6 +182,7 @@ static_library("safe_browsing") {
        "//components/version_info",
        "//content/public/browser",
        "//services/preferences/public/mojom:mojom",
@@ -194,7 +173,7 @@ diff --git a/chrome/browser/ui/views/side_panel/read_anything/read_anything_cont
 diff --git a/chrome/browser/ui/views/tabs/tab.cc b/chrome/browser/ui/views/tabs/tab.cc
 --- a/chrome/browser/ui/views/tabs/tab.cc
 +++ b/chrome/browser/ui/views/tabs/tab.cc
-@@ -536,7 +536,7 @@ bool Tab::OnMousePressed(const ui::MouseEvent& event) {
+@@ -540,7 +540,7 @@ bool Tab::OnMousePressed(const ui::MouseEvent& event) {
  }
  
  bool Tab::OnMouseDragged(const ui::MouseEvent& event) {
@@ -256,17 +235,17 @@ diff --git a/chrome/browser/usb/chrome_usb_delegate.cc b/chrome/browser/usb/chro
 diff --git a/components/autofill/core/browser/data_model/address.cc b/components/autofill/core/browser/data_model/address.cc
 --- a/components/autofill/core/browser/data_model/address.cc
 +++ b/components/autofill/core/browser/data_model/address.cc
-@@ -30,7 +30,7 @@
+@@ -40,7 +40,7 @@ Address::Address(AddressCountryCode country_code)
+           !i18n_model_definition::IsCustomHierarchyAvailableForCountry(
+               country_code)) {}
  
- namespace autofill {
+-Address::~Address() = default;
++Address::~Address() = default
  
--Address::Address() : structured_address_(std::make_unique<AddressNode>()){};
-+Address::Address() : structured_address_(std::make_unique<AddressNode>()){}
+ Address& Address::operator=(const Address& address) {
+   if (this == &address) {
+@@ -59,7 +59,7 @@ Address& Address::operator=(const Address& address) {
  
- Address::Address(const Address& address) {
-   *this = address;
-@@ -44,7 +44,7 @@ Address& Address::operator=(const Address& address) {
-   }
    structured_address_->CopyFrom(address.GetStructuredAddress());
    return *this;
 -};
@@ -293,32 +272,10 @@ diff --git a/components/autofill/core/browser/form_structure.cc b/components/aut
  
  void PopulateRandomizedFormMetadata(const RandomizedEncoder& encoder,
                                      const FormStructure& form,
-diff --git a/components/autofill/core/browser/ui/suggestion_selection.cc b/components/autofill/core/browser/ui/suggestion_selection.cc
---- a/components/autofill/core/browser/ui/suggestion_selection.cc
-+++ b/components/autofill/core/browser/ui/suggestion_selection.cc
-@@ -152,17 +152,7 @@ Suggestion GetFillFullNameSuggestion(Suggestion::BackendId backend_id) {
- // whole form.
- // TODO(crbug.com/1459990): Use this once the new popup with submenus
- // implementation is complete.
--Suggestion GetFillEverythingFromAddressProfileSuggestion(
--    Suggestion::BackendId backend_id) {
--  Suggestion suggestion(l10n_util::GetStringUTF16(
--      IDS_AUTOFILL_FILL_EVERYTHING_FROM_ADDRESS_PROFILE_POPUP_OPTION_SELECTED));
--  suggestion.popup_item_id = PopupItemId::kFillEverythingFromAddressProfile;
--  suggestion.icon = "magicIcon";
--  suggestion.payload = backend_id;
--  suggestion.acceptance_a11y_announcement = l10n_util::GetStringUTF16(
--      IDS_AUTOFILL_A11Y_ANNOUNCE_FILL_EVERYTHING_FROM_ADDRESS_PROFILE_POPUP_OPTION_SELECTED);
--  return suggestion;
--}
-+// (UAZO) removed due error: unused function
- 
- // Append new suggestions to `suggestions` based on the `ServerFieldType` list
- // provided. Suggestions are not added if their info is not found in the
 diff --git a/components/autofill/core/browser/webdata/autofill_table.cc b/components/autofill/core/browser/webdata/autofill_table.cc
 --- a/components/autofill/core/browser/webdata/autofill_table.cc
 +++ b/components/autofill/core/browser/webdata/autofill_table.cc
-@@ -412,12 +412,12 @@ void InsertBuilder(sql::Database* db,
+@@ -426,12 +426,12 @@ void InsertBuilder(sql::Database* db,
  }
  
  // Renames the table `from` into `to` and returns true if successful.
@@ -340,7 +297,7 @@ diff --git a/components/autofill/core/browser/webdata/autofill_table.cc b/compon
 diff --git a/components/omnibox/browser/omnibox_field_trial.cc b/components/omnibox/browser/omnibox_field_trial.cc
 --- a/components/omnibox/browser/omnibox_field_trial.cc
 +++ b/components/omnibox/browser/omnibox_field_trial.cc
-@@ -1091,11 +1091,11 @@ MLConfig::MLConfig(const MLConfig&) = default;
+@@ -1090,11 +1090,11 @@ MLConfig::MLConfig(const MLConfig&) = default;
  
  ScopedMLConfigForTesting::ScopedMLConfigForTesting()
      : original_config_(std::make_unique<MLConfig>(GetMLConfig())) {
@@ -381,7 +338,7 @@ diff --git a/components/safe_browsing/content/renderer/phishing_classifier/phish
 diff --git a/content/browser/browser_interface_binders.cc b/content/browser/browser_interface_binders.cc
 --- a/content/browser/browser_interface_binders.cc
 +++ b/content/browser/browser_interface_binders.cc
-@@ -353,6 +353,7 @@ void BindDateTimeChooserForFrame(
+@@ -346,6 +346,7 @@ void BindDateTimeChooserForFrame(
  void BindTextSuggestionHostForFrame(
      RenderFrameHost* host,
      mojo::PendingReceiver<blink::mojom::TextSuggestionHost> receiver) {
@@ -405,7 +362,7 @@ diff --git a/crypto/BUILD.gn b/crypto/BUILD.gn
 diff --git a/net/BUILD.gn b/net/BUILD.gn
 --- a/net/BUILD.gn
 +++ b/net/BUILD.gn
-@@ -1659,6 +1659,7 @@ component("net") {
+@@ -1651,6 +1651,7 @@ component("net") {
      configs -= [ "//build/config/compiler:default_optimization" ]
      configs += [ "//build/config/compiler:optimize_max" ]
    }

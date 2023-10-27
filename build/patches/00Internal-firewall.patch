@@ -34,10 +34,11 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  services/network/network_context.cc           |  73 +++
  .../network/public/cpp/simple_url_loader.cc   |  18 +
  .../network/public/cpp/simple_url_loader.h    |   3 +
- .../loader/fetch/url_loader/url_loader.cc     | 145 +++++-
+ .../platform/loader/fetch/fetch_utils.cc      | 171 ++++++-
+ .../loader/fetch/url_loader/url_loader.cc     |   4 +-
  .../scripts/auditor/auditor.py                |   1 +
  .../scripts/auditor/util.py                   |   1 +
- 28 files changed, 1502 insertions(+), 16 deletions(-)
+ 29 files changed, 1527 insertions(+), 21 deletions(-)
  create mode 100644 services/firewall/public/BUILD.gn
  create mode 100644 services/firewall/public/firewall_features.cc
  create mode 100644 services/firewall/public/firewall_features.h
@@ -55,7 +56,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -2495,6 +2495,7 @@ static_library("browser") {
+@@ -2552,6 +2552,7 @@ static_library("browser") {
      "//third_party/ungoogled:switches",
      "//services/device/public/mojom",
      "//services/device/public/mojom:usb",
@@ -66,7 +67,7 @@ diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -202,6 +202,7 @@
+@@ -203,6 +203,7 @@
  #include "sandbox/policy/features.h"
  #include "sandbox/policy/switches.h"
  #include "services/device/public/cpp/device_features.h"
@@ -74,7 +75,7 @@ diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
  #include "services/media_session/public/cpp/features.h"
  #include "services/network/public/cpp/features.h"
  #include "services/network/public/cpp/network_switches.h"
-@@ -8329,6 +8330,11 @@ const FeatureEntry kFeatureEntries[] = {
+@@ -8592,6 +8593,11 @@ const FeatureEntry kFeatureEntries[] = {
       FEATURE_VALUE_TYPE(page_info::kPageInfoHideSiteSettings)},
  #endif  // !BUILDFLAG(IS_ANDROID)
  
@@ -235,7 +236,7 @@ diff --git a/components/webapps/browser/android/webapk/webapk_icon_hasher.cc b/c
 diff --git a/net/BUILD.gn b/net/BUILD.gn
 --- a/net/BUILD.gn
 +++ b/net/BUILD.gn
-@@ -1098,6 +1098,7 @@ component("net") {
+@@ -1096,6 +1096,7 @@ component("net") {
      "//build:chromeos_buildflags",
      "//net/data/ssl/chrome_root_store:gen_root_store_inc",
      "//net/http:transport_security_state_generated_files",
@@ -270,7 +271,7 @@ diff --git a/net/url_request/url_request_http_job.cc b/net/url_request/url_reque
  }
  
  URLRequestHttpJob::~URLRequestHttpJob() {
-@@ -574,6 +577,18 @@ void URLRequestHttpJob::MaybeStartTransactionInternal(int result) {
+@@ -555,6 +558,18 @@ void URLRequestHttpJob::MaybeStartTransactionInternal(int result) {
  void URLRequestHttpJob::StartTransactionInternal() {
    DCHECK(!override_response_headers_);
  
@@ -1528,7 +1529,7 @@ new file mode 100644
 diff --git a/services/network/network_context.cc b/services/network/network_context.cc
 --- a/services/network/network_context.cc
 +++ b/services/network/network_context.cc
-@@ -87,6 +87,7 @@
+@@ -88,6 +88,7 @@
  #include "net/url_request/url_request.h"
  #include "net/url_request/url_request_context.h"
  #include "net/url_request/url_request_context_builder.h"
@@ -1536,7 +1537,7 @@ diff --git a/services/network/network_context.cc b/services/network/network_cont
  #include "services/network/brokered_client_socket_factory.h"
  #include "services/network/cookie_manager.h"
  #include "services/network/cors/cors_url_loader_factory.h"
-@@ -1625,6 +1626,9 @@ void NetworkContext::OnNewSCTAuditingReportSent() {
+@@ -1622,6 +1623,9 @@ void NetworkContext::OnNewSCTAuditingReportSent() {
  void NetworkContext::CreateUDPSocket(
      mojo::PendingReceiver<mojom::UDPSocket> receiver,
      mojo::PendingRemote<mojom::UDPSocketListener> listener) {
@@ -1546,7 +1547,7 @@ diff --git a/services/network/network_context.cc b/services/network/network_cont
    socket_factory_->CreateUDPSocket(std::move(receiver), std::move(listener));
  }
  
-@@ -1637,6 +1641,17 @@ void NetworkContext::CreateRestrictedUDPSocket(
+@@ -1634,6 +1638,17 @@ void NetworkContext::CreateRestrictedUDPSocket(
      mojo::PendingRemote<mojom::UDPSocketListener> listener,
      CreateRestrictedUDPSocketCallback callback) {
    // SimpleHostResolver is transitively owned by |this|.
@@ -1564,7 +1565,7 @@ diff --git a/services/network/network_context.cc b/services/network/network_cont
    socket_factory_->CreateRestrictedUDPSocket(
        addr, mode, traffic_annotation, std::move(params), std::move(receiver),
        std::move(listener), SimpleHostResolver::Create(this),
-@@ -1649,6 +1664,17 @@ void NetworkContext::CreateTCPServerSocket(
+@@ -1646,6 +1661,17 @@ void NetworkContext::CreateTCPServerSocket(
      const net::MutableNetworkTrafficAnnotationTag& traffic_annotation,
      mojo::PendingReceiver<mojom::TCPServerSocket> receiver,
      CreateTCPServerSocketCallback callback) {
@@ -1582,7 +1583,7 @@ diff --git a/services/network/network_context.cc b/services/network/network_cont
    socket_factory_->CreateTCPServerSocket(
        local_addr, std::move(options),
        static_cast<net::NetworkTrafficAnnotationTag>(traffic_annotation),
-@@ -1663,6 +1689,21 @@ void NetworkContext::CreateTCPConnectedSocket(
+@@ -1660,6 +1686,21 @@ void NetworkContext::CreateTCPConnectedSocket(
      mojo::PendingReceiver<mojom::TCPConnectedSocket> receiver,
      mojo::PendingRemote<mojom::SocketObserver> observer,
      CreateTCPConnectedSocketCallback callback) {
@@ -1604,7 +1605,7 @@ diff --git a/services/network/network_context.cc b/services/network/network_cont
    socket_factory_->CreateTCPConnectedSocket(
        local_addr, remote_addr_list, std::move(tcp_connected_socket_options),
        static_cast<net::NetworkTrafficAnnotationTag>(traffic_annotation),
-@@ -1674,6 +1715,20 @@ void NetworkContext::CreateTCPBoundSocket(
+@@ -1671,6 +1712,20 @@ void NetworkContext::CreateTCPBoundSocket(
      const net::MutableNetworkTrafficAnnotationTag& traffic_annotation,
      mojo::PendingReceiver<mojom::TCPBoundSocket> receiver,
      CreateTCPBoundSocketCallback callback) {
@@ -1625,7 +1626,7 @@ diff --git a/services/network/network_context.cc b/services/network/network_cont
    socket_factory_->CreateTCPBoundSocket(
        local_addr,
        static_cast<net::NetworkTrafficAnnotationTag>(traffic_annotation),
-@@ -1739,6 +1794,24 @@ void NetworkContext::CreateWebSocket(
+@@ -1736,6 +1791,24 @@ void NetworkContext::CreateWebSocket(
      mojo::PendingRemote<mojom::WebSocketAuthenticationHandler> auth_handler,
      mojo::PendingRemote<mojom::TrustedHeaderClient> header_client,
      const absl::optional<base::UnguessableToken>& throttling_profile_id) {
@@ -1705,14 +1706,40 @@ diff --git a/services/network/public/cpp/simple_url_loader.h b/services/network/
  };
  
  }  // namespace network
-diff --git a/third_party/blink/renderer/platform/loader/fetch/url_loader/url_loader.cc b/third_party/blink/renderer/platform/loader/fetch/url_loader/url_loader.cc
---- a/third_party/blink/renderer/platform/loader/fetch/url_loader/url_loader.cc
-+++ b/third_party/blink/renderer/platform/loader/fetch/url_loader/url_loader.cc
-@@ -648,23 +648,150 @@ net::NetworkTrafficAnnotationTag URLLoader::Context::GetTrafficAnnotationTag(
+diff --git a/third_party/blink/renderer/platform/loader/fetch/fetch_utils.cc b/third_party/blink/renderer/platform/loader/fetch/fetch_utils.cc
+--- a/third_party/blink/renderer/platform/loader/fetch/fetch_utils.cc
++++ b/third_party/blink/renderer/platform/loader/fetch/fetch_utils.cc
+@@ -97,28 +97,153 @@ net::NetworkTrafficAnnotationTag FetchUtils::GetTrafficAnnotationTag(
+     case network::mojom::RequestDestination::kIframe:
+     case network::mojom::RequestDestination::kFrame:
+     case network::mojom::RequestDestination::kFencedframe:
+-    case network::mojom::RequestDestination::kWebIdentity:
        NOTREACHED();
        [[fallthrough]];
  
 +    // Split destination with new annotations
++    case network::mojom::RequestDestination::kWebIdentity:
++      return net::DefineNetworkTrafficAnnotation("blink_resource_loader_webidentity", R"(
++      semantics {
++        sender: "Blink Resource Loader"
++        description:
++          "Blink-initiated request, which includes all resources for "
++          "normal page loads, chrome URLs, and downloads."
++        trigger:
++          "The user navigates to a URL or downloads a file. Also when a "
++          "webpage, ServiceWorker, or chrome:// uses any network communication."
++        data: "Anything the initiator wants to send."
++        destination: OTHER
++      }
++      policy {
++        cookies_allowed: YES
++        cookies_store: "user"
++        setting: "These requests cannot be disabled in settings."
++        policy_exception_justification:
++          "Not implemented. Without these requests, Chrome will be unable "
++          "to load any webpage."
++      })");
++
 +    case network::mojom::RequestDestination::kServiceWorker:
 +    case network::mojom::RequestDestination::kSharedWorker:
 +    case network::mojom::RequestDestination::kWorker:
@@ -1826,8 +1853,33 @@ diff --git a/third_party/blink/renderer/platform/loader/fetch/url_loader/url_loa
 +          "to load any webpage."
 +      })");
 +
-+    case network::mojom::RequestDestination::kXslt:
-+      return net::DefineNetworkTrafficAnnotation("blink_resource_loader_xslt", R"(
+     case network::mojom::RequestDestination::kEmpty:
+     case network::mojom::RequestDestination::kAudio:
+-    case network::mojom::RequestDestination::kAudioWorklet:
+     case network::mojom::RequestDestination::kFont:
+     case network::mojom::RequestDestination::kImage:
+-    case network::mojom::RequestDestination::kManifest:
+-    case network::mojom::RequestDestination::kPaintWorklet:
+-    case network::mojom::RequestDestination::kReport:
+     case network::mojom::RequestDestination::kScript:
+-    case network::mojom::RequestDestination::kServiceWorker:
+-    case network::mojom::RequestDestination::kSharedWorker:
+     case network::mojom::RequestDestination::kStyle:
+     case network::mojom::RequestDestination::kTrack:
+     case network::mojom::RequestDestination::kVideo:
+-    case network::mojom::RequestDestination::kWebBundle:
+-    case network::mojom::RequestDestination::kWorker:
+-    case network::mojom::RequestDestination::kXslt:
+-    case network::mojom::RequestDestination::kDictionary:
+       return net::DefineNetworkTrafficAnnotation("blink_resource_loader", R"(
+       semantics {
+         sender: "Blink Resource Loader"
+@@ -140,10 +265,32 @@ net::NetworkTrafficAnnotationTag FetchUtils::GetTrafficAnnotationTag(
+           "to load any webpage."
+       })");
+ 
++    case network::mojom::RequestDestination::kDictionary:
++      return net::DefineNetworkTrafficAnnotation("blink_resource_loader_dictionary", R"(
 +      semantics {
 +        sender: "Blink Resource Loader"
 +        description:
@@ -1848,26 +1900,35 @@ diff --git a/third_party/blink/renderer/platform/loader/fetch/url_loader/url_loa
 +          "to load any webpage."
 +      })");
 +
-     case network::mojom::RequestDestination::kEmpty:
-     case network::mojom::RequestDestination::kAudio:
--    case network::mojom::RequestDestination::kAudioWorklet:
-     case network::mojom::RequestDestination::kFont:
-     case network::mojom::RequestDestination::kImage:
--    case network::mojom::RequestDestination::kManifest:
--    case network::mojom::RequestDestination::kPaintWorklet:
--    case network::mojom::RequestDestination::kReport:
-     case network::mojom::RequestDestination::kScript:
--    case network::mojom::RequestDestination::kServiceWorker:
--    case network::mojom::RequestDestination::kSharedWorker:
-     case network::mojom::RequestDestination::kStyle:
-     case network::mojom::RequestDestination::kTrack:
-     case network::mojom::RequestDestination::kVideo:
--    case network::mojom::RequestDestination::kWebBundle:
--    case network::mojom::RequestDestination::kWorker:
--    case network::mojom::RequestDestination::kXslt:
-     case network::mojom::RequestDestination::kDictionary:
-       return net::DefineNetworkTrafficAnnotation("blink_resource_loader", R"(
-       semantics {
+     case network::mojom::RequestDestination::kEmbed:
+     case network::mojom::RequestDestination::kObject:
+       return net::DefineNetworkTrafficAnnotation(
+-          "blink_extension_resource_loader", R"(
++          "blink_extension_resource_loader_embed", R"(
+         semantics {
+           sender: "Blink Resource Loader"
+           description:
+diff --git a/third_party/blink/renderer/platform/loader/fetch/url_loader/url_loader.cc b/third_party/blink/renderer/platform/loader/fetch/url_loader/url_loader.cc
+--- a/third_party/blink/renderer/platform/loader/fetch/url_loader/url_loader.cc
++++ b/third_party/blink/renderer/platform/loader/fetch/url_loader/url_loader.cc
+@@ -287,7 +287,7 @@ void URLLoader::Context::Start(
+           download_to_blob_registry.InitWithNewPipeAndPassReceiver());
+     }
+     net::NetworkTrafficAnnotationTag tag =
+-        FetchUtils::GetTrafficAnnotationTag(*request);
++        FetchUtils::GetTrafficAnnotationTag(*request); // check for deprecation
+     resource_request_sender_->SendSync(
+         std::move(request), tag, loader_options, sync_load_response,
+         url_loader_factory_, std::move(throttles), timeout_interval,
+@@ -300,7 +300,7 @@ void URLLoader::Context::Start(
+   TRACE_EVENT_WITH_FLOW0("loading", "URLLoader::Context::Start", this,
+                          TRACE_EVENT_FLAG_FLOW_OUT);
+   net::NetworkTrafficAnnotationTag tag =
+-      FetchUtils::GetTrafficAnnotationTag(*request);
++      FetchUtils::GetTrafficAnnotationTag(*request); // check for deprecation
+   request_id_ = resource_request_sender_->SendAsync(
+       std::move(request), GetMaybeUnfreezableTaskRunner(), tag, loader_options,
+       cors_exempt_header_list_, base::WrapRefCounted(this), url_loader_factory_,
 diff --git a/tools/traffic_annotation/scripts/auditor/auditor.py b/tools/traffic_annotation/scripts/auditor/auditor.py
 --- a/tools/traffic_annotation/scripts/auditor/auditor.py
 +++ b/tools/traffic_annotation/scripts/auditor/auditor.py

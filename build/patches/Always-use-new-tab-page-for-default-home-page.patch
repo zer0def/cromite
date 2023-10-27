@@ -12,16 +12,16 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/homepage/HomepageManager.java b/chrome/android/java/src/org/chromium/chrome/browser/homepage/HomepageManager.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/homepage/HomepageManager.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/homepage/HomepageManager.java
-@@ -152,10 +152,6 @@ public class HomepageManager implements HomepagePolicyManager.HomepagePolicyStat
-      *         if the homepage button is force enabled via flag.
+@@ -168,10 +168,6 @@ public class HomepageManager implements HomepagePolicyManager.HomepagePolicyStat
+      *         tab page if the homepage button is force enabled via flag.
       */
-     public static String getDefaultHomepageUri() {
+     public static GURL getDefaultHomepageGurl() {
 -        if (PartnerBrowserCustomizations.getInstance().isHomepageProviderAvailableAndEnabled()) {
--            return PartnerBrowserCustomizations.getInstance().getHomePageUrl().getSpec();
+-            return PartnerBrowserCustomizations.getInstance().getHomePageUrl();
 -        }
 -
-         String homepagePartnerDefaultUri;
          String homepagePartnerDefaultGurlSerialized =
                  SharedPreferencesManager.getInstance().readString(
+                         ChromePreferenceKeys.HOMEPAGE_PARTNER_CUSTOMIZED_DEFAULT_GURL, "");
 --
 2.25.1

@@ -8,7 +8,6 @@ suit Bromite logic
  .../android/java/res/xml/main_preferences.xml |   19 +-
  chrome/browser/BUILD.gn                       |    2 -
  .../adblock/adblock_content_browser_client.cc |   26 +-
- chrome/browser/android/adblock/adblock_jni.cc |   50 +-
  .../adblock_private/adblock_private_api.cc    |   66 +-
  .../api/adblock_private/adblock_private_api.h |   49 +
  .../eyeo_filtering_private_api.cc             |   20 +-
@@ -27,18 +26,19 @@ suit Bromite logic
  .../extensions/api/_permission_features.json  |    8 -
  .../common/extensions/api/adblock_private.idl |    8 +
  chrome/test/BUILD.gn                          |    5 -
- components/adblock/android/BUILD.gn           |    4 +-
+ components/adblock/android/BUILD.gn           |    3 +-
+ components/adblock/android/adblock_jni.cc     |   50 +-
  .../adblock/android/adblock_strings.grd       |   54 +-
  .../java/res/layout/adblock_custom_item.xml   |   14 +-
  .../layout/adblock_filter_lists_list_item.xml |   15 +
  ...ences.xml => eyeo_adblock_preferences.xml} |   39 +-
- .../components/adblock/AdblockController.java |   56 +-
+ .../components/adblock/AdblockController.java |   51 +-
  .../AdblockAllowedDomainsFragment.java        |    7 +-
  .../AdblockCustomFilterListsFragment.java     |   32 +-
  .../AdblockCustomFiltersFragment.java         |    7 +-
  .../settings/AdblockCustomItemFragment.java   |   20 +-
  .../settings/AdblockFilterListsAdapter.java   |    6 +
- .../settings/AdblockSettingsFragment.java     |   45 +-
+ .../settings/AdblockSettingsFragment.java     |   44 +-
  components/adblock/content/browser/BUILD.gn   |   18 +-
  .../adblock_controller_factory_base.cc        |    5 +-
  .../browser/adblock_webcontents_observer.cc   |   25 +-
@@ -48,15 +48,15 @@ suit Bromite logic
  .../subscription_service_factory_base.cc      |   11 +-
  .../subscription_service_factory_base.h       |    1 +
  components/adblock/core/BUILD.gn              |   39 -
- .../activeping_telemetry_topic_provider.cc    |  243 --
- .../activeping_telemetry_topic_provider.h     |   84 -
+ .../activeping_telemetry_topic_provider.cc    |  285 --
+ .../activeping_telemetry_topic_provider.h     |   87 -
  components/adblock/core/adblock_controller.h  |    8 +
  .../adblock/core/adblock_controller_impl.cc   |   58 +-
  .../adblock/core/adblock_controller_impl.h    |    7 +
  components/adblock/core/adblock_switches.cc   |    1 -
  components/adblock/core/adblock_switches.h    |    1 -
- .../adblock/core/adblock_telemetry_service.cc |  244 --
- .../adblock/core/adblock_telemetry_service.h  |  107 -
+ .../adblock/core/adblock_telemetry_service.cc |  258 --
+ .../adblock/core/adblock_telemetry_service.h  |  120 -
  components/adblock/core/common/BUILD.gn       |    8 -
  .../adblock/core/common/adblock_constants.cc  |    2 -
  .../adblock/core/common/adblock_constants.h   |    1 -
@@ -106,9 +106,9 @@ suit Bromite logic
  .../blink/renderer/core/css/style_engine.cc   |    8 +
  .../blink/renderer/core/css/style_engine.h    |    1 +
  .../renderer/core/exported/web_document.cc    |   13 +-
- tools/gritsettings/resource_ids.spec          |    9 +-
+ tools/gritsettings/resource_ids.spec          |    1 -
  .../definitions/adblock_private.d.ts          |   14 +
- 103 files changed, 5081 insertions(+), 1085 deletions(-)
+ 103 files changed, 5070 insertions(+), 1153 deletions(-)
  create mode 100644 chrome/browser/resources/settings/adblock_page/adblock_page.html
  create mode 100644 chrome/browser/resources/settings/adblock_page/adblock_page.ts
  rename components/adblock/android/java/res/xml/{adblock_preferences.xml => eyeo_adblock_preferences.xml} (56%)
@@ -165,7 +165,7 @@ diff --git a/chrome/android/java/res/xml/main_preferences.xml b/chrome/android/j
 diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -166,8 +166,6 @@ static_library("browser") {
+@@ -165,8 +165,6 @@ static_library("browser") {
      "adblock/adblock_content_browser_client.h",
      "adblock/adblock_controller_factory.cc",
      "adblock/adblock_controller_factory.h",
@@ -177,7 +177,7 @@ diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 diff --git a/chrome/browser/adblock/adblock_content_browser_client.cc b/chrome/browser/adblock/adblock_content_browser_client.cc
 --- a/chrome/browser/adblock/adblock_content_browser_client.cc
 +++ b/chrome/browser/adblock/adblock_content_browser_client.cc
-@@ -25,6 +25,8 @@
+@@ -24,6 +24,8 @@
  #include "chrome/browser/adblock/resource_classification_runner_factory.h"
  #include "chrome/browser/adblock/sitekey_storage_factory.h"
  #include "chrome/browser/adblock/subscription_service_factory.h"
@@ -186,7 +186,7 @@ diff --git a/chrome/browser/adblock/adblock_content_browser_client.cc b/chrome/b
  #include "chrome/browser/profiles/profile.h"
  #include "chrome/browser/ui/browser_navigator_params.h"
  #include "components/adblock/content/browser/adblock_url_loader_factory.h"
-@@ -61,6 +63,13 @@ bool IsFilteringNeeded(content::RenderFrameHost* frame) {
+@@ -59,6 +61,13 @@ bool IsFilteringNeeded(content::RenderFrameHost* frame) {
      auto* profile =
          Profile::FromBrowserContext(frame->GetProcess()->GetBrowserContext());
      if (profile) {
@@ -200,7 +200,7 @@ diff --git a/chrome/browser/adblock/adblock_content_browser_client.cc b/chrome/b
        // Filtering may be needed if there's at least one enabled
        // FilteringConfiguration.
        return base::ranges::any_of(
-@@ -104,23 +113,6 @@ class AdblockContextData : public base::SupportsUserData::Data {
+@@ -102,23 +111,6 @@ class AdblockContextData : public base::SupportsUserData::Data {
          adblock::SitekeyStorageFactory::GetForBrowserContext(browser_context),
          adblock::ContentSecurityPolicyInjectorFactory::GetForBrowserContext(
              browser_context)};
@@ -214,7 +214,7 @@ diff --git a/chrome/browser/adblock/adblock_content_browser_client.cc b/chrome/b
 -          embedder_support::GetUserAgent(),
 -          base::BindOnce(&AdblockContextData::RemoveProxy,
 -                         self->weak_factory_.GetWeakPtr()),
--          adblock::AdblockControllerFactory::GetForBrowserContext(
+-          adblock::SubscriptionServiceFactory::GetForBrowserContext(
 -              Profile::FromBrowserContext(
 -                  frame->GetProcess()->GetBrowserContext())));
 -      self->proxies_.emplace(std::move(proxy));
@@ -224,111 +224,10 @@ diff --git a/chrome/browser/adblock/adblock_content_browser_client.cc b/chrome/b
      auto proxy = std::make_unique<adblock::AdblockURLLoaderFactory>(
          std::move(config),
          content::GlobalRenderFrameHostId(render_process_id,
-diff --git a/chrome/browser/android/adblock/adblock_jni.cc b/chrome/browser/android/adblock/adblock_jni.cc
---- a/chrome/browser/android/adblock/adblock_jni.cc
-+++ b/chrome/browser/android/adblock/adblock_jni.cc
-@@ -24,6 +24,7 @@
- #include "base/android/jni_array.h"
- #include "base/android/jni_string.h"
- #include "base/android/jni_weak_ref.h"
-+#include "base/time/time_to_iso8601.h"
- #include "base/logging.h"
- #include "chrome/browser/adblock/adblock_controller_factory.h"
- #include "chrome/browser/android/adblock/adblock_jni_factory.h"
-@@ -71,6 +72,10 @@ ScopedJavaLocalRef<jobject> ToJava(JNIEnv* env,
-                                    const std::string& url,
-                                    const std::string& title,
-                                    const std::string& version,
-+                                   adblock::Subscription::InstallationState state,
-+                                   const std::string& installation_time,
-+                                   long download_success_count,
-+                                   long download_error_count,
-                                    const std::vector<std::string>& languages) {
-   ScopedJavaLocalRef<jobject> url_param(
-       env, env->NewObject(url_class.obj(), url_constructor,
-@@ -79,12 +84,19 @@ ScopedJavaLocalRef<jobject> ToJava(JNIEnv* env,
-   return Java_Subscription_Constructor(env, url_param,
-                                        ConvertUTF8ToJavaString(env, title),
-                                        ConvertUTF8ToJavaString(env, version),
-+                                       ConvertUTF8ToJavaString(env, Subscription::SubscriptionInstallationStateToString(state)),
-+                                       ConvertUTF8ToJavaString(env, installation_time),
-+                                       download_success_count,
-+                                       download_error_count,
-                                        ToJavaArrayOfStrings(env, languages));
- }
- 
- std::vector<ScopedJavaLocalRef<jobject>> CSubscriptionsToJObjects(
-     JNIEnv* env,
-     const std::vector<scoped_refptr<Subscription>>& subscriptions) {
-+  auto* controller = adblock::GetController();
-+  raw_ptr<adblock::SubscriptionPersistentMetadata> metadata =
-+      controller->GetMetadata();
-   ScopedJavaLocalRef<jclass> url_class = GetClass(env, "java/net/URL");
-   jmethodID url_constructor = MethodID::Get<MethodID::TYPE_INSTANCE>(
-       env, url_class.obj(), "<init>", "(Ljava/lang/String;)V");
-@@ -93,7 +105,11 @@ std::vector<ScopedJavaLocalRef<jobject>> CSubscriptionsToJObjects(
-   for (auto& sub : subscriptions) {
-     jobjects.push_back(ToJava(
-         env, url_class, url_constructor, sub->GetSourceUrl().spec(),
--        sub->GetTitle(), sub->GetCurrentVersion(), std::vector<std::string>{}));
-+        sub->GetTitle(), sub->GetCurrentVersion(),
-+        sub->GetInstallationState(), base::TimeToISO8601(sub->GetInstallationTime()),
-+        metadata ? metadata->GetDownloadSuccessCount(sub->GetSourceUrl()) : 0,
-+        metadata ? metadata->GetDownloadErrorCount(sub->GetSourceUrl()) : 0,
-+        std::vector<std::string>{}));
-   }
-   return jobjects;
- }
-@@ -113,6 +129,9 @@ std::vector<ScopedJavaLocalRef<jobject>> CSubscriptionsToJObjects(
-       if (sub.url.is_valid()) {
-         jobjects.push_back(ToJava(env, url_class, url_constructor,
-                                   sub.url.spec(), sub.title, "",
-+                                  adblock::Subscription::InstallationState::Unknown,
-+                                  /*installation_time*/ "",
-+                                  /*download_success_count*/ 0, /*download_error_count*/ 0,
-                                   sub.languages));
-       }
-     }
-@@ -167,6 +186,35 @@ static void JNI_AdblockController_Bind(
-   adblock::GetJNI()->Bind(weak_controller_ref);
- }
- 
-+static void
-+JNI_AdblockController_StartUpdate(JNIEnv* env) {
-+  adblock::GetController()->StartUpdate();
-+}
-+
-+static base::android::ScopedJavaLocalRef<jobjectArray>
-+JNI_AdblockController_GetCustomSubscriptions(JNIEnv* env) {
-+  DCHECK_CURRENTLY_ON(content::BrowserThread::UI);
-+  if (!adblock::GetController()) {
-+    return ToJavaArrayOfObjects(env,
-+                                std::vector<ScopedJavaLocalRef<jobject>>{});
-+  }
-+
-+  return ToJavaArrayOfObjects(
-+      env, adblock::CSubscriptionsToJObjects(
-+               env, adblock::GetController()->GetCustomSubscriptions()));
-+}
-+
-+static jboolean JNI_AdblockController_IsPrivilegedFiltersEnabled(
-+    JNIEnv* env) {
-+  return adblock::GetController()->IsPrivilegedFiltersEnabled() ? JNI_TRUE : JNI_FALSE;
-+}
-+
-+static void JNI_AdblockController_SetPrivilegedFiltersEnabled(
-+    JNIEnv* env,
-+    jboolean j_enabled) {
-+  adblock::GetController()->SetPrivilegedFiltersEnabled(j_enabled == JNI_TRUE);
-+}
-+
- static base::android::ScopedJavaLocalRef<jobjectArray>
- JNI_AdblockController_GetInstalledSubscriptions(JNIEnv* env) {
-   DCHECK_CURRENTLY_ON(content::BrowserThread::UI);
 diff --git a/chrome/browser/extensions/api/adblock_private/adblock_private_api.cc b/chrome/browser/extensions/api/adblock_private/adblock_private_api.cc
 --- a/chrome/browser/extensions/api/adblock_private/adblock_private_api.cc
 +++ b/chrome/browser/extensions/api/adblock_private/adblock_private_api.cc
-@@ -75,26 +75,12 @@ std::vector<api::adblock_private::SessionStatsEntry> CopySessionsStats(
+@@ -77,26 +77,12 @@ std::vector<api::adblock_private::SessionStatsEntry> CopySessionsStats(
    return result;
  }
  
@@ -358,7 +257,7 @@ diff --git a/chrome/browser/extensions/api/adblock_private/adblock_private_api.c
    std::vector<api::adblock_private::Subscription> result;
    for (auto& sub : current_subscriptions) {
      api::adblock_private::Subscription js_sub;
-@@ -102,9 +88,13 @@ std::vector<api::adblock_private::Subscription> CopySubscriptions(
+@@ -104,9 +90,13 @@ std::vector<api::adblock_private::Subscription> CopySubscriptions(
      js_sub.title = sub->GetTitle();
      js_sub.current_version = sub->GetCurrentVersion();
      js_sub.installation_state =
@@ -373,7 +272,7 @@ diff --git a/chrome/browser/extensions/api/adblock_private/adblock_private_api.c
      result.emplace_back(std::move(js_sub));
    }
    return result;
-@@ -345,6 +335,44 @@ void AdblockPrivateAPI::OnListenerAdded(
+@@ -347,6 +337,44 @@ void AdblockPrivateAPI::OnListenerAdded(
  
  namespace api {
  
@@ -418,15 +317,15 @@ diff --git a/chrome/browser/extensions/api/adblock_private/adblock_private_api.c
  AdblockPrivateSetEnabledFunction::AdblockPrivateSetEnabledFunction() {}
  
  AdblockPrivateSetEnabledFunction::~AdblockPrivateSetEnabledFunction() {}
-@@ -486,7 +514,7 @@ AdblockPrivateGetInstalledSubscriptionsFunction::Run() {
-       browser_context());
+@@ -514,7 +542,7 @@ AdblockPrivateGetInstalledSubscriptionsFunction::Run() {
+       << "adblock_private expects \"adblock\" configuration";
    return RespondNow(ArgumentList(
        api::adblock_private::GetInstalledSubscriptions::Results::Create(
--          CopySubscriptions(controller->GetInstalledSubscriptions()))));
-+          CopySubscriptions(controller, controller->GetInstalledSubscriptions()))));
+-          CopySubscriptions(subscription_service->GetCurrentSubscriptions(
++          CopySubscriptions(controller, subscription_service->GetCurrentSubscriptions(
+               subscription_service->GetAdblockFilteringConfiguration())))));
  }
  
- AdblockPrivateAddAllowedDomainFunction::
 diff --git a/chrome/browser/extensions/api/adblock_private/adblock_private_api.h b/chrome/browser/extensions/api/adblock_private/adblock_private_api.h
 --- a/chrome/browser/extensions/api/adblock_private/adblock_private_api.h
 +++ b/chrome/browser/extensions/api/adblock_private/adblock_private_api.h
@@ -541,7 +440,7 @@ diff --git a/chrome/browser/profiles/chrome_browser_main_extra_parts_profiles.cc
  #include "chrome/browser/adblock/content_security_policy_injector_factory.h"
  #include "chrome/browser/adblock/element_hider_factory.h"
  #include "chrome/browser/adblock/resource_classification_runner_factory.h"
-@@ -735,7 +734,6 @@ void ChromeBrowserMainExtraPartsProfiles::
+@@ -756,7 +755,6 @@ void ChromeBrowserMainExtraPartsProfiles::
    ExitTypeServiceFactory::GetInstance();
  #endif
    adblock::AdblockControllerFactory::GetInstance();
@@ -552,7 +451,7 @@ diff --git a/chrome/browser/profiles/chrome_browser_main_extra_parts_profiles.cc
 diff --git a/chrome/browser/resources/settings/BUILD.gn b/chrome/browser/resources/settings/BUILD.gn
 --- a/chrome/browser/resources/settings/BUILD.gn
 +++ b/chrome/browser/resources/settings/BUILD.gn
-@@ -72,6 +72,7 @@ build_webui("build") {
+@@ -74,6 +74,7 @@ build_webui("build") {
    web_component_files = [
      "a11y_page/a11y_page.ts",
      "about_page/about_page.ts",
@@ -560,7 +459,7 @@ diff --git a/chrome/browser/resources/settings/BUILD.gn b/chrome/browser/resourc
      "appearance_page/appearance_fonts_page.ts",
      "appearance_page/appearance_page.ts",
      "appearance_page/home_url_input.ts",
-@@ -371,6 +372,7 @@ build_webui("build") {
+@@ -372,6 +373,7 @@ build_webui("build") {
    ts_composite = true
    ts_definitions = [
      "//tools/typescript/definitions/autofill_private.d.ts",
@@ -1113,7 +1012,7 @@ diff --git a/chrome/browser/resources/settings/page_visibility.ts b/chrome/brows
 diff --git a/chrome/browser/resources/settings/route.ts b/chrome/browser/resources/settings/route.ts
 --- a/chrome/browser/resources/settings/route.ts
 +++ b/chrome/browser/resources/settings/route.ts
-@@ -183,6 +183,10 @@ function createBrowserSettingsRoutes(): SettingsRoutes {
+@@ -187,6 +187,10 @@ function createBrowserSettingsRoutes(): SettingsRoutes {
      r.FONTS = r.APPEARANCE.createChild('/fonts');
    }
  
@@ -1164,7 +1063,7 @@ diff --git a/chrome/browser/resources/settings/settings_menu/settings_menu.html 
 diff --git a/chrome/browser/ui/tab_helpers.cc b/chrome/browser/ui/tab_helpers.cc
 --- a/chrome/browser/ui/tab_helpers.cc
 +++ b/chrome/browser/ui/tab_helpers.cc
-@@ -21,6 +21,7 @@
+@@ -20,6 +20,7 @@
  #include "chrome/browser/adblock/element_hider_factory.h"
  #include "chrome/browser/adblock/sitekey_storage_factory.h"
  #include "chrome/browser/adblock/subscription_service_factory.h"
@@ -1172,7 +1071,7 @@ diff --git a/chrome/browser/ui/tab_helpers.cc b/chrome/browser/ui/tab_helpers.cc
  #include "chrome/browser/bookmarks/bookmark_model_factory.h"
  #include "chrome/browser/breadcrumbs/breadcrumb_manager_tab_helper.h"
  #include "chrome/browser/browser_process.h"
-@@ -343,6 +344,8 @@ void TabHelpers::AttachTabHelpers(WebContents* web_contents) {
+@@ -350,6 +351,8 @@ void TabHelpers::AttachTabHelpers(WebContents* web_contents) {
      }
    }
  
@@ -1181,7 +1080,7 @@ diff --git a/chrome/browser/ui/tab_helpers.cc b/chrome/browser/ui/tab_helpers.cc
    AdblockWebContentObserver::CreateForWebContents(
        web_contents,
        adblock::SubscriptionServiceFactory::GetForBrowserContext(
-@@ -351,7 +354,8 @@ void TabHelpers::AttachTabHelpers(WebContents* web_contents) {
+@@ -358,7 +361,8 @@ void TabHelpers::AttachTabHelpers(WebContents* web_contents) {
            web_contents->GetBrowserContext()),
        adblock::SitekeyStorageFactory::GetForBrowserContext(
            web_contents->GetBrowserContext()),
@@ -1252,7 +1151,7 @@ diff --git a/chrome/test/BUILD.gn b/chrome/test/BUILD.gn
  import("//components/captive_portal/core/features.gni")
  import("//components/enterprise/buildflags/buildflags.gni")
  import("//components/feed/features.gni")
-@@ -2699,10 +2698,6 @@ if (!is_android) {
+@@ -2751,10 +2750,6 @@ if (!is_android) {
        sources += [ "../browser/chrome_for_testing/chrome_for_testing_info_bar_browsertest.cc" ]
      }
  
@@ -1266,16 +1165,15 @@ diff --git a/chrome/test/BUILD.gn b/chrome/test/BUILD.gn
 diff --git a/components/adblock/android/BUILD.gn b/components/adblock/android/BUILD.gn
 --- a/components/adblock/android/BUILD.gn
 +++ b/components/adblock/android/BUILD.gn
-@@ -54,7 +54,7 @@ android_library("adblock_java") {
+@@ -95,6 +95,7 @@ android_library("adblock_ui_java") {
      "//third_party/androidx:androidx_preference_preference_java",
    ]
  
--  annotation_processor_deps = [ "//base/android/jni_generator:jni_processor" ]
 +  srcjar_deps = [ ":jni_headers" ]
    resources_package = "org.chromium.components.adblock"
  }
  
-@@ -92,7 +92,7 @@ android_resources("java_resources") {
+@@ -120,7 +121,7 @@ android_resources("java_ui_resources") {
      "java/res/layout/adblock_custom_item_settings.xml",
      "java/res/layout/adblock_filter_lists_list_item.xml",
      "java/res/xml/adblock_more_options.xml",
@@ -1284,6 +1182,107 @@ diff --git a/components/adblock/android/BUILD.gn b/components/adblock/android/BU
    ]
  
    deps = [ ":adblock_strings_grd" ]
+diff --git a/components/adblock/android/adblock_jni.cc b/components/adblock/android/adblock_jni.cc
+--- a/components/adblock/android/adblock_jni.cc
++++ b/components/adblock/android/adblock_jni.cc
+@@ -25,6 +25,7 @@
+ #include "base/android/jni_array.h"
+ #include "base/android/jni_string.h"
+ #include "base/android/jni_weak_ref.h"
++#include "base/time/time_to_iso8601.h"
+ #include "base/logging.h"
+ #include "components/adblock/android/java_bindings_getters.h"
+ #include "components/adblock/android/jni_headers/AdblockController_jni.h"
+@@ -54,6 +55,10 @@ ScopedJavaLocalRef<jobject> ToJava(JNIEnv* env,
+                                    const std::string& url,
+                                    const std::string& title,
+                                    const std::string& version,
++                                   adblock::Subscription::InstallationState state,
++                                   const std::string& installation_time,
++                                   long download_success_count,
++                                   long download_error_count,
+                                    const std::vector<std::string>& languages) {
+   ScopedJavaLocalRef<jobject> url_param(
+       env, env->NewObject(url_class.obj(), url_constructor,
+@@ -62,12 +67,19 @@ ScopedJavaLocalRef<jobject> ToJava(JNIEnv* env,
+   return Java_Subscription_Constructor(env, url_param,
+                                        ConvertUTF8ToJavaString(env, title),
+                                        ConvertUTF8ToJavaString(env, version),
++                                       ConvertUTF8ToJavaString(env, Subscription::SubscriptionInstallationStateToString(state)),
++                                       ConvertUTF8ToJavaString(env, installation_time),
++                                       download_success_count,
++                                       download_error_count,
+                                        ToJavaArrayOfStrings(env, languages));
+ }
+ 
+ std::vector<ScopedJavaLocalRef<jobject>> CSubscriptionsToJObjects(
+     JNIEnv* env,
+     const std::vector<scoped_refptr<Subscription>>& subscriptions) {
++  auto* controller = adblock::GetController();
++  raw_ptr<adblock::SubscriptionPersistentMetadata> metadata =
++      controller->GetMetadata();
+   ScopedJavaLocalRef<jclass> url_class = GetClass(env, "java/net/URL");
+   jmethodID url_constructor = MethodID::Get<MethodID::TYPE_INSTANCE>(
+       env, url_class.obj(), "<init>", "(Ljava/lang/String;)V");
+@@ -76,7 +88,11 @@ std::vector<ScopedJavaLocalRef<jobject>> CSubscriptionsToJObjects(
+   for (auto& sub : subscriptions) {
+     jobjects.push_back(ToJava(
+         env, url_class, url_constructor, sub->GetSourceUrl().spec(),
+-        sub->GetTitle(), sub->GetCurrentVersion(), std::vector<std::string>{}));
++        sub->GetTitle(), sub->GetCurrentVersion(),
++        sub->GetInstallationState(), base::TimeToISO8601(sub->GetInstallationTime()),
++        metadata ? metadata->GetDownloadSuccessCount(sub->GetSourceUrl()) : 0,
++        metadata ? metadata->GetDownloadErrorCount(sub->GetSourceUrl()) : 0,
++        std::vector<std::string>{}));
+   }
+   return jobjects;
+ }
+@@ -96,6 +112,9 @@ std::vector<ScopedJavaLocalRef<jobject>> CSubscriptionsToJObjects(
+       if (sub.url.is_valid()) {
+         jobjects.push_back(ToJava(env, url_class, url_constructor,
+                                   sub.url.spec(), sub.title, "",
++                                  adblock::Subscription::InstallationState::Unknown,
++                                  /*installation_time*/ "",
++                                  /*download_success_count*/ 0, /*download_error_count*/ 0,
+                                   sub.languages));
+       }
+     }
+@@ -125,6 +144,35 @@ void AdblockJNI::Bind(JavaObjectWeakGlobalRef weak_java_controller) {
+   weak_java_controller_ = weak_java_controller;
+ }
+ 
++static void
++JNI_AdblockController_StartUpdate(JNIEnv* env) {
++  adblock::GetController()->StartUpdate();
++}
++
++static base::android::ScopedJavaLocalRef<jobjectArray>
++JNI_AdblockController_GetCustomSubscriptions(JNIEnv* env) {
++  DCHECK_CURRENTLY_ON(content::BrowserThread::UI);
++  if (!adblock::GetController()) {
++    return ToJavaArrayOfObjects(env,
++                                std::vector<ScopedJavaLocalRef<jobject>>{});
++  }
++
++  return ToJavaArrayOfObjects(
++      env, adblock::CSubscriptionsToJObjects(
++               env, adblock::GetController()->GetCustomSubscriptions()));
++}
++
++static jboolean JNI_AdblockController_IsPrivilegedFiltersEnabled(
++    JNIEnv* env) {
++  return adblock::GetController()->IsPrivilegedFiltersEnabled() ? JNI_TRUE : JNI_FALSE;
++}
++
++static void JNI_AdblockController_SetPrivilegedFiltersEnabled(
++    JNIEnv* env,
++    jboolean j_enabled) {
++  adblock::GetController()->SetPrivilegedFiltersEnabled(j_enabled == JNI_TRUE);
++}
++
+ void AdblockJNI::OnSubscriptionInstalled(const GURL& url) {
+   DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
+   JNIEnv* env = AttachCurrentThread();
 diff --git a/components/adblock/android/adblock_strings.grd b/components/adblock/android/adblock_strings.grd
 --- a/components/adblock/android/adblock_strings.grd
 +++ b/components/adblock/android/adblock_strings.grd
@@ -1488,7 +1487,7 @@ rename to components/adblock/android/java/res/xml/eyeo_adblock_preferences.xml
 diff --git a/components/adblock/android/java/src/org/chromium/components/adblock/AdblockController.java b/components/adblock/android/java/src/org/chromium/components/adblock/AdblockController.java
 --- a/components/adblock/android/java/src/org/chromium/components/adblock/AdblockController.java
 +++ b/components/adblock/android/java/src/org/chromium/components/adblock/AdblockController.java
-@@ -85,6 +85,10 @@ public final class AdblockController extends FilteringConfiguration {
+@@ -73,6 +73,10 @@ public final class AdblockController extends FilteringConfiguration {
          private String mTitle;
          private String mVersion = "";
          private String[] mLanguages = {};
@@ -1499,7 +1498,7 @@ diff --git a/components/adblock/android/java/src/org/chromium/components/adblock
  
          public Subscription(final URL url, final String title, final String version) {
              this.mUrl = url;
-@@ -94,11 +98,30 @@ public final class AdblockController extends FilteringConfiguration {
+@@ -82,11 +86,30 @@ public final class AdblockController extends FilteringConfiguration {
  
          @CalledByNative("Subscription")
          public Subscription(
@@ -1531,7 +1530,7 @@ diff --git a/components/adblock/android/java/src/org/chromium/components/adblock
          }
  
          public String title() {
-@@ -129,6 +152,7 @@ public final class AdblockController extends FilteringConfiguration {
+@@ -117,6 +140,7 @@ public final class AdblockController extends FilteringConfiguration {
  
      @UiThread
      public void setAcceptableAdsEnabled(boolean enabled) {
@@ -1539,19 +1538,7 @@ diff --git a/components/adblock/android/java/src/org/chromium/components/adblock
          if (enabled)
              addFilterList(mAcceptableAds);
          else
-@@ -164,7 +188,10 @@ public final class AdblockController extends FilteringConfiguration {
-                 if (title != null && !title.isEmpty()) {
-                     recommendedSubscriptions.set(i,
-                             new Subscription(recommendedSubscriptions.get(i).url(), title,
--                                    "" /*version*/, recommendedSubscriptions.get(i).languages()));
-+                                    "" /*version*/,
-+                                    "" /*state*/, "" /*installation_time*/,
-+                                    0 /*download_success_count*/, 0 /*download_error_count*/,
-+                                    recommendedSubscriptions.get(i).languages()));
-                     break;
-                 }
-             }
-@@ -182,6 +209,27 @@ public final class AdblockController extends FilteringConfiguration {
+@@ -144,6 +168,27 @@ public final class AdblockController extends FilteringConfiguration {
          removeFilterList(url);
      }
  
@@ -1579,7 +1566,7 @@ diff --git a/components/adblock/android/java/src/org/chromium/components/adblock
      @UiThread
      public List<Subscription> getInstalledSubscriptions() {
          return (List<Subscription>) (List<?>) Arrays.asList(
-@@ -251,6 +299,10 @@ public final class AdblockController extends FilteringConfiguration {
+@@ -196,6 +241,10 @@ public final class AdblockController extends FilteringConfiguration {
  
      @NativeMethods
      interface Natives {
@@ -1637,7 +1624,7 @@ diff --git a/components/adblock/android/java/src/org/chromium/components/adblock
 -        final List<AdblockController.Subscription> installed =
 -                AdblockController.getInstance().getInstalledSubscriptions();
 -        final List<AdblockController.Subscription> recommended =
--                AdblockController.getInstance().getRecommendedSubscriptions(getActivity());
+-                AdblockController.getInstance().getRecommendedSubscriptions();
 -        final List<String> customStrings = new ArrayList<String>();
 -        for (final AdblockController.Subscription subscription : installed) {
 -            if (recommended.contains(subscription)) {
@@ -1783,15 +1770,15 @@ diff --git a/components/adblock/android/java/src/org/chromium/components/adblock
 diff --git a/components/adblock/android/java/src/org/chromium/components/adblock/settings/AdblockSettingsFragment.java b/components/adblock/android/java/src/org/chromium/components/adblock/settings/AdblockSettingsFragment.java
 --- a/components/adblock/android/java/src/org/chromium/components/adblock/settings/AdblockSettingsFragment.java
 +++ b/components/adblock/android/java/src/org/chromium/components/adblock/settings/AdblockSettingsFragment.java
-@@ -16,6 +16,7 @@ import android.os.Bundle;
- import android.util.Log;
- import android.view.MotionEvent;
- import android.view.View;
+@@ -13,6 +13,7 @@
+ package org.chromium.components.adblock.settings;
+ 
+ import android.os.Bundle;
 +import android.widget.Toast;
  
  import androidx.preference.Preference;
  import androidx.preference.PreferenceFragmentCompat;
-@@ -34,7 +35,19 @@ public class AdblockSettingsFragment
+@@ -32,7 +33,19 @@ public class AdblockSettingsFragment
      private Preference mFilterLists;
      private Preference mAllowedDomains;
      private Preference mMoreOptions;
@@ -1812,7 +1799,7 @@ diff --git a/components/adblock/android/java/src/org/chromium/components/adblock
      private static final String SETTINGS_ENABLED_KEY = "fragment_adblock_settings_enabled_key";
      private static final String SETTINGS_FILTER_LISTS_KEY =
              "fragment_adblock_settings_filter_lists_key";
-@@ -51,6 +64,16 @@ public class AdblockSettingsFragment
+@@ -49,6 +62,16 @@ public class AdblockSettingsFragment
      private long mOnOffTogleTimestamp;
  
      private void bindPreferences() {
@@ -1829,19 +1816,17 @@ diff --git a/components/adblock/android/java/src/org/chromium/components/adblock
          mAdblockEnabled = (ChromeSwitchPreference) findPreference(SETTINGS_ENABLED_KEY);
          mFilterLists = findPreference(SETTINGS_FILTER_LISTS_KEY);
          mAcceptableAdsEnabled = (ChromeSwitchPreference) findPreference(SETTINGS_AA_ENABLED_KEY);
-@@ -59,14 +82,28 @@ public class AdblockSettingsFragment
+@@ -62,14 +85,25 @@ public class AdblockSettingsFragment
      }
  
      private void applyAdblockEnabled(boolean enabledValue) {
+-        mFilterLists.setEnabled(enabledValue);
+-        mAcceptableAdsEnabled.setEnabled(enabledValue);
 +        mStartUpdate.setEnabled(enabledValue);
 +        mPrivilegedFilters.setEnabled(enabledValue);
-         mFilterLists.setEnabled(enabledValue);
-         mAcceptableAdsEnabled.setEnabled(enabledValue);
-+        mAcceptableAdsEnabled.setVisible(false);
          mAllowedDomains.setEnabled(enabledValue);
          mMoreOptions.setEnabled(enabledValue);
--        mMoreOptions.setVisible(AdblockController.getInstance().areMoreOptionsEnabled());
-+        mMoreOptions.setVisible(false);
+         mMoreOptions.setVisible(areMoreOptionsEnabled());
      }
  
      private void synchronizePreferences() {
@@ -1859,7 +1844,7 @@ diff --git a/components/adblock/android/java/src/org/chromium/components/adblock
          boolean enabled = AdblockController.getInstance().isEnabled();
          mAdblockEnabled.setChecked(enabled);
          mAdblockEnabled.setOnPreferenceChangeListener(this);
-@@ -103,7 +140,7 @@ public class AdblockSettingsFragment
+@@ -107,7 +141,7 @@ public class AdblockSettingsFragment
  
      @Override
      public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -1868,7 +1853,7 @@ diff --git a/components/adblock/android/java/src/org/chromium/components/adblock
          bindPreferences();
          synchronizePreferences();
      }
-@@ -122,6 +159,8 @@ public class AdblockSettingsFragment
+@@ -126,6 +160,8 @@ public class AdblockSettingsFragment
              maybeEnableMoreOptions();
  
              applyAdblockEnabled((Boolean) newValue);
@@ -1958,9 +1943,9 @@ diff --git a/components/adblock/content/browser/adblock_webcontents_observer.cc 
 +
  
  void TraceHandleLoadComplete(
-     content::RenderFrameHost* frame_host,
+     intptr_t rfh_trace_id,
 @@ -66,18 +68,32 @@ void TraceHandleLoadComplete(
-                                   TRACE_ID_LOCAL(frame_host));
+                                   TRACE_ID_LOCAL(rfh_trace_id));
  }
  
 +bool IsFilteringNeeded(content::RenderFrameHost* frame, HostContentSettingsMap* settings_map) {
@@ -2046,7 +2031,7 @@ diff --git a/components/adblock/content/browser/content_security_policy_injector
 diff --git a/components/adblock/content/browser/element_hider_impl.cc b/components/adblock/content/browser/element_hider_impl.cc
 --- a/components/adblock/content/browser/element_hider_impl.cc
 +++ b/components/adblock/content/browser/element_hider_impl.cc
-@@ -190,12 +190,12 @@ void InsertUserCSSAndApplyElemHidingEmuJS(
+@@ -208,12 +208,12 @@ void InsertUserCSSAndApplyElemHidingEmuJS(
    if (!frame_host) {
      // Render frame host was destroyed before element hiding could be applied.
      // This is not a bug, just legitimate a race condition.
@@ -2100,7 +2085,7 @@ diff --git a/components/adblock/content/browser/subscription_service_factory_bas
    }
    base::DeleteFile(path);
    return result;
-@@ -202,10 +204,11 @@ SubscriptionServiceFactoryBase::ConvertCustomFilters(
+@@ -201,10 +203,11 @@ SubscriptionServiceFactoryBase::ConvertCustomFilters(
  void SubscriptionServiceFactoryBase::ConvertFilterListFile(
      const GURL& subscription_url,
      const base::FilePath& path,
@@ -2204,9 +2189,8 @@ diff --git a/components/adblock/core/activeping_telemetry_topic_provider.cc b/co
 deleted file mode 100644
 --- a/components/adblock/core/activeping_telemetry_topic_provider.cc
 +++ /dev/null
-@@ -1,243 +0,0 @@
--/*
-- * This file is part of eyeo Chromium SDK,
+@@ -1,285 +0,0 @@
+-/* This file is part of eyeo Chromium SDK,
 - * Copyright (C) 2006-present eyeo GmbH
 - *
 - * eyeo Chromium SDK is free software: you can redistribute it and/or modify
@@ -2228,8 +2212,10 @@ deleted file mode 100644
 -#include "base/json/json_writer.h"
 -#include "base/system/sys_info.h"
 -#include "base/time/time.h"
+-#include "base/time/time_to_iso8601.h"
 -#include "base/uuid.h"
 -#include "components/adblock/core/common/adblock_prefs.h"
+-#include "components/adblock/core/subscription/subscription_config.h"
 -
 -namespace adblock {
 -namespace {
@@ -2277,12 +2263,12 @@ deleted file mode 100644
 -ActivepingTelemetryTopicProvider::ActivepingTelemetryTopicProvider(
 -    utils::AppInfo app_info,
 -    PrefService* pref_service,
--    AdblockController* adblock_controller,
+-    SubscriptionService* subscription_service,
 -    const GURL& base_url,
 -    const std::string& auth_token)
 -    : app_info_(std::move(app_info)),
 -      pref_service_(pref_service),
--      adblock_controller_(adblock_controller),
+-      subscription_service_(subscription_service),
 -      base_url_(base_url),
 -      auth_token_(auth_token) {}
 -
@@ -2323,35 +2309,13 @@ deleted file mode 100644
 -  return auth_token_;
 -}
 -
--void ActivepingTelemetryTopicProvider::GetPayload(PayloadCallback callback) {
--  base::Value::Dict payload;
--  payload.Set("addon_name", "eyeo-chromium-sdk");
--  payload.Set("addon_version", "2.0.0");
--  payload.Set("application", app_info_.name);
--  payload.Set("application_version", app_info_.version);
--  payload.Set("aa_active", adblock_controller_->IsAcceptableAdsEnabled());
--  payload.Set("platform", base::SysInfo::OperatingSystemName());
--  payload.Set("platform_version", base::SysInfo::OperatingSystemVersion());
--  // Server requires the following parameters to either have a correct,
--  // non-empty value, or not be present at all. We shall not send empty strings.
--  AppendStringIfPresent(pref_service_, common::prefs::kTelemetryLastPingTag,
--                        "last_ping_tag", payload);
--  AppendStringIfPresent(pref_service_, common::prefs::kTelemetryFirstPingTime,
--                        "first_ping", payload);
--  AppendStringIfPresent(pref_service_, common::prefs::kTelemetryLastPingTime,
--                        "last_ping", payload);
--  AppendStringIfPresent(pref_service_,
--                        common::prefs::kTelemetryPreviousLastPingTime,
--                        "previous_last_ping", payload);
--
--  base::Value::Dict root;
--  root.Set("payload", std::move(payload));
+-void ActivepingTelemetryTopicProvider::GetPayload(
+-    PayloadCallback callback) const {
 -  std::string serialized;
 -  // The only way JSONWriter::Write() can return fail is then the Value
 -  // contains lists or dicts that are too deep (200 levels). We just built the
 -  // payload and root objects here, they should be really shallow.
--  CHECK(base::JSONWriter::Write(root, &serialized));
--  VLOG(1) << "[eyeo] Telemetry ping payload: " << serialized;
+-  CHECK(base::JSONWriter::Write(GetPayloadInternal(), &serialized));
 -  std::move(callback).Run(std::move(serialized));
 -}
 -
@@ -2409,6 +2373,35 @@ deleted file mode 100644
 -  UpdatePrefs(*ping_response_time);
 -}
 -
+-void ActivepingTelemetryTopicProvider::FetchDebugInfo(
+-    DebugInfoCallback callback) const {
+-  base::Value::Dict debug_info;
+-  debug_info.Set("endpoint_url", GetEndpointURL().spec());
+-  debug_info.Set("payload", GetPayloadInternal());
+-  debug_info.Set("first_ping",
+-                 pref_service_->GetString(
+-                     adblock::common::prefs::kTelemetryFirstPingTime));
+-  debug_info.Set("time_of_next_request",
+-                 base::TimeToISO8601(GetTimeOfNextRequest()));
+-  debug_info.Set(
+-      "last_ping",
+-      pref_service_->GetString(adblock::common::prefs::kTelemetryLastPingTime));
+-  debug_info.Set("previous_last_ping",
+-                 pref_service_->GetString(
+-                     adblock::common::prefs::kTelemetryPreviousLastPingTime));
+-  debug_info.Set("next_ping",
+-                 base::TimeToISO8601(pref_service_->GetTime(
+-                     adblock::common::prefs::kTelemetryNextPingTime)));
+-
+-  std::string serialized;
+-  // The only way JSONWriter::Write() can return fail is then the Value
+-  // contains lists or dicts that are too deep (200 levels). We just built the
+-  // payload and root objects here, they should be really shallow.
+-  CHECK(base::JSONWriter::WriteWithOptions(
+-      debug_info, base::JsonOptions::OPTIONS_PRETTY_PRINT, &serialized));
+-  std::move(callback).Run(std::move(serialized));
+-}
+-
 -void ActivepingTelemetryTopicProvider::ScheduleNextPing(base::TimeDelta delay) {
 -  pref_service_->SetTime(common::prefs::kTelemetryNextPingTime,
 -                         base::Time::Now() + delay);
@@ -2435,6 +2428,40 @@ deleted file mode 100644
 -                           tag.AsLowercaseString());
 -}
 -
+-base::Value ActivepingTelemetryTopicProvider::GetPayloadInternal() const {
+-  base::Value::Dict payload;
+-  bool aa_enabled = false;
+-  auto* adblock_configuration =
+-      subscription_service_->GetAdblockFilteringConfiguration();
+-  if (adblock_configuration) {
+-    aa_enabled = base::ranges::any_of(
+-        adblock_configuration->GetFilterLists(),
+-        [&](const auto& url) { return url == AcceptableAdsUrl(); });
+-  }
+-  payload.Set("addon_name", "eyeo-chromium-sdk");
+-  payload.Set("addon_version", "2.0.0");
+-  payload.Set("application", app_info_.name);
+-  payload.Set("application_version", app_info_.version);
+-  payload.Set("aa_active", aa_enabled);
+-  payload.Set("platform", base::SysInfo::OperatingSystemName());
+-  payload.Set("platform_version", base::SysInfo::OperatingSystemVersion());
+-  // Server requires the following parameters to either have a correct,
+-  // non-empty value, or not be present at all. We shall not send empty strings.
+-  AppendStringIfPresent(pref_service_, common::prefs::kTelemetryLastPingTag,
+-                        "last_ping_tag", payload);
+-  AppendStringIfPresent(pref_service_, common::prefs::kTelemetryFirstPingTime,
+-                        "first_ping", payload);
+-  AppendStringIfPresent(pref_service_, common::prefs::kTelemetryLastPingTime,
+-                        "last_ping", payload);
+-  AppendStringIfPresent(pref_service_,
+-                        common::prefs::kTelemetryPreviousLastPingTime,
+-                        "previous_last_ping", payload);
+-
+-  base::Value::Dict root;
+-  root.Set("payload", std::move(payload));
+-  return base::Value(std::move(root));
+-}
+-
 -// static
 -void ActivepingTelemetryTopicProvider::SetHttpPortForTesting(
 -    int http_port_for_testing) {
@@ -2452,7 +2479,7 @@ diff --git a/components/adblock/core/activeping_telemetry_topic_provider.h b/com
 deleted file mode 100644
 --- a/components/adblock/core/activeping_telemetry_topic_provider.h
 +++ /dev/null
-@@ -1,84 +0,0 @@
+@@ -1,87 +0,0 @@
 -/*
 - * This file is part of eyeo Chromium SDK,
 - * Copyright (C) 2006-present eyeo GmbH
@@ -2475,9 +2502,9 @@ deleted file mode 100644
 -
 -#include "base/memory/raw_ptr.h"
 -#include "base/time/time.h"
--#include "components/adblock/core/adblock_controller.h"
 -#include "components/adblock/core/adblock_telemetry_service.h"
 -#include "components/adblock/core/common/adblock_utils.h"
+-#include "components/adblock/core/subscription/subscription_service.h"
 -#include "components/prefs/pref_service.h"
 -
 -namespace adblock {
@@ -2496,7 +2523,7 @@ deleted file mode 100644
 - public:
 -  ActivepingTelemetryTopicProvider(utils::AppInfo app_info,
 -                                   PrefService* pref_service,
--                                   AdblockController* adblock_controller,
+-                                   SubscriptionService* subscription_service,
 -                                   const GURL& base_url,
 -                                   const std::string& auth_token);
 -  ~ActivepingTelemetryTopicProvider() final;
@@ -2506,7 +2533,7 @@ deleted file mode 100644
 -
 -  GURL GetEndpointURL() const final;
 -  std::string GetAuthToken() const final;
--  void GetPayload(PayloadCallback callback) final;
+-  void GetPayload(PayloadCallback callback) const final;
 -
 -  // Normally 12 hours since last ping, 1 hour in case of retries.
 -  base::Time GetTimeOfNextRequest() const final;
@@ -2514,6 +2541,8 @@ deleted file mode 100644
 -  // Attempts to parse "token" (an opaque server description of last ping time)
 -  // from |response_content|.
 -  void ParseResponse(std::unique_ptr<std::string> response_content) final;
+-
+-  void FetchDebugInfo(DebugInfoCallback callback) const final;
 -
 -  // Sets the port used by the embedded http server required for browser tests.
 -  // Must be called before the first call to DefaultBaseUrl().
@@ -2526,10 +2555,11 @@ deleted file mode 100644
 - private:
 -  void ScheduleNextPing(base::TimeDelta delay);
 -  void UpdatePrefs(const std::string& ping_response_time);
+-  base::Value GetPayloadInternal() const;
 -
 -  const utils::AppInfo app_info_;
 -  raw_ptr<PrefService> pref_service_;
--  raw_ptr<AdblockController> adblock_controller_;
+-  raw_ptr<SubscriptionService> subscription_service_;
 -  const GURL base_url_;
 -  const std::string auth_token_;
 -};
@@ -2717,7 +2747,7 @@ diff --git a/components/adblock/core/adblock_telemetry_service.cc b/components/a
 deleted file mode 100644
 --- a/components/adblock/core/adblock_telemetry_service.cc
 +++ /dev/null
-@@ -1,244 +0,0 @@
+@@ -1,258 +0,0 @@
 -/*
 - * This file is part of eyeo Chromium SDK,
 - * Copyright (C) 2006-present eyeo GmbH
@@ -2739,6 +2769,7 @@ deleted file mode 100644
 -
 -#include <string>
 -
+-#include "base/barrier_callback.h"
 -#include "base/functional/bind.h"
 -#include "base/memory/weak_ptr.h"
 -#include "base/strings/string_number_conversions.h"
@@ -2835,6 +2866,10 @@ deleted file mode 100644
 -    url_loader_.reset();
 -  }
 -
+-  const std::unique_ptr<TopicProvider>& GetTopicProvider() const {
+-    return topic_provider_;
+-  }
+-
 - private:
 -  bool IsRequestInFlight() {
 -    return url_loader_ != nullptr || weak_ptr_factory_.HasWeakPtrs();
@@ -2929,6 +2964,15 @@ deleted file mode 100644
 -  OnEnabledStateChangedInternal();
 -}
 -
+-void AdblockTelemetryService::GetTopicProvidersDebugInfo(
+-    TopicProvidersDebugInfoCallback service_callback) const {
+-  const auto barrier_callback = base::BarrierCallback<std::string>(
+-      ongoing_conversations_.size(), std::move(service_callback));
+-  for (const auto& conversation : ongoing_conversations_) {
+-    conversation->GetTopicProvider()->FetchDebugInfo(barrier_callback);
+-  }
+-}
+-
 -void AdblockTelemetryService::OnEnabledStateChangedInternal() {
 -  DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
 -  if (adblock_filtering_configuration_->IsEnabled() && !timer_.IsRunning()) {
@@ -2966,7 +3010,7 @@ diff --git a/components/adblock/core/adblock_telemetry_service.h b/components/ad
 deleted file mode 100644
 --- a/components/adblock/core/adblock_telemetry_service.h
 +++ /dev/null
-@@ -1,107 +0,0 @@
+@@ -1,120 +0,0 @@
 -/*
 - * This file is part of eyeo Chromium SDK,
 - * Copyright (C) 2006-present eyeo GmbH
@@ -2991,6 +3035,7 @@ deleted file mode 100644
 -#include <string>
 -#include <vector>
 -
+-#include "base/functional/callback_forward.h"
 -#include "base/memory/raw_ptr.h"
 -#include "base/sequence_checker.h"
 -#include "base/time/time.h"
@@ -3018,6 +3063,7 @@ deleted file mode 100644
 -  class TopicProvider {
 -   public:
 -    using PayloadCallback = base::OnceCallback<void(std::string payload)>;
+-    using DebugInfoCallback = base::OnceCallback<void(std::string payload)>;
 -    virtual ~TopicProvider() = default;
 -    // Endpoint URL on the Telemetry server onto which requests should be sent.
 -    virtual GURL GetEndpointURL() const = 0;
@@ -3025,7 +3071,7 @@ deleted file mode 100644
 -    virtual std::string GetAuthToken() const = 0;
 -    // Data uploaded with the request, should be valid for the schema
 -    // present on the server. Async to allow querying asynchronous data sources.
--    virtual void GetPayload(PayloadCallback callback) = 0;
+-    virtual void GetPayload(PayloadCallback callback) const = 0;
 -    // Returns the desired time when AdblockTelemetryService should make the
 -    // next network request.
 -    virtual base::Time GetTimeOfNextRequest() const = 0;
@@ -3034,6 +3080,10 @@ deleted file mode 100644
 -    // response errors via GetTimeToNextRequest().
 -    virtual void ParseResponse(
 -        std::unique_ptr<std::string> response_content) = 0;
+-    // Gets debugging info to be logged on chrome://adblock-internals. Do not
+-    // put any secrets here (tokens, api keys). Asynchronous to allow reusing
+-    // the async logic of GetPayload, if needed.
+-    virtual void FetchDebugInfo(DebugInfoCallback callback) const = 0;
 -  };
 -  AdblockTelemetryService(
 -      FilteringConfiguration* filtering_configuration,
@@ -3041,6 +3091,8 @@ deleted file mode 100644
 -      base::TimeDelta initial_delay,
 -      base::TimeDelta check_interval);
 -  ~AdblockTelemetryService() override;
+-  using TopicProvidersDebugInfoCallback =
+-      base::OnceCallback<void(std::vector<std::string>)>;
 -
 -  // Add all required topic providers before calling Start().
 -  void AddTopicProvider(std::unique_ptr<TopicProvider> topic_provider);
@@ -3055,6 +3107,11 @@ deleted file mode 100644
 -
 -  // FilteringConfiguration::Observer
 -  void OnEnabledStateChanged(FilteringConfiguration* config) override;
+-
+-  // Collects debug information from all topic providers. Runs |callback| once
+-  // all topic providers have provided their info.
+-  void GetTopicProvidersDebugInfo(
+-      TopicProvidersDebugInfoCallback callback) const;
 -
 - private:
 -  void OnEnabledStateChangedInternal();
@@ -3251,7 +3308,7 @@ diff --git a/components/adblock/core/configuration/filtering_configuration.h b/c
 +
    // Adding an existing filter list, or removing a non-existing filter list, are
    // NOPs and do not notify observers.
-   virtual void AddFilterList(GURL url) = 0;
+   virtual void AddFilterList(const GURL& url) = 0;
 diff --git a/components/adblock/core/configuration/persistent_filtering_configuration.cc b/components/adblock/core/configuration/persistent_filtering_configuration.cc
 --- a/components/adblock/core/configuration/persistent_filtering_configuration.cc
 +++ b/components/adblock/core/configuration/persistent_filtering_configuration.cc
@@ -3296,8 +3353,8 @@ diff --git a/components/adblock/core/configuration/persistent_filtering_configur
 +  void SetPrivilegedFiltersEnabled(bool enabled) final;
 +  bool IsPrivilegedFiltersEnabled() final;
 +
-   void AddFilterList(GURL url) final;
-   void RemoveFilterList(GURL url) final;
+   void AddFilterList(const GURL& url) final;
+   void RemoveFilterList(const GURL& url) final;
    std::vector<GURL> GetFilterLists() const final;
 diff --git a/components/adblock/core/converter/flatbuffer_converter.cc b/components/adblock/core/converter/flatbuffer_converter.cc
 --- a/components/adblock/core/converter/flatbuffer_converter.cc
@@ -3903,7 +3960,7 @@ diff --git a/components/adblock/core/subscription/subscription_collection_impl.c
 diff --git a/components/adblock/core/subscription/subscription_config.cc b/components/adblock/core/subscription/subscription_config.cc
 --- a/components/adblock/core/subscription/subscription_config.cc
 +++ b/components/adblock/core/subscription/subscription_config.cc
-@@ -221,17 +221,17 @@ const std::vector<KnownSubscriptionInfo>& config::GetKnownSubscriptions() {
+@@ -239,17 +239,17 @@ const std::vector<KnownSubscriptionInfo>& config::GetKnownSubscriptions() {
         SubscriptionFirstRunBehavior::SubscribeIfLocaleMatch,
         SubscriptionPrivilegedFilterStatus::Forbidden},
        {AcceptableAdsUrl(),
@@ -3926,7 +3983,7 @@ diff --git a/components/adblock/core/subscription/subscription_config.cc b/compo
        {GURL(GetHost() + "i_dont_care_about_cookies.txt"),
         "I don't care about cookies",
         {},
-@@ -262,13 +262,13 @@ const std::vector<KnownSubscriptionInfo>& config::GetKnownSubscriptions() {
+@@ -280,13 +280,13 @@ const std::vector<KnownSubscriptionInfo>& config::GetKnownSubscriptions() {
         {},
         SubscriptionUiVisibility::Invisible,
         SubscriptionFirstRunBehavior::Ignore,
@@ -3942,7 +3999,7 @@ diff --git a/components/adblock/core/subscription/subscription_config.cc b/compo
  
        // You can customize subscriptions available on first run and in settings
        // here. Items are displayed in settings in order declared here. See
-@@ -297,7 +297,7 @@ bool config::AllowPrivilegedFilters(const GURL& url) {
+@@ -315,7 +315,7 @@ bool config::AllowPrivilegedFilters(const GURL& url) {
    for (const auto& cur : GetKnownSubscriptions()) {
      if (cur.url == url) {
        return cur.privileged_status ==
@@ -3951,7 +4008,7 @@ diff --git a/components/adblock/core/subscription/subscription_config.cc b/compo
      }
    }
  
-@@ -307,9 +307,7 @@ bool config::AllowPrivilegedFilters(const GURL& url) {
+@@ -325,9 +325,7 @@ bool config::AllowPrivilegedFilters(const GURL& url) {
  const std::vector<PreloadedSubscriptionInfo>&
  config::GetPreloadedSubscriptionConfiguration() {
    static const std::vector<PreloadedSubscriptionInfo> preloaded_subscriptions =
@@ -4300,7 +4357,7 @@ new file mode 100644
 diff --git a/components/resources/BUILD.gn b/components/resources/BUILD.gn
 --- a/components/resources/BUILD.gn
 +++ b/components/resources/BUILD.gn
-@@ -79,7 +79,6 @@ grit("components_resources") {
+@@ -76,7 +76,6 @@ grit("components_resources") {
  
    deps += [
      "//components/resources/adblocking:copy_snippets_lib",
@@ -4311,10 +4368,10 @@ diff --git a/components/resources/BUILD.gn b/components/resources/BUILD.gn
 diff --git a/components/resources/adblock_resources.grdp b/components/resources/adblock_resources.grdp
 --- a/components/resources/adblock_resources.grdp
 +++ b/components/resources/adblock_resources.grdp
-@@ -20,7 +20,4 @@
-     <include name="IDR_ADBLOCK_ELEMHIDE_FOR_SELECTOR_JS" file="adblocking/elemhide_for_selector.jst" type="BINDATA" />
+@@ -21,7 +21,4 @@
      <include name="IDR_ADBLOCK_ELEMHIDE_EMU_JS" file="adblocking/elemhideemu.jst" type="BINDATA" />
      <include name="IDR_ADBLOCK_SNIPPETS_JS" file="${root_gen_dir}/components/resources/adblocking/snippets.jst" use_base_dir="false" type="BINDATA"  compress="gzip" />
+     <include name="IDR_ADBLOCK_SNIPPETS_XPATH3_DEP_JS" file="${root_gen_dir}/components/resources/adblocking/snippets-xpath3-dep.jst" use_base_dir="false" type="BINDATA"  compress="gzip" />
 -    <include name="IDR_ADBLOCK_FLATBUFFER_EASYLIST" file="${root_gen_dir}/components/resources/adblocking/easylist.fb" use_base_dir="false" type="BINDATA" compress="gzip" />
 -    <include name="IDR_ADBLOCK_FLATBUFFER_EXCEPTIONRULES" file="${root_gen_dir}/components/resources/adblocking/exceptionrules.fb" use_base_dir="false" type="BINDATA" compress="gzip" />
 -    <include name="IDR_ADBLOCK_FLATBUFFER_ANTICV" file="${root_gen_dir}/components/resources/adblocking/anticv.fb" use_base_dir="false" type="BINDATA" compress="gzip" />
@@ -4369,9 +4426,9 @@ diff --git a/components/resources/adblocking/BUILD.gn b/components/resources/adb
 -  ]
 -}
 -
- copy("copy_snippets_lib") {
-   if (is_debug) {
-     sources = [ "//components/resources/adblocking/snippets/dist/isolated-first.source.jst" ]
+ action("prepare_snippets_deps") {
+   script = "//tools/eyeo/snippets_deps.py"
+   inputs = ["//components/resources/adblocking/snippets/dist"]
 diff --git a/components/resources/adblocking/elemhide_for_selector.jst b/components/resources/adblocking/elemhide_for_selector.jst
 --- a/components/resources/adblocking/elemhide_for_selector.jst
 +++ b/components/resources/adblocking/elemhide_for_selector.jst
@@ -8117,7 +8174,7 @@ diff --git a/third_party/blink/renderer/core/css/style_engine.cc b/third_party/b
 diff --git a/third_party/blink/renderer/core/css/style_engine.h b/third_party/blink/renderer/core/css/style_engine.h
 --- a/third_party/blink/renderer/core/css/style_engine.h
 +++ b/third_party/blink/renderer/core/css/style_engine.h
-@@ -242,6 +242,7 @@ class CORE_EXPORT StyleEngine final : public GarbageCollected<StyleEngine>,
+@@ -243,6 +243,7 @@ class CORE_EXPORT StyleEngine final : public GarbageCollected<StyleEngine>,
        const ComputedStyle* embedder_style) const;
    void ViewportStyleSettingChanged();
  
@@ -8158,29 +8215,14 @@ diff --git a/third_party/blink/renderer/core/exported/web_document.cc b/third_pa
 diff --git a/tools/gritsettings/resource_ids.spec b/tools/gritsettings/resource_ids.spec
 --- a/tools/gritsettings/resource_ids.spec
 +++ b/tools/gritsettings/resource_ids.spec
-@@ -655,10 +655,6 @@
+@@ -678,7 +678,6 @@
+   "<(SHARED_INTERMEDIATE_DIR)/chrome/browser/resources/hats/resources.grd": {
      "META": {"sizes": {"includes": [10]}},
      "includes": [4980],
-   },
--  "<(SHARED_INTERMEDIATE_DIR)/chrome/browser/resources/adblock_internals/resources.grd": {
--    "META": {"sizes": {"includes": [10],}},
--    "includes": [4720],
 -  },
    # END chrome/ WebUI resources section
  
    # START chrome/ miscellaneous section.
-@@ -1221,6 +1217,11 @@
-     "includes": [7440],
-   },
- 
-+  "<(SHARED_INTERMEDIATE_DIR)/chrome/browser/resources/adblock_internals/resources.grd": {
-+    "META": {"sizes": {"includes": [10],}},
-+    "includes": [8000],
-+  },
-+
-   # END "everything else" section.
-   # Everything but chrome/, components/, content/, and ios/
- 
 diff --git a/tools/typescript/definitions/adblock_private.d.ts b/tools/typescript/definitions/adblock_private.d.ts
 --- a/tools/typescript/definitions/adblock_private.d.ts
 +++ b/tools/typescript/definitions/adblock_private.d.ts
