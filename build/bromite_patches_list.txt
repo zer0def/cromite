@@ -47,8 +47,7 @@ ungoogled-chromium-Disable-Gaia.patch
 ungoogled-chromium-Disable-Network-Time-Tracker.patch
 Disable-all-promo-dialogs.patch
 Disable-update-scheduler.patch
-Add-English-only-search-engine.patch
-Add-DuckDuckGo-Lite-search-engine.patch
+Add-search-engine.patch
 openH264-enable-ARM-ARM64-optimizations.patch
 build-remove-calling-untrusted-hooks.patch
 Inject-scripts-for-AMP-tracking-ads-and-video.patch
@@ -267,7 +266,6 @@ Timezone-customization.patch
 00Allow-DocumentPiP-if-PopupsAndRedirects-are-active.patch
 00allow-the-download-of-clang-for-windows-crossbuild.patch
 00Add-option-to-disable-snapshots.patch
-00Disable-PartnerCustomizations.patch
 00Enable-Android-Dynamic-Performance-Framework.patch
 00Remove-GoogleAccountsPrivateApiHost.patch
 00Fix-crash-on-customize-profile-ui.patch
@@ -286,4 +284,5 @@ Timezone-customization.patch
 00Temp-Disable-kAutomaticLazyFrameLoadingToEmbeds.patch
 00Temp-disable-predictive-back-gesture.patch
 00TEMP-Add-a-log-to-track-strange-behavior.patch
+00Temp-guard-FileSystemAccessPersistentPermissions.patch
 00Fix-chromium-build-bugs.patch
