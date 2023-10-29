@@ -7,9 +7,9 @@ Search suggestions, autofill assistant and contextual search
 License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 ---
  .../java/res/xml/privacy_preferences.xml      | 13 ++++++++
- .../privacy/settings/PrivacySettings.java     | 32 +++++++++++++++++++
+ .../privacy/settings/PrivacySettings.java     | 33 +++++++++++++++++++
  .../strings/android_chrome_strings.grd        |  4 +++
- 3 files changed, 49 insertions(+)
+ 3 files changed, 50 insertions(+)
 
 diff --git a/chrome/android/java/res/xml/privacy_preferences.xml b/chrome/android/java/res/xml/privacy_preferences.xml
 --- a/chrome/android/java/res/xml/privacy_preferences.xml
@@ -90,16 +90,17 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/privacy/setting
              UserPrefs.get(getProfile())
                      .setBoolean(Pref.HTTPS_ONLY_MODE_ENABLED, (boolean) newValue);
 +        } else if (PREF_SEARCH_SUGGESTIONS.equals(key)) {
-+            UserPrefs.get(Profile.getLastUsedRegularProfile())
++            UserPrefs.get(getProfile())
 +                    .setBoolean(Pref.SEARCH_SUGGEST_ENABLED, (boolean) newValue);
          }
          return true;
      }
-@@ -237,6 +267,8 @@ public class PrivacySettings
+@@ -237,6 +267,9 @@ public class PrivacySettings
       * Updates the preferences.
       */
      public void updatePreferences() {
-+        mSearchSuggestions.setChecked(UserPrefs.get(mProfile).getBoolean(Pref.SEARCH_SUGGEST_ENABLED));
++        mSearchSuggestions.setChecked(
++            UserPrefs.get(getProfile()).getBoolean(Pref.SEARCH_SUGGEST_ENABLED));
 +
          ChromeSwitchPreference canMakePaymentPref =
                  (ChromeSwitchPreference) findPreference(PREF_CAN_MAKE_PAYMENT);

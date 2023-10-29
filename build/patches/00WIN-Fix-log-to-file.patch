@@ -5,14 +5,23 @@ Subject: WIN Fix log to file
 Allows log activation without opening the console window.
 Log rotation enabled by default.
 ---
- chrome/common/logging_chrome.cc | 10 +++++++---
+ chrome/common/logging_chrome.cc | 12 ++++++++----
  chrome/common/logging_chrome.h  |  6 ++++--
  content/app/content_main.cc     |  6 +++++-
- 3 files changed, 16 insertions(+), 6 deletions(-)
+ 3 files changed, 17 insertions(+), 7 deletions(-)
 
 diff --git a/chrome/common/logging_chrome.cc b/chrome/common/logging_chrome.cc
 --- a/chrome/common/logging_chrome.cc
 +++ b/chrome/common/logging_chrome.cc
+@@ -55,7 +55,7 @@
+ #include "content/public/common/content_switches.h"
+ #include "ipc/ipc_logging.h"
+ 
+-#if BUILDFLAG(IS_CHROMEOS)
++#if BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_WIN)
+ #include "base/i18n/time_formatting.h"
+ #include "third_party/icu/source/i18n/unicode/timezone.h"
+ #endif
 @@ -190,7 +190,7 @@ LoggingDestination DetermineLoggingDestination(
    return kDefaultLoggingMode;
  }

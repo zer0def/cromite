@@ -4,9 +4,9 @@ Subject: Disable PrivacyGuide
 
 License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 ---
- chrome/browser/ui/webui/settings/settings_ui.cc |  2 +-
- chrome/common/chrome_features.cc                | 16 ++++++++--------
- 2 files changed, 9 insertions(+), 9 deletions(-)
+ .../browser/ui/webui/settings/settings_ui.cc  |  2 +-
+ chrome/common/chrome_features.cc              | 20 +++++++++----------
+ 2 files changed, 11 insertions(+), 11 deletions(-)
 
 diff --git a/chrome/browser/ui/webui/settings/settings_ui.cc b/chrome/browser/ui/webui/settings/settings_ui.cc
 --- a/chrome/browser/ui/webui/settings/settings_ui.cc
@@ -58,5 +58,16 @@ diff --git a/chrome/common/chrome_features.cc b/chrome/common/chrome_features.cc
  #endif
  
  #if !BUILDFLAG(IS_ANDROID)
+@@ -1050,8 +1050,8 @@ BASE_FEATURE(kPrintPreviewSetupAssistance,
+ 
+ #if BUILDFLAG(IS_ANDROID)
+ BASE_FEATURE(kPrivacyGuideAndroid,
+-             "PrivacyGuideAndroid",
+-             base::FEATURE_ENABLED_BY_DEFAULT);
++             "PrivacyGuideAndroid",              // disabled
++             base::FEATURE_DISABLED_BY_DEFAULT); // by default
+ 
+ BASE_FEATURE(kPrivacyGuideAndroidPostMVP,
+              "PrivacyGuideAndroidPostMVP",
 --
 2.25.1

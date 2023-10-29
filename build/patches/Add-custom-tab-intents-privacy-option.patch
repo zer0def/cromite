@@ -141,7 +141,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/privacy/setting
          String key = preference.getKey();
 @@ -263,6 +269,14 @@ public class PrivacySettings
          } else if (PREF_SEARCH_SUGGESTIONS.equals(key)) {
-             UserPrefs.get(Profile.getLastUsedRegularProfile())
+             UserPrefs.get(getProfile())
                      .setBoolean(Pref.SEARCH_SUGGEST_ENABLED, (boolean) newValue);
 +        } else if (PREF_ALLOW_CUSTOM_TAB_INTENTS.equals(key)) {
 +            SharedPreferences.Editor sharedPreferencesEditor = ContextUtils.getAppSharedPreferences().edit();
@@ -154,7 +154,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/privacy/setting
          }
          return true;
      }
-@@ -286,6 +300,16 @@ public class PrivacySettings
+@@ -287,6 +301,16 @@ public class PrivacySettings
                      UserPrefs.get(getProfile()).getBoolean(Pref.CAN_MAKE_PAYMENT_ENABLED));
          }
  

@@ -12,14 +12,14 @@ Subject: bromite build utils
  build/bromite/gyp/java_bromite_impl.pydeps    |  9 ++
  build/config/BUILDCONFIG.gn                   |  1 +
  build/config/android/rules.gni                |  6 +-
- .../ChromeAccessibilitySettingsDelegate.java  |  6 ++
+ .../ChromeAccessibilitySettingsDelegate.java  |  5 +
  chrome/browser/flags/BUILD.gn                 | 10 +-
  .../flags/android/cromite_native_utils.cc     | 27 ++++++
  .../flags/android/cromite_native_utils.h      | 14 +++
  .../browser/flags/CromiteNativeUtils.java     | 32 +++++++
  tools/grit/grit/grd_reader.py                 | 27 +++++-
  tools/grit/preprocess_if_expr.py              | 32 ++++++-
- 16 files changed, 416 insertions(+), 16 deletions(-)
+ 16 files changed, 415 insertions(+), 16 deletions(-)
  create mode 100644 build/bromite/bromite_utils.gni
  create mode 100644 build/bromite/gyp/cpp_bromite_include.py
  create mode 100644 build/bromite/gyp/cpp_bromite_include.pydeps
@@ -436,12 +436,11 @@ diff --git a/build/config/android/rules.gni b/build/config/android/rules.gni
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/ChromeAccessibilitySettingsDelegate.java b/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/ChromeAccessibilitySettingsDelegate.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/ChromeAccessibilitySettingsDelegate.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/ChromeAccessibilitySettingsDelegate.java
-@@ -23,6 +23,12 @@ import org.chromium.components.browser_ui.site_settings.SiteSettingsCategory;
+@@ -23,6 +23,11 @@ import org.chromium.components.browser_ui.site_settings.SiteSettingsCategory;
  import org.chromium.components.user_prefs.UserPrefs;
  import org.chromium.content_public.browser.BrowserContextHandle;
  
 +import org.chromium.chrome.browser.flags.ChromeFeatureList;
-+import org.chromium.chrome.browser.flags.CachedFeatureFlags;
 +import org.chromium.chrome.browser.flags.CromiteNativeUtils;
 +import org.chromium.chrome.browser.preferences.ChromePreferenceKeys;
 +import org.chromium.chrome.browser.preferences.SharedPreferencesManager;

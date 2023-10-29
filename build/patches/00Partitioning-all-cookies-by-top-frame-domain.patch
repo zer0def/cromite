@@ -11,17 +11,19 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
  .../browser/net/profile_network_context_service.cc   |  8 ++++----
  .../core/common/cookie_settings_base.cc              |  2 +-
+ content/public/common/content_features.cc            |  4 ++--
  net/base/features.cc                                 | 12 ++++++------
  net/cookies/canonical_cookie.cc                      | 12 +-----------
  net/cookies/cookie_deletion_info.cc                  |  3 ++-
  net/cookies/parsed_cookie.h                          |  7 ++++++-
  net/extras/sqlite/sqlite_persistent_cookie_store.cc  | 10 ++++++++++
+ net/url_request/url_request_http_job.cc              |  2 +-
  services/network/restricted_cookie_manager.cc        |  3 +++
  .../renderer/modules/cookie_store/cookie_init.idl    |  2 +-
  .../renderer/modules/cookie_store/cookie_store.cc    | 12 ++++++++++++
  .../cookie_store/cookie_store_delete_options.idl     |  2 +-
  ui/webui/webui_allowlist.cc                          |  1 +
- 12 files changed, 48 insertions(+), 26 deletions(-)
+ 14 files changed, 51 insertions(+), 29 deletions(-)
 
 diff --git a/chrome/browser/net/profile_network_context_service.cc b/chrome/browser/net/profile_network_context_service.cc
 --- a/chrome/browser/net/profile_network_context_service.cc
@@ -57,6 +59,20 @@ diff --git a/components/content_settings/core/common/cookie_settings_base.cc b/c
                  : ThirdPartyBlockingScope::kUnpartitionedAndPartitioned;
    }
    return {block_third ? CONTENT_SETTING_BLOCK : setting, scope,
+diff --git a/content/public/common/content_features.cc b/content/public/common/content_features.cc
+--- a/content/public/common/content_features.cc
++++ b/content/public/common/content_features.cc
+@@ -186,8 +186,8 @@ BASE_FEATURE(kCompositeBGColorAnimation,
+ // server side testing without cookies.
+ // (See https://developer.chrome.com/en/docs/privacy-sandbox/chrome-testing)
+ BASE_FEATURE(kCookieDeprecationFacilitatedTesting,
+-             "CookieDeprecationFacilitatedTesting",
+-             base::FEATURE_DISABLED_BY_DEFAULT);
++             "CookieDeprecationFacilitatedTesting",  // disabled
++             base::FEATURE_DISABLED_BY_DEFAULT);     // by default
+ 
+ // Set whether to enable cookie deprecation API for off-the-record profiles.
+ const base::FeatureParam<bool>
 diff --git a/net/base/features.cc b/net/base/features.cc
 --- a/net/base/features.cc
 +++ b/net/base/features.cc
@@ -179,6 +195,18 @@ diff --git a/net/extras/sqlite/sqlite_persistent_cookie_store.cc b/net/extras/sq
    return true;
  }
  
+diff --git a/net/url_request/url_request_http_job.cc b/net/url_request/url_request_http_job.cc
+--- a/net/url_request/url_request_http_job.cc
++++ b/net/url_request/url_request_http_job.cc
+@@ -758,7 +758,7 @@ void URLRequestHttpJob::SetCookieHeaderAndStart(
+ 
+       size_t n_partitioned_cookies = 0;
+       bool may_set_sec_cookie_deprecation_header =
+-          !request_->context()->cookie_deprecation_label().value_or("").empty();
++          false;
+ 
+       // TODO(crbug.com/1031664): Reduce the number of times the cookie list
+       // is iterated over. Get metrics for every cookie which is included.
 diff --git a/services/network/restricted_cookie_manager.cc b/services/network/restricted_cookie_manager.cc
 --- a/services/network/restricted_cookie_manager.cc
 +++ b/services/network/restricted_cookie_manager.cc

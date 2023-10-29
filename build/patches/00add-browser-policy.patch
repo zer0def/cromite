@@ -502,7 +502,7 @@ diff --git a/components/policy/core/common/policy_loader_command_line.cc b/compo
 +#include "components/policy/core/common/policy_namespace.h"
 +#include "components/policy/policy_constants.h"
 +
-+#include "chrome/browser/prefetch/prefetch_prefs.h"
++#include "chrome/browser/preloading/preloading_prefs.h"
 +#include "chrome/browser/policy/browser_signin_policy_handler.h"
 +
 +namespace {

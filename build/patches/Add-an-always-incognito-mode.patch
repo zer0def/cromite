@@ -32,8 +32,9 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../CustomTabAppMenuPropertiesDelegate.java   |   4 +
  .../CustomTabIntentDataProvider.java          |   5 +-
  .../browser/download/DownloadUtils.java       |  16 +-
+ .../history/HistoryContentManager.java        |   7 +-
  .../browser/history/HistoryManager.java       |  28 ++-
- .../chrome/browser/history/HistoryPage.java   |  16 ++
+ .../chrome/browser/history/HistoryPage.java   |  15 ++
  .../native_page/NativePageFactory.java        |   4 +-
  .../chrome/browser/ntp/RecentTabsManager.java |  28 ++-
  .../privacy/settings/IncognitoSettings.java   | 160 ++++++++++++++++++
@@ -85,7 +86,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../browser/autocomplete_provider_client.h    |   1 +
  .../omnibox/browser/base_search_provider.cc   |   2 +-
  components/omnibox/browser/search_provider.cc |   4 +-
- 66 files changed, 759 insertions(+), 92 deletions(-)
+ 67 files changed, 763 insertions(+), 94 deletions(-)
  create mode 100644 chrome/android/java/res/xml/incognito_preferences.xml
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/AlwaysIncognitoLinkInterceptor.java
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/IncognitoSettings.java
@@ -521,6 +522,30 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/download/Downlo
  
          // Check if the page url is supported for saving. Only HTTP and HTTPS pages are allowed.
          if (!OfflinePageBridge.canSavePage(tab.getUrl())) return false;
+diff --git a/chrome/android/java/src/org/chromium/chrome/browser/history/HistoryContentManager.java b/chrome/android/java/src/org/chromium/chrome/browser/history/HistoryContentManager.java
+--- a/chrome/android/java/src/org/chromium/chrome/browser/history/HistoryContentManager.java
++++ b/chrome/android/java/src/org/chromium/chrome/browser/history/HistoryContentManager.java
+@@ -231,7 +231,9 @@ public class HistoryContentManager implements SignInStateObserver, PrefObserver
+         mHistoryAdapter.generateFooterItems();
+ 
+         // Listen to changes in sign in state.
+-        IdentityServicesProvider.get().getSigninManager(profile).addSignInStateObserver(this);
++        // getSigninManager is null in incognito
++        if (IdentityServicesProvider.get().getSigninManager(profile) != null)
++            IdentityServicesProvider.get().getSigninManager(profile).addSignInStateObserver(this);
+ 
+         // Create PrefChangeRegistrar to receive notifications on preference changes.
+         mPrefChangeRegistrar = new PrefChangeRegistrar();
+@@ -266,7 +268,8 @@ public class HistoryContentManager implements SignInStateObserver, PrefObserver
+         mHistoryAdapter.onDestroyed();
+         mLargeIconBridge.destroy();
+         mLargeIconBridge = null;
+-        IdentityServicesProvider.get().getSigninManager(mProfile).removeSignInStateObserver(this);
++        if (IdentityServicesProvider.get().getSigninManager(mProfile) != null)
++            IdentityServicesProvider.get().getSigninManager(mProfile).removeSignInStateObserver(this);
+         mPrefChangeRegistrar.destroy();
+     }
+ 
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/history/HistoryManager.java b/chrome/android/java/src/org/chromium/chrome/browser/history/HistoryManager.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/history/HistoryManager.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/history/HistoryManager.java
@@ -622,18 +647,17 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/history/History
  /**
   * Native page for managing browsing history.
   */
-@@ -39,6 +46,15 @@ public class HistoryPage extends BasicNativePage {
+@@ -39,6 +46,14 @@ public class HistoryPage extends BasicNativePage {
              Profile profile, Supplier<Tab> tabSupplier, String url) {
          super(host);
  
-+        if (isIncognito &&
++        if (profile.isOffTheRecord() &&
 +                AlwaysIncognitoLinkInterceptor.isAlwaysIncognito()) {
 +            PrefService prefService = UserPrefs.get(Profile.getLastUsedRegularProfile());
 +            boolean historyEnabledInIncognito =
 +                prefService.getBoolean(Pref.INCOGNITO_TAB_HISTORY_ENABLED);
-+            if (historyEnabledInIncognito == true) isIncognito = false;
++            if (historyEnabledInIncognito == true) profile = profile.getOriginalProfile();
 +        }
-+
 +
          Uri uri = Uri.parse(url);
          assert uri.getHost().equals(UrlConstants.HISTORY_HOST);

@@ -5,21 +5,9 @@ Subject: Keep empty tabs between sessions
 Original License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 ---
- .../org/chromium/chrome/browser/ChromeTabbedActivity.java | 1 +
  .../chrome/browser/tabmodel/TabPersistentStore.java       | 8 --------
- 2 files changed, 1 insertion(+), 8 deletions(-)
+ 1 file changed, 8 deletions(-)
 
-diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java b/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java
---- a/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java
-+++ b/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java
-@@ -3255,6 +3255,7 @@ public class ChromeTabbedActivity extends ChromeActivity<ChromeActivityComponent
-      * Tab, it won't be skipped.
-      */
-     private boolean skipSavingNonActiveNtps() {
-+        (UAZO) Check this
-         return StartSurfaceConfiguration.isNtpAsHomeSurfaceEnabled(isTablet());
-     }
- }
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tabmodel/TabPersistentStore.java b/chrome/android/java/src/org/chromium/chrome/browser/tabmodel/TabPersistentStore.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/tabmodel/TabPersistentStore.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/tabmodel/TabPersistentStore.java

@@ -56,6 +56,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../one_time_permissions_tracker.cc           | 33 +++++++-
  .../one_time_permissions_tracker.h            |  5 +-
  .../one_time_permissions_tracker_factory.cc   |  2 +-
+ .../embedded_permission_prompt_ask_view.cc    |  2 +-
  .../permission_prompt_bubble_base_view.cc     |  2 +-
  .../browser/content_autofill_driver.cc        | 64 ++++++++-------
  .../content/browser/content_autofill_driver.h |  2 +-
@@ -90,7 +91,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  components/permissions/permission_request.h   | 16 +++-
  .../permissions/permission_request_manager.cc | 45 +++++++----
  .../permissions/permission_request_manager.h  | 11 ++-
- 38 files changed, 546 insertions(+), 91 deletions(-)
+ 39 files changed, 547 insertions(+), 92 deletions(-)
 
 diff --git a/chrome/browser/permissions/last_tab_standing_tracker.cc b/chrome/browser/permissions/last_tab_standing_tracker.cc
 --- a/chrome/browser/permissions/last_tab_standing_tracker.cc
@@ -229,6 +230,18 @@ diff --git a/chrome/browser/permissions/one_time_permissions_tracker_factory.cc 
 -  return std::make_unique<OneTimePermissionsTracker>();
 +  return std::make_unique<OneTimePermissionsTracker>(context);
  }
+diff --git a/chrome/browser/ui/views/permissions/embedded_permission_prompt_ask_view.cc b/chrome/browser/ui/views/permissions/embedded_permission_prompt_ask_view.cc
+--- a/chrome/browser/ui/views/permissions/embedded_permission_prompt_ask_view.cc
++++ b/chrome/browser/ui/views/permissions/embedded_permission_prompt_ask_view.cc
+@@ -34,7 +34,7 @@ void EmbeddedPermissionPromptAskView::RunButtonCallback(int button_id) {
+ 
+   if (delegate()) {
+     if (button == ButtonType::kAllowThisTime) {
+-      delegate()->AcceptThisTime();
++      delegate()->AcceptThisTime(content_settings::LifetimeMode::OnlyThisTime);
+     } else if (button == ButtonType::kAllow) {
+       delegate()->Accept();
+     }
 diff --git a/chrome/browser/ui/views/permissions/permission_prompt_bubble_base_view.cc b/chrome/browser/ui/views/permissions/permission_prompt_bubble_base_view.cc
 --- a/chrome/browser/ui/views/permissions/permission_prompt_bubble_base_view.cc
 +++ b/chrome/browser/ui/views/permissions/permission_prompt_bubble_base_view.cc
@@ -237,7 +250,7 @@ diff --git a/chrome/browser/ui/views/permissions/permission_prompt_bubble_base_v
      case PermissionDialogButton::kAcceptOnce:
        RecordDecision(permissions::PermissionAction::GRANTED_ONCE);
 -      delegate_->AcceptThisTime();
-+      delegate_->AcceptThisTime(content_settings::LifetimeMode::Always);
++      delegate_->AcceptThisTime(content_settings::LifetimeMode::OnlyThisTime);
        return;
      case PermissionDialogButton::kDeny:
        RecordDecision(permissions::PermissionAction::DENIED);
@@ -1600,7 +1613,7 @@ diff --git a/components/permissions/permission_request_manager.cc b/components/p
    switch (auto_response_for_test_) {
      case ACCEPT_ONCE:
 -      AcceptThisTime();
-+      AcceptThisTime(content_settings::LifetimeMode::Always);
++      AcceptThisTime(content_settings::LifetimeMode::OnlyThisTime);
        break;
      case ACCEPT_ALL:
        Accept();

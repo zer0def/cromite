@@ -376,7 +376,7 @@ new file mode 100644
 +import org.chromium.components.browser_ui.settings.ChromeSwitchPreference;
 +
 +import org.chromium.content_public.browser.BrowserContextHandle;
-+import org.chromium.components.browser_ui.site_settings.SiteSettingsPreferenceFragment;
++import org.chromium.components.browser_ui.site_settings.BaseSiteSettingsFragment;
 +import org.chromium.components.browser_ui.site_settings.WebsitePreferenceBridge;
 +import org.chromium.components.content_settings.ContentSettingsType;
 +import org.chromium.components.browser_ui.settings.SettingsUtils;
@@ -387,7 +387,7 @@ new file mode 100644
 +/**
 + * Fragment that allows the user to configure AdBlock related preferences.
 + */
-+public class AdBlockPreferences extends SiteSettingsPreferenceFragment {
++public class AdBlockPreferences extends BaseSiteSettingsFragment {
 +    @VisibleForTesting
 +    public static final String PREF_ADBLOCK_SWITCH = "adblock_switch";
 +    private static final String PREF_ADBLOCK_EDIT = "adblock_edit";

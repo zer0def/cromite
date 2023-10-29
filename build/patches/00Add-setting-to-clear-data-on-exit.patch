@@ -22,13 +22,13 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../clear_browsing_data_dialog.ts             |  1 +
  .../strings/android_chrome_strings.grd        |  3 +
  .../settings_localized_strings_provider.cc    |  1 +
- .../core/browsing_data_policies_utils.cc      | 16 ++--
+ .../core/browsing_data_policies_utils.cc      | 20 ++---
  .../core/browsing_data_policies_utils.h       | 11 +++
  .../browsing_data/core/browsing_data_utils.cc | 34 +++++++++
  .../core/clear_browsing_data_tab.h            |  2 +-
  components/browsing_data/core/pref_names.cc   | 27 +++++++
  components/browsing_data/core/pref_names.h    |  9 +++
- 24 files changed, 316 insertions(+), 14 deletions(-)
+ 24 files changed, 318 insertions(+), 16 deletions(-)
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/browsing_data/ClearBrowsingDataFragmentAtStart.java
 
 diff --git a/chrome/android/chrome_java_sources.gni b/chrome/android/chrome_java_sources.gni
@@ -508,8 +508,12 @@ diff --git a/chrome/browser/ui/webui/settings/settings_localized_strings_provide
 diff --git a/components/browsing_data/core/browsing_data_policies_utils.cc b/components/browsing_data/core/browsing_data_policies_utils.cc
 --- a/components/browsing_data/core/browsing_data_policies_utils.cc
 +++ b/components/browsing_data/core/browsing_data_policies_utils.cc
-@@ -21,15 +21,15 @@ namespace {
+@@ -17,21 +17,21 @@
  
+ namespace browsing_data {
+ 
+-namespace {
+-
  namespace policy_data_types {
  // Data retention policy types that require sync to be disabled.
 -constexpr char kBrowsingHistoryName[] = "browsing_history";
@@ -531,7 +535,11 @@ diff --git a/components/browsing_data/core/browsing_data_policies_utils.cc b/com
 +extern constexpr char kCachedImagesAndFilesName[] = "cached_images_and_files";
  }  // namespace policy_data_types
  
++namespace {
++
  // The format of the log message shown in chrome://policy/logs when sync types
+ // are automatically disabled.
+ constexpr char kDisabledSyncTypesLogFormat[] =
 diff --git a/components/browsing_data/core/browsing_data_policies_utils.h b/components/browsing_data/core/browsing_data_policies_utils.h
 --- a/components/browsing_data/core/browsing_data_policies_utils.h
 +++ b/components/browsing_data/core/browsing_data_policies_utils.h

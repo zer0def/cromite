@@ -50,7 +50,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../renderer/chrome_render_thread_observer.cc |   5 +
  components/components_strings.grd             |   1 +
  components/user_scripts/README.md             | 150 ++++
- components/user_scripts/android/BUILD.gn      |  83 ++
+ components/user_scripts/android/BUILD.gn      |  84 ++
  .../java/res/layout/accept_script_item.xml    | 160 ++++
  .../java/res/layout/accept_script_list.xml    |  10 +
  .../java/res/layout/scripts_preference.xml    |  40 +
@@ -135,7 +135,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../renderer/web_ui_injection_host.h          |  27 +
  .../strings/userscripts_strings.grdp          |  54 ++
  tools/gritsettings/resource_ids.spec          |   6 +
- 108 files changed, 9490 insertions(+), 2 deletions(-)
+ 108 files changed, 9491 insertions(+), 2 deletions(-)
  create mode 100644 components/user_scripts/README.md
  create mode 100755 components/user_scripts/android/BUILD.gn
  create mode 100644 components/user_scripts/android/java/res/layout/accept_script_item.xml
@@ -899,7 +899,7 @@ diff --git a/components/user_scripts/android/BUILD.gn b/components/user_scripts/
 new file mode 100755
 --- /dev/null
 +++ b/components/user_scripts/android/BUILD.gn
-@@ -0,0 +1,83 @@
+@@ -0,0 +1,84 @@
 +# This file is part of Bromite.
 +
 +# Bromite is free software: you can redistribute it and/or modify
@@ -916,6 +916,7 @@ new file mode 100755
 +# along with Bromite. If not, see <https://www.gnu.org/licenses/>.
 +
 +import("//build/config/android/rules.gni")
++import("//third_party/jni_zero/jni_zero.gni")
 +
 +generate_jni("user_scripts_jni_headers") {
 +  sources = [ "java/src/org/chromium/components/user_scripts/UserScriptsBridge.java" ]
@@ -10492,7 +10493,7 @@ new file mode 100755
 diff --git a/tools/gritsettings/resource_ids.spec b/tools/gritsettings/resource_ids.spec
 --- a/tools/gritsettings/resource_ids.spec
 +++ b/tools/gritsettings/resource_ids.spec
-@@ -954,6 +954,12 @@
+@@ -955,6 +955,12 @@
    "components/autofill/core/browser/autofill_address_rewriter_resources.grd":{
      "includes": [6220]
    },
