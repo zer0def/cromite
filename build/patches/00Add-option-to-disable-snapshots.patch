@@ -193,7 +193,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/privacy/setting
          }
          return true;
      }
-@@ -360,6 +396,10 @@ public class PrivacySettings
+@@ -361,6 +397,10 @@ public class PrivacySettings
                              : R.string.text_off);
          }
  

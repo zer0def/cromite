@@ -107,7 +107,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/password_manage
      private @ManagePasswordsReferrer int mManagePasswordsReferrer;
      private BottomSheetController mBottomSheetController;
  
-@@ -297,6 +310,7 @@ public class PasswordSettings extends ChromeBaseSettingsFragment
+@@ -298,6 +311,7 @@ public class PasswordSettings extends ChromeBaseSettingsFragment
          }
  
          createSavePasswordsSwitch();
@@ -115,7 +115,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/password_manage
          if (shouldShowAutoSigninOption()) {
              createAutoSignInCheckbox();
          }
-@@ -560,6 +574,71 @@ public class PasswordSettings extends ChromeBaseSettingsFragment
+@@ -561,6 +575,71 @@ public class PasswordSettings extends ChromeBaseSettingsFragment
                  getPrefService().getBoolean(Pref.CREDENTIALS_ENABLE_SERVICE));
      }
  

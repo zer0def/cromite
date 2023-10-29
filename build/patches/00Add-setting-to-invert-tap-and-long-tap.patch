@@ -47,7 +47,7 @@ diff --git a/chrome/android/java/res/values/ids.xml b/chrome/android/java/res/va
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/ChromeAccessibilitySettingsDelegate.java b/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/ChromeAccessibilitySettingsDelegate.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/ChromeAccessibilitySettingsDelegate.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/ChromeAccessibilitySettingsDelegate.java
-@@ -164,6 +164,24 @@ public class ChromeAccessibilitySettingsDelegate implements AccessibilitySetting
+@@ -163,6 +163,24 @@ public class ChromeAccessibilitySettingsDelegate implements AccessibilitySetting
              mSnackbarManager.showSnackbar(mSnackbar);
      }
  

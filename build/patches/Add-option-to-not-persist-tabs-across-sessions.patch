@@ -90,7 +90,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/privacy/setting
              UserPrefs.get(getProfile())
                      .setBoolean(Pref.CAN_MAKE_PAYMENT_ENABLED, (boolean) newValue);
          } else if (PREF_HTTPS_FIRST_MODE.equals(key)) {
-@@ -290,6 +299,11 @@ public class PrivacySettings
+@@ -291,6 +300,11 @@ public class PrivacySettings
                      PreloadPagesSettingsFragment.getPreloadPagesSummaryString(getContext()));
          }
  

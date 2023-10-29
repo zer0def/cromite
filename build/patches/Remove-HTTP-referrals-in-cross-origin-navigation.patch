@@ -179,7 +179,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/privacy/setting
      private static final String PREF_PRIVACY_SANDBOX = "privacy_sandbox";
      private static final String PREF_PROXY_OPTIONS = "proxy";
      private static final String PREF_PRIVACY_GUIDE = "privacy_guide";
-@@ -358,6 +360,10 @@ public class PrivacySettings
+@@ -359,6 +361,10 @@ public class PrivacySettings
                              : R.string.text_off);
          }
  

@@ -81,7 +81,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/settings/Settin
  import org.chromium.chrome.browser.search_engines.settings.SearchEngineSettings;
  import org.chromium.chrome.browser.signin.SyncConsentActivityLauncherImpl;
  import org.chromium.chrome.browser.site_settings.ChromeSiteSettingsDelegate;
-@@ -499,12 +496,6 @@ public class SettingsActivity extends ChromeBaseAppCompatActivity
+@@ -500,12 +497,6 @@ public class SettingsActivity extends ChromeBaseAppCompatActivity
              ((BaseSiteSettingsFragment) fragment)
                      .setSiteSettingsDelegate(new ChromeSiteSettingsDelegate(this, mProfile));
          }
