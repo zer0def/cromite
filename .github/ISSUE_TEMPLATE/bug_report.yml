@@ -67,6 +67,7 @@ body:
         - x86
         - x64
         - windows
+        - all
     validations:
       required: true
 
@@ -91,7 +92,7 @@ body:
         - Android Emulator
         - Windows 10
         - Windows 11
-        - I prefer not to write it
+        - I prefer not to write it/No matter
     validations:
       required: true
 
