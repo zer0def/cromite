@@ -63,8 +63,8 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../chrome/browser/ui/appmenu/AppMenu.java    | 29 ++++++-
  .../ui/appmenu/AppMenuHandlerImpl.java        | 10 +++
  .../omnibox/LocationBarCoordinator.java       |  6 +-
- ...mniboxSuggestionsDropdownEmbedderImpl.java | 14 +++-
- .../browser/omnibox/UrlBarCoordinator.java    |  8 ++
+ ...mniboxSuggestionsDropdownEmbedderImpl.java | 23 +++++-
+ .../browser/omnibox/UrlBarCoordinator.java    |  3 +
  .../suggestions/AutocompleteCoordinator.java  | 15 +++-
  .../suggestions/AutocompleteMediator.java     |  6 +-
  .../DropdownItemViewInfoListManager.java      | 14 +++-
@@ -87,7 +87,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../accessibility/AccessibilitySettings.java  | 16 ++++
  .../AccessibilitySettingsDelegate.java        |  6 ++
  .../render_widget_host_view_android.cc        |  3 +
- 74 files changed, 834 insertions(+), 63 deletions(-)
+ 74 files changed, 835 insertions(+), 66 deletions(-)
 
 diff --git a/cc/base/features.cc b/cc/base/features.cc
 --- a/cc/base/features.cc
@@ -1917,7 +1917,15 @@ diff --git a/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/brow
 diff --git a/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/browser/omnibox/OmniboxSuggestionsDropdownEmbedderImpl.java b/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/browser/omnibox/OmniboxSuggestionsDropdownEmbedderImpl.java
 --- a/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/browser/omnibox/OmniboxSuggestionsDropdownEmbedderImpl.java
 +++ b/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/browser/omnibox/OmniboxSuggestionsDropdownEmbedderImpl.java
-@@ -37,6 +37,7 @@ class OmniboxSuggestionsDropdownEmbedderImpl implements OmniboxSuggestionsDropdo
+@@ -19,6 +19,7 @@ import androidx.core.view.WindowInsetsCompat;
+ import org.chromium.base.Callback;
+ import org.chromium.base.supplier.ObservableSupplierImpl;
+ import org.chromium.chrome.browser.omnibox.suggestions.OmniboxSuggestionsDropdownEmbedder;
++import org.chromium.chrome.browser.flags.ChromeFeatureList;
+ import org.chromium.ui.base.DeviceFormFactor;
+ import org.chromium.ui.base.ViewUtils;
+ import org.chromium.ui.base.WindowAndroid;
+@@ -37,6 +38,7 @@ class OmniboxSuggestionsDropdownEmbedderImpl implements OmniboxSuggestionsDropdo
      private final @NonNull WindowAndroid mWindowAndroid;
      private final @NonNull WindowDelegate mWindowDelegate;
      private final @NonNull View mAnchorView;
@@ -1925,7 +1933,7 @@ diff --git a/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/brow
      private final @NonNull View mHorizontalAlignmentView;
      private final @NonNull Context mContext;
      // Reusable int array to pass to positioning methods that operate on a two element int array.
-@@ -61,10 +62,11 @@ class OmniboxSuggestionsDropdownEmbedderImpl implements OmniboxSuggestionsDropdo
+@@ -61,10 +63,11 @@ class OmniboxSuggestionsDropdownEmbedderImpl implements OmniboxSuggestionsDropdo
       */
      OmniboxSuggestionsDropdownEmbedderImpl(@NonNull WindowAndroid windowAndroid,
              @NonNull WindowDelegate windowDelegate, @NonNull View anchorView,
@@ -1938,7 +1946,7 @@ diff --git a/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/brow
          mHorizontalAlignmentView = horizontalAlignmentView;
          mContext = mAnchorView.getContext();
          mContext.registerComponentCallbacks(this);
-@@ -84,6 +86,16 @@ class OmniboxSuggestionsDropdownEmbedderImpl implements OmniboxSuggestionsDropdo
+@@ -84,6 +87,16 @@ class OmniboxSuggestionsDropdownEmbedderImpl implements OmniboxSuggestionsDropdo
          mOmniboxAlignmentSupplier.removeObserver(obs);
      }
  
@@ -1955,6 +1963,21 @@ diff --git a/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/brow
      @Nullable
      @Override
      public OmniboxAlignment getCurrentAlignment() {
+@@ -101,9 +114,11 @@ class OmniboxSuggestionsDropdownEmbedderImpl implements OmniboxSuggestionsDropdo
+         mAnchorView.addOnLayoutChangeListener(this);
+         mHorizontalAlignmentView.addOnLayoutChangeListener(this);
+         mAnchorView.getViewTreeObserver().addOnGlobalLayoutListener(this);
+-        mDeferredIMEWindowInsetApplicationCallback =
+-                new DeferredIMEWindowInsetApplicationCallback(this::recalculateOmniboxAlignment);
+-        mDeferredIMEWindowInsetApplicationCallback.attach(mWindowAndroid);
++        if (!ChromeFeatureList.sMoveTopToolbarToBottom.isEnabled()) {
++            mDeferredIMEWindowInsetApplicationCallback =
++                    new DeferredIMEWindowInsetApplicationCallback(this::recalculateOmniboxAlignment);
++            mDeferredIMEWindowInsetApplicationCallback.attach(mWindowAndroid);
++        }
+         onConfigurationChanged(mContext.getResources().getConfiguration());
+         recalculateOmniboxAlignment();
+     }
 diff --git a/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/browser/omnibox/UrlBarCoordinator.java b/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/browser/omnibox/UrlBarCoordinator.java
 --- a/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/browser/omnibox/UrlBarCoordinator.java
 +++ b/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/browser/omnibox/UrlBarCoordinator.java
@@ -1968,18 +1991,6 @@ diff --git a/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/brow
  /**
   * Coordinates the interactions with the UrlBar text component.
   */
-@@ -239,6 +242,11 @@ public class UrlBarCoordinator implements UrlBarEditingTextStateProvider, UrlFoc
-         // to show or hide keyboard anyway. This may happen when we schedule keyboard hide, and
-         // receive a second request to hide the keyboard instantly.
-         if (showKeyboard) {
-+            if (ChromeFeatureList.sMoveTopToolbarToBottom.isEnabled()) {
-+                // probably due to an android bug, fix the size rather than pan the view.
-+                // with the pan the bar may not always follow the focus if not at the first input by the user
-+                mWindowDelegate.setWindowSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-+            }
-             mKeyboardVisibilityDelegate.showKeyboard(mUrlBar);
-         } else {
-             // The animation rendering may not yet be 100% complete and hiding the keyboard makes
 diff --git a/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/browser/omnibox/suggestions/AutocompleteCoordinator.java b/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/browser/omnibox/suggestions/AutocompleteCoordinator.java
 --- a/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/browser/omnibox/suggestions/AutocompleteCoordinator.java
 +++ b/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/browser/omnibox/suggestions/AutocompleteCoordinator.java
