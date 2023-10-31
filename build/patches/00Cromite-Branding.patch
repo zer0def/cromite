@@ -25,7 +25,8 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../mipmap-xxxhdpi/app_icon.png               | Bin 9667 -> 20837 bytes
  .../mipmap-xxxhdpi/layered_app_icon.png       | Bin 3652 -> 29220 bytes
  .../layered_app_icon_background.png           | Bin 3519 -> 142032 bytes
- .../inline/BromiteInlineUpdateController.java |  16 ++++++--
+ .../chrome/browser/omaha/UpdateConfigs.java   |   2 +-
+ .../inline/BromiteInlineUpdateController.java |  21 ++++++++--
  chrome/app/extensions_strings.grdp            |   4 +-
  chrome/app/settings_strings.grdp              |   2 +-
  chrome/app/theme/chromium/BRANDING            |   8 ++--
@@ -46,7 +47,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../drawable-xxhdpi/fre_product_logo.png      | Bin 7720 -> 60959 bytes
  .../drawable-xxxhdpi/fre_product_logo.png     | Bin 10740 -> 93273 bytes
  tools/grit/grit/grd_reader.py                 |  35 +++++++++++++++++
- 42 files changed, 102 insertions(+), 56 deletions(-)
+ 43 files changed, 108 insertions(+), 57 deletions(-)
 
 diff --git a/build/BUILD.gn b/build/BUILD.gn
 --- a/build/BUILD.gn
@@ -9106,6 +9107,18 @@ zk0U>@{Db0uvVi{o$%=-6@&Jp4mhhHYo~{+5O$ZdgIR*B?vJ5$!R3PXBkQ0>lqcPjJ
 zG!=nXw2&abs#xr~fFDF!vq@X7`+qtd5cw$r{cp#9R6!ToGG#p=PkT1k)Wlt8^P%Pg
 W=g!Ha2?pSwIRxeC=1^|uclqCxqvpf_
 
+diff --git a/chrome/android/java/src/org/chromium/chrome/browser/omaha/UpdateConfigs.java b/chrome/android/java/src/org/chromium/chrome/browser/omaha/UpdateConfigs.java
+--- a/chrome/android/java/src/org/chromium/chrome/browser/omaha/UpdateConfigs.java
++++ b/chrome/android/java/src/org/chromium/chrome/browser/omaha/UpdateConfigs.java
+@@ -37,7 +37,7 @@ public class UpdateConfigs {
+     private static final String UPDATE_AVAILABLE_SWITCH_VALUE = "update_available";
+     private static final String UNSUPPORTED_OS_VERSION_SWITCH_VALUE = "unsupported_os_version";
+ 
+-    private static final long DEFAULT_UPDATE_NOTIFICATION_INTERVAL = 3 * DateUtils.DAY_IN_MILLIS;
++    private static final long DEFAULT_UPDATE_NOTIFICATION_INTERVAL = 1 * DateUtils.DAY_IN_MILLIS;
+     private static final long DEFAULT_UPDATE_ATTRIBUTION_WINDOW_MS = 2 * DateUtils.DAY_IN_MILLIS;
+ 
+     /** Possible update flow configurations. */
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/omaha/inline/BromiteInlineUpdateController.java b/chrome/android/java/src/org/chromium/chrome/browser/omaha/inline/BromiteInlineUpdateController.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/omaha/inline/BromiteInlineUpdateController.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/omaha/inline/BromiteInlineUpdateController.java
@@ -9124,7 +9137,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/omaha/inline/Br
  
      public static String getDownloadUrl() {
          return UPDATE_VERSION_URL + BuildConfig.BUILD_TARGET_CPU + "_ChromePublic.apk";
-@@ -212,6 +212,13 @@ public class BromiteInlineUpdateController implements InlineUpdateController {
+@@ -212,11 +212,20 @@ public class BromiteInlineUpdateController implements InlineUpdateController {
                          Log.i(TAG, "BromiteUpdater: obtained response '%s' and redirect URL '%s'", endpointResponse.getResponseString(), redirectURL);
                          if (redirectURL.indexOf(REDIRECT_URL_PREFIX) == 0) {
                              redirectURL = redirectURL.substring(REDIRECT_URL_PREFIX.length());
@@ -9138,11 +9151,21 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/omaha/inline/Br
                              String[] parts = redirectURL.split(Pattern.quote("/"));
                              if (parts.length > 0) {
                                  VersionNumber version = VersionNumber.fromString(parts[0]);
-@@ -239,6 +246,7 @@ public class BromiteInlineUpdateController implements InlineUpdateController {
+                                 if (version != null) {
+                                     versionFound = true;
++                                    if (UPSTREAM_VERSION_URL.equals(""))
++                                        OmahaBase.updateLastPushedTimeStamp(System.currentTimeMillis());
+                                     OmahaBase.setLatestModifiedVersion(parts[0]);
+                                     callback.onResult(version);
+                                     return;
+@@ -239,6 +248,10 @@ public class BromiteInlineUpdateController implements InlineUpdateController {
      }
  
      private void checkLatestUpstreamVersion(final Callback<VersionNumber> callback) {
-+        if ((true)) callback.onResult(null);
++        if (UPSTREAM_VERSION_URL.equals("")) {
++            callback.onResult(null);
++            return;
++        }
          Log.i(TAG, "BromiteUpdater: fetching with GET '%s'", UPSTREAM_VERSION_URL);
  
          EndpointFetcher.nativeFetchWithNoAuth(
