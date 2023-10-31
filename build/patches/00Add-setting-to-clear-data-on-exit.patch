@@ -28,7 +28,8 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../core/clear_browsing_data_tab.h            |  2 +-
  components/browsing_data/core/pref_names.cc   | 27 +++++++
  components/browsing_data/core/pref_names.h    |  9 +++
- 24 files changed, 318 insertions(+), 16 deletions(-)
+ content/browser/storage_partition_impl.cc     |  1 +
+ 25 files changed, 319 insertions(+), 16 deletions(-)
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/browsing_data/ClearBrowsingDataFragmentAtStart.java
 
 diff --git a/chrome/android/chrome_java_sources.gni b/chrome/android/chrome_java_sources.gni
@@ -680,5 +681,16 @@ diff --git a/components/browsing_data/core/pref_names.h b/components/browsing_da
  extern const char kDeleteTimePeriod[];
  extern const char kDeleteTimePeriodBasic[];
  
+diff --git a/content/browser/storage_partition_impl.cc b/content/browser/storage_partition_impl.cc
+--- a/content/browser/storage_partition_impl.cc
++++ b/content/browser/storage_partition_impl.cc
+@@ -1542,6 +1542,7 @@ void StoragePartitionImpl::Initialize(
+                             .AppendASCII("Code Cache");
+     }
+     DCHECK_GE(settings.size_in_bytes(), 0);
++    base::DeletePathRecursively(code_cache_path);
+     GetGeneratedCodeCacheContext()->Initialize(code_cache_path,
+                                                settings.size_in_bytes());
+   }
 --
 2.25.1
