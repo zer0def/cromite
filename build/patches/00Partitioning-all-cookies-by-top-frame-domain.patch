@@ -11,6 +11,8 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
  .../browser/net/profile_network_context_service.cc   |  8 ++++----
  .../core/common/cookie_settings_base.cc              |  2 +-
+ components/content_settings/core/common/features.cc  |  4 ++--
+ components/permissions/features.cc                   |  4 ++--
  content/public/common/content_features.cc            |  4 ++--
  net/base/features.cc                                 | 12 ++++++------
  net/cookies/canonical_cookie.cc                      | 12 +-----------
@@ -23,7 +25,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../renderer/modules/cookie_store/cookie_store.cc    | 12 ++++++++++++
  .../cookie_store/cookie_store_delete_options.idl     |  2 +-
  ui/webui/webui_allowlist.cc                          |  1 +
- 14 files changed, 51 insertions(+), 29 deletions(-)
+ 16 files changed, 55 insertions(+), 33 deletions(-)
 
 diff --git a/chrome/browser/net/profile_network_context_service.cc b/chrome/browser/net/profile_network_context_service.cc
 --- a/chrome/browser/net/profile_network_context_service.cc
@@ -59,6 +61,34 @@ diff --git a/components/content_settings/core/common/cookie_settings_base.cc b/c
                  : ThirdPartyBlockingScope::kUnpartitionedAndPartitioned;
    }
    return {block_third ? CONTENT_SETTING_BLOCK : setting, scope,
+diff --git a/components/content_settings/core/common/features.cc b/components/content_settings/core/common/features.cc
+--- a/components/content_settings/core/common/features.cc
++++ b/components/content_settings/core/common/features.cc
+@@ -79,8 +79,8 @@ BASE_FEATURE(kImprovedSemanticsActivityIndicators,
+              base::FEATURE_DISABLED_BY_DEFAULT);
+ 
+ BASE_FEATURE(kTrackingProtection3pcd,
+-             "TrackingProtection3pcd",
+-             base::FEATURE_DISABLED_BY_DEFAULT);
++             "TrackingProtection3pcd",           // disabled
++             base::FEATURE_DISABLED_BY_DEFAULT); // by default
+ 
+ }  // namespace features
+ }  // namespace content_settings
+diff --git a/components/permissions/features.cc b/components/permissions/features.cc
+--- a/components/permissions/features.cc
++++ b/components/permissions/features.cc
+@@ -156,8 +156,8 @@ BASE_FEATURE(kMitigateUnpartitionedWebviewPermissions,
+ // This includes enabling prompts, a new settings page and page info and
+ // omnibox integration.
+ BASE_FEATURE(kPermissionStorageAccessAPI,
+-             "PermissionStorageAccessAPI",
+-             base::FEATURE_DISABLED_BY_DEFAULT);
++             "PermissionStorageAccessAPI",        // guard
++             base::FEATURE_DISABLED_BY_DEFAULT);  // this
+ 
+ // When enabled "window-placement" may be used as an alias for
+ // "window-management". Additionally, reverse mappings (i.e. enum to string)
 diff --git a/content/public/common/content_features.cc b/content/public/common/content_features.cc
 --- a/content/public/common/content_features.cc
 +++ b/content/public/common/content_features.cc
