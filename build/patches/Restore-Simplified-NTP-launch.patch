@@ -331,7 +331,7 @@ diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descriptions.cc
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -4502,6 +4502,9 @@ const char kStartSurfaceWithAccessibilityName[] =
+@@ -4507,6 +4507,9 @@ const char kStartSurfaceWithAccessibilityName[] =
  const char kStartSurfaceWithAccessibilityDescription[] =
      "Enable Start Surface with Accessibility.";
  
@@ -344,7 +344,7 @@ diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descripti
 diff --git a/chrome/browser/flag_descriptions.h b/chrome/browser/flag_descriptions.h
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -2625,6 +2625,9 @@ extern const char kSmartZoomDescription[];
+@@ -2628,6 +2628,9 @@ extern const char kSmartZoomDescription[];
  extern const char kSmartSuggestionForLargeDownloadsName[];
  extern const char kSmartSuggestionForLargeDownloadsDescription[];
  

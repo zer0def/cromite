@@ -43,7 +43,7 @@ diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -9934,6 +9934,13 @@ const FeatureEntry kFeatureEntries[] = {
+@@ -9939,6 +9939,13 @@ const FeatureEntry kFeatureEntries[] = {
       FEATURE_VALUE_TYPE(base::i18n::kLacrosMergeIcuDataFile)},
  #endif
  
@@ -60,7 +60,7 @@ diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descriptions.cc
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -3976,6 +3976,11 @@ const char kChimeAndroidSdkDescription[] =
+@@ -3981,6 +3981,11 @@ const char kChimeAndroidSdkDescription[] =
      "Enable Chime SDK to receive push notification.";
  const char kChimeAndroidSdkName[] = "Use Chime SDK";
  

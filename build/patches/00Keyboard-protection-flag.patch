@@ -36,7 +36,7 @@ diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descriptions.cc
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -3335,6 +3335,12 @@ const char kSystemKeyboardLockDescription[] =
+@@ -3340,6 +3340,12 @@ const char kSystemKeyboardLockDescription[] =
      "keyboard shortcuts and have the events routed directly to the website "
      "when in fullscreen mode.";
  
@@ -52,7 +52,7 @@ diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descripti
 diff --git a/chrome/browser/flag_descriptions.h b/chrome/browser/flag_descriptions.h
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -1920,6 +1920,9 @@ extern const char kSuppressToolbarCapturesDescription[];
+@@ -1923,6 +1923,9 @@ extern const char kSuppressToolbarCapturesDescription[];
  extern const char kSystemKeyboardLockName[];
  extern const char kSystemKeyboardLockDescription[];
  

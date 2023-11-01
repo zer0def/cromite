@@ -77,7 +77,7 @@ diff --git a/chrome/browser/chrome_content_browser_client.cc b/chrome/browser/ch
 diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descriptions.cc
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -3311,6 +3311,11 @@ const char kCommerceMerchantViewerAndroidDescription[] =
+@@ -3316,6 +3316,11 @@ const char kCommerceMerchantViewerAndroidDescription[] =
      "Allows users to view merchant trust signals on eligible pages.";
  
  const char kTabGroupsSaveId[] = "tab-groups-save";
@@ -92,7 +92,7 @@ diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descripti
 diff --git a/chrome/browser/flag_descriptions.h b/chrome/browser/flag_descriptions.h
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -1908,6 +1908,9 @@ extern const char kCommerceMerchantViewerAndroidName[];
+@@ -1911,6 +1911,9 @@ extern const char kCommerceMerchantViewerAndroidName[];
  extern const char kCommerceMerchantViewerAndroidDescription[];
  
  extern const char kTabGroupsSaveId[];

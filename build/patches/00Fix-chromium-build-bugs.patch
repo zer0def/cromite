@@ -224,7 +224,7 @@ diff --git a/chrome/browser/ui/views/side_panel/read_anything/read_anything_cont
 diff --git a/chrome/browser/ui/views/tabs/tab.cc b/chrome/browser/ui/views/tabs/tab.cc
 --- a/chrome/browser/ui/views/tabs/tab.cc
 +++ b/chrome/browser/ui/views/tabs/tab.cc
-@@ -540,7 +540,7 @@ bool Tab::OnMousePressed(const ui::MouseEvent& event) {
+@@ -541,7 +541,7 @@ bool Tab::OnMousePressed(const ui::MouseEvent& event) {
  }
  
  bool Tab::OnMouseDragged(const ui::MouseEvent& event) {
@@ -236,7 +236,7 @@ diff --git a/chrome/browser/ui/views/tabs/tab.cc b/chrome/browser/ui/views/tabs/
 diff --git a/chrome/browser/ui/views/tabs/tab_group_header.cc b/chrome/browser/ui/views/tabs/tab_group_header.cc
 --- a/chrome/browser/ui/views/tabs/tab_group_header.cc
 +++ b/chrome/browser/ui/views/tabs/tab_group_header.cc
-@@ -207,7 +207,7 @@ bool TabGroupHeader::OnMousePressed(const ui::MouseEvent& event) {
+@@ -208,7 +208,7 @@ bool TabGroupHeader::OnMousePressed(const ui::MouseEvent& event) {
  }
  
  bool TabGroupHeader::OnMouseDragged(const ui::MouseEvent& event) {

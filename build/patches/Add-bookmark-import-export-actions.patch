@@ -864,7 +864,7 @@ diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -9821,6 +9821,14 @@ const FeatureEntry kFeatureEntries[] = {
+@@ -9826,6 +9826,14 @@ const FeatureEntry kFeatureEntries[] = {
       FEATURE_VALUE_TYPE(features::kForceOffTextAutosizing)},
  #endif
  
@@ -1384,7 +1384,7 @@ diff --git a/chrome/browser/download/android/java/src/org/chromium/chrome/browse
 diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descriptions.cc
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -7752,6 +7752,11 @@ const char kEnableBoundSessionCredentialsDescription[] =
+@@ -7757,6 +7757,11 @@ const char kEnableBoundSessionCredentialsDescription[] =
      "prevent the usage of bound credentials outside of the user device.";
  #endif  // BUILDFLAG(ENABLE_BOUND_SESSION_CREDENTIALS)
  
@@ -1399,7 +1399,7 @@ diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descripti
 diff --git a/chrome/browser/flag_descriptions.h b/chrome/browser/flag_descriptions.h
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -4490,6 +4490,9 @@ extern const char kEnableBoundSessionCredentialsName[];
+@@ -4493,6 +4493,9 @@ extern const char kEnableBoundSessionCredentialsName[];
  extern const char kEnableBoundSessionCredentialsDescription[];
  #endif  // BUILDFLAG(ENABLE_BOUND_SESSION_CREDENTIALS)
  

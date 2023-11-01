@@ -37,7 +37,7 @@ diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 diff --git a/chrome/browser/flag-metadata.json b/chrome/browser/flag-metadata.json
 --- a/chrome/browser/flag-metadata.json
 +++ b/chrome/browser/flag-metadata.json
-@@ -3245,6 +3245,11 @@
+@@ -3250,6 +3250,11 @@
      "owners": [ "robsc", "napper", "alanlxl" ],
      "expiry_milestone": 130
    },
@@ -52,7 +52,7 @@ diff --git a/chrome/browser/flag-metadata.json b/chrome/browser/flag-metadata.js
 diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descriptions.cc
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -1496,6 +1496,10 @@ const char kDropInputEventsBeforeFirstPaintDescription[] =
+@@ -1501,6 +1501,10 @@ const char kDropInputEventsBeforeFirstPaintDescription[] =
      "intentionally interact with elements on that page. By dropping the events "
      "we prevent accidental interaction with a page the user has not seen yet.";
  
@@ -66,7 +66,7 @@ diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descripti
 diff --git a/chrome/browser/flag_descriptions.h b/chrome/browser/flag_descriptions.h
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -840,6 +840,9 @@ extern const char kExperimentalRgbKeyboardPatternsDescription[];
+@@ -843,6 +843,9 @@ extern const char kExperimentalRgbKeyboardPatternsDescription[];
  
  extern const char kRetailCouponsName[];
  extern const char kRetailCouponsDescription[];
@@ -129,7 +129,7 @@ diff --git a/third_party/blink/public/common/features.h b/third_party/blink/publ
 diff --git a/third_party/blink/renderer/core/dom/document.cc b/third_party/blink/renderer/core/dom/document.cc
 --- a/third_party/blink/renderer/core/dom/document.cc
 +++ b/third_party/blink/renderer/core/dom/document.cc
-@@ -4448,9 +4448,14 @@ void Document::SetURL(const KURL& url) {
+@@ -4465,9 +4465,14 @@ void Document::SetURL(const KURL& url) {
    TRACE_EVENT1("navigation", "Document::SetURL", "url",
                 new_url.GetString().Utf8());
  

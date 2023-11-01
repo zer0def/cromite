@@ -125,7 +125,7 @@ diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descriptions.cc
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -892,6 +892,10 @@ const char kViewportSegmentsDescription[] =
+@@ -897,6 +897,10 @@ const char kViewportSegmentsDescription[] =
      "Enable the viewport segment API, giving information about the logical "
      "segments of the device (dual screen and foldable devices)";
  
@@ -139,7 +139,7 @@ diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descripti
 diff --git a/chrome/browser/flag_descriptions.h b/chrome/browser/flag_descriptions.h
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -641,6 +641,9 @@ extern const char kDeviceForceScheduledRebootDescription[];
+@@ -644,6 +644,9 @@ extern const char kDeviceForceScheduledRebootDescription[];
  extern const char kDevicePostureName[];
  extern const char kDevicePostureDescription[];
  

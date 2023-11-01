@@ -30,7 +30,7 @@ diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descriptions.cc
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -1396,6 +1396,10 @@ const char kDeprecateAltBasedSixPackDescription[] =
+@@ -1401,6 +1401,10 @@ const char kDeprecateAltBasedSixPackDescription[] =
      "Show deprecation notifications and disable functionality for Alt based "
      "six pack deprecations. The Search based versions continue to work.";
  
@@ -44,7 +44,7 @@ diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descripti
 diff --git a/chrome/browser/flag_descriptions.h b/chrome/browser/flag_descriptions.h
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -723,6 +723,9 @@ extern const char kDeprecateAltBasedSixPackDescription[];
+@@ -726,6 +726,9 @@ extern const char kDeprecateAltBasedSixPackDescription[];
  extern const char kDeprecateOldKeyboardShortcutsAcceleratorName[];
  extern const char kDeprecateOldKeyboardShortcutsAcceleratorDescription[];
  

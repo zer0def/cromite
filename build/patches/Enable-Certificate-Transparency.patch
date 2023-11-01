@@ -25,7 +25,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -9873,6 +9873,11 @@ const FeatureEntry kFeatureEntries[] = {
+@@ -9878,6 +9878,11 @@ const FeatureEntry kFeatureEntries[] = {
       flag_descriptions::kWebMidiDescription, kOsAll,
       FEATURE_VALUE_TYPE(features::kWebMidi)},
  
@@ -81,7 +81,7 @@ diff --git a/chrome/browser/browser_features.h b/chrome/browser/browser_features
 diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descriptions.cc
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -7755,7 +7755,11 @@ const char kAutofillCreditCardUploadDescription[] =
+@@ -7760,7 +7760,11 @@ const char kAutofillCreditCardUploadDescription[] =
  
  #endif  // defined(TOOLKIT_VIEWS) || BUILDFLAG(IS_ANDROID)
  
@@ -97,7 +97,7 @@ diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descripti
 diff --git a/chrome/browser/flag_descriptions.h b/chrome/browser/flag_descriptions.h
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -4493,7 +4493,10 @@ extern const char kAutofillCreditCardUploadDescription[];
+@@ -4496,7 +4496,10 @@ extern const char kAutofillCreditCardUploadDescription[];
  
  #endif  // defined(TOOLKIT_VIEWS) || BUILDFLAG(IS_ANDROID)
  
