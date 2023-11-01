@@ -1369,7 +1369,7 @@ diff --git a/chrome/browser/content_settings/host_content_settings_map_factory.c
 diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descriptions.cc
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -4209,6 +4209,12 @@ const char kOfflinePagesLivePageSharingDescription[] =
+@@ -4214,6 +4214,12 @@ const char kOfflinePagesLivePageSharingDescription[] =
      "Enables to share current loaded page as offline page by saving as MHTML "
      "first.";
  
@@ -1385,7 +1385,7 @@ diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descripti
 diff --git a/chrome/browser/flag_descriptions.h b/chrome/browser/flag_descriptions.h
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -2484,6 +2484,9 @@ extern const char kOmahaMinSdkVersionAndroidDescription[];
+@@ -2487,6 +2487,9 @@ extern const char kOmahaMinSdkVersionAndroidDescription[];
  extern const char kOmahaMinSdkVersionAndroidMinSdk1Description[];
  extern const char kOmahaMinSdkVersionAndroidMinSdk1000Description[];
  

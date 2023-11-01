@@ -1231,7 +1231,7 @@ diff --git a/chrome/test/BUILD.gn b/chrome/test/BUILD.gn
  import("//components/captive_portal/core/features.gni")
  import("//components/enterprise/buildflags/buildflags.gni")
  import("//components/feed/features.gni")
-@@ -2751,10 +2750,6 @@ if (!is_android) {
+@@ -2754,10 +2753,6 @@ if (!is_android) {
        sources += [ "../browser/chrome_for_testing/chrome_for_testing_info_bar_browsertest.cc" ]
      }
  

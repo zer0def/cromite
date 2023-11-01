@@ -32,7 +32,7 @@ diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descriptions.cc
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -3951,6 +3951,10 @@ const char kAccountReauthenticationRecentTimeWindow0mins[] = "0 mins";
+@@ -3956,6 +3956,10 @@ const char kAccountReauthenticationRecentTimeWindow0mins[] = "0 mins";
  const char kAccountReauthenticationRecentTimeWindow1mins[] = "1 mins";
  const char kAccountReauthenticationRecentTimeWindow5mins[] = "5 mins";
  
@@ -46,7 +46,7 @@ diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descripti
 diff --git a/chrome/browser/flag_descriptions.h b/chrome/browser/flag_descriptions.h
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -889,6 +889,9 @@ extern const char kEnableWasmStringrefName[];
+@@ -892,6 +892,9 @@ extern const char kEnableWasmStringrefName[];
  extern const char kEnableWasmStringrefDescription[];
  
  extern const char kEnableWasmTieringName[];

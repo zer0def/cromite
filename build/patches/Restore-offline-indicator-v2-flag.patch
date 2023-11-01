@@ -127,7 +127,7 @@ diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 diff --git a/chrome/browser/flag-metadata.json b/chrome/browser/flag-metadata.json
 --- a/chrome/browser/flag-metadata.json
 +++ b/chrome/browser/flag-metadata.json
-@@ -6042,6 +6042,11 @@
+@@ -6047,6 +6047,11 @@
      "owners": [ "dom" ],
      "expiry_milestone": 125
    },
@@ -142,7 +142,7 @@ diff --git a/chrome/browser/flag-metadata.json b/chrome/browser/flag-metadata.js
 diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descriptions.cc
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -4244,6 +4244,10 @@ const char kNotificationPermissionRationaleBottomSheetDescription[] =
+@@ -4249,6 +4249,10 @@ const char kNotificationPermissionRationaleBottomSheetDescription[] =
      "flow. "
      "Only works with builds targeting Android T+.";
  
@@ -156,7 +156,7 @@ diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descripti
 diff --git a/chrome/browser/flag_descriptions.h b/chrome/browser/flag_descriptions.h
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -2501,6 +2501,9 @@ extern const char kNewTabSearchEngineUrlAndroidDescription[];
+@@ -2504,6 +2504,9 @@ extern const char kNewTabSearchEngineUrlAndroidDescription[];
  extern const char kNotificationPermissionRationaleName[];
  extern const char kNotificationPermissionRationaleDescription[];
  

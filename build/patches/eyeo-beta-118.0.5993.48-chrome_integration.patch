@@ -8178,7 +8178,7 @@ diff --git a/chrome/test/BUILD.gn b/chrome/test/BUILD.gn
        "../browser/apps/guest_view/app_view_browsertest.cc",
        "../browser/apps/guest_view/web_view_browsertest.cc",
        "../browser/apps/platform_apps/app_browsertest.cc",
-@@ -2733,6 +2751,10 @@ if (!is_android) {
+@@ -2736,6 +2754,10 @@ if (!is_android) {
        sources += [ "../browser/chrome_for_testing/chrome_for_testing_info_bar_browsertest.cc" ]
      }
  
@@ -8189,7 +8189,7 @@ diff --git a/chrome/test/BUILD.gn b/chrome/test/BUILD.gn
      if (enable_reporting) {
        sources += [ "../browser/net/reporting_browsertest.cc" ]
      }
-@@ -3567,6 +3589,7 @@ if (!is_android) {
+@@ -3570,6 +3592,7 @@ if (!is_android) {
          ]
        }
  
@@ -8197,7 +8197,7 @@ diff --git a/chrome/test/BUILD.gn b/chrome/test/BUILD.gn
        if (is_chromeos_ash && enable_extensions) {
          deps +=
              [ "//chromeos/ash/components/network/portal_detector:test_support" ]
-@@ -5857,6 +5880,7 @@ test("unit_tests") {
+@@ -5860,6 +5883,7 @@ test("unit_tests") {
      "../browser/about_flags_unittest.cc",
      "../browser/accessibility/media_app/ax_media_app_handler_unittest.cc",
      "../browser/active_use_util_unittest.cc",
@@ -8205,7 +8205,7 @@ diff --git a/chrome/test/BUILD.gn b/chrome/test/BUILD.gn
      "../browser/after_startup_task_utils_unittest.cc",
      "../browser/apps/icon_standardizer_unittest.cc",
      "../browser/apps/user_type_filter_unittest.cc",
-@@ -6525,6 +6549,8 @@ test("unit_tests") {
+@@ -6528,6 +6552,8 @@ test("unit_tests") {
      "//chrome/services/file_util:unit_tests",
      "//chrome/services/qrcode_generator/public/cpp",
      "//components/account_id",
@@ -8214,7 +8214,7 @@ diff --git a/chrome/test/BUILD.gn b/chrome/test/BUILD.gn
      "//components/assist_ranker/proto",
      "//components/autofill/content/browser:test_support",
      "//components/background_sync",
-@@ -9998,6 +10024,7 @@ if (!is_android) {
+@@ -10003,6 +10029,7 @@ if (!is_android) {
  
      public_deps = [
        "//chrome/browser:test_support_ui",

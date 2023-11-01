@@ -30,7 +30,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 diff --git a/android_webview/common/aw_features.cc b/android_webview/common/aw_features.cc
 --- a/android_webview/common/aw_features.cc
 +++ b/android_webview/common/aw_features.cc
-@@ -98,8 +98,8 @@ BASE_FEATURE(kWebViewMetricsFiltering,
+@@ -106,8 +106,8 @@ BASE_FEATURE(kWebViewMetricsFiltering,
  
  // Field trial feature for controlling support of Origin Trials on WebView.
  BASE_FEATURE(kWebViewOriginTrials,

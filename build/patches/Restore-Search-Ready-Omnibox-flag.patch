@@ -22,7 +22,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -9811,6 +9811,11 @@ const FeatureEntry kFeatureEntries[] = {
+@@ -9816,6 +9816,11 @@ const FeatureEntry kFeatureEntries[] = {
       flag_descriptions::kDesksTemplatesDescription, kOsCrOS,
       FEATURE_VALUE_TYPE(ash::features::kDesksTemplates)},
  #endif
@@ -37,7 +37,7 @@ diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 diff --git a/chrome/browser/flag-metadata.json b/chrome/browser/flag-metadata.json
 --- a/chrome/browser/flag-metadata.json
 +++ b/chrome/browser/flag-metadata.json
-@@ -3324,6 +3324,11 @@
+@@ -3329,6 +3329,11 @@
      // Added feature, for testing. expiry deep in future.
      "expiry_milestone": 116
    },
@@ -52,7 +52,7 @@ diff --git a/chrome/browser/flag-metadata.json b/chrome/browser/flag-metadata.js
 diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descriptions.cc
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -4420,6 +4420,11 @@ const char kSendTabToSelfV2Description[] =
+@@ -4425,6 +4425,11 @@ const char kSendTabToSelfV2Description[] =
      "Enables new received tab "
      "UI shown next to the profile icon instead of using system notifications.";
  
@@ -67,7 +67,7 @@ diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descripti
 diff --git a/chrome/browser/flag_descriptions.h b/chrome/browser/flag_descriptions.h
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -2598,6 +2598,9 @@ extern const char kShowScrollableMVTOnNTPAndroidDescription[];
+@@ -2601,6 +2601,9 @@ extern const char kShowScrollableMVTOnNTPAndroidDescription[];
  extern const char kSendTabToSelfV2Name[];
  extern const char kSendTabToSelfV2Description[];
  

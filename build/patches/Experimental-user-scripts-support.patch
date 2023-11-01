@@ -365,7 +365,7 @@ diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descriptions.cc
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -7593,6 +7593,11 @@ const char kUseOutOfProcessVideoDecodingDescription[] =
+@@ -7598,6 +7598,11 @@ const char kUseOutOfProcessVideoDecodingDescription[] =
      "enabled in ash-chrome).";
  #endif  // BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
  
@@ -380,7 +380,7 @@ diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descripti
 diff --git a/chrome/browser/flag_descriptions.h b/chrome/browser/flag_descriptions.h
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -4355,6 +4355,9 @@ extern const char kQuickCommandsDescription[];
+@@ -4358,6 +4358,9 @@ extern const char kQuickCommandsDescription[];
  #endif  // BUILDFLAG(IS_WIN) || BUILDFLAG(IS_MAC) || BUILDFLAG(IS_LINUX) ||
          // defined (OS_FUCHSIA)
  

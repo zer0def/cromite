@@ -1679,7 +1679,7 @@ diff --git a/chrome/browser/browser_controls/android/java/src/org/chromium/chrom
 diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descriptions.cc
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -2038,6 +2038,10 @@ const char kImprovedKeyboardShortcutsDescription[] =
+@@ -2043,6 +2043,10 @@ const char kImprovedKeyboardShortcutsDescription[] =
      "Ensure keyboard shortcuts work consistently with international keyboard "
      "layouts and deprecate legacy shortcuts.";
  
@@ -1693,7 +1693,7 @@ diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descripti
 diff --git a/chrome/browser/flag_descriptions.h b/chrome/browser/flag_descriptions.h
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -1153,6 +1153,9 @@ extern const char kImprovedIncognitoScreenshotDescription[];
+@@ -1156,6 +1156,9 @@ extern const char kImprovedIncognitoScreenshotDescription[];
  extern const char kImprovedKeyboardShortcutsName[];
  extern const char kImprovedKeyboardShortcutsDescription[];
  

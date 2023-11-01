@@ -14,7 +14,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 diff --git a/chrome/browser/flag-metadata.json b/chrome/browser/flag-metadata.json
 --- a/chrome/browser/flag-metadata.json
 +++ b/chrome/browser/flag-metadata.json
-@@ -7331,9 +7331,9 @@
+@@ -7336,9 +7336,9 @@
      "expiry_milestone": 121
    },
    {
@@ -29,7 +29,7 @@ diff --git a/chrome/browser/flag-metadata.json b/chrome/browser/flag-metadata.js
 diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descriptions.cc
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -3071,7 +3071,7 @@ const char kReduceAcceptLanguageDescription[] =
+@@ -3076,7 +3076,7 @@ const char kReduceAcceptLanguageDescription[] =
  
  const char kRestrictGamepadAccessName[] = "Restrict gamepad access";
  const char kRestrictGamepadAccessDescription[] =

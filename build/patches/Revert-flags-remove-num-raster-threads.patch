@@ -46,7 +46,7 @@ diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 diff --git a/chrome/browser/flag-metadata.json b/chrome/browser/flag-metadata.json
 --- a/chrome/browser/flag-metadata.json
 +++ b/chrome/browser/flag-metadata.json
-@@ -5648,6 +5648,10 @@
+@@ -5653,6 +5653,10 @@
      "owners": [ "lazzzis", "aishwaryarj" ],
      "expiry_milestone": 120
    },
@@ -60,7 +60,7 @@ diff --git a/chrome/browser/flag-metadata.json b/chrome/browser/flag-metadata.js
 diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descriptions.cc
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -2307,6 +2307,14 @@ const char kOmniboxActionsInSuggestDescription[] =
+@@ -2312,6 +2312,14 @@ const char kOmniboxActionsInSuggestDescription[] =
      "Actions in Suggest permits optional Action Chips to be attached to "
      "Entity suggestions.";
  
@@ -78,7 +78,7 @@ diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descripti
 diff --git a/chrome/browser/flag_descriptions.h b/chrome/browser/flag_descriptions.h
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -1322,6 +1322,13 @@ extern const char kOmitCorsClientCertDescription[];
+@@ -1325,6 +1325,13 @@ extern const char kOmitCorsClientCertDescription[];
  extern const char kOmniboxActionsInSuggestName[];
  extern const char kOmniboxActionsInSuggestDescription[];
  

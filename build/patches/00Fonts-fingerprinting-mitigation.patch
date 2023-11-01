@@ -34,7 +34,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -10403,6 +10403,11 @@ const FeatureEntry kFeatureEntries[] = {
+@@ -10408,6 +10408,11 @@ const FeatureEntry kFeatureEntries[] = {
                                      kClipboardMaximumAgeVariations,
                                      "ClipboardMaximumAge")},
  
