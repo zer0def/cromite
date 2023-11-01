@@ -17,7 +17,7 @@ Test with https://worker-playground.glitch.me/
 diff --git a/chrome/browser/chrome_content_browser_client.cc b/chrome/browser/chrome_content_browser_client.cc
 --- a/chrome/browser/chrome_content_browser_client.cc
 +++ b/chrome/browser/chrome_content_browser_client.cc
-@@ -3150,6 +3150,7 @@ bool ChromeContentBrowserClient::AllowSharedWorker(
+@@ -3164,6 +3164,7 @@ bool ChromeContentBrowserClient::AllowSharedWorker(
      content::BrowserContext* context,
      int render_process_id,
      int render_frame_id) {

@@ -15,7 +15,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  chrome/browser/signin/chrome_signin_client.cc |   7 +-
  .../ui/webui/policy/policy_ui_handler.cc      | 104 ++++++++++++-
  .../ui/webui/policy/policy_ui_handler.h       |   2 +
- .../commerce/core/commerce_feature_list.cc    |  12 +-
+ .../commerce/core/commerce_feature_list.cc    |  24 +--
  .../core/browser/browser_policy_connector.cc  |   3 +
  .../common/command_line_policy_provider.cc    |   3 +
  .../core/common/policy_loader_command_line.cc | 140 ++++++++++++++++--
@@ -30,7 +30,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  components/policy_strings.grdp                |   4 +-
  .../gaia_cookie_manager_service.cc            |   4 +
  google_apis/gaia/gaia_auth_fetcher.cc         |   1 +
- 26 files changed, 305 insertions(+), 101 deletions(-)
+ 26 files changed, 311 insertions(+), 107 deletions(-)
 
 diff --git a/base/win/win_util.cc b/base/win/win_util.cc
 --- a/base/win/win_util.cc
@@ -118,9 +118,9 @@ diff --git a/base/win/win_util.cc b/base/win/win_util.cc
 diff --git a/chrome/android/java/AndroidManifest.xml b/chrome/android/java/AndroidManifest.xml
 --- a/chrome/android/java/AndroidManifest.xml
 +++ b/chrome/android/java/AndroidManifest.xml
-@@ -72,9 +72,7 @@ by a child template that "extends" this file.
-     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" tools:ignore="SystemPermissionTypo" />
+@@ -73,9 +73,7 @@ by a child template that "extends" this file.
      <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" tools:ignore="SystemPermissionTypo" />
+     <uses-permission android:name="android.permission.RUN_USER_INITIATED_JOBS" />
  
 -    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
      <uses-permission android:name="android.permission.INTERNET"/>
@@ -128,7 +128,7 @@ diff --git a/chrome/android/java/AndroidManifest.xml b/chrome/android/java/Andro
      <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
      <uses-permission android:name="android.permission.NFC"/>
      <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-@@ -85,7 +83,6 @@ by a child template that "extends" this file.
+@@ -86,7 +84,6 @@ by a child template that "extends" this file.
      <uses-permission-sdk-23 android:name="android.permission.READ_MEDIA_VIDEO"/>
      <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
      <uses-permission android:name="android.permission.RECORD_AUDIO"/>
@@ -136,7 +136,7 @@ diff --git a/chrome/android/java/AndroidManifest.xml b/chrome/android/java/Andro
      <uses-permission-sdk-23 android:name="android.permission.USE_BIOMETRIC"/>
      <uses-permission-sdk-23 android:name="android.permission.USE_FINGERPRINT"/>
      <uses-permission android:name="android.permission.VIBRATE"/>
-@@ -129,7 +126,6 @@ by a child template that "extends" this file.
+@@ -130,7 +127,6 @@ by a child template that "extends" this file.
      <uses-permission android:name="com.chrome.permission.DEVICE_EXTRAS" />
      <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT"/>
  
@@ -203,10 +203,10 @@ diff --git a/chrome/browser/policy/chrome_browser_policy_connector.cc b/chrome/b
 diff --git a/chrome/browser/policy/configuration_policy_handler_list_factory.cc b/chrome/browser/policy/configuration_policy_handler_list_factory.cc
 --- a/chrome/browser/policy/configuration_policy_handler_list_factory.cc
 +++ b/chrome/browser/policy/configuration_policy_handler_list_factory.cc
-@@ -2032,9 +2032,9 @@ bool AreFuturePoliciesEnabledByDefault() {
-   // Enable future policies for branded browser tests.
-   if (base::CommandLine::ForCurrentProcess()->HasSwitch(switches::kTestType))
+@@ -2046,9 +2046,9 @@ bool AreFuturePoliciesEnabledByDefault() {
+   if (base::CommandLine::ForCurrentProcess()->HasSwitch(switches::kTestType)) {
      return true;
+   }
 -  version_info::Channel channel = chrome::GetChannel();
 -  return channel != version_info::Channel::STABLE &&
 -         channel != version_info::Channel::BETA;
@@ -271,7 +271,7 @@ diff --git a/chrome/browser/signin/chrome_signin_client.cc b/chrome/browser/sign
  }
  
  PrefService* ChromeSigninClient::GetPrefs() { return profile_->GetPrefs(); }
-@@ -234,6 +236,9 @@ bool ChromeSigninClient::AreNetworkCallsDelayed() {
+@@ -242,6 +244,9 @@ bool ChromeSigninClient::AreNetworkCallsDelayed() {
  }
  
  void ChromeSigninClient::DelayNetworkCall(base::OnceClosure callback) {
@@ -431,7 +431,7 @@ diff --git a/chrome/browser/ui/webui/policy/policy_ui_handler.h b/chrome/browser
 diff --git a/components/commerce/core/commerce_feature_list.cc b/components/commerce/core/commerce_feature_list.cc
 --- a/components/commerce/core/commerce_feature_list.cc
 +++ b/components/commerce/core/commerce_feature_list.cc
-@@ -160,8 +160,8 @@ BASE_FEATURE(kCommercePriceTrackingChipExperiment,
+@@ -159,8 +159,8 @@ BASE_FEATURE(kCommercePriceTrackingChipExperiment,
  
  #if BUILDFLAG(IS_ANDROID)
  BASE_FEATURE(kCommercePriceTrackingRegionLaunched,
@@ -442,7 +442,7 @@ diff --git a/components/commerce/core/commerce_feature_list.cc b/components/comm
  #else
  BASE_FEATURE(kCommercePriceTrackingRegionLaunched,
               "CommercePriceTrackingRegionLaunched",
-@@ -207,8 +207,8 @@ BASE_FEATURE(kShoppingList, "ShoppingList", base::FEATURE_DISABLED_BY_DEFAULT);
+@@ -227,8 +227,8 @@ BASE_FEATURE(kShoppingList, "ShoppingList", base::FEATURE_DISABLED_BY_DEFAULT);
  #if BUILDFLAG(IS_ANDROID) || BUILDFLAG(IS_WIN) || BUILDFLAG(IS_MAC) || \
      BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
  BASE_FEATURE(kShoppingListRegionLaunched,
@@ -453,8 +453,14 @@ diff --git a/components/commerce/core/commerce_feature_list.cc b/components/comm
  #else
  BASE_FEATURE(kShoppingListRegionLaunched,
               "ShoppingListRegionLaunched",
-@@ -257,8 +257,8 @@ BASE_FEATURE(kCommerceHintAndroid,
-              base::FEATURE_DISABLED_BY_DEFAULT);
+@@ -273,12 +273,12 @@ BASE_FEATURE(kDiscountConsentV2,
+              base::FEATURE_ENABLED_BY_DEFAULT);
+ 
+ BASE_FEATURE(kCommerceHintAndroid,
+-             "CommerceHintAndroid",
+-             base::FEATURE_DISABLED_BY_DEFAULT);
++             "CommerceHintAndroid",              // disabled
++             base::FEATURE_DISABLED_BY_DEFAULT); // by default
  
  BASE_FEATURE(kMerchantWidePromotion,
 -             "MerchantWidePromotion",
@@ -464,10 +470,26 @@ diff --git a/components/commerce/core/commerce_feature_list.cc b/components/comm
  
  BASE_FEATURE(kCodeBasedRBD, "CodeBasedRBD", base::FEATURE_ENABLED_BY_DEFAULT);
  
+@@ -287,11 +287,11 @@ BASE_FEATURE(kChromeCartDomBasedHeuristics,
+              base::FEATURE_DISABLED_BY_DEFAULT);
+ 
+ BASE_FEATURE(kParcelTracking,
+-             "ParcelTracking",
+-             base::FEATURE_ENABLED_BY_DEFAULT);
++             "ParcelTracking",                   // disabled
++             base::FEATURE_DISABLED_BY_DEFAULT); // by default
+ BASE_FEATURE(kParcelTrackingRegionLaunched,
+-             "ParcelTrackingRegionLaunched",
+-             base::FEATURE_DISABLED_BY_DEFAULT);
++             "ParcelTrackingRegionLaunched",     // disabled
++             base::FEATURE_DISABLED_BY_DEFAULT); // by default
+ 
+ // Params for Discount Consent V2 in the NTP Cart module.
+ const char kNtpChromeCartModuleDiscountConsentNtpVariationParam[] =
 diff --git a/components/policy/core/browser/browser_policy_connector.cc b/components/policy/core/browser/browser_policy_connector.cc
 --- a/components/policy/core/browser/browser_policy_connector.cc
 +++ b/components/policy/core/browser/browser_policy_connector.cc
-@@ -125,6 +125,9 @@ void BrowserPolicyConnector::RegisterPrefs(PrefRegistrySimple* registry) {
+@@ -140,6 +140,9 @@ void BrowserPolicyConnector::RegisterPrefs(PrefRegistrySimple* registry) {
        CloudPolicyRefreshScheduler::kDefaultRefreshDelayMs);
    registry->RegisterBooleanPref(
        policy_prefs::kCloudManagementEnrollmentMandatory, false);
@@ -480,7 +502,7 @@ diff --git a/components/policy/core/browser/browser_policy_connector.cc b/compon
 diff --git a/components/policy/core/common/command_line_policy_provider.cc b/components/policy/core/common/command_line_policy_provider.cc
 --- a/components/policy/core/common/command_line_policy_provider.cc
 +++ b/components/policy/core/common/command_line_policy_provider.cc
-@@ -22,6 +22,9 @@ std::unique_ptr<CommandLinePolicyProvider>
+@@ -23,6 +23,9 @@ std::unique_ptr<CommandLinePolicyProvider>
  CommandLinePolicyProvider::CreateIfAllowed(
      const base::CommandLine& command_line,
      version_info::Channel channel) {
@@ -502,7 +524,7 @@ diff --git a/components/policy/core/common/policy_loader_command_line.cc b/compo
 +#include "components/policy/core/common/policy_namespace.h"
 +#include "components/policy/policy_constants.h"
 +
-+#include "chrome/browser/prefetch/prefetch_prefs.h"
++#include "chrome/browser/preloading/preloading_prefs.h"
 +#include "chrome/browser/policy/browser_signin_policy_handler.h"
 +
 +namespace {
@@ -690,9 +712,9 @@ diff --git a/components/policy/core/common/policy_service_impl.cc b/components/p
 diff --git a/components/policy/core/common/policy_switches.cc b/components/policy/core/common/policy_switches.cc
 --- a/components/policy/core/common/policy_switches.cc
 +++ b/components/policy/core/common/policy_switches.cc
-@@ -20,6 +20,8 @@ const char kEncryptedReportingUrl[] = "encrypted-reporting-url";
- // Set policy value by command line.
- const char kChromePolicy[] = "policy";
+@@ -24,6 +24,8 @@ const char kChromePolicy[] = "policy";
+ // (go/crosman-file-storage-server) to upload log and support packet files.
+ const char kFileStorageServerUploadUrl[] = "file-storage-server-upload-url";
  
 +const char kForceDisabledPolicies[] = "force-disable-policies";
 +
@@ -702,10 +724,10 @@ diff --git a/components/policy/core/common/policy_switches.cc b/components/polic
 diff --git a/components/policy/core/common/policy_switches.h b/components/policy/core/common/policy_switches.h
 --- a/components/policy/core/common/policy_switches.h
 +++ b/components/policy/core/common/policy_switches.h
-@@ -18,6 +18,7 @@ extern const char kRealtimeReportingUrl[];
- extern const char kEncryptedReportingUrl[];
+@@ -19,6 +19,7 @@ extern const char kEncryptedReportingUrl[];
  extern const char kChromePolicy[];
  extern const char kSecureConnectApiUrl[];
+ extern const char kFileStorageServerUploadUrl[];
 +extern const char kForceDisabledPolicies[];
  #if BUILDFLAG(IS_CHROMEOS_ASH)
  extern const char kDisablePolicyKeyVerification[];
@@ -786,7 +808,7 @@ diff --git a/components/policy/resources/webui/policy_row.ts b/components/policy
 diff --git a/components/policy_strings.grdp b/components/policy_strings.grdp
 --- a/components/policy_strings.grdp
 +++ b/components/policy_strings.grdp
-@@ -585,8 +585,8 @@ Additional details:
+@@ -588,8 +588,8 @@ Additional details:
    <message name="IDS_POLICY_SOURCE_DEFAULT" desc="Indicates that a policy is set by default and can be overridden.">
      Default
    </message>
@@ -800,7 +822,7 @@ diff --git a/components/policy_strings.grdp b/components/policy_strings.grdp
 diff --git a/components/signin/internal/identity_manager/gaia_cookie_manager_service.cc b/components/signin/internal/identity_manager/gaia_cookie_manager_service.cc
 --- a/components/signin/internal/identity_manager/gaia_cookie_manager_service.cc
 +++ b/components/signin/internal/identity_manager/gaia_cookie_manager_service.cc
-@@ -494,6 +494,8 @@ void GaiaCookieManagerService::RegisterPrefs(PrefRegistrySimple* registry) {
+@@ -469,6 +469,8 @@ void GaiaCookieManagerService::RegisterPrefs(PrefRegistrySimple* registry) {
  }
  
  void GaiaCookieManagerService::InitCookieListener() {
@@ -809,7 +831,7 @@ diff --git a/components/signin/internal/identity_manager/gaia_cookie_manager_ser
    DCHECK(!cookie_listener_receiver_.is_bound());
  
    network::mojom::CookieManager* cookie_manager =
-@@ -1111,6 +1113,8 @@ void GaiaCookieManagerService::OnSetAccountsFinished(
+@@ -891,6 +893,8 @@ void GaiaCookieManagerService::OnSetAccountsFinished(
  }
  
  void GaiaCookieManagerService::HandleNextRequest() {
@@ -821,7 +843,7 @@ diff --git a/components/signin/internal/identity_manager/gaia_cookie_manager_ser
 diff --git a/google_apis/gaia/gaia_auth_fetcher.cc b/google_apis/gaia/gaia_auth_fetcher.cc
 --- a/google_apis/gaia/gaia_auth_fetcher.cc
 +++ b/google_apis/gaia/gaia_auth_fetcher.cc
-@@ -607,6 +607,7 @@ void GaiaAuthFetcher::StartListAccounts() {
+@@ -482,6 +482,7 @@ void GaiaAuthFetcher::StartListAccounts() {
              }
            }
          })");

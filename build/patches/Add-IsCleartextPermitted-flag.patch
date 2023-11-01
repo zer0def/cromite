@@ -16,7 +16,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -9571,6 +9571,10 @@ const FeatureEntry kFeatureEntries[] = {
+@@ -9862,6 +9862,10 @@ const FeatureEntry kFeatureEntries[] = {
       flag_descriptions::kForceOffTextAutosizingName,
       flag_descriptions::kForceOffTextAutosizingDescription, kOsAndroid,
       FEATURE_VALUE_TYPE(features::kForceOffTextAutosizing)},
@@ -30,7 +30,7 @@ diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descriptions.cc
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -1964,6 +1964,10 @@ const char kHttpsUpgradesDescription[] =
+@@ -1996,6 +1996,10 @@ const char kHttpsUpgradesDescription[] =
      "Enable automatically upgrading all top-level navigations to HTTPS with "
      "fast fallback to HTTP.";
  
@@ -44,7 +44,7 @@ diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descripti
 diff --git a/chrome/browser/flag_descriptions.h b/chrome/browser/flag_descriptions.h
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -1101,6 +1101,9 @@ extern const char kStorageBucketsDescription[];
+@@ -1120,6 +1120,9 @@ extern const char kStorageBucketsDescription[];
  extern const char kHideIncognitoMediaMetadataName[];
  extern const char kHideIncognitoMediaMetadataDescription[];
  

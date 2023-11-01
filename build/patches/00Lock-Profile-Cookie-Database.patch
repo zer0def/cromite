@@ -10,7 +10,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 diff --git a/chrome/browser/browser_features.cc b/chrome/browser/browser_features.cc
 --- a/chrome/browser/browser_features.cc
 +++ b/chrome/browser/browser_features.cc
-@@ -207,8 +207,8 @@ BASE_FEATURE(kAppBoundEncryptionMetrics,
+@@ -213,8 +213,8 @@ BASE_FEATURE(kAppBoundEncryptionMetrics,
  // Enables locking the cookie database for profiles.
  // TODO(crbug.com/1430226): Remove after fully launched.
  BASE_FEATURE(kLockProfileCookieDatabase,
@@ -18,8 +18,8 @@ diff --git a/chrome/browser/browser_features.cc b/chrome/browser/browser_feature
 -             base::FEATURE_ENABLED_BY_DEFAULT);
 +             "LockProfileCookieDatabase",        // enabled
 +             base::FEATURE_ENABLED_BY_DEFAULT);  // by default
- #endif
  
- // Enables showing the email of the flex org admin that setup CBCM in the
+ // Don't call the Win32 API PrefetchVirtualMemory when loading chrome.dll inside
+ // non-browser processes. This is done by passing flags to these processes. This
 --
 2.25.1

@@ -22,19 +22,20 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../clear_browsing_data_dialog.ts             |  1 +
  .../strings/android_chrome_strings.grd        |  3 +
  .../settings_localized_strings_provider.cc    |  1 +
- .../core/browsing_data_policies_utils.cc      | 16 ++--
+ .../core/browsing_data_policies_utils.cc      | 20 ++---
  .../core/browsing_data_policies_utils.h       | 11 +++
  .../browsing_data/core/browsing_data_utils.cc | 34 +++++++++
  .../core/clear_browsing_data_tab.h            |  2 +-
  components/browsing_data/core/pref_names.cc   | 27 +++++++
  components/browsing_data/core/pref_names.h    |  9 +++
- 24 files changed, 316 insertions(+), 14 deletions(-)
+ content/browser/storage_partition_impl.cc     |  1 +
+ 25 files changed, 319 insertions(+), 16 deletions(-)
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/browsing_data/ClearBrowsingDataFragmentAtStart.java
 
 diff --git a/chrome/android/chrome_java_sources.gni b/chrome/android/chrome_java_sources.gni
 --- a/chrome/android/chrome_java_sources.gni
 +++ b/chrome/android/chrome_java_sources.gni
-@@ -302,6 +302,7 @@ chrome_java_sources = [
+@@ -303,6 +303,7 @@ chrome_java_sources = [
    "java/src/org/chromium/chrome/browser/browsing_data/ClearBrowsingDataFragmentAdvanced.java",
    "java/src/org/chromium/chrome/browser/browsing_data/ClearBrowsingDataFragmentBasic.java",
    "java/src/org/chromium/chrome/browser/browsing_data/ClearBrowsingDataTabsFragment.java",
@@ -45,7 +46,7 @@ diff --git a/chrome/android/chrome_java_sources.gni b/chrome/android/chrome_java
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java b/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java
-@@ -141,6 +141,7 @@ import org.chromium.chrome.browser.profiles.ProfileManager;
+@@ -146,6 +146,7 @@ import org.chromium.chrome.browser.profiles.ProfileManager;
  import org.chromium.chrome.browser.quick_delete.QuickDeleteController;
  import org.chromium.chrome.browser.quick_delete.QuickDeleteDelegateImpl;
  import org.chromium.chrome.browser.quick_delete.QuickDeleteMetricsDelegate;
@@ -53,7 +54,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedAct
  import org.chromium.chrome.browser.read_later.ReadingListBackPressHandler;
  import org.chromium.chrome.browser.read_later.ReadingListUtils;
  import org.chromium.chrome.browser.reengagement.ReengagementNotificationController;
-@@ -1257,7 +1258,11 @@ public class ChromeTabbedActivity extends ChromeActivity<ChromeActivityComponent
+@@ -1307,7 +1308,11 @@ public class ChromeTabbedActivity extends ChromeActivity<ChromeActivityComponent
              Intent intent = getIntent();
  
              boolean hadCipherData =
@@ -69,7 +70,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedAct
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/browsing_data/ClearBrowsingDataFragment.java b/chrome/android/java/src/org/chromium/chrome/browser/browsing_data/ClearBrowsingDataFragment.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/browsing_data/ClearBrowsingDataFragment.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/browsing_data/ClearBrowsingDataFragment.java
-@@ -404,6 +404,10 @@ public abstract class ClearBrowsingDataFragment extends PreferenceFragmentCompat
+@@ -412,6 +412,10 @@ public abstract class ClearBrowsingDataFragment extends PreferenceFragmentCompat
       */
      protected abstract @ClearBrowsingDataTab int getClearBrowsingDataTabType();
  
@@ -80,7 +81,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/browsing_data/C
      /**
       * Decides whether a given dialog option should be selected when the dialog is initialized.
       *
-@@ -481,6 +485,7 @@ public abstract class ClearBrowsingDataFragment extends PreferenceFragmentCompat
+@@ -489,6 +493,7 @@ public abstract class ClearBrowsingDataFragment extends PreferenceFragmentCompat
       * options.
       */
      private void onClearButtonClicked() {
@@ -88,7 +89,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/browsing_data/C
          if (shouldShowImportantSitesDialog()) {
              showImportantDialogThenClear();
              return;
-@@ -514,6 +519,7 @@ public abstract class ClearBrowsingDataFragment extends PreferenceFragmentCompat
+@@ -522,6 +527,7 @@ public abstract class ClearBrowsingDataFragment extends PreferenceFragmentCompat
          Button clearButton = (Button) getView().findViewById(R.id.clear_button);
          boolean isEnabled = !getSelectedOptions().isEmpty();
          clearButton.setEnabled(isEnabled);
@@ -178,16 +179,16 @@ new file mode 100644
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/browsing_data/ClearBrowsingDataTabsFragment.java b/chrome/android/java/src/org/chromium/chrome/browser/browsing_data/ClearBrowsingDataTabsFragment.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/browsing_data/ClearBrowsingDataTabsFragment.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/browsing_data/ClearBrowsingDataTabsFragment.java
-@@ -34,7 +34,7 @@ import org.chromium.components.browser_ui.util.TraceEventVectorDrawableCompat;
+@@ -27,7 +27,7 @@ import org.chromium.chrome.browser.settings.SettingsActivity;
+  * Fragment with a {@link TabLayout} containing a basic and an advanced version of the CBD dialog.
   */
- public class ClearBrowsingDataTabsFragment
-         extends Fragment implements FragmentHelpAndFeedbackLauncher {
+ public class ClearBrowsingDataTabsFragment extends Fragment {
 -    public static final int CBD_TAB_COUNT = 2;
 +    public static final int CBD_TAB_COUNT = 3;
  
      private ClearBrowsingDataFetcher mFetcher;
-     private HelpAndFeedbackLauncher mHelpAndFeedbackLauncher;
-@@ -93,6 +93,8 @@ public class ClearBrowsingDataTabsFragment
+ 
+@@ -84,6 +84,8 @@ public class ClearBrowsingDataTabsFragment extends Fragment {
                  return getActivity().getString(R.string.clear_browsing_data_basic_tab_title);
              case 1:
                  return getActivity().getString(R.string.prefs_section_advanced);
@@ -196,7 +197,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/browsing_data/C
              default:
                  throw new RuntimeException("invalid position: " + position);
          }
-@@ -130,6 +132,9 @@ public class ClearBrowsingDataTabsFragment
+@@ -121,6 +123,9 @@ public class ClearBrowsingDataTabsFragment extends Fragment {
                  case 1:
                      fragment = new ClearBrowsingDataFragmentAdvanced();
                      break;
@@ -209,7 +210,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/browsing_data/C
 diff --git a/chrome/app/settings_strings.grdp b/chrome/app/settings_strings.grdp
 --- a/chrome/app/settings_strings.grdp
 +++ b/chrome/app/settings_strings.grdp
-@@ -2334,6 +2334,16 @@
+@@ -2333,6 +2333,16 @@
    <message name="IDS_SETTINGS_CLEAR_BROWSING_DATA" desc="Text for clear browsing data button in Privacy options">
      Clear browsing data
    </message>
@@ -484,7 +485,7 @@ diff --git a/chrome/browser/resources/settings/clear_browsing_data_dialog/clear_
 diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chrome/browser/ui/android/strings/android_chrome_strings.grd
 --- a/chrome/browser/ui/android/strings/android_chrome_strings.grd
 +++ b/chrome/browser/ui/android/strings/android_chrome_strings.grd
-@@ -1609,6 +1609,9 @@ Your Google account may have other forms of browsing history like searches and a
+@@ -1635,6 +1635,9 @@ Your Google account may have other forms of browsing history like searches and a
        <message name="IDS_CLEAR_BROWSING_DATA_BASIC_TAB_TITLE" desc="The title of the tab showing the basic clear browsing data options.">
          Basic
        </message>
@@ -497,7 +498,7 @@ diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chro
 diff --git a/chrome/browser/ui/webui/settings/settings_localized_strings_provider.cc b/chrome/browser/ui/webui/settings/settings_localized_strings_provider.cc
 --- a/chrome/browser/ui/webui/settings/settings_localized_strings_provider.cc
 +++ b/chrome/browser/ui/webui/settings/settings_localized_strings_provider.cc
-@@ -1568,6 +1568,7 @@ void AddPrivacyStrings(content::WebUIDataSource* html_source,
+@@ -1584,6 +1584,7 @@ void AddPrivacyStrings(content::WebUIDataSource* html_source,
      {"clearedData", IDS_SETTINGS_CLEARED_DATA},
      {"clearBrowsingData", IDS_SETTINGS_CLEAR_BROWSING_DATA},
      {"clearBrowsingDataDescription", IDS_SETTINGS_CLEAR_DATA_DESCRIPTION},
@@ -508,30 +509,38 @@ diff --git a/chrome/browser/ui/webui/settings/settings_localized_strings_provide
 diff --git a/components/browsing_data/core/browsing_data_policies_utils.cc b/components/browsing_data/core/browsing_data_policies_utils.cc
 --- a/components/browsing_data/core/browsing_data_policies_utils.cc
 +++ b/components/browsing_data/core/browsing_data_policies_utils.cc
-@@ -19,15 +19,15 @@ namespace browsing_data {
+@@ -17,21 +17,21 @@
  
+ namespace browsing_data {
+ 
+-namespace {
+-
  namespace policy_data_types {
  // Data retention policy types that require sync to be disabled.
--const char kBrowsingHistoryName[] = "browsing_history";
--const char kPasswordSigninName[] = "password_signin";
--const char kAutofillName[] = "autofill";
--const char kSiteSettingsName[] = "site_settings";
-+extern const char kBrowsingHistoryName[] = "browsing_history";
-+extern const char kPasswordSigninName[] = "password_signin";
-+extern const char kAutofillName[] = "autofill";
-+extern const char kSiteSettingsName[] = "site_settings";
+-constexpr char kBrowsingHistoryName[] = "browsing_history";
+-constexpr char kPasswordSigninName[] = "password_signin";
+-constexpr char kAutofillName[] = "autofill";
+-constexpr char kSiteSettingsName[] = "site_settings";
++extern constexpr char kBrowsingHistoryName[] = "browsing_history";
++extern constexpr char kPasswordSigninName[] = "password_signin";
++extern constexpr char kAutofillName[] = "autofill";
++extern constexpr char kSiteSettingsName[] = "site_settings";
  // Data retention policy types that do not require sync to be disabled.
--const char kHostedAppDataName[] = "hosted_app_data";
--const char kDownloadHistoryName[] = "download_history";
--const char kCookiesAndOtherSiteDataName[] = "cookies_and_other_site_data";
--const char kCachedImagesAndFilesName[] = "cached_images_and_files";
-+extern const char kHostedAppDataName[] = "hosted_app_data";
-+extern const char kDownloadHistoryName[] = "download_history";
-+extern const char kCookiesAndOtherSiteDataName[] = "cookies_and_other_site_data";
-+extern const char kCachedImagesAndFilesName[] = "cached_images_and_files";
+-constexpr char kHostedAppDataName[] = "hosted_app_data";
+-constexpr char kDownloadHistoryName[] = "download_history";
+-constexpr char kCookiesAndOtherSiteDataName[] = "cookies_and_other_site_data";
+-constexpr char kCachedImagesAndFilesName[] = "cached_images_and_files";
++extern constexpr char kHostedAppDataName[] = "hosted_app_data";
++extern constexpr char kDownloadHistoryName[] = "download_history";
++extern constexpr char kCookiesAndOtherSiteDataName[] = "cookies_and_other_site_data";
++extern constexpr char kCachedImagesAndFilesName[] = "cached_images_and_files";
  }  // namespace policy_data_types
  
- namespace {
++namespace {
++
+ // The format of the log message shown in chrome://policy/logs when sync types
+ // are automatically disabled.
+ constexpr char kDisabledSyncTypesLogFormat[] =
 diff --git a/components/browsing_data/core/browsing_data_policies_utils.h b/components/browsing_data/core/browsing_data_policies_utils.h
 --- a/components/browsing_data/core/browsing_data_policies_utils.h
 +++ b/components/browsing_data/core/browsing_data_policies_utils.h
@@ -672,5 +681,16 @@ diff --git a/components/browsing_data/core/pref_names.h b/components/browsing_da
  extern const char kDeleteTimePeriod[];
  extern const char kDeleteTimePeriodBasic[];
  
+diff --git a/content/browser/storage_partition_impl.cc b/content/browser/storage_partition_impl.cc
+--- a/content/browser/storage_partition_impl.cc
++++ b/content/browser/storage_partition_impl.cc
+@@ -1542,6 +1542,7 @@ void StoragePartitionImpl::Initialize(
+                             .AppendASCII("Code Cache");
+     }
+     DCHECK_GE(settings.size_in_bytes(), 0);
++    base::DeletePathRecursively(code_cache_path);
+     GetGeneratedCodeCacheContext()->Initialize(code_cache_path,
+                                                settings.size_in_bytes());
+   }
 --
 2.25.1

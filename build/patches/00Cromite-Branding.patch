@@ -25,7 +25,8 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../mipmap-xxxhdpi/app_icon.png               | Bin 9667 -> 20837 bytes
  .../mipmap-xxxhdpi/layered_app_icon.png       | Bin 3652 -> 29220 bytes
  .../layered_app_icon_background.png           | Bin 3519 -> 142032 bytes
- .../inline/BromiteInlineUpdateController.java |  16 ++++++--
+ .../chrome/browser/omaha/UpdateConfigs.java   |   2 +-
+ .../inline/BromiteInlineUpdateController.java |  21 ++++++++--
  chrome/app/extensions_strings.grdp            |   4 +-
  chrome/app/settings_strings.grdp              |   2 +-
  chrome/app/theme/chromium/BRANDING            |   8 ++--
@@ -46,7 +47,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../drawable-xxhdpi/fre_product_logo.png      | Bin 7720 -> 60959 bytes
  .../drawable-xxxhdpi/fre_product_logo.png     | Bin 10740 -> 93273 bytes
  tools/grit/grit/grd_reader.py                 |  35 +++++++++++++++++
- 42 files changed, 102 insertions(+), 56 deletions(-)
+ 43 files changed, 108 insertions(+), 57 deletions(-)
 
 diff --git a/build/BUILD.gn b/build/BUILD.gn
 --- a/build/BUILD.gn
@@ -83,7 +84,7 @@ diff --git a/build/config/BUILDCONFIG.gn b/build/config/BUILDCONFIG.gn
 diff --git a/chrome/android/java/AndroidManifest.xml b/chrome/android/java/AndroidManifest.xml
 --- a/chrome/android/java/AndroidManifest.xml
 +++ b/chrome/android/java/AndroidManifest.xml
-@@ -170,7 +170,7 @@ by a child template that "extends" this file.
+@@ -171,7 +171,7 @@ by a child template that "extends" this file.
        <application android:name="{% block application_name %}org.chromium.chrome.browser.base.SplitChromeApplication{% endblock %}"
          android:icon="@drawable/ic_launcher"
          android:roundIcon="@drawable/ic_launcher_round"
@@ -9106,6 +9107,18 @@ zk0U>@{Db0uvVi{o$%=-6@&Jp4mhhHYo~{+5O$ZdgIR*B?vJ5$!R3PXBkQ0>lqcPjJ
 zG!=nXw2&abs#xr~fFDF!vq@X7`+qtd5cw$r{cp#9R6!ToGG#p=PkT1k)Wlt8^P%Pg
 W=g!Ha2?pSwIRxeC=1^|uclqCxqvpf_
 
+diff --git a/chrome/android/java/src/org/chromium/chrome/browser/omaha/UpdateConfigs.java b/chrome/android/java/src/org/chromium/chrome/browser/omaha/UpdateConfigs.java
+--- a/chrome/android/java/src/org/chromium/chrome/browser/omaha/UpdateConfigs.java
++++ b/chrome/android/java/src/org/chromium/chrome/browser/omaha/UpdateConfigs.java
+@@ -37,7 +37,7 @@ public class UpdateConfigs {
+     private static final String UPDATE_AVAILABLE_SWITCH_VALUE = "update_available";
+     private static final String UNSUPPORTED_OS_VERSION_SWITCH_VALUE = "unsupported_os_version";
+ 
+-    private static final long DEFAULT_UPDATE_NOTIFICATION_INTERVAL = 3 * DateUtils.DAY_IN_MILLIS;
++    private static final long DEFAULT_UPDATE_NOTIFICATION_INTERVAL = 1 * DateUtils.DAY_IN_MILLIS;
+     private static final long DEFAULT_UPDATE_ATTRIBUTION_WINDOW_MS = 2 * DateUtils.DAY_IN_MILLIS;
+ 
+     /** Possible update flow configurations. */
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/omaha/inline/BromiteInlineUpdateController.java b/chrome/android/java/src/org/chromium/chrome/browser/omaha/inline/BromiteInlineUpdateController.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/omaha/inline/BromiteInlineUpdateController.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/omaha/inline/BromiteInlineUpdateController.java
@@ -9124,7 +9137,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/omaha/inline/Br
  
      public static String getDownloadUrl() {
          return UPDATE_VERSION_URL + BuildConfig.BUILD_TARGET_CPU + "_ChromePublic.apk";
-@@ -212,6 +212,13 @@ public class BromiteInlineUpdateController implements InlineUpdateController {
+@@ -212,11 +212,20 @@ public class BromiteInlineUpdateController implements InlineUpdateController {
                          Log.i(TAG, "BromiteUpdater: obtained response '%s' and redirect URL '%s'", endpointResponse.getResponseString(), redirectURL);
                          if (redirectURL.indexOf(REDIRECT_URL_PREFIX) == 0) {
                              redirectURL = redirectURL.substring(REDIRECT_URL_PREFIX.length());
@@ -9138,11 +9151,21 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/omaha/inline/Br
                              String[] parts = redirectURL.split(Pattern.quote("/"));
                              if (parts.length > 0) {
                                  VersionNumber version = VersionNumber.fromString(parts[0]);
-@@ -239,6 +246,7 @@ public class BromiteInlineUpdateController implements InlineUpdateController {
+                                 if (version != null) {
+                                     versionFound = true;
++                                    if (UPSTREAM_VERSION_URL.equals(""))
++                                        OmahaBase.updateLastPushedTimeStamp(System.currentTimeMillis());
+                                     OmahaBase.setLatestModifiedVersion(parts[0]);
+                                     callback.onResult(version);
+                                     return;
+@@ -239,6 +248,10 @@ public class BromiteInlineUpdateController implements InlineUpdateController {
      }
  
      private void checkLatestUpstreamVersion(final Callback<VersionNumber> callback) {
-+        if ((true)) callback.onResult(null);
++        if (UPSTREAM_VERSION_URL.equals("")) {
++            callback.onResult(null);
++            return;
++        }
          Log.i(TAG, "BromiteUpdater: fetching with GET '%s'", UPSTREAM_VERSION_URL);
  
          EndpointFetcher.nativeFetchWithNoAuth(
@@ -13124,7 +13147,7 @@ e)fqMZZ`3a)Ds&5H<cfp<0000<MNUMnLSTYHt&Yn8
 diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -2033,6 +2033,7 @@ static_library("browser") {
+@@ -2078,6 +2078,7 @@ static_library("browser") {
      "//build:chromeos_buildflags",
      "//build/config/chromebox_for_meetings:buildflags",
      "//build/config/compiler:compiler_buildflags",
@@ -13143,7 +13166,7 @@ diff --git a/chrome/browser/prefs/chrome_pref_service_factory.cc b/chrome/browse
  #include "chrome/browser/browser_process.h"
  #include "chrome/browser/policy/chrome_browser_policy_connector.h"
  #include "chrome/browser/prefs/chrome_command_line_pref_store.h"
-@@ -304,10 +305,7 @@ std::unique_ptr<ProfilePrefStoreManager> CreateProfilePrefStoreManager(
+@@ -285,10 +286,7 @@ std::unique_ptr<ProfilePrefStoreManager> CreateProfilePrefStoreManager(
  #endif
    std::string seed;
    CHECK(ui::ResourceBundle::HasSharedInstance());
@@ -13158,7 +13181,7 @@ diff --git a/chrome/browser/prefs/chrome_pref_service_factory.cc b/chrome/browse
 diff --git a/chrome/browser/profiles/profile_shortcut_manager_win.cc b/chrome/browser/profiles/profile_shortcut_manager_win.cc
 --- a/chrome/browser/profiles/profile_shortcut_manager_win.cc
 +++ b/chrome/browser/profiles/profile_shortcut_manager_win.cc
-@@ -75,7 +75,7 @@ const int kMaxProfileShortcutFileNameLength = 64;
+@@ -77,7 +77,7 @@ const int kMaxProfileShortcutFileNameLength = 64;
  // Incrementing this number will cause profile icons to be regenerated on
  // profile startup (it should be incremented whenever the product/avatar icons
  // change, etc).
@@ -13186,7 +13209,7 @@ diff --git a/chrome/browser/resources/settings/settings_menu/settings_menu.html 
 diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chrome/browser/ui/android/strings/android_chrome_strings.grd
 --- a/chrome/browser/ui/android/strings/android_chrome_strings.grd
 +++ b/chrome/browser/ui/android/strings/android_chrome_strings.grd
-@@ -2255,7 +2255,7 @@ Your Google account may have other forms of browsing history like searches and a
+@@ -2296,7 +2296,7 @@ Your Google account may have other forms of browsing history like searches and a
          About Chrome
        </message>
        <message name="IDS_LEGAL_INFORMATION_SUMMARY" desc="Summary for legal information" meaning="Android">
@@ -13207,7 +13230,7 @@ diff --git a/chrome/common/url_constants.cc b/chrome/common/url_constants.cc
  #if BUILDFLAG(IS_CHROMEOS_ASH)
  const char kChromeOsHelpViaWebUIURL[] =
  #if BUILDFLAG(GOOGLE_CHROME_BRANDING)
-@@ -109,7 +109,7 @@ const char kChromeSearchScheme[] = "chrome-search";
+@@ -111,7 +111,7 @@ const char kChromeSearchScheme[] = "chrome-search";
  const char kChromeUIUntrustedNewTabPageUrl[] =
      "chrome-untrusted://new-tab-page/";
  

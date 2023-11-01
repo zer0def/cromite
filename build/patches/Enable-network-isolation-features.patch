@@ -94,7 +94,7 @@ diff --git a/net/base/features.cc b/net/base/features.cc
 diff --git a/services/network/public/cpp/features.cc b/services/network/public/cpp/features.cc
 --- a/services/network/public/cpp/features.cc
 +++ b/services/network/public/cpp/features.cc
-@@ -95,7 +95,7 @@ BASE_FEATURE(kCoopRestrictPropertiesOriginTrial,
+@@ -96,7 +96,7 @@ BASE_FEATURE(kCoopRestrictPropertiesOriginTrial,
  // HttpAuthCache.
  BASE_FEATURE(kSplitAuthCacheByNetworkIsolationKey,
               "SplitAuthCacheByNetworkIsolationKey",

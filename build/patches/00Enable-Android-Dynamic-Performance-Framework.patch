@@ -11,10 +11,10 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 diff --git a/chrome/version.gni b/chrome/version.gni
 --- a/chrome/version.gni
 +++ b/chrome/version.gni
-@@ -68,7 +68,7 @@ if (is_mac) {
-     _version_dictionary_template += "trichrome_auto_64_32_version_code = \"@TRICHROME_AUTO_64_32_VERSION_CODE@\" "
-     _version_dictionary_template +=
+@@ -75,7 +75,7 @@ if (is_mac) {
          "trichrome_64_version_code = \"@TRICHROME_64_VERSION_CODE@\" "
+     _version_dictionary_template +=
+         "trichrome_auto_64_version_code = \"@TRICHROME_AUTO_64_VERSION_CODE@\" "
 -    if (target_cpu == "arm64") {
 +    if (target_cpu == "arm64" || target_cpu == "x64") {
        _version_dictionary_template += "trichrome_64_32_high_version_code = \"@TRICHROME_64_32_HIGH_VERSION_CODE@\" "
@@ -23,7 +23,7 @@ diff --git a/chrome/version.gni b/chrome/version.gni
 diff --git a/components/viz/common/features.cc b/components/viz/common/features.cc
 --- a/components/viz/common/features.cc
 +++ b/components/viz/common/features.cc
-@@ -298,9 +298,10 @@ const base::FeatureParam<double> kADPFMidFrameBoostDurationMultiplier{
+@@ -291,9 +291,10 @@ const base::FeatureParam<double> kADPFMidFrameBoostDurationMultiplier{
  
  // If enabled, Chrome includes the Renderer Main thread(s) into the
  // ADPF(Android Dynamic Performance Framework) hint session.

@@ -54,7 +54,7 @@ diff --git a/components/visitedlink/browser/visitedlink_writer.cc b/components/v
 diff --git a/components/visitedlink/common/visitedlink_common.cc b/components/visitedlink/common/visitedlink_common.cc
 --- a/components/visitedlink/common/visitedlink_common.cc
 +++ b/components/visitedlink/common/visitedlink_common.cc
-@@ -43,6 +43,7 @@ bool VisitedLinkCommon::IsVisited(const GURL& url) const {
+@@ -41,6 +41,7 @@ bool VisitedLinkCommon::IsVisited(const GURL& url) const {
  }
  
  bool VisitedLinkCommon::IsVisited(Fingerprint fingerprint) const {

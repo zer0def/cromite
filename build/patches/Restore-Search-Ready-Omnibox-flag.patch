@@ -22,7 +22,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -9520,6 +9520,11 @@ const FeatureEntry kFeatureEntries[] = {
+@@ -9811,6 +9811,11 @@ const FeatureEntry kFeatureEntries[] = {
       flag_descriptions::kDesksTemplatesDescription, kOsCrOS,
       FEATURE_VALUE_TYPE(ash::features::kDesksTemplates)},
  #endif
@@ -37,7 +37,7 @@ diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 diff --git a/chrome/browser/flag-metadata.json b/chrome/browser/flag-metadata.json
 --- a/chrome/browser/flag-metadata.json
 +++ b/chrome/browser/flag-metadata.json
-@@ -3270,6 +3270,11 @@
+@@ -3324,6 +3324,11 @@
      // Added feature, for testing. expiry deep in future.
      "expiry_milestone": 116
    },
@@ -52,7 +52,7 @@ diff --git a/chrome/browser/flag-metadata.json b/chrome/browser/flag-metadata.js
 diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descriptions.cc
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -4340,6 +4340,11 @@ const char kSendTabToSelfV2Description[] =
+@@ -4420,6 +4420,11 @@ const char kSendTabToSelfV2Description[] =
      "Enables new received tab "
      "UI shown next to the profile icon instead of using system notifications.";
  
@@ -67,7 +67,7 @@ diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descripti
 diff --git a/chrome/browser/flag_descriptions.h b/chrome/browser/flag_descriptions.h
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -2548,6 +2548,9 @@ extern const char kShowScrollableMVTOnNTPAndroidDescription[];
+@@ -2598,6 +2598,9 @@ extern const char kShowScrollableMVTOnNTPAndroidDescription[];
  extern const char kSendTabToSelfV2Name[];
  extern const char kSendTabToSelfV2Description[];
  
@@ -80,7 +80,7 @@ diff --git a/chrome/browser/flag_descriptions.h b/chrome/browser/flag_descriptio
 diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browser/flags/android/chrome_feature_list.cc
 --- a/chrome/browser/flags/android/chrome_feature_list.cc
 +++ b/chrome/browser/flags/android/chrome_feature_list.cc
-@@ -280,6 +280,7 @@ const base::Feature* const kFeaturesExposedToJava[] = {
+@@ -287,6 +287,7 @@ const base::Feature* const kFeaturesExposedToJava[] = {
      &kReaderModeInCCT,
      &kRecordSuppressionMetrics,
      &kReengagementNotification,
@@ -88,7 +88,7 @@ diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browse
      &kRelatedSearches,
      &kReportParentalControlSitesChild,
      &kRequestDesktopSiteDefaults,
-@@ -464,6 +465,10 @@ BASE_FEATURE(kAvoidSelectedTabFocusOnLayoutDoneShowing,
+@@ -468,6 +469,10 @@ BASE_FEATURE(kAvoidSelectedTabFocusOnLayoutDoneShowing,
               "AvoidSelectedTabFocusOnLayoutDoneShowing",
               base::FEATURE_ENABLED_BY_DEFAULT);
  
@@ -102,7 +102,7 @@ diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browse
 diff --git a/chrome/browser/flags/android/chrome_feature_list.h b/chrome/browser/flags/android/chrome_feature_list.h
 --- a/chrome/browser/flags/android/chrome_feature_list.h
 +++ b/chrome/browser/flags/android/chrome_feature_list.h
-@@ -164,6 +164,7 @@ BASE_DECLARE_FEATURE(kRequestDesktopSiteDefaultsDowngrade);
+@@ -170,6 +170,7 @@ BASE_DECLARE_FEATURE(kRequestDesktopSiteDefaultsDowngrade);
  BASE_DECLARE_FEATURE(kRequestDesktopSiteDefaultsLogging);
  BASE_DECLARE_FEATURE(kRestoreTabsOnFRE);
  BASE_DECLARE_FEATURE(kSearchEnginesPromoV3);
@@ -113,7 +113,7 @@ diff --git a/chrome/browser/flags/android/chrome_feature_list.h b/chrome/browser
 diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 --- a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 +++ b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
-@@ -319,6 +319,7 @@ public abstract class ChromeFeatureList {
+@@ -320,6 +320,7 @@ public abstract class ChromeFeatureList {
              "MessagesForAndroidInfrastructure";
      public static final String MESSAGES_FOR_ANDROID_PERMISSION_UPDATE =
              "MessagesForAndroidPermissionUpdate";
@@ -140,20 +140,20 @@ diff --git a/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/brow
  
      DropdownItemViewInfoListBuilder(@NonNull Supplier<Tab> tabSupplier, BookmarkState bookmarkState,
              OpenHistoryClustersDelegate openHistoryClustersDelegate) {
-@@ -92,8 +94,10 @@ class DropdownItemViewInfoListBuilder {
+@@ -91,8 +93,10 @@ class DropdownItemViewInfoListBuilder {
              mDividerLineProcessor = new DividerLineProcessor(context);
          }
          mHeaderProcessor = new HeaderProcessor(context);
 -        registerSuggestionProcessor(new EditUrlSuggestionProcessor(
--                context, host, delegate, mImageSupplier, mActivityTabSupplier, shareSupplier));
+-                context, host, mImageSupplier, mActivityTabSupplier, shareSupplier));
 +        mEditUrlSuggestionProcessor = new EditUrlSuggestionProcessor(
-+                context, host, delegate, mImageSupplier, mActivityTabSupplier, shareSupplier);
++                context, host, mImageSupplier, mActivityTabSupplier, shareSupplier);
 +        registerSuggestionProcessor(mEditUrlSuggestionProcessor);
 +
          registerSuggestionProcessor(
                  new AnswerSuggestionProcessor(context, host, textProvider, mImageSupplier));
          registerSuggestionProcessor(
-@@ -202,6 +206,9 @@ class DropdownItemViewInfoListBuilder {
+@@ -201,6 +205,9 @@ class DropdownItemViewInfoListBuilder {
      /** Signals that native initialization has completed. */
      void onNativeInitialized() {
          mHeaderProcessor.onNativeInitialized();

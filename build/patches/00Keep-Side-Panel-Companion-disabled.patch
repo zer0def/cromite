@@ -4,11 +4,11 @@ Subject: Keep Side Panel Companion disabled
 
 License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
- chrome/browser/companion/core/features.cc     | 19 ++++++++++---------
+ chrome/browser/companion/core/features.cc     | 23 ++++++++++---------
  .../ui/side_search/side_search_prefs.cc       |  2 +-
  chrome/browser/ui/ui_features.cc              |  2 +-
  components/search_engines/template_url.cc     |  2 +-
- 4 files changed, 13 insertions(+), 12 deletions(-)
+ 4 files changed, 15 insertions(+), 14 deletions(-)
 
 diff --git a/chrome/browser/companion/core/features.cc b/chrome/browser/companion/core/features.cc
 --- a/chrome/browser/companion/core/features.cc
@@ -40,7 +40,18 @@ diff --git a/chrome/browser/companion/core/features.cc b/chrome/browser/companio
  }  // namespace internal
  
  // When search companion is enabled, show a context menu item that allows the
-@@ -57,6 +57,7 @@ const char kDisableCheckUserPermissionsForCompanion[] =
+@@ -53,8 +53,8 @@ BASE_FEATURE(kCompanionEnableNewBadgesInContextMenu,
+ // user had previously opted in. The user won't be able to opt in (or out) when
+ // this is disabled.
+ BASE_FEATURE(kCompanionEnablePageContent,
+-             "CompanionEnablePageContent",
+-             base::FEATURE_DISABLED_BY_DEFAULT);
++             "CompanionEnablePageContent",       // keep
++             base::FEATURE_DISABLED_BY_DEFAULT); // disabled
+ }  // namespace features
+ 
+ namespace switches {
+@@ -65,6 +65,7 @@ const char kDisableCheckUserPermissionsForCompanion[] =
  const char kForceCompanionPinnedState[] = "force-companion-pinned-state";
  
  bool ShouldOverrideCheckingUserPermissionsForCompanion() {
@@ -63,7 +74,7 @@ diff --git a/chrome/browser/ui/side_search/side_search_prefs.cc b/chrome/browser
 diff --git a/chrome/browser/ui/ui_features.cc b/chrome/browser/ui/ui_features.cc
 --- a/chrome/browser/ui/ui_features.cc
 +++ b/chrome/browser/ui/ui_features.cc
-@@ -121,7 +121,7 @@ BASE_FEATURE(kResponsiveToolbar,
+@@ -122,7 +122,7 @@ BASE_FEATURE(kResponsiveToolbar,
  
  // Enables the side search feature for Google Search. Presents recent Google
  // search results in a browser side panel.

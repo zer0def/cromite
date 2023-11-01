@@ -18,7 +18,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActivity.java b/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActivity.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActivity.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActivity.java
-@@ -231,6 +231,7 @@ import org.chromium.content_public.browser.ScreenOrientationProvider;
+@@ -227,6 +227,7 @@ import org.chromium.content_public.browser.ScreenOrientationProvider;
  import org.chromium.content_public.browser.SelectionPopupController;
  import org.chromium.content_public.browser.WebContents;
  import org.chromium.content_public.common.ContentSwitches;
@@ -26,7 +26,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActiv
  import org.chromium.printing.PrintManagerDelegateImpl;
  import org.chromium.printing.PrintingController;
  import org.chromium.printing.PrintingControllerImpl;
-@@ -981,6 +982,8 @@ public abstract class ChromeActivity<C extends ChromeActivityComponent>
+@@ -984,6 +985,8 @@ public abstract class ChromeActivity<C extends ChromeActivityComponent>
          super.onStartWithNative();
          ChromeActivitySessionTracker.getInstance().onStartWithNative();
          ChromeCachedFlags.getInstance().cacheNativeFlags();
@@ -38,7 +38,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActiv
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -9367,6 +9367,13 @@ const FeatureEntry kFeatureEntries[] = {
+@@ -9661,6 +9661,13 @@ const FeatureEntry kFeatureEntries[] = {
       flag_descriptions::kEnableDrDcDescription, kOsAll,
       FEATURE_VALUE_TYPE(features::kEnableDrDc)},
  
@@ -55,7 +55,7 @@ diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descriptions.cc
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -16,6 +16,11 @@
+@@ -14,6 +14,11 @@
  
  namespace flag_descriptions {
  
@@ -70,7 +70,7 @@ diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descripti
 diff --git a/chrome/browser/flag_descriptions.h b/chrome/browser/flag_descriptions.h
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -42,6 +42,9 @@ namespace flag_descriptions {
+@@ -43,6 +43,9 @@ namespace flag_descriptions {
  
  // Cross-platform -------------------------------------------------------------
  
@@ -83,15 +83,15 @@ diff --git a/chrome/browser/flag_descriptions.h b/chrome/browser/flag_descriptio
 diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browser/flags/android/chrome_feature_list.cc
 --- a/chrome/browser/flags/android/chrome_feature_list.cc
 +++ b/chrome/browser/flags/android/chrome_feature_list.cc
-@@ -145,6 +145,7 @@ const base::Feature* const kFeaturesExposedToJava[] = {
+@@ -147,6 +147,7 @@ const base::Feature* const kFeaturesExposedToJava[] = {
+     &feed::kFeedShowSignInCommand,
      &feed::kFeedSignedOutViewDemotion,
      &feed::kFeedUserInteractionReliabilityReport,
-     &feed::kInterestFeedContentSuggestions,
 +    &kAllowUserCertificates,
      &feed::kInterestFeedV2,
      &feed::kInterestFeedV2Autoplay,
      &feed::kInterestFeedV2Hearts,
-@@ -473,6 +474,10 @@ BASE_FEATURE(kSearchReadyOmniboxFeature,
+@@ -477,6 +478,10 @@ BASE_FEATURE(kSearchReadyOmniboxFeature,
               "SearchReadyOmnibox",
               base::FEATURE_DISABLED_BY_DEFAULT);
  
@@ -105,7 +105,7 @@ diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browse
 diff --git a/chrome/browser/flags/android/chrome_feature_list.h b/chrome/browser/flags/android/chrome_feature_list.h
 --- a/chrome/browser/flags/android/chrome_feature_list.h
 +++ b/chrome/browser/flags/android/chrome_feature_list.h
-@@ -22,6 +22,7 @@ BASE_DECLARE_FEATURE(kAdvancedPeripheralsSupport);
+@@ -23,6 +23,7 @@ BASE_DECLARE_FEATURE(kAdvancedPeripheralsSupport);
  BASE_DECLARE_FEATURE(kAdvancedPeripheralsSupportTabStrip);
  BASE_DECLARE_FEATURE(kAllowNewIncognitoTabIntents);
  BASE_DECLARE_FEATURE(kAndroidAppIntegration);
@@ -124,7 +124,7 @@ diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/f
      public static final String ADAPTIVE_BUTTON_IN_TOP_TOOLBAR = "AdaptiveButtonInTopToolbar";
      public static final String ADAPTIVE_BUTTON_IN_TOP_TOOLBAR_TRANSLATE =
              "AdaptiveButtonInTopToolbarTranslate";
-@@ -514,6 +515,8 @@ public abstract class ChromeFeatureList {
+@@ -501,6 +502,8 @@ public abstract class ChromeFeatureList {
      /* Alphabetical: */
      public static final CachedFlag sAndroidAppIntegration =
              new CachedFlag(ANDROID_APP_INTEGRATION, false);
@@ -133,7 +133,7 @@ diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/f
      public static final CachedFlag sAppMenuMobileSiteOption =
              new CachedFlag(APP_MENU_MOBILE_SITE_OPTION, false);
      public static final CachedFlag sBackGestureActivityTabProvider =
-@@ -634,6 +637,7 @@ public abstract class ChromeFeatureList {
+@@ -642,6 +645,7 @@ public abstract class ChromeFeatureList {
      public static final List<CachedFlag> sFlagsCachedFullBrowser = List.of(
              // clang-format off
          sAndroidAppIntegration,

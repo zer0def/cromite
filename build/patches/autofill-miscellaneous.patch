@@ -16,14 +16,14 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../core/browser/autofill_download_manager.h  |  2 -
  .../core/browser/browser_autofill_manager.h   |  4 +-
  .../autofill/core/common/autofill_features.cc |  4 +-
- .../autofill/core/common/autofill_prefs.cc    |  8 ++--
+ .../autofill/core/common/autofill_prefs.cc    | 10 ++---
  .../password_generation_frame_helper.cc       |  4 --
- 8 files changed, 19 insertions(+), 59 deletions(-)
+ 8 files changed, 20 insertions(+), 60 deletions(-)
 
 diff --git a/chrome/browser/prefs/browser_prefs.cc b/chrome/browser/prefs/browser_prefs.cc
 --- a/chrome/browser/prefs/browser_prefs.cc
 +++ b/chrome/browser/prefs/browser_prefs.cc
-@@ -1078,11 +1078,11 @@ void RegisterProfilePrefsForMigration(
+@@ -1133,11 +1133,11 @@ void RegisterProfilePrefsForMigration(
                                     PrefRegistry::LOSSY_PREF);
  
    // Deprecated 11/2022.
@@ -41,7 +41,7 @@ diff --git a/chrome/browser/prefs/browser_prefs.cc b/chrome/browser/prefs/browse
 diff --git a/chrome/browser/ui/autofill/chrome_autofill_client.cc b/chrome/browser/ui/autofill/chrome_autofill_client.cc
 --- a/chrome/browser/ui/autofill/chrome_autofill_client.cc
 +++ b/chrome/browser/ui/autofill/chrome_autofill_client.cc
-@@ -200,12 +200,7 @@ ChromeAutofillClient::GetURLLoaderFactory() {
+@@ -215,12 +215,7 @@ ChromeAutofillClient::GetURLLoaderFactory() {
  }
  
  AutofillDownloadManager* ChromeAutofillClient::GetDownloadManager() {
@@ -148,7 +148,7 @@ diff --git a/components/autofill/core/browser/autofill_download_manager.h b/comp
 diff --git a/components/autofill/core/browser/browser_autofill_manager.h b/components/autofill/core/browser/browser_autofill_manager.h
 --- a/components/autofill/core/browser/browser_autofill_manager.h
 +++ b/components/autofill/core/browser/browser_autofill_manager.h
-@@ -740,9 +740,9 @@ class BrowserAutofillManager : public AutofillManager,
+@@ -766,9 +766,9 @@ class BrowserAutofillManager : public AutofillManager,
        autocomplete_unrecognized_fallback_logger_;
  
    // Have we logged whether Autofill is enabled for this page load?
@@ -163,7 +163,7 @@ diff --git a/components/autofill/core/browser/browser_autofill_manager.h b/compo
 diff --git a/components/autofill/core/common/autofill_features.cc b/components/autofill/core/common/autofill_features.cc
 --- a/components/autofill/core/common/autofill_features.cc
 +++ b/components/autofill/core/common/autofill_features.cc
-@@ -837,8 +837,8 @@ BASE_FEATURE(kAutofillLogToTerminal,
+@@ -797,8 +797,8 @@ BASE_FEATURE(kAutofillLogToTerminal,
  // "upload" resources.
  // i.e., https://other.autofill.server:port/tbproxy/af/
  BASE_FEATURE(kAutofillServerCommunication,
@@ -177,7 +177,7 @@ diff --git a/components/autofill/core/common/autofill_features.cc b/components/a
 diff --git a/components/autofill/core/common/autofill_prefs.cc b/components/autofill/core/common/autofill_prefs.cc
 --- a/components/autofill/core/common/autofill_prefs.cc
 +++ b/components/autofill/core/common/autofill_prefs.cc
-@@ -140,7 +140,7 @@ const char kAutofillUsingVirtualViewStructure[] =
+@@ -144,7 +144,7 @@ const char kAutofillUsingVirtualViewStructure[] =
  void RegisterProfilePrefs(user_prefs::PrefRegistrySyncable* registry) {
    // Synced prefs. Used for cross-device choices, e.g., credit card Autofill.
    registry->RegisterBooleanPref(
@@ -186,7 +186,7 @@ diff --git a/components/autofill/core/common/autofill_prefs.cc b/components/auto
        user_prefs::PrefRegistrySyncable::SYNCABLE_PREF);
    registry->RegisterIntegerPref(
        prefs::kAutofillLastVersionDeduped, 0,
-@@ -152,10 +152,10 @@ void RegisterProfilePrefs(user_prefs::PrefRegistrySyncable* registry) {
+@@ -156,10 +156,10 @@ void RegisterProfilePrefs(user_prefs::PrefRegistrySyncable* registry) {
        prefs::kAutofillLastVersionDisusedAddressesDeleted, 0,
        user_prefs::PrefRegistrySyncable::SYNCABLE_PREF);
    registry->RegisterBooleanPref(
@@ -194,24 +194,27 @@ diff --git a/components/autofill/core/common/autofill_prefs.cc b/components/auto
 +      prefs::kAutofillCreditCardEnabled, false,
        user_prefs::PrefRegistrySyncable::SYNCABLE_PREF);
    registry->RegisterBooleanPref(
--      prefs::kAutofillIbanEnabled, true,
-+      prefs::kAutofillIbanEnabled, false,
+-      prefs::kAutofillPaymentCvcStorage, true,
++      prefs::kAutofillPaymentCvcStorage, false,
        user_prefs::PrefRegistrySyncable::SYNCABLE_PREF);
-   registry->RegisterBooleanPref(
-       prefs::kAutofillPaymentCvcStorage, true,
-@@ -189,7 +189,7 @@ void RegisterProfilePrefs(user_prefs::PrefRegistrySyncable* registry) {
+ 
+   // Non-synced prefs. Used for per-device choices, e.g., signin promo.
+@@ -201,9 +201,9 @@ void RegisterProfilePrefs(user_prefs::PrefRegistrySyncable* registry) {
+ #endif
  
    // Deprecated prefs registered for migration.
-   registry->RegisterBooleanPref(
--      prefs::kAutofillEnabledDeprecated, true,
-+      prefs::kAutofillEnabledDeprecated, false,
-       user_prefs::PrefRegistrySyncable::SYNCABLE_PREF);
+-  registry->RegisterBooleanPref(prefs::kAutofillEnabledDeprecated, true);
++  registry->RegisterBooleanPref(prefs::kAutofillEnabledDeprecated, false);
    registry->RegisterBooleanPref(prefs::kAutofillOrphanRowsRemoved, false);
+-  registry->RegisterBooleanPref(prefs::kAutofillIbanEnabled, true);
++  registry->RegisterBooleanPref(prefs::kAutofillIbanEnabled, false);
  
+ #if BUILDFLAG(IS_ANDROID)
+   registry->RegisterBooleanPref(prefs::kAutofillUsingVirtualViewStructure,
 diff --git a/components/password_manager/core/browser/password_generation_frame_helper.cc b/components/password_manager/core/browser/password_generation_frame_helper.cc
 --- a/components/password_manager/core/browser/password_generation_frame_helper.cc
 +++ b/components/password_manager/core/browser/password_generation_frame_helper.cc
-@@ -101,7 +101,6 @@ void PasswordGenerationFrameHelper::ProcessPasswordRequirements(
+@@ -95,7 +95,6 @@ void PasswordGenerationFrameHelper::ProcessPasswordRequirements(
  // In order for password generation to be enabled, we need to make sure:
  // (1) Password sync is enabled, and
  // (2) Password saving is enabled
@@ -219,7 +222,7 @@ diff --git a/components/password_manager/core/browser/password_generation_frame_
  bool PasswordGenerationFrameHelper::IsGenerationEnabled(
      bool log_debug_data) const {
    std::unique_ptr<Logger> logger;
-@@ -111,9 +110,6 @@ bool PasswordGenerationFrameHelper::IsGenerationEnabled(
+@@ -105,9 +104,6 @@ bool PasswordGenerationFrameHelper::IsGenerationEnabled(
    }
  
    GURL url = driver_->GetLastCommittedURL();

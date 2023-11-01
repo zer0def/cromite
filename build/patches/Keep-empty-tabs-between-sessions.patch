@@ -6,15 +6,14 @@ Original License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.
 License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 ---
  .../chrome/browser/tabmodel/TabPersistentStore.java       | 8 --------
- .../browser/tab/state/CriticalPersistedTabData.java       | 3 ---
- 2 files changed, 11 deletions(-)
+ 1 file changed, 8 deletions(-)
 
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tabmodel/TabPersistentStore.java b/chrome/android/java/src/org/chromium/chrome/browser/tabmodel/TabPersistentStore.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/tabmodel/TabPersistentStore.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/tabmodel/TabPersistentStore.java
 @@ -697,14 +697,6 @@ public class TabPersistentStore {
-                               .createFrozenTab(
-                                       tabState, null, tabToRestore.id, isIncognito, restoredIndex);
+                     mTabCreatorManager.getTabCreator(isIncognito)
+                             .createFrozenTab(tabState, tabToRestore.id, isIncognito, restoredIndex);
          } else {
 -            if (!mSkipSavingNonActiveNtps && UrlUtilities.isNTPUrl(tabToRestore.url) && !setAsActive
 -                    && !tabToRestore.fromMerge) {
@@ -27,18 +26,5 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tabmodel/TabPer
              Log.w(TAG, "Failed to restore TabState; creating Tab with last known URL.");
              Tab fallbackTab = mTabCreatorManager.getTabCreator(isIncognito)
                                        .createNewTab(new LoadUrlParams(tabToRestore.url),
-diff --git a/chrome/browser/tab/java/src/org/chromium/chrome/browser/tab/state/CriticalPersistedTabData.java b/chrome/browser/tab/java/src/org/chromium/chrome/browser/tab/state/CriticalPersistedTabData.java
---- a/chrome/browser/tab/java/src/org/chromium/chrome/browser/tab/state/CriticalPersistedTabData.java
-+++ b/chrome/browser/tab/java/src/org/chromium/chrome/browser/tab/state/CriticalPersistedTabData.java
-@@ -625,9 +625,6 @@ public class CriticalPersistedTabData extends PersistedTabData {
-         if (getUrl() == null || getUrl().isEmpty()) {
-             return false;
-         }
--        if (UrlUtilities.isNTPUrl(getUrl()) && !mTab.canGoBack() && !mTab.canGoForward()) {
--            return false;
--        }
-         if (isTabUrlContentScheme(getUrl())) {
-             return false;
-         }
 --
 2.25.1

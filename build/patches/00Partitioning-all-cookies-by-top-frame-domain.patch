@@ -11,23 +11,26 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
  .../browser/net/profile_network_context_service.cc   |  8 ++++----
  .../core/common/cookie_settings_base.cc              |  2 +-
+ components/content_settings/core/common/features.cc  |  4 ++--
+ components/permissions/features.cc                   |  4 ++--
+ content/public/common/content_features.cc            |  4 ++--
  net/base/features.cc                                 | 12 ++++++------
  net/cookies/canonical_cookie.cc                      | 12 +-----------
  net/cookies/cookie_deletion_info.cc                  |  3 ++-
  net/cookies/parsed_cookie.h                          |  7 ++++++-
  net/extras/sqlite/sqlite_persistent_cookie_store.cc  | 10 ++++++++++
- services/network/cookie_settings.cc                  | 12 ++++++++++--
+ net/url_request/url_request_http_job.cc              |  2 +-
  services/network/restricted_cookie_manager.cc        |  3 +++
  .../renderer/modules/cookie_store/cookie_init.idl    |  2 +-
  .../renderer/modules/cookie_store/cookie_store.cc    | 12 ++++++++++++
  .../cookie_store/cookie_store_delete_options.idl     |  2 +-
  ui/webui/webui_allowlist.cc                          |  1 +
- 13 files changed, 58 insertions(+), 28 deletions(-)
+ 16 files changed, 55 insertions(+), 33 deletions(-)
 
 diff --git a/chrome/browser/net/profile_network_context_service.cc b/chrome/browser/net/profile_network_context_service.cc
 --- a/chrome/browser/net/profile_network_context_service.cc
 +++ b/chrome/browser/net/profile_network_context_service.cc
-@@ -628,14 +628,14 @@ ProfileNetworkContextService::CreateCookieManagerParams(
+@@ -613,14 +613,14 @@ ProfileNetworkContextService::CreateCookieManagerParams(
    // UI to interact with SameSite cookies on accounts.google.com, which is used
    // for displaying a list of available accounts on the NTP
    // (chrome://new-tab-page), etc.
@@ -49,7 +52,7 @@ diff --git a/chrome/browser/net/profile_network_context_service.cc b/chrome/brow
 diff --git a/components/content_settings/core/common/cookie_settings_base.cc b/components/content_settings/core/common/cookie_settings_base.cc
 --- a/components/content_settings/core/common/cookie_settings_base.cc
 +++ b/components/content_settings/core/common/cookie_settings_base.cc
-@@ -326,7 +326,7 @@ CookieSettingsBase::GetCookieSettingInternal(
+@@ -318,7 +318,7 @@ CookieSettingsBase::GetCookieSettingInternal(
    absl::optional<ThirdPartyBlockingScope> scope;
    if (block_third) {
      scope = IsAllowed(setting)
@@ -58,11 +61,53 @@ diff --git a/components/content_settings/core/common/cookie_settings_base.cc b/c
                  : ThirdPartyBlockingScope::kUnpartitionedAndPartitioned;
    }
    return {block_third ? CONTENT_SETTING_BLOCK : setting, scope,
+diff --git a/components/content_settings/core/common/features.cc b/components/content_settings/core/common/features.cc
+--- a/components/content_settings/core/common/features.cc
++++ b/components/content_settings/core/common/features.cc
+@@ -79,8 +79,8 @@ BASE_FEATURE(kImprovedSemanticsActivityIndicators,
+              base::FEATURE_DISABLED_BY_DEFAULT);
+ 
+ BASE_FEATURE(kTrackingProtection3pcd,
+-             "TrackingProtection3pcd",
+-             base::FEATURE_DISABLED_BY_DEFAULT);
++             "TrackingProtection3pcd",           // disabled
++             base::FEATURE_DISABLED_BY_DEFAULT); // by default
+ 
+ }  // namespace features
+ }  // namespace content_settings
+diff --git a/components/permissions/features.cc b/components/permissions/features.cc
+--- a/components/permissions/features.cc
++++ b/components/permissions/features.cc
+@@ -156,8 +156,8 @@ BASE_FEATURE(kMitigateUnpartitionedWebviewPermissions,
+ // This includes enabling prompts, a new settings page and page info and
+ // omnibox integration.
+ BASE_FEATURE(kPermissionStorageAccessAPI,
+-             "PermissionStorageAccessAPI",
+-             base::FEATURE_DISABLED_BY_DEFAULT);
++             "PermissionStorageAccessAPI",        // guard
++             base::FEATURE_DISABLED_BY_DEFAULT);  // this
+ 
+ // When enabled "window-placement" may be used as an alias for
+ // "window-management". Additionally, reverse mappings (i.e. enum to string)
+diff --git a/content/public/common/content_features.cc b/content/public/common/content_features.cc
+--- a/content/public/common/content_features.cc
++++ b/content/public/common/content_features.cc
+@@ -186,8 +186,8 @@ BASE_FEATURE(kCompositeBGColorAnimation,
+ // server side testing without cookies.
+ // (See https://developer.chrome.com/en/docs/privacy-sandbox/chrome-testing)
+ BASE_FEATURE(kCookieDeprecationFacilitatedTesting,
+-             "CookieDeprecationFacilitatedTesting",
+-             base::FEATURE_DISABLED_BY_DEFAULT);
++             "CookieDeprecationFacilitatedTesting",  // disabled
++             base::FEATURE_DISABLED_BY_DEFAULT);     // by default
+ 
+ // Set whether to enable cookie deprecation API for off-the-record profiles.
+ const base::FeatureParam<bool>
 diff --git a/net/base/features.cc b/net/base/features.cc
 --- a/net/base/features.cc
 +++ b/net/base/features.cc
-@@ -268,8 +268,8 @@ BASE_FEATURE(kWaitForFirstPartySetsInit,
-              base::FEATURE_ENABLED_BY_DEFAULT);
+@@ -260,8 +260,8 @@ BASE_FEATURE(kWaitForFirstPartySetsInit,
+              base::FEATURE_DISABLED_BY_DEFAULT);
  
  BASE_FEATURE(kPartitionedCookies,
 -             "PartitionedCookies",
@@ -70,9 +115,9 @@ diff --git a/net/base/features.cc b/net/base/features.cc
 +             "PartitionedCookies",                  // guard this
 +             base::FEATURE_ENABLED_BY_DEFAULT);     // guard this
  
- BASE_FEATURE(kNoncedPartitionedCookies,
-              "NoncedPartitionedCookies",
-@@ -284,8 +284,8 @@ BASE_FEATURE(kStaticKeyPinningEnforcement,
+ BASE_FEATURE(kBlockTruncatedCookies,
+              "BlockTruncatedCookies",
+@@ -272,8 +272,8 @@ BASE_FEATURE(kStaticKeyPinningEnforcement,
               base::FEATURE_ENABLED_BY_DEFAULT);
  
  BASE_FEATURE(kCookieDomainRejectNonASCII,
@@ -83,21 +128,21 @@ diff --git a/net/base/features.cc b/net/base/features.cc
  
  // Enables partitioning of third party storage (IndexedDB, CacheStorage, etc.)
  // by the top level site to reduce fingerprinting.
-@@ -491,8 +491,8 @@ BASE_FEATURE(kDigestAuthEnableSecureAlgorithms,
+@@ -469,8 +469,8 @@ BASE_FEATURE(kDigestAuthEnableSecureAlgorithms,
+ // are disabled by default. Partitioned storage will not be allowed if
  // third-party cookies are disabled due to a specific rule.
- // TODO(crbug.com/1468277): Default enable when UI work is complete.
  BASE_FEATURE(kThirdPartyPartitionedStorageAllowedByDefault,
 -             "ThirdPartyPartitionedStorageAllowedByDefault",
--             base::FEATURE_DISABLED_BY_DEFAULT);
+-             base::FEATURE_ENABLED_BY_DEFAULT);
 +             "ThirdPartyPartitionedStorageAllowedByDefault",  // must be
 +             base::FEATURE_DISABLED_BY_DEFAULT);              // disabled
  
- BASE_FEATURE(kCookieDeprecationFacilitatedTestingLabels,
-              "CookieDeprecationFacilitatedTestingLabels",
+ BASE_FEATURE(kPriorityHeader,
+              "PriorityHeader",
 diff --git a/net/cookies/canonical_cookie.cc b/net/cookies/canonical_cookie.cc
 --- a/net/cookies/canonical_cookie.cc
 +++ b/net/cookies/canonical_cookie.cc
-@@ -1468,8 +1468,6 @@ bool CanonicalCookie::IsCanonicalForFromStorage() const {
+@@ -1469,8 +1469,6 @@ bool CanonicalCookie::IsCanonicalForFromStorage() const {
    if (IsPartitioned()) {
      if (CookiePartitionKey::HasNonce(partition_key_))
        return true;
@@ -106,7 +151,7 @@ diff --git a/net/cookies/canonical_cookie.cc b/net/cookies/canonical_cookie.cc
    }
  
    return true;
-@@ -1726,15 +1724,7 @@ bool CanonicalCookie::IsCookiePartitionedValid(const GURL& url,
+@@ -1727,15 +1725,7 @@ bool CanonicalCookie::IsCookiePartitionedValid(const GURL& url,
                                                 bool secure,
                                                 bool is_partitioned,
                                                 bool partition_has_nonce) {
@@ -163,7 +208,7 @@ diff --git a/net/cookies/parsed_cookie.h b/net/cookies/parsed_cookie.h
 diff --git a/net/extras/sqlite/sqlite_persistent_cookie_store.cc b/net/extras/sqlite/sqlite_persistent_cookie_store.cc
 --- a/net/extras/sqlite/sqlite_persistent_cookie_store.cc
 +++ b/net/extras/sqlite/sqlite_persistent_cookie_store.cc
-@@ -803,6 +803,16 @@ bool SQLitePersistentCookieStore::Backend::DoInitializeDatabase() {
+@@ -814,6 +814,16 @@ bool SQLitePersistentCookieStore::Backend::DoInitializeDatabase() {
    if (!restore_old_session_cookies_)
      DeleteSessionCookiesOnStartup();
  
@@ -180,42 +225,22 @@ diff --git a/net/extras/sqlite/sqlite_persistent_cookie_store.cc b/net/extras/sq
    return true;
  }
  
-diff --git a/services/network/cookie_settings.cc b/services/network/cookie_settings.cc
---- a/services/network/cookie_settings.cc
-+++ b/services/network/cookie_settings.cc
-@@ -30,6 +30,11 @@
- namespace network {
- namespace {
+diff --git a/net/url_request/url_request_http_job.cc b/net/url_request/url_request_http_job.cc
+--- a/net/url_request/url_request_http_job.cc
++++ b/net/url_request/url_request_http_job.cc
+@@ -758,7 +758,7 @@ void URLRequestHttpJob::SetCookieHeaderAndStart(
  
-+bool IsThirdPartyAllowed(const ContentSettingPatternSource& setting) {
-+  return setting.primary_pattern.MatchesAllHosts() &&
-+         !setting.secondary_pattern.MatchesAllHosts();
-+}
-+
- const ContentSettingPatternSource* FindMatchingSetting(
-     const GURL& primary_url,
-     const GURL& secondary_url,
-@@ -185,11 +190,14 @@ net::NetworkDelegate::PrivacySetting CookieSettings::IsPrivacyModeEnabled(
+       size_t n_partitioned_cookies = 0;
+       bool may_set_sec_cookie_deprecation_header =
+-          !request_->context()->cookie_deprecation_label().value_or("").empty();
++          false;
  
- CookieSettings::ThirdPartyBlockingScope
- CookieSettings::GetThirdPartyBlockingScope(const GURL& first_party_url) const {
--  // If cookies are allowed for the first-party URL then we allow
-+  // If cookies are allowed for the thirdy-party URL then we allow
-   // partitioned cross-site cookies.
-+  // partitioned are the default for all cookies, so we allow all cookies
-+  // if the user want so.
-   if (const ContentSettingPatternSource* match = FindMatchingSetting(
-           first_party_url, first_party_url, content_settings_);
--      !match || match->GetContentSetting() == CONTENT_SETTING_ALLOW) {
-+      match && IsThirdPartyAllowed(*match) &&
-+      match->GetContentSetting() == CONTENT_SETTING_ALLOW) {
-     return ThirdPartyBlockingScope::kUnpartitionedOnly;
-   }
-   return ThirdPartyBlockingScope::kUnpartitionedAndPartitioned;
+       // TODO(crbug.com/1031664): Reduce the number of times the cookie list
+       // is iterated over. Get metrics for every cookie which is included.
 diff --git a/services/network/restricted_cookie_manager.cc b/services/network/restricted_cookie_manager.cc
 --- a/services/network/restricted_cookie_manager.cc
 +++ b/services/network/restricted_cookie_manager.cc
-@@ -798,6 +798,9 @@ void RestrictedCookieManager::SetCookieFromString(
+@@ -808,6 +808,9 @@ void RestrictedCookieManager::SetCookieFromString(
    std::move(callback).Run(site_for_cookies_ok, top_frame_origin_ok);
    callback = base::DoNothing();
  
