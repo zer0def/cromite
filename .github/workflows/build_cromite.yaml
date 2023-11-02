@@ -138,6 +138,14 @@ jobs:
             fi
           fi
 
+      - name: Get uazo/cromite-build from docker hub if present
+        shell: bash
+        run: |
+          IS_PRESENT=$(docker manifest inspect uazo/cromite-build:$VERSION-$BROMITE_SHA > /dev/null ; echo $?)
+          if [ $IS_PRESENT -eq "0" ]; then
+            docker pull uazo/cromite-build:$VERSION-$BROMITE_SHA
+          fi
+
       - name: Mark image to build
         shell: bash
         run: |
