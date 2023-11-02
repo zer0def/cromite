@@ -153,6 +153,12 @@ In addition, Cromite would like to promote greater integration with other non-pr
 * Disable prefers-reduced-transparency media query [patch](https://github.com/uazo/cromite/blob/master/build/patches/00Disable-prefers-reduced-transparency-media-query.patch) https://github.com/uazo/cromite/issues/437
 * Show full urls for bookmark [patch](https://github.com/uazo/cromite/blob/master/build/patches/00Show-full-urls-for-bookmark.patch) https://github.com/uazo/cromite/issues/434
 
+##### from [119.0.6045.106](https://github.com/uazo/cromite/issues/484#issuecomment-1788744844)
+* Always clear js and wasm code cache at startup
+* Block Intents While Locked [patch](https://github.com/uazo/cromite/blob/master/build/patches/00Block-Intents-While-Locked.patch)
+* Keep Manta Service Disabled [patch](https://github.com/uazo/cromite/blob/master/build/patches/00Keep-Manta-Service-Disabled.patch)
+* (Only windows) Hide the presence of the webcam if the user has not given permission #480
+
 #### Windows Cromite-specific features
 
 * enable Network Service Sandbox by default
