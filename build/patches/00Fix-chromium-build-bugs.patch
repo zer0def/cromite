@@ -14,6 +14,7 @@ https://bugs.chromium.org/p/chromium/issues/detail?id=1491776#c10
  .../api/autofill_private/autofill_util.cc     |  2 ++
  .../reading_list/reading_list_event_router.h  |  2 +-
  ...vigation_predictor_metrics_document_data.h |  2 ++
+ .../notification_platform_bridge_linux.cc     |  2 +-
  chrome/browser/safe_browsing/BUILD.gn         |  1 +
  .../tpcd/support/tpcd_support_manager.cc      |  2 +-
  ...ion_consented_debugging_infobar_delegate.h |  2 +-
@@ -34,7 +35,7 @@ https://bugs.chromium.org/p/chromium/issues/detail?id=1491776#c10
  crypto/BUILD.gn                               |  3 ++
  net/BUILD.gn                                  |  1 +
  third_party/libevent/BUILD.gn                 |  2 ++
- 29 files changed, 64 insertions(+), 49 deletions(-)
+ 30 files changed, 65 insertions(+), 50 deletions(-)
 
 diff --git a/BUILD.gn b/BUILD.gn
 --- a/BUILD.gn
@@ -164,6 +165,18 @@ diff --git a/chrome/browser/navigation_predictor/navigation_predictor_metrics_do
      // True if the anchor element is still in viewport, otherwise false.
      bool is_in_viewport = false;
      // True if the pointer is still hovering over the anchor element,
+diff --git a/chrome/browser/notifications/notification_platform_bridge_linux.cc b/chrome/browser/notifications/notification_platform_bridge_linux.cc
+--- a/chrome/browser/notifications/notification_platform_bridge_linux.cc
++++ b/chrome/browser/notifications/notification_platform_bridge_linux.cc
+@@ -883,7 +883,7 @@ class NotificationPlatformBridgeLinuxImpl
+                                      kMethodCloseNotification);
+         dbus::MessageWriter writer(&method_call);
+         writer.AppendUint32(data->dbus_id);
+-        notification_proxy_->CallMethodAndBlock(
++        (void)notification_proxy_->CallMethodAndBlock(
+             &method_call, dbus::ObjectProxy::TIMEOUT_USE_DEFAULT);
+         to_erase.push_back(data);
+       }
 diff --git a/chrome/browser/safe_browsing/BUILD.gn b/chrome/browser/safe_browsing/BUILD.gn
 --- a/chrome/browser/safe_browsing/BUILD.gn
 +++ b/chrome/browser/safe_browsing/BUILD.gn

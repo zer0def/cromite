@@ -11,6 +11,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../android/metrics/uma_session_stats.cc      |  10 -
  .../android/signin/signin_manager_android.cc  |  27 +-
  chrome/browser/browser_process_impl.cc        |   1 -
+ chrome/browser/chrome_browser_main.cc         |   8 -
  .../browser/chrome_content_browser_client.cc  |  35 +-
  .../domain_reliability/service_factory.cc     |  33 +-
  chrome/browser/extensions/BUILD.gn            |   1 -
@@ -58,7 +59,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  content/public/common/content_features.cc     |   6 +-
  net/base/url_util.cc                          |  21 --
  services/network/network_context.cc           |   2 +-
- 51 files changed, 60 insertions(+), 797 deletions(-)
+ 52 files changed, 60 insertions(+), 805 deletions(-)
 
 diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 --- a/chrome/browser/BUILD.gn
@@ -167,6 +168,31 @@ diff --git a/chrome/browser/browser_process_impl.cc b/chrome/browser/browser_pro
    component_updater_ = component_updater::ComponentUpdateServiceFactory(
        component_updater::MakeChromeComponentUpdaterConfigurator(
            base::CommandLine::ForCurrentProcess(),
+diff --git a/chrome/browser/chrome_browser_main.cc b/chrome/browser/chrome_browser_main.cc
+--- a/chrome/browser/chrome_browser_main.cc
++++ b/chrome/browser/chrome_browser_main.cc
+@@ -515,10 +515,6 @@ void ProcessSingletonNotificationCallbackImpl(
+ 
+   StartupBrowserCreator::ProcessCommandLineAlreadyRunning(
+       command_line, current_directory, startup_profile_path_info);
+-
+-  // Record now as the last successful chrome start.
+-  if (ShouldRecordActiveUse(command_line))
+-    GoogleUpdateSettings::SetLastRunTime();
+ }
+ #endif  // BUILDFLAG(ENABLE_PROCESS_SINGLETON)
+ 
+@@ -1791,10 +1787,6 @@ int ChromeBrowserMainParts::PreMainMessageLoopRunImpl() {
+     upgrade_util::SaveLastModifiedTimeOfExe();
+ #endif  // BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS_LACROS)
+ 
+-    // Record now as the last successful chrome start.
+-    if (ShouldRecordActiveUse(*base::CommandLine::ForCurrentProcess()))
+-      GoogleUpdateSettings::SetLastRunTime();
+-
+     // Create the RunLoop for MainMessageLoopRun() to use and transfer
+     // ownership of the browser's lifetime to the BrowserProcess.
+     DCHECK(!GetMainRunLoopInstance());
 diff --git a/chrome/browser/chrome_content_browser_client.cc b/chrome/browser/chrome_content_browser_client.cc
 --- a/chrome/browser/chrome_content_browser_client.cc
 +++ b/chrome/browser/chrome_content_browser_client.cc

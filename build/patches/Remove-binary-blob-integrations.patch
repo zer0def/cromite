@@ -30,7 +30,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  chrome/android/BUILD.gn                       |  48 +-
  chrome/android/chrome_java_sources.gni        |   5 -
  .../features/cablev2_authenticator/BUILD.gn   |   2 -
- chrome/android/java/AndroidManifest.xml       |  51 --
+ chrome/android/java/AndroidManifest.xml       |  50 --
  .../org/chromium/chrome/browser/AppHooks.java |   9 +-
  .../browser/ChromeBackgroundService.java      |  11 +-
  .../browser/PlayServicesVersionInfo.java      |  11 +-
@@ -105,7 +105,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../preconditions/javatests/BUILD.gn          |   1 -
  .../gms/ChromiumPlayServicesAvailability.java |  10 +-
  third_party/cardboard/BUILD.gn                |   4 -
- 81 files changed, 97 insertions(+), 2012 deletions(-)
+ 81 files changed, 97 insertions(+), 2011 deletions(-)
 
 diff --git a/android_webview/expectations/system_webview_bundle.AndroidManifest.expected b/android_webview/expectations/system_webview_bundle.AndroidManifest.expected
 --- a/android_webview/expectations/system_webview_bundle.AndroidManifest.expected
@@ -387,12 +387,7 @@ diff --git a/chrome/android/java/AndroidManifest.xml b/chrome/android/java/Andro
          <!-- Android Notification service listener -->
          <service android:name="org.chromium.chrome.browser.notifications.NotificationService"
              android:exported="false"/>
-@@ -1035,20 +1000,10 @@ by a child template that "extends" this file.
-         <service android:name="org.chromium.components.background_task_scheduler.internal.BackgroundTaskJobService"
-             android:exported="false"
-             android:permission="android.permission.BIND_JOB_SERVICE"/>
--
-         <!-- Background Task Scheduler alarm receiver -->
+@@ -1040,15 +1005,6 @@ by a child template that "extends" this file.
          <receiver android:name="org.chromium.components.background_task_scheduler.internal.BackgroundTaskBroadcastReceiver"
              android:exported="false" />
  
@@ -408,7 +403,7 @@ diff --git a/chrome/android/java/AndroidManifest.xml b/chrome/android/java/Andro
          <service android:name="org.chromium.chrome.browser.customtabs.CustomTabsConnectionService"
              android:exported="true"
              tools:ignore="ExportedService">
-@@ -1299,12 +1254,6 @@ by a child template that "extends" this file.
+@@ -1299,12 +1255,6 @@ by a child template that "extends" this file.
  
        {% endif %}
  
