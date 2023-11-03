@@ -237,34 +237,34 @@ jobs:
           gpg --homedir ./ -d --passphrase "${{ secrets.KEYSTORE_PASSPHRASE }}" --batch cromite.keystore.asc > cromite.keystore
           echo "::endgroup::"
 
-      - name: Build Cromite Android arm64
-        if: ${{ (github.event.inputs.target_os == 'android' || github.event.inputs.target_os == 'all') && (github.event.inputs.build == 'arm64' || github.event.inputs.build == 'all') }}
+      - name: Build Cromite Android x64
+        if: ${{ (github.event.inputs.target_os == 'android' || github.event.inputs.target_os == 'all') && (github.event.inputs.build == 'x64' || github.event.inputs.build == 'all') }}
         shell: bash
         run: |
           PATH=$WORKSPACE/chromium/src/third_party/llvm-build/Release+Asserts/bin:$WORKSPACE/depot_tools/:/usr/local/go/bin:$WORKSPACE/mtool/bin:$PATH
           cd $WORKSPACE/chromium/src
 
           echo "::group::-------- gn gen"
-          gn gen --args="import(\"/home/lg/working_dir/bromite/build/bromite.gn_args\") $(cat ../../build_args.gni) target_cpu = \"arm64\" " out/arm64
+          gn gen --args="import(\"/home/lg/working_dir/bromite/build/bromite.gn_args\") $(cat ../../build_args.gni) target_cpu = \"x64\" " out/x64
           echo "::endgroup::"
 
           echo "::group::-------- gn args"
-          gn args out/arm64/ --list --short
-          gn args out/arm64/ --list >out/arm64/gn_list
+          gn args out/x64/ --list --short
+          gn args out/x64/ --list >out/x64/gn_list
           echo "::endgroup::"
 
-          ninja -C out/arm64 chrome_public_bundle
-          ninja -C out/arm64 chrome_public_apk
+          ninja -C out/x64 chrome_public_bundle
+          ninja -C out/x64 chrome_public_apk
 
-          cp ../../bromite/build/RELEASE out/arm64
+          cp ../../bromite/build/RELEASE out/x64
 
-      - name: Get ninja logs Android arm64
-        if: ${{ (github.event.inputs.target_os == 'android' || github.event.inputs.target_os == 'all') && (github.event.inputs.build == 'arm64' || github.event.inputs.build == 'all') }}
+      - name: Get ninja logs Android x64
+        if: ${{ (github.event.inputs.target_os == 'android' || github.event.inputs.target_os == 'all') && (github.event.inputs.build == 'x64' || github.event.inputs.build == 'all') }}
         shell: bash
         run: |
           cd $WORKSPACE
-          $WORKSPACE/ninjatracing/ninjatracing -a $WORKSPACE/chromium/src/out/arm64/.ninja_log >$WORKSPACE/chromium/src/out/arm64/ninja_log_trace.json
-          python3 $WORKSPACE/chromium/src/third_party/catapult/tracing/bin/trace2html $WORKSPACE/chromium/src/out/arm64/ninja_log_trace.json
+          $WORKSPACE/ninjatracing/ninjatracing -a $WORKSPACE/chromium/src/out/x64/.ninja_log >$WORKSPACE/chromium/src/out/x64/ninja_log_trace.json
+          python3 $WORKSPACE/chromium/src/third_party/catapult/tracing/bin/trace2html $WORKSPACE/chromium/src/out/x64/ninja_log_trace.json
 
       - name: Build Cromite Windows x64
         if: ${{ github.event.inputs.target_os == 'win' || github.event.inputs.target_os == 'all' }}
@@ -294,34 +294,34 @@ jobs:
           $WORKSPACE/ninjatracing/ninjatracing -a $WORKSPACE/chromium/src/out/win64/.ninja_log >$WORKSPACE/chromium/src/out/win64/ninja_log_trace.json
           python3 $WORKSPACE/chromium/src/third_party/catapult/tracing/bin/trace2html $WORKSPACE/chromium/src/out/win64/ninja_log_trace.json
 
-      - name: Build Cromite Android x64
-        if: ${{ (github.event.inputs.target_os == 'android' || github.event.inputs.target_os == 'all') && (github.event.inputs.build == 'x64' || github.event.inputs.build == 'all') }}
+      - name: Build Cromite Android arm64
+        if: ${{ (github.event.inputs.target_os == 'android' || github.event.inputs.target_os == 'all') && (github.event.inputs.build == 'arm64' || github.event.inputs.build == 'all') }}
         shell: bash
         run: |
           PATH=$WORKSPACE/chromium/src/third_party/llvm-build/Release+Asserts/bin:$WORKSPACE/depot_tools/:/usr/local/go/bin:$WORKSPACE/mtool/bin:$PATH
           cd $WORKSPACE/chromium/src
 
           echo "::group::-------- gn gen"
-          gn gen --args="import(\"/home/lg/working_dir/bromite/build/bromite.gn_args\") $(cat ../../build_args.gni) target_cpu = \"x64\" " out/x64
+          gn gen --args="import(\"/home/lg/working_dir/bromite/build/bromite.gn_args\") $(cat ../../build_args.gni) target_cpu = \"arm64\" " out/arm64
           echo "::endgroup::"
 
           echo "::group::-------- gn args"
-          gn args out/x64/ --list --short
-          gn args out/x64/ --list >out/x64/gn_list
+          gn args out/arm64/ --list --short
+          gn args out/arm64/ --list >out/arm64/gn_list
           echo "::endgroup::"
 
-          ninja -C out/x64 chrome_public_bundle
-          ninja -C out/x64 chrome_public_apk
+          ninja -C out/arm64 chrome_public_bundle
+          ninja -C out/arm64 chrome_public_apk
 
-          cp ../../bromite/build/RELEASE out/x64
+          cp ../../bromite/build/RELEASE out/arm64
 
-      - name: Get ninja logs Android x64
-        if: ${{ (github.event.inputs.target_os == 'android' || github.event.inputs.target_os == 'all') && (github.event.inputs.build == 'x64' || github.event.inputs.build == 'all') }}
+      - name: Get ninja logs Android arm64
+        if: ${{ (github.event.inputs.target_os == 'android' || github.event.inputs.target_os == 'all') && (github.event.inputs.build == 'arm64' || github.event.inputs.build == 'all') }}
         shell: bash
         run: |
           cd $WORKSPACE
-          $WORKSPACE/ninjatracing/ninjatracing -a $WORKSPACE/chromium/src/out/x64/.ninja_log >$WORKSPACE/chromium/src/out/x64/ninja_log_trace.json
-          python3 $WORKSPACE/chromium/src/third_party/catapult/tracing/bin/trace2html $WORKSPACE/chromium/src/out/x64/ninja_log_trace.json
+          $WORKSPACE/ninjatracing/ninjatracing -a $WORKSPACE/chromium/src/out/arm64/.ninja_log >$WORKSPACE/chromium/src/out/arm64/ninja_log_trace.json
+          python3 $WORKSPACE/chromium/src/third_party/catapult/tracing/bin/trace2html $WORKSPACE/chromium/src/out/arm64/ninja_log_trace.json
 
       - name: Generate breakpad symbols for Android arm64
         if: ${{ (github.event.inputs.target_os == 'android' || github.event.inputs.target_os == 'all') && (github.event.inputs.build == 'arm64' || github.event.inputs.build == 'all') }}
