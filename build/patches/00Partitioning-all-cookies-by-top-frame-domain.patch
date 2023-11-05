@@ -9,23 +9,23 @@ samesite=none first-party cookies are sent in third-party contexts.
 
 License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
- .../browser/net/profile_network_context_service.cc   |  8 ++++----
- .../core/common/cookie_settings_base.cc              |  2 +-
- components/content_settings/core/common/features.cc  |  4 ++--
- components/permissions/features.cc                   |  4 ++--
- content/public/common/content_features.cc            |  4 ++--
- net/base/features.cc                                 | 12 ++++++------
- net/cookies/canonical_cookie.cc                      | 12 +-----------
- net/cookies/cookie_deletion_info.cc                  |  3 ++-
- net/cookies/parsed_cookie.h                          |  7 ++++++-
- net/extras/sqlite/sqlite_persistent_cookie_store.cc  | 10 ++++++++++
- net/url_request/url_request_http_job.cc              |  2 +-
- services/network/restricted_cookie_manager.cc        |  3 +++
- .../renderer/modules/cookie_store/cookie_init.idl    |  2 +-
- .../renderer/modules/cookie_store/cookie_store.cc    | 12 ++++++++++++
- .../cookie_store/cookie_store_delete_options.idl     |  2 +-
- ui/webui/webui_allowlist.cc                          |  1 +
- 16 files changed, 55 insertions(+), 33 deletions(-)
+ .../net/profile_network_context_service.cc       |  8 ++++----
+ .../core/common/cookie_settings_base.cc          |  2 +-
+ .../content_settings/core/common/features.cc     |  4 ++--
+ components/permissions/features.cc               |  4 ++--
+ content/public/common/content_features.cc        |  4 ++--
+ net/base/features.cc                             | 16 ++++++++--------
+ net/cookies/canonical_cookie.cc                  | 12 +-----------
+ net/cookies/cookie_deletion_info.cc              |  3 ++-
+ net/cookies/parsed_cookie.h                      |  7 ++++++-
+ .../sqlite/sqlite_persistent_cookie_store.cc     | 10 ++++++++++
+ net/url_request/url_request_http_job.cc          |  2 +-
+ services/network/restricted_cookie_manager.cc    |  3 +++
+ .../modules/cookie_store/cookie_init.idl         |  2 +-
+ .../modules/cookie_store/cookie_store.cc         | 12 ++++++++++++
+ .../cookie_store/cookie_store_delete_options.idl |  2 +-
+ ui/webui/webui_allowlist.cc                      |  1 +
+ 16 files changed, 57 insertions(+), 35 deletions(-)
 
 diff --git a/chrome/browser/net/profile_network_context_service.cc b/chrome/browser/net/profile_network_context_service.cc
 --- a/chrome/browser/net/profile_network_context_service.cc
@@ -128,6 +128,17 @@ diff --git a/net/base/features.cc b/net/base/features.cc
  
  // Enables partitioning of third party storage (IndexedDB, CacheStorage, etc.)
  // by the top level site to reduce fingerprinting.
+@@ -446,8 +446,8 @@ BASE_FEATURE(kEnableSchemeBoundCookies,
+ 
+ // Enable third-party cookie blocking from the command line.
+ BASE_FEATURE(kForceThirdPartyCookieBlocking,
+-             "ForceThirdPartyCookieBlockingEnabled",
+-             base::FEATURE_DISABLED_BY_DEFAULT);
++             "ForceThirdPartyCookieBlockingEnabled", // disabled
++             base::FEATURE_DISABLED_BY_DEFAULT);     // by default
+ 
+ BASE_FEATURE(kEnableEarlyHintsOnHttp11,
+              "EnableEarlyHintsOnHttp11",
 @@ -469,8 +469,8 @@ BASE_FEATURE(kDigestAuthEnableSecureAlgorithms,
  // are disabled by default. Partitioned storage will not be allowed if
  // third-party cookies are disabled due to a specific rule.
