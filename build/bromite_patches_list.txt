@@ -279,9 +279,9 @@ Timezone-customization.patch
 00Add-support-to-jxl.patch
 00Block-Intents-While-Locked.patch
 00Keep-Manta-Service-Disabled.patch
+00Disable-Service-and-Shared-workers-on-3P-iframe.patch
 
 00Temp-PerformanceNavigationTiming-privacy-fix.patch
-00Temp-remove-support-for-shared-workers.patch
 
 00Temp-Disable-kAutomaticLazyFrameLoadingToEmbeds.patch
 00Temp-disable-predictive-back-gesture.patch
