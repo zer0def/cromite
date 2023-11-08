@@ -16,7 +16,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -4940,6 +4940,10 @@ const FeatureEntry kFeatureEntries[] = {
+@@ -4957,6 +4957,10 @@ const FeatureEntry kFeatureEntries[] = {
       kOsWin | kOsLinux | kOsAndroid | kOsCrOS,
       FEATURE_VALUE_TYPE(features::kVulkan)},
  #if BUILDFLAG(IS_ANDROID)
@@ -30,7 +30,7 @@ diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 diff --git a/chrome/browser/flag-metadata.json b/chrome/browser/flag-metadata.json
 --- a/chrome/browser/flag-metadata.json
 +++ b/chrome/browser/flag-metadata.json
-@@ -1807,6 +1807,10 @@
+@@ -1812,6 +1812,10 @@
        "yangsharon@google.com", "alexmos@google.com", "creis@google.com" ],
      "expiry_milestone": 122
    },

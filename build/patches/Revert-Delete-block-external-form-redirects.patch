@@ -20,7 +20,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -10390,6 +10390,12 @@ const FeatureEntry kFeatureEntries[] = {
+@@ -10411,6 +10411,12 @@ const FeatureEntry kFeatureEntries[] = {
           "ServiceWorkerSkipIgnorableFetchHandler")},
  
  #if BUILDFLAG(IS_ANDROID)
@@ -36,7 +36,7 @@ diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 diff --git a/chrome/browser/flag-metadata.json b/chrome/browser/flag-metadata.json
 --- a/chrome/browser/flag-metadata.json
 +++ b/chrome/browser/flag-metadata.json
-@@ -836,6 +836,11 @@
+@@ -841,6 +841,11 @@
      "owners": ["ortuno", "cros-apps-platform-core@google.com" ],
      "expiry_milestone": 132
    },

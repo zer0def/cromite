@@ -105,7 +105,7 @@ diff --git a/chrome/android/BUILD.gn b/chrome/android/BUILD.gn
    }
  
    android_library("app_hooks_java") {
-@@ -452,6 +457,7 @@ if (current_toolchain == default_toolchain) {
+@@ -453,6 +458,7 @@ if (current_toolchain == default_toolchain) {
        "//chrome/browser/xsurface:java",
        "//chrome/browser/xsurface_provider:dependency_provider_impl_java",
        "//chrome/browser/xsurface_provider:java",
@@ -113,7 +113,7 @@ diff --git a/chrome/android/BUILD.gn b/chrome/android/BUILD.gn
        "//components/autofill/android:autofill_java",
        "//components/background_task_scheduler:background_task_scheduler_java",
        "//components/background_task_scheduler:background_task_scheduler_task_ids_java",
-@@ -661,6 +667,7 @@ if (current_toolchain == default_toolchain) {
+@@ -662,6 +668,7 @@ if (current_toolchain == default_toolchain) {
        "//url/mojom:url_mojom_gurl_java",
      ]
  
@@ -121,7 +121,7 @@ diff --git a/chrome/android/BUILD.gn b/chrome/android/BUILD.gn
      deps += feed_deps
  
      srcjar_deps = [
-@@ -1550,6 +1557,7 @@ if (current_toolchain == default_toolchain) {
+@@ -1551,6 +1558,7 @@ if (current_toolchain == default_toolchain) {
        "//chrome/android/webapk/libs/client:client_java",
        "//chrome/android/webapk/libs/common:common_java",
        "//chrome/android/webapk/libs/runtime_library:webapk_service_aidl_java",
@@ -129,7 +129,7 @@ diff --git a/chrome/android/BUILD.gn b/chrome/android/BUILD.gn
        "//chrome/browser/android/browserservices/intents:java",
        "//chrome/browser/android/browserservices/verification:java",
        "//chrome/browser/android/browserservices/verification:javatests",
-@@ -1889,6 +1897,7 @@ if (current_toolchain == default_toolchain) {
+@@ -1890,6 +1898,7 @@ if (current_toolchain == default_toolchain) {
      srcjar_deps = [ "//chrome/browser:tos_dialog_behavior_generated_enum" ]
  
      data = [
@@ -137,7 +137,7 @@ diff --git a/chrome/android/BUILD.gn b/chrome/android/BUILD.gn
        "//chrome/test/data/android/",
        "//chrome/test/data/autofill/",
        "//chrome/test/data/background_sync/",
-@@ -3707,6 +3716,7 @@ group("jni_headers") {
+@@ -3708,6 +3717,7 @@ group("jni_headers") {
      "//chrome/browser/util:jni_headers",
      "//chrome/browser/webauthn/android:jni_headers",
      "//components/browser_ui/device_lock/android:device_lock_bridge_jni_headers",

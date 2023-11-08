@@ -384,7 +384,7 @@ new file mode 100644
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -10234,6 +10234,10 @@ const FeatureEntry kFeatureEntries[] = {
+@@ -10255,6 +10255,10 @@ const FeatureEntry kFeatureEntries[] = {
           features::kBrokerFileOperationsOnDiskCacheInNetworkService)},
  
  #if BUILDFLAG(IS_ANDROID)

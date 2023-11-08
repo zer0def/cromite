@@ -21,7 +21,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -1270,6 +1270,11 @@ const FeatureEntry::Choice kForceColorProfileChoices[] = {
+@@ -1287,6 +1287,11 @@ const FeatureEntry::Choice kForceColorProfileChoices[] = {
       switches::kForceDisplayColorProfile, "hdr10"},
  };
  
@@ -33,7 +33,7 @@ diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
  const FeatureEntry::Choice kMemlogModeChoices[] = {
      {flags_ui::kGenericExperimentChoiceDisabled, "", ""},
      {flag_descriptions::kMemlogModeMinimal, heap_profiling::kMemlogMode,
-@@ -5491,6 +5496,9 @@ const FeatureEntry kFeatureEntries[] = {
+@@ -5508,6 +5513,9 @@ const FeatureEntry kFeatureEntries[] = {
       FEATURE_VALUE_TYPE(chrome::android::kShareSheetCustomActionsPolish)},
  
  #endif  // BUILDFLAG(IS_ANDROID)

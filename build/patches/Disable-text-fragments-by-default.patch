@@ -22,7 +22,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -7218,6 +7218,11 @@ const FeatureEntry kFeatureEntries[] = {
+@@ -7235,6 +7235,11 @@ const FeatureEntry kFeatureEntries[] = {
       flag_descriptions::kLegacyTechReportTopLevelUrlDescription, kOsAll,
       FEATURE_VALUE_TYPE(features::kLegacyTechReportTopLevelUrl)},
  
@@ -37,7 +37,7 @@ diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 diff --git a/chrome/browser/flag-metadata.json b/chrome/browser/flag-metadata.json
 --- a/chrome/browser/flag-metadata.json
 +++ b/chrome/browser/flag-metadata.json
-@@ -3250,6 +3250,11 @@
+@@ -3255,6 +3255,11 @@
      "owners": [ "robsc", "napper", "alanlxl" ],
      "expiry_milestone": 130
    },

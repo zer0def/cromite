@@ -173,7 +173,7 @@ diff --git a/chrome/android/BUILD.gn b/chrome/android/BUILD.gn
        "//base:jni_java",
        "//cc:cc_java",
        "//cc/mojom:mojom_java",
-@@ -624,14 +616,23 @@ if (current_toolchain == default_toolchain) {
+@@ -625,14 +617,23 @@ if (current_toolchain == default_toolchain) {
        "//services/shape_detection:shape_detection_java",
        "//services/shape_detection/public/mojom:mojom_java",
        "//skia/public/mojom:mojom_java",
@@ -200,7 +200,7 @@ diff --git a/chrome/android/BUILD.gn b/chrome/android/BUILD.gn
        "//third_party/android_deps:protobuf_lite_runtime_java",
        "//third_party/android_media:android_media_java",
        "//third_party/android_swipe_refresh:android_swipe_refresh_java",
-@@ -914,12 +915,6 @@ if (current_toolchain == default_toolchain) {
+@@ -915,12 +916,6 @@ if (current_toolchain == default_toolchain) {
        ":chrome_jni_headers",
        ":chrome_unit_test_util_java",
        ":delegate_public_impl_java",
@@ -213,7 +213,7 @@ diff --git a/chrome/android/BUILD.gn b/chrome/android/BUILD.gn
        "//base:base_java_test_support",
        "//base:base_java_test_support_uncommon",
        "//base:base_junit_test_support",
-@@ -1536,13 +1531,6 @@ if (current_toolchain == default_toolchain) {
+@@ -1537,13 +1532,6 @@ if (current_toolchain == default_toolchain) {
        ":chrome_app_java_resources",
        ":chrome_test_util_java",
        ":delegate_public_impl_java",
@@ -227,7 +227,7 @@ diff --git a/chrome/android/BUILD.gn b/chrome/android/BUILD.gn
        "//base:base_java",
        "//base:base_java_test_support",
        "//base:base_java_test_support_uncommon",
-@@ -2458,7 +2446,6 @@ if (current_toolchain == default_toolchain) {
+@@ -2459,7 +2447,6 @@ if (current_toolchain == default_toolchain) {
      ]
      deps = [
        ":chrome_java",
@@ -235,7 +235,7 @@ diff --git a/chrome/android/BUILD.gn b/chrome/android/BUILD.gn
        "//base:base_java",
        "//base:base_java_test_support",
        "//base:jni_java",
-@@ -2552,7 +2539,6 @@ if (current_toolchain == default_toolchain) {
+@@ -2553,7 +2540,6 @@ if (current_toolchain == default_toolchain) {
    # is in a DFM.
    android_library("base_module_java") {
      sources = [
@@ -243,7 +243,7 @@ diff --git a/chrome/android/BUILD.gn b/chrome/android/BUILD.gn
        "java/src/org/chromium/chrome/app/TrichromeZygotePreload.java",
        "java/src/org/chromium/chrome/browser/ChromeBackgroundService.java",
        "java/src/org/chromium/chrome/browser/ChromeBackupAgent.java",
-@@ -2569,8 +2555,6 @@ if (current_toolchain == default_toolchain) {
+@@ -2570,8 +2556,6 @@ if (current_toolchain == default_toolchain) {
        "java/src/org/chromium/chrome/browser/base/SplitCompatBackupAgent.java",
        "java/src/org/chromium/chrome/browser/base/SplitCompatContentProvider.java",
        "java/src/org/chromium/chrome/browser/base/SplitCompatCustomTabsService.java",
@@ -252,7 +252,7 @@ diff --git a/chrome/android/BUILD.gn b/chrome/android/BUILD.gn
        "java/src/org/chromium/chrome/browser/base/SplitCompatIntentService.java",
        "java/src/org/chromium/chrome/browser/base/SplitCompatJobService.java",
        "java/src/org/chromium/chrome/browser/base/SplitCompatMinidumpUploadJobService.java",
-@@ -2593,17 +2577,11 @@ if (current_toolchain == default_toolchain) {
+@@ -2594,17 +2578,11 @@ if (current_toolchain == default_toolchain) {
        "java/src/org/chromium/chrome/browser/notifications/NotificationService.java",
        "java/src/org/chromium/chrome/browser/photo_picker/DecoderService.java",
        "java/src/org/chromium/chrome/browser/provider/ChromeBrowserProvider.java",
@@ -270,7 +270,7 @@ diff --git a/chrome/android/BUILD.gn b/chrome/android/BUILD.gn
        "//base:base_java",
        "//base:jni_java",
        "//chrome/browser/download/android:file_provider_java",
-@@ -2617,7 +2595,6 @@ if (current_toolchain == default_toolchain) {
+@@ -2618,7 +2596,6 @@ if (current_toolchain == default_toolchain) {
        "//components/media_router/browser/android:cast_options_provider_java",
        "//components/minidump_uploader:minidump_uploader_java",
        "//components/module_installer/android:module_installer_java",
@@ -278,7 +278,7 @@ diff --git a/chrome/android/BUILD.gn b/chrome/android/BUILD.gn
        "//third_party/androidx:androidx_annotation_annotation_java",
        "//third_party/androidx:androidx_collection_collection_java",
        "//ui/android:ui_no_recycler_view_java",
-@@ -2636,7 +2613,6 @@ if (current_toolchain == default_toolchain) {
+@@ -2637,7 +2614,6 @@ if (current_toolchain == default_toolchain) {
        # Deps to pull services into base module.
        # TODO(crbug.com/1126301): Consider moving these to the chrome module to
        # reduce base dex size.

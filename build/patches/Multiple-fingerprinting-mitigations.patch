@@ -80,7 +80,7 @@ diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
  #if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
  #include "base/allocator/buildflags.h"
  #endif
-@@ -4160,6 +4162,20 @@ const FeatureEntry kFeatureEntries[] = {
+@@ -4177,6 +4179,20 @@ const FeatureEntry kFeatureEntries[] = {
       flag_descriptions::kWebrtcUseMinMaxVEADimensionsName,
       flag_descriptions::kWebrtcUseMinMaxVEADimensionsDescription, kOsAll,
       FEATURE_VALUE_TYPE(blink::features::kWebRtcUseMinMaxVEADimensions)},

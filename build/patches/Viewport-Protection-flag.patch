@@ -33,7 +33,7 @@ The feature is controlled by a feature flag (default enabled)
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -10458,6 +10458,11 @@ const FeatureEntry kFeatureEntries[] = {
+@@ -10479,6 +10479,11 @@ const FeatureEntry kFeatureEntries[] = {
           kServiceWorkerSkipIgnorableFetchHandlerVariations,
           "ServiceWorkerSkipIgnorableFetchHandler")},
  
@@ -48,7 +48,7 @@ diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descriptions.cc
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -7761,6 +7761,12 @@ const char kWebXrInternalsDescription[] =
+@@ -7767,6 +7767,12 @@ const char kWebXrInternalsDescription[] =
      "debug issues with the WebXR Device API.";
  #endif  // #if defined(ENABLE_VR)
  
@@ -64,7 +64,7 @@ diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descripti
 diff --git a/chrome/browser/flag_descriptions.h b/chrome/browser/flag_descriptions.h
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -4488,6 +4488,9 @@ extern const char kPaintPreviewDemoName[];
+@@ -4491,6 +4491,9 @@ extern const char kPaintPreviewDemoName[];
  extern const char kPaintPreviewDemoDescription[];
  #endif  // ENABLE_PAINT_PREVIEW && BUILDFLAG(IS_ANDROID)
  
