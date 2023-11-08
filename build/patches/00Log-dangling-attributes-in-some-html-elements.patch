@@ -27,7 +27,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -5361,7 +5361,10 @@ const FeatureEntry kFeatureEntries[] = {
+@@ -5378,7 +5378,10 @@ const FeatureEntry kFeatureEntries[] = {
       flag_descriptions::kWebShareDescription, kOsWin | kOsCrOS | kOsMac,
       FEATURE_VALUE_TYPE(features::kWebShare)},
  #endif  // BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_WIN) || BUILDFLAG(IS_MAC)

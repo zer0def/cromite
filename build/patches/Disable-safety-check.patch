@@ -24,7 +24,7 @@ diff --git a/chrome/android/BUILD.gn b/chrome/android/BUILD.gn
        "//chrome/browser/screenshot_monitor:java",
        "//chrome/browser/search_engines/android:java",
        "//chrome/browser/search_resumption:java",
-@@ -1032,8 +1031,6 @@ if (current_toolchain == default_toolchain) {
+@@ -1033,8 +1032,6 @@ if (current_toolchain == default_toolchain) {
        "//chrome/browser/recent_tabs:java",
        "//chrome/browser/recent_tabs:junit",
        "//chrome/browser/recent_tabs/internal:junit",
@@ -33,7 +33,7 @@ diff --git a/chrome/android/BUILD.gn b/chrome/android/BUILD.gn
        "//chrome/browser/screenshot_monitor:java",
        "//chrome/browser/search_engines/android:java",
        "//chrome/browser/search_engines/android:junit",
-@@ -1637,8 +1634,6 @@ if (current_toolchain == default_toolchain) {
+@@ -1638,8 +1635,6 @@ if (current_toolchain == default_toolchain) {
        "//chrome/browser/quick_delete:javatests",
        "//chrome/browser/safe_browsing/android:java",
        "//chrome/browser/safe_browsing/android:javatests",

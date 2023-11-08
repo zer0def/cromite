@@ -276,7 +276,7 @@ diff --git a/components/autofill/core/browser/autofill_optimization_guide.cc b/c
 diff --git a/components/optimization_guide/core/hints_fetcher.cc b/components/optimization_guide/core/hints_fetcher.cc
 --- a/components/optimization_guide/core/hints_fetcher.cc
 +++ b/components/optimization_guide/core/hints_fetcher.cc
-@@ -178,6 +178,7 @@ bool HintsFetcher::FetchOptimizationGuideServiceHints(
+@@ -182,6 +182,7 @@ bool HintsFetcher::FetchOptimizationGuideServiceHints(
      const std::string& access_token,
      bool skip_cache,
      HintsFetchedCallback hints_fetched_callback) {
@@ -287,7 +287,7 @@ diff --git a/components/optimization_guide/core/hints_fetcher.cc b/components/op
 diff --git a/components/optimization_guide/core/hints_manager.cc b/components/optimization_guide/core/hints_manager.cc
 --- a/components/optimization_guide/core/hints_manager.cc
 +++ b/components/optimization_guide/core/hints_manager.cc
-@@ -389,6 +389,7 @@ void HintsManager::Shutdown() {
+@@ -391,6 +391,7 @@ void HintsManager::Shutdown() {
  OptimizationGuideDecision
  HintsManager::GetOptimizationGuideDecisionFromOptimizationTypeDecision(
      OptimizationTypeDecision optimization_type_decision) {
@@ -295,7 +295,7 @@ diff --git a/components/optimization_guide/core/hints_manager.cc b/components/op
    switch (optimization_type_decision) {
      case OptimizationTypeDecision::kAllowedByOptimizationFilter:
      case OptimizationTypeDecision::kAllowedByHint:
-@@ -1097,6 +1098,7 @@ void HintsManager::CanApplyOptimizationOnDemand(
+@@ -1099,6 +1100,7 @@ void HintsManager::CanApplyOptimizationOnDemand(
      proto::RequestContext request_context,
      OnDemandOptimizationGuideDecisionRepeatingCallback callback) {
    DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
@@ -303,7 +303,7 @@ diff --git a/components/optimization_guide/core/hints_manager.cc b/components/op
  
    InsertionOrderedSet<GURL> urls_to_fetch;
    InsertionOrderedSet<std::string> hosts_to_fetch;
-@@ -1387,6 +1389,9 @@ OptimizationTypeDecision HintsManager::CanApplyOptimization(
+@@ -1389,6 +1391,9 @@ OptimizationTypeDecision HintsManager::CanApplyOptimization(
      bool skip_cache,
      OptimizationMetadata* optimization_metadata) {
    DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);

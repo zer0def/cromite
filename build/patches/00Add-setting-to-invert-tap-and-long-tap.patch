@@ -145,7 +145,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tab/TabContextM
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -8404,6 +8404,11 @@ const FeatureEntry kFeatureEntries[] = {
+@@ -8425,6 +8425,11 @@ const FeatureEntry kFeatureEntries[] = {
       FEATURE_VALUE_TYPE(features::kElasticOverscroll)},
  #endif
  

@@ -19,7 +19,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -8430,6 +8430,10 @@ const FeatureEntry kFeatureEntries[] = {
+@@ -8451,6 +8451,10 @@ const FeatureEntry kFeatureEntries[] = {
       FEATURE_VALUE_TYPE(features::kNewMacNotificationAPI)},
  #endif
  
@@ -46,7 +46,7 @@ diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descripti
 diff --git a/chrome/browser/flag_descriptions.h b/chrome/browser/flag_descriptions.h
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -4466,6 +4466,8 @@ extern const char kWebUITabStripContextMenuAfterTapName[];
+@@ -4469,6 +4469,8 @@ extern const char kWebUITabStripContextMenuAfterTapName[];
  extern const char kWebUITabStripContextMenuAfterTapDescription[];
  #endif  // BUILDFLAG(ENABLE_WEBUI_TAB_STRIP)
  

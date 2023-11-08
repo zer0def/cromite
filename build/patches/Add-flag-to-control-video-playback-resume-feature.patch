@@ -15,7 +15,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -4192,6 +4192,10 @@ const FeatureEntry kFeatureEntries[] = {
+@@ -4209,6 +4209,10 @@ const FeatureEntry kFeatureEntries[] = {
           chrome::android::kContextualSearchSuppressShortView,
           kContextualSearchSuppressShortViewVariations,
           "ContextualSearchSuppressShortView")},

@@ -473,7 +473,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/customtabs/Cust
  import java.lang.annotation.Retention;
  import java.lang.annotation.RetentionPolicy;
  import java.util.ArrayList;
-@@ -1260,7 +1263,7 @@ public class CustomTabIntentDataProvider extends BrowserServicesIntentDataProvid
+@@ -1263,7 +1266,7 @@ public class CustomTabIntentDataProvider extends BrowserServicesIntentDataProvid
  
      @Override
      public boolean isIncognito() {
@@ -1188,7 +1188,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/webapps/WebappI
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -5409,6 +5409,10 @@ const FeatureEntry kFeatureEntries[] = {
+@@ -5426,6 +5426,10 @@ const FeatureEntry kFeatureEntries[] = {
       flag_descriptions::kOfflinePagesLivePageSharingName,
       flag_descriptions::kOfflinePagesLivePageSharingDescription, kOsAndroid,
       FEATURE_VALUE_TYPE(offline_pages::kOfflinePagesLivePageSharingFeature)},

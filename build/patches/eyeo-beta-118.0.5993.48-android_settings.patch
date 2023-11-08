@@ -253,7 +253,7 @@ diff --git a/chrome/android/BUILD.gn b/chrome/android/BUILD.gn
    }
  
    android_library("app_hooks_java") {
-@@ -667,6 +670,9 @@ if (current_toolchain == default_toolchain) {
+@@ -668,6 +671,9 @@ if (current_toolchain == default_toolchain) {
        "//url/mojom:url_mojom_gurl_java",
      ]
  

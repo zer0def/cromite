@@ -22,7 +22,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -9816,6 +9816,11 @@ const FeatureEntry kFeatureEntries[] = {
+@@ -9837,6 +9837,11 @@ const FeatureEntry kFeatureEntries[] = {
       flag_descriptions::kDesksTemplatesDescription, kOsCrOS,
       FEATURE_VALUE_TYPE(ash::features::kDesksTemplates)},
  #endif
@@ -37,7 +37,7 @@ diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 diff --git a/chrome/browser/flag-metadata.json b/chrome/browser/flag-metadata.json
 --- a/chrome/browser/flag-metadata.json
 +++ b/chrome/browser/flag-metadata.json
-@@ -3329,6 +3329,11 @@
+@@ -3334,6 +3334,11 @@
      // Added feature, for testing. expiry deep in future.
      "expiry_milestone": 116
    },

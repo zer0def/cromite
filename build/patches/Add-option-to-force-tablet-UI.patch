@@ -59,7 +59,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ui/RootUiCoordi
  import org.chromium.chrome.browser.price_tracking.PriceTrackingButtonController;
  import org.chromium.chrome.browser.profiles.Profile;
  import org.chromium.chrome.browser.quick_delete.QuickDeleteController;
-@@ -1438,7 +1439,9 @@ public class RootUiCoordinator
+@@ -1444,7 +1445,9 @@ public class RootUiCoordinator
          if (!mSupportsFindInPageSupplier.getAsBoolean()) return;
  
          int stubId = R.id.find_toolbar_stub;
