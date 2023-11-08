@@ -13,12 +13,12 @@ SYSBOX_UID=$(cat /etc/subuid | grep sysbox | cut -d : -f 2)
 mkdir -p $GHRUNNERHOME/tmp/proxy
 mkdir -p $GHRUNNERHOME/tmp/forward-proxy
 mkdir -p $GHRUNNERHOME/redis
+mkdir -p $GHRUNNERHOME/var/run
 
 sudo chown $SYSBOX_UID:$SYSBOX_UID $GHRUNNERHOME/tmp/proxy
 sudo chown $SYSBOX_UID:$SYSBOX_UID $GHRUNNERHOME/tmp/forward-proxy
 sudo chown $SYSBOX_UID:$SYSBOX_UID $GHRUNNERHOME/redis
-#sudo rm $GHRUNNERHOME/var/run/docker.socks
-#sudo chown $SYSBOX_UID:$SYSBOX_UID $GHRUNNERHOME/docker-inner
+sudo chown $SYSBOX_UID:$SYSBOX_UID $GHRUNNERHOME/var/run
 
 docker run --rm -d --runtime=sysbox-runc \
   --name=gh-proxy \
