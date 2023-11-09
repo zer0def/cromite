@@ -159,6 +159,9 @@ In addition, Cromite would like to promote greater integration with other non-pr
 * Keep Manta Service Disabled [patch](https://github.com/uazo/cromite/blob/master/build/patches/00Keep-Manta-Service-Disabled.patch)
 * (Only windows) Hide the presence of the webcam if the user has not given permission #480
 
+##### from [119.0.6045.124](https://github.com/uazo/cromite/issues/484#issuecomment-17887448441)
+* Disable Service and Shared workers on 3P iframe by default [patch](https://github.com/uazo/cromite/commit/8f293b2c9927f1185bbf95e11a280898fe9baa9a)
+
 #### Windows Cromite-specific features
 
 * enable Network Service Sandbox by default
