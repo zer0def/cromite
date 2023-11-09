@@ -186,7 +186,7 @@ jobs:
         - /storage/images/${{ github.event.inputs.sha }}/android/${{ github.event.inputs.debug }}/arm:/home/lg/working_dir/chromium/src/out/arm
         - /storage/images/${{ github.event.inputs.sha }}/android/${{ github.event.inputs.debug }}/arm64:/home/lg/working_dir/chromium/src/out/arm64
         - /storage/images/${{ github.event.inputs.sha }}/android/${{ github.event.inputs.debug }}/x64:/home/lg/working_dir/chromium/src/out/x64
-        - /storage/images/${{ github.event.inputs.sha }}/android/${{ github.event.inputs.debug }}/lin64:/home/lg/working_dir/chromium/src/out/lin64
+        - /storage/images/${{ github.event.inputs.sha }}/linux/${{ github.event.inputs.debug }}/lin64:/home/lg/working_dir/chromium/src/out/lin64
         - /storage/images/${{ github.event.inputs.sha }}/win/x64:/home/lg/working_dir/chromium/src/out/win64
         - /tmp/proxy:/tmp/proxy
         - /win_sdk:/win_sdk
