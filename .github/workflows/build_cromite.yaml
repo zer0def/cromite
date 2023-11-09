@@ -390,7 +390,7 @@ jobs:
           cd $WORKSPACE/chromium/src
 
           echo "::group::-------- gn gen"
-          gn gen --args="import(\"/home/lg/working_dir/bromite/build/bromite.gn_args\") $(cat ../../build_args.gni) target_cpu = \"x64\" use_sysroot = true " out/lin64
+          gn gen --args="import(\"/home/lg/working_dir/bromite/build/bromite.gn_args\") target_os = \"linux\" $(cat ../../build_args.gni) target_cpu = \"x64\" use_sysroot = true " out/lin64
           echo "::endgroup::"
 
           echo "::group::-------- gn args"
