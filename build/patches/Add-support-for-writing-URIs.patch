@@ -70,7 +70,7 @@ diff --git a/base/android/java/src/org/chromium/base/ContentUriUtils.java b/base
 +            ContentResolver resolver = ContextUtils.getApplicationContext().getContentResolver();
 +            ContentProviderClient client = resolver.acquireContentProviderClient(
 +                                            uri.getAuthority());
-+            ParcelFileDescriptor pfd = client.openFile(uri, "rw");
++            ParcelFileDescriptor pfd = client.openFile(uri, "wt");
 +            int fd = pfd.detachFd();
 +            client.close();
 +            return fd;
