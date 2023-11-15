@@ -281,6 +281,7 @@ Timezone-customization.patch
 00Keep-Manta-Service-Disabled.patch
 00Disable-Service-and-Shared-workers-on-3P-iframe.patch
 00Disable-Real-Box.patch
+00Always-allow-inspect-fallback.patch
 
 00Temp-PerformanceNavigationTiming-privacy-fix.patch
 
