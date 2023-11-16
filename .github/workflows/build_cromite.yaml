@@ -223,7 +223,7 @@ jobs:
             sudo chown lg chromium/src/out/x64
 
           test -d chromium/src/out/lin64 || sudo mkdir -p chromium/src/out/lin64 && \
-            sudo chown lg chromium/src/lin64 &&
+            sudo chown lg chromium/src/out &&
             sudo chown lg chromium/src/out/lin64
             
           # make kythe output directory
@@ -394,8 +394,8 @@ jobs:
           echo "::endgroup::"
 
           echo "::group::-------- gn args"
-          gn args out/arm/ --list --short
-          gn args out/arm/ --list >out/lin64/gn_list
+          gn args out/lin64/ --list --short
+          gn args out/lin64/ --list >out/lin64/gn_list
           echo "::endgroup::"
 
           ninja -C out/lin64 chrome
