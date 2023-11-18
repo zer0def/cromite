@@ -7,9 +7,9 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
  chrome/browser/flag-metadata.json                           | 4 ++--
  chrome/browser/flag_descriptions.cc                         | 2 +-
- device/gamepad/public/cpp/gamepad_features.cc               | 4 ++--
+ device/gamepad/public/cpp/gamepad_features.cc               | 1 +
  .../blink/renderer/modules/gamepad/navigator_gamepad.cc     | 6 ++++++
- 4 files changed, 11 insertions(+), 5 deletions(-)
+ 4 files changed, 10 insertions(+), 3 deletions(-)
 
 diff --git a/chrome/browser/flag-metadata.json b/chrome/browser/flag-metadata.json
 --- a/chrome/browser/flag-metadata.json
@@ -41,17 +41,12 @@ diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descripti
 diff --git a/device/gamepad/public/cpp/gamepad_features.cc b/device/gamepad/public/cpp/gamepad_features.cc
 --- a/device/gamepad/public/cpp/gamepad_features.cc
 +++ b/device/gamepad/public/cpp/gamepad_features.cc
-@@ -27,8 +27,8 @@ BASE_FEATURE(kEnableWindowsGamingInputDataFetcher,
-              base::FEATURE_ENABLED_BY_DEFAULT);
+@@ -65,4 +65,5 @@ bool IsGamepadMultitouchEnabled() {
+   return false;
+ }
  
- BASE_FEATURE(kRestrictGamepadAccess,
--             "RestrictGamepadAccess",
--             base::FEATURE_DISABLED_BY_DEFAULT);
-+             "RestrictGamepadAccess",             // enabled
-+             base::FEATURE_ENABLED_BY_DEFAULT);   // in bromite
- 
- // Enables gamepad multitouch
- BASE_FEATURE(kEnableGamepadMultitouch,
++SET_CROMITE_FEATURE_ENABLED(kRestrictGamepadAccess);
+ }  // namespace features
 diff --git a/third_party/blink/renderer/modules/gamepad/navigator_gamepad.cc b/third_party/blink/renderer/modules/gamepad/navigator_gamepad.cc
 --- a/third_party/blink/renderer/modules/gamepad/navigator_gamepad.cc
 +++ b/third_party/blink/renderer/modules/gamepad/navigator_gamepad.cc

@@ -4,54 +4,28 @@ Subject: Keep Side Panel Companion disabled
 
 License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
- chrome/browser/companion/core/features.cc     | 23 ++++++++++---------
- .../ui/side_search/side_search_prefs.cc       |  2 +-
- chrome/browser/ui/ui_features.cc              |  2 +-
- components/search_engines/template_url.cc     |  2 +-
- 4 files changed, 15 insertions(+), 14 deletions(-)
+ chrome/browser/companion/core/features.cc          | 6 ++++++
+ chrome/browser/ui/side_search/side_search_prefs.cc | 2 +-
+ chrome/browser/ui/ui_features.cc                   | 2 +-
+ components/search_engines/template_url.cc          | 2 +-
+ 4 files changed, 9 insertions(+), 3 deletions(-)
 
 diff --git a/chrome/browser/companion/core/features.cc b/chrome/browser/companion/core/features.cc
 --- a/chrome/browser/companion/core/features.cc
 +++ b/chrome/browser/companion/core/features.cc
-@@ -23,17 +23,17 @@ namespace internal {
- // `kSidePanelCompanion2`. This makes it possible for Companion to be
- // enabled via multiple field trials (e.g., one that's session consistent, other
- // that's permanent consistent).
--BASE_FEATURE(kSidePanelCompanion,
--             "SidePanelCompanion",
--             base::FEATURE_DISABLED_BY_DEFAULT);
--BASE_FEATURE(kSidePanelCompanion2,
--             "SidePanelCompanion2",
--             base::FEATURE_DISABLED_BY_DEFAULT);
-+BASE_FEATURE(kSidePanelCompanion,                           // keep
-+             "SidePanelCompanion",                          // disabled
-+             base::FEATURE_DISABLED_BY_DEFAULT);            // in bromite
-+BASE_FEATURE(kSidePanelCompanion2,                          // keep
-+             "SidePanelCompanion2",                         // disabled
-+             base::FEATURE_DISABLED_BY_DEFAULT);            // in bromite
- // Dynamically enables the search companion if the user has experiments
- // enabled.
--BASE_FEATURE(kCompanionEnabledByObservingExpsNavigations,
--             "CompanionEnabledByObservingExpsNavigations",
--             base::FEATURE_DISABLED_BY_DEFAULT);
-+BASE_FEATURE(kCompanionEnabledByObservingExpsNavigations,   // keep
-+             "CompanionEnabledByObservingExpsNavigations",  // disabled
-+             base::FEATURE_DISABLED_BY_DEFAULT);            // in bromite
- }  // namespace internal
- 
- // When search companion is enabled, show a context menu item that allows the
-@@ -53,8 +53,8 @@ BASE_FEATURE(kCompanionEnableNewBadgesInContextMenu,
- // user had previously opted in. The user won't be able to opt in (or out) when
- // this is disabled.
+@@ -55,6 +55,11 @@ BASE_FEATURE(kCompanionEnableNewBadgesInContextMenu,
  BASE_FEATURE(kCompanionEnablePageContent,
--             "CompanionEnablePageContent",
--             base::FEATURE_DISABLED_BY_DEFAULT);
-+             "CompanionEnablePageContent",       // keep
-+             base::FEATURE_DISABLED_BY_DEFAULT); // disabled
+              "CompanionEnablePageContent",
+              base::FEATURE_DISABLED_BY_DEFAULT);
++
++SET_CROMITE_FEATURE_DISABLED_W_NAMESPACE(internal, kSidePanelCompanion);
++SET_CROMITE_FEATURE_DISABLED_W_NAMESPACE(internal, kSidePanelCompanion2);
++SET_CROMITE_FEATURE_DISABLED_W_NAMESPACE(internal, kCompanionEnabledByObservingExpsNavigations);
++SET_CROMITE_FEATURE_DISABLED(kCompanionEnablePageContent);
  }  // namespace features
  
  namespace switches {
-@@ -65,6 +65,7 @@ const char kDisableCheckUserPermissionsForCompanion[] =
+@@ -65,6 +70,7 @@ const char kDisableCheckUserPermissionsForCompanion[] =
  const char kForceCompanionPinnedState[] = "force-companion-pinned-state";
  
  bool ShouldOverrideCheckingUserPermissionsForCompanion() {

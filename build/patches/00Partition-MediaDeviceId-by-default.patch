@@ -5,30 +5,24 @@ Subject: Partition MediaDeviceId by default
 and, in windows, hide the presence of the webcam if the user has not given permission
 License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
- components/media_device_salt/media_device_salt_service.cc | 8 ++++----
- .../browser/renderer_host/media/media_devices_manager.cc  | 5 +++++
- content/common/features.cc                                | 4 ++--
- 3 files changed, 11 insertions(+), 6 deletions(-)
+ components/media_device_salt/media_device_salt_service.cc    | 3 +++
+ content/browser/renderer_host/media/media_devices_manager.cc | 5 +++++
+ content/common/features.cc                                   | 4 ++--
+ 3 files changed, 10 insertions(+), 2 deletions(-)
 
 diff --git a/components/media_device_salt/media_device_salt_service.cc b/components/media_device_salt/media_device_salt_service.cc
 --- a/components/media_device_salt/media_device_salt_service.cc
 +++ b/components/media_device_salt/media_device_salt_service.cc
-@@ -23,11 +23,11 @@
- namespace media_device_salt {
+@@ -29,6 +29,9 @@ BASE_FEATURE(kMediaDeviceIdRandomSaltsPerStorageKey,
+              "MediaDeviceIdRandomSaltsPerStorageKey",
+              base::FEATURE_DISABLED_BY_DEFAULT);
  
- BASE_FEATURE(kMediaDeviceIdPartitioning,
--             "MediaDeviceIdPartitioning",
--             base::FEATURE_ENABLED_BY_DEFAULT);
-+             "MediaDeviceIdPartitioning",             // keep
-+             base::FEATURE_ENABLED_BY_DEFAULT);       // enabled
- BASE_FEATURE(kMediaDeviceIdRandomSaltsPerStorageKey,
--             "MediaDeviceIdRandomSaltsPerStorageKey",
--             base::FEATURE_DISABLED_BY_DEFAULT);
-+             "MediaDeviceIdRandomSaltsPerStorageKey", // enabled
-+             base::FEATURE_ENABLED_BY_DEFAULT);       // by default
- 
++SET_CROMITE_FEATURE_ENABLED(kMediaDeviceIdPartitioning);
++SET_CROMITE_FEATURE_ENABLED(kMediaDeviceIdRandomSaltsPerStorageKey);
++
  namespace {
  
+ scoped_refptr<base::SequencedTaskRunner> CreateDatabaseTaskRunner() {
 diff --git a/content/browser/renderer_host/media/media_devices_manager.cc b/content/browser/renderer_host/media/media_devices_manager.cc
 --- a/content/browser/renderer_host/media/media_devices_manager.cc
 +++ b/content/browser/renderer_host/media/media_devices_manager.cc
