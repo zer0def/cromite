@@ -318,7 +318,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/suggestions/Sug
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -5581,6 +5581,9 @@ const FeatureEntry kFeatureEntries[] = {
+@@ -5567,6 +5567,9 @@ const FeatureEntry kFeatureEntries[] = {
       SINGLE_VALUE_TYPE_AND_VALUE(
           switches::kForceShowUpdateMenuItemCustomSummary,
           "Custom Summary")},
@@ -331,7 +331,7 @@ diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descriptions.cc
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -4507,6 +4507,9 @@ const char kStartSurfaceWithAccessibilityName[] =
+@@ -4502,6 +4502,9 @@ const char kStartSurfaceWithAccessibilityName[] =
  const char kStartSurfaceWithAccessibilityDescription[] =
      "Enable Start Surface with Accessibility.";
  
@@ -344,7 +344,7 @@ diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descripti
 diff --git a/chrome/browser/flag_descriptions.h b/chrome/browser/flag_descriptions.h
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -2628,6 +2628,9 @@ extern const char kSmartZoomDescription[];
+@@ -2625,6 +2625,9 @@ extern const char kSmartZoomDescription[];
  extern const char kSmartSuggestionForLargeDownloadsName[];
  extern const char kSmartSuggestionForLargeDownloadsDescription[];
  

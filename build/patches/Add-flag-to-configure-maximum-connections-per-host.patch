@@ -33,7 +33,7 @@ diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
  const FeatureEntry::Choice kMemlogModeChoices[] = {
      {flags_ui::kGenericExperimentChoiceDisabled, "", ""},
      {flag_descriptions::kMemlogModeMinimal, heap_profiling::kMemlogMode,
-@@ -5508,6 +5513,9 @@ const FeatureEntry kFeatureEntries[] = {
+@@ -5494,6 +5499,9 @@ const FeatureEntry kFeatureEntries[] = {
       FEATURE_VALUE_TYPE(chrome::android::kShareSheetCustomActionsPolish)},
  
  #endif  // BUILDFLAG(IS_ANDROID)

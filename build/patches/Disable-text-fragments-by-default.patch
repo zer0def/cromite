@@ -22,7 +22,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -7235,6 +7235,11 @@ const FeatureEntry kFeatureEntries[] = {
+@@ -7216,6 +7216,11 @@ const FeatureEntry kFeatureEntries[] = {
       flag_descriptions::kLegacyTechReportTopLevelUrlDescription, kOsAll,
       FEATURE_VALUE_TYPE(features::kLegacyTechReportTopLevelUrl)},
  

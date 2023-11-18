@@ -29,7 +29,7 @@ diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
  #include "components/shared_highlighting/core/common/shared_highlighting_features.h"
  #include "components/signin/core/browser/dice_account_reconcilor_delegate.h"
  #include "components/signin/public/base/signin_buildflags.h"
-@@ -9936,6 +9937,11 @@ const FeatureEntry kFeatureEntries[] = {
+@@ -9917,6 +9918,11 @@ const FeatureEntry kFeatureEntries[] = {
                                      kLargeFaviconFromGoogleVariations,
                                      "LargeFaviconFromGoogle")},
  
@@ -44,7 +44,7 @@ diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descriptions.cc
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -3820,6 +3820,11 @@ const char kSkipServiceWorkerFetchHandlerDescription[] =
+@@ -3815,6 +3815,11 @@ const char kSkipServiceWorkerFetchHandlerDescription[] =
      "Skips starting the service worker and run the fetch handler if the fetch "
      "handler is recognized as skippable.";
  
@@ -59,7 +59,7 @@ diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descripti
 diff --git a/chrome/browser/flag_descriptions.h b/chrome/browser/flag_descriptions.h
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -2234,6 +2234,9 @@ extern const char kReduceAcceptLanguageDescription[];
+@@ -2231,6 +2231,9 @@ extern const char kReduceAcceptLanguageDescription[];
  extern const char kSkipServiceWorkerFetchHandlerName[];
  extern const char kSkipServiceWorkerFetchHandlerDescription[];
  
