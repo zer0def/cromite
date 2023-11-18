@@ -23,7 +23,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -5430,6 +5430,9 @@ const FeatureEntry kFeatureEntries[] = {
+@@ -5416,6 +5416,9 @@ const FeatureEntry kFeatureEntries[] = {
      {"system-keyboard-lock", flag_descriptions::kSystemKeyboardLockName,
       flag_descriptions::kSystemKeyboardLockDescription, kOsDesktop,
       FEATURE_VALUE_TYPE(features::kSystemKeyboardLock)},
@@ -190,9 +190,9 @@ diff --git a/ui/base/ui_base_features.cc b/ui/base/ui_base_features.cc
               "SystemKeyboardLock",
               base::FEATURE_ENABLED_BY_DEFAULT);
  
-+BASE_FEATURE(kSystemKeyboardProtection,
-+             "SystemKeyboardProtection",
-+             base::FEATURE_ENABLED_BY_DEFAULT);
++CROMITE_FEATURE(kSystemKeyboardProtection,
++                "SystemKeyboardProtection",
++                base::FEATURE_ENABLED_BY_DEFAULT);
 +
 +bool IsSystemKeyboardProtectionEnabled() {
 +  return base::FeatureList::IsEnabled(kSystemKeyboardProtection);
