@@ -25,7 +25,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -7965,6 +7965,11 @@ const FeatureEntry kFeatureEntries[] = {
+@@ -7946,6 +7946,11 @@ const FeatureEntry kFeatureEntries[] = {
       flag_descriptions::kFileSystemObserverDescription, kOsAll,
       FEATURE_VALUE_TYPE(blink::features::kFileSystemObserver)},
  

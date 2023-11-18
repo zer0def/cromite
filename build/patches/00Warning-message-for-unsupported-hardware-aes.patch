@@ -111,7 +111,7 @@ diff --git a/chrome/app/generated_resources.grd b/chrome/app/generated_resources
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -8433,6 +8433,10 @@ const FeatureEntry kFeatureEntries[] = {
+@@ -8414,6 +8414,10 @@ const FeatureEntry kFeatureEntries[] = {
       flag_descriptions::kViewportSegmentsDescription, kOsAll,
       FEATURE_VALUE_TYPE(features::kViewportSegments)},
  

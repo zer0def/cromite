@@ -206,7 +206,7 @@ diff --git a/cc/tiles/image_decode_cache.h b/cc/tiles/image_decode_cache.h
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -8939,6 +8939,12 @@ const FeatureEntry kFeatureEntries[] = {
+@@ -8920,6 +8920,12 @@ const FeatureEntry kFeatureEntries[] = {
       FEATURE_VALUE_TYPE(download::features::kSmartSuggestionForLargeDownloads)},
  #endif  // BUILDFLAG(IS_ANDROID)
  
@@ -237,7 +237,7 @@ diff --git a/chrome/browser/flag-metadata.json b/chrome/browser/flag-metadata.js
 diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descriptions.cc
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -7720,6 +7720,13 @@ const char kDcheckIsFatalDescription[] =
+@@ -7715,6 +7715,13 @@ const char kDcheckIsFatalDescription[] =
      "rather than crashing. If enabled, DCHECKs will crash the calling process.";
  #endif  // BUILDFLAG(DCHECK_IS_CONFIGURABLE)
  
@@ -254,7 +254,7 @@ diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descripti
 diff --git a/chrome/browser/flag_descriptions.h b/chrome/browser/flag_descriptions.h
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -4462,6 +4462,11 @@ extern const char kDcheckIsFatalName[];
+@@ -4459,6 +4459,11 @@ extern const char kDcheckIsFatalName[];
  extern const char kDcheckIsFatalDescription[];
  #endif  // BUILDFLAG(DCHECK_IS_CONFIGURABLE)
  

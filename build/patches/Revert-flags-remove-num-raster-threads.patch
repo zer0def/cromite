@@ -33,7 +33,7 @@ diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
  const FeatureEntry::Choice kTouchTextSelectionStrategyChoices[] = {
      {flags_ui::kGenericExperimentChoiceDefault, "", ""},
      {flag_descriptions::kTouchSelectionStrategyCharacter,
-@@ -5115,6 +5126,9 @@ const FeatureEntry kFeatureEntries[] = {
+@@ -5101,6 +5112,9 @@ const FeatureEntry kFeatureEntries[] = {
       FEATURE_VALUE_TYPE(mojo::core::kMojoLinuxChannelSharedMem)},
  #endif
  #if BUILDFLAG(IS_ANDROID)
