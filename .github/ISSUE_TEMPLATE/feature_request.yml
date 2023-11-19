@@ -40,6 +40,7 @@ body:
       description: Features that are not related to privacy are not considered.
       multiple: false
       options:
+        - "<please select>"
         - "Yes"
         - "No"
     validations:
