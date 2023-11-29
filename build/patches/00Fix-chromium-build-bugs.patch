@@ -464,9 +464,9 @@ diff --git a/content/browser/browser_interface_binders.cc b/content/browser/brow
      RenderFrameHost* host,
      mojo::PendingReceiver<blink::mojom::TextSuggestionHost> receiver) {
 +  if ((true)) return;
-   auto* view = static_cast<RenderWidgetHostViewAndroid*>(host->GetView());
+   auto* view =
+       RenderWidgetHostViewAndroid::FromRenderWidgetHostView(host->GetView());
    if (!view || !view->text_suggestion_host())
-     return;
 diff --git a/crypto/BUILD.gn b/crypto/BUILD.gn
 --- a/crypto/BUILD.gn
 +++ b/crypto/BUILD.gn
