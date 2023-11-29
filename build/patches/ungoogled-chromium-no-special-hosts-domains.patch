@@ -55,11 +55,12 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  components/search_provider_logos/BUILD.gn     |   2 -
  .../logo_service_impl.cc                      |  16 +-
  components/url_matcher/url_util.cc            |  83 -----
- content/common/features.cc                    |   4 +-
+ ...gled-chromium-no-special-hosts-domains.inc |   1 +
  ...gled-chromium-no-special-hosts-domains.inc |   1 +
  net/base/url_util.cc                          |  21 --
  services/network/network_context.cc           |   2 +-
- 52 files changed, 58 insertions(+), 802 deletions(-)
+ 52 files changed, 57 insertions(+), 800 deletions(-)
+ create mode 100644 cromite_flags/content/common/features_cc/ungoogled-chromium-no-special-hosts-domains.inc
  create mode 100644 cromite_flags/content/public/common/content_features_cc/ungoogled-chromium-no-special-hosts-domains.inc
 
 diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
@@ -1630,20 +1631,12 @@ diff --git a/components/url_matcher/url_util.cc b/components/url_matcher/url_uti
      return GURL();
    }
  
-diff --git a/content/common/features.cc b/content/common/features.cc
---- a/content/common/features.cc
-+++ b/content/common/features.cc
-@@ -178,8 +178,8 @@ BASE_FEATURE(kExperimentalContentSecurityPolicyFeatures,
- // parsing the signin status HTTP headers.
- // kFedCmIdpSigninStatusEnabled takes precedence over this feature flag.
- BASE_FEATURE(kFedCmIdpSigninStatusMetrics,
--             "FedCmIdpSigninStatusMetrics",
--             base::FEATURE_ENABLED_BY_DEFAULT);
-+             "FedCmIdpSigninStatusMetrics",      // disabled
-+             base::FEATURE_DISABLED_BY_DEFAULT); // by default
- 
- // If enabled, limits the number of FLEDGE auctions that can be run between page
- // load and unload -- any attempt to run more than this number of auctions will
+diff --git a/cromite_flags/content/common/features_cc/ungoogled-chromium-no-special-hosts-domains.inc b/cromite_flags/content/common/features_cc/ungoogled-chromium-no-special-hosts-domains.inc
+new file mode 100644
+--- /dev/null
++++ b/cromite_flags/content/common/features_cc/ungoogled-chromium-no-special-hosts-domains.inc
+@@ -0,0 +1 @@
++SET_CROMITE_FEATURE_DISABLED(kFedCmIdpSigninStatusMetrics);
 diff --git a/cromite_flags/content/public/common/content_features_cc/ungoogled-chromium-no-special-hosts-domains.inc b/cromite_flags/content/public/common/content_features_cc/ungoogled-chromium-no-special-hosts-domains.inc
 new file mode 100644
 --- /dev/null

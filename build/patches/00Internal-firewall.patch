@@ -10,10 +10,11 @@ in services/firewall/tools/rules.xml
 License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
  chrome/browser/BUILD.gn                       |   1 +
- chrome/browser/about_flags.cc                 |   6 +
+ chrome/browser/about_flags.cc                 |   1 +
  .../downloads/offline_page_download_bridge.cc |  32 +-
  .../content/internal/context_menu_download.cc |  32 +-
  .../android/webapk/webapk_icon_hasher.cc      |  32 +-
+ .../about_flags_cc/Internal-firewall.inc      |   8 +
  net/BUILD.gn                                  |   1 +
  .../network_traffic_annotation.h              |   4 -
  net/url_request/url_request_http_job.cc       |  15 +
@@ -38,7 +39,8 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../loader/fetch/url_loader/url_loader.cc     |   4 +-
  .../scripts/auditor/auditor.py                |   1 +
  .../scripts/auditor/util.py                   |   1 +
- 29 files changed, 1566 insertions(+), 20 deletions(-)
+ 30 files changed, 1569 insertions(+), 20 deletions(-)
+ create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Internal-firewall.inc
  create mode 100644 services/firewall/public/BUILD.gn
  create mode 100644 services/firewall/public/firewall_features.cc
  create mode 100644 services/firewall/public/firewall_features.h
@@ -75,18 +77,6 @@ diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
  #include "services/media_session/public/cpp/features.h"
  #include "services/network/public/cpp/features.h"
  #include "services/network/public/cpp/network_switches.h"
-@@ -8594,6 +8595,11 @@ const FeatureEntry kFeatureEntries[] = {
-      FEATURE_VALUE_TYPE(page_info::kPageInfoHideSiteSettings)},
- #endif  // !BUILDFLAG(IS_ANDROID)
- 
-+    {"enable-firewall",
-+     "Enable internal firewall",
-+     "Enable internal firewall", kOsDesktop | kOsAndroid,
-+     FEATURE_VALUE_TYPE(firewall::features::kEnableFirewall)},
-+
- #if !BUILDFLAG(IS_ANDROID)
-     {"page-info-history-desktop",
-      flag_descriptions::kPageInfoHistoryDesktopName,
 diff --git a/chrome/browser/offline_pages/android/downloads/offline_page_download_bridge.cc b/chrome/browser/offline_pages/android/downloads/offline_page_download_bridge.cc
 --- a/chrome/browser/offline_pages/android/downloads/offline_page_download_bridge.cc
 +++ b/chrome/browser/offline_pages/android/downloads/offline_page_download_bridge.cc
@@ -233,6 +223,19 @@ diff --git a/components/webapps/browser/android/webapk/webapk_icon_hasher.cc b/c
    simple_url_loader_->DownloadToStringOfUnboundedSizeUntilCrashAndDie(
        url_loader_factory,
        base::BindOnce(&WebApkIconHasher::OnSimpleLoaderComplete,
+diff --git a/cromite_flags/chrome/browser/about_flags_cc/Internal-firewall.inc b/cromite_flags/chrome/browser/about_flags_cc/Internal-firewall.inc
+new file mode 100644
+--- /dev/null
++++ b/cromite_flags/chrome/browser/about_flags_cc/Internal-firewall.inc
+@@ -0,0 +1,8 @@
++#ifdef FLAG_SECTION
++
++    {"enable-firewall",
++     "Enable internal firewall",
++     "Enable internal firewall", kOsDesktop | kOsAndroid,
++     FEATURE_VALUE_TYPE(firewall::features::kEnableFirewall)},
++
++#endif
 diff --git a/net/BUILD.gn b/net/BUILD.gn
 --- a/net/BUILD.gn
 +++ b/net/BUILD.gn
@@ -261,7 +264,7 @@ diff --git a/net/traffic_annotation/network_traffic_annotation.h b/net/traffic_a
 diff --git a/net/url_request/url_request_http_job.cc b/net/url_request/url_request_http_job.cc
 --- a/net/url_request/url_request_http_job.cc
 +++ b/net/url_request/url_request_http_job.cc
-@@ -261,6 +261,9 @@ URLRequestHttpJob::URLRequestHttpJob(
+@@ -262,6 +262,9 @@ URLRequestHttpJob::URLRequestHttpJob(
      throttling_entry_ = manager->RegisterRequestUrl(request->url());
  
    ResetTimer();
@@ -271,7 +274,7 @@ diff --git a/net/url_request/url_request_http_job.cc b/net/url_request/url_reque
  }
  
  URLRequestHttpJob::~URLRequestHttpJob() {
-@@ -555,6 +558,18 @@ void URLRequestHttpJob::MaybeStartTransactionInternal(int result) {
+@@ -556,6 +559,18 @@ void URLRequestHttpJob::MaybeStartTransactionInternal(int result) {
  void URLRequestHttpJob::StartTransactionInternal() {
    DCHECK(!override_response_headers_);
  

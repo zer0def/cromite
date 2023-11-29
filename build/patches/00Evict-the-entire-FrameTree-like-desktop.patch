@@ -4,9 +4,10 @@ Subject: Evict the entire FrameTree like desktop
 
 License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
- components/viz/common/features.cc | 2 +-
- content/common/features.cc        | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ components/viz/common/features.cc                               | 2 +-
+ .../features_cc/Evict-the-entire-FrameTree-like-desktop.inc     | 1 +
+ 2 files changed, 2 insertions(+), 1 deletion(-)
+ create mode 100644 cromite_flags/content/common/features_cc/Evict-the-entire-FrameTree-like-desktop.inc
 
 diff --git a/components/viz/common/features.cc b/components/viz/common/features.cc
 --- a/components/viz/common/features.cc
@@ -20,19 +21,11 @@ diff --git a/components/viz/common/features.cc b/components/viz/common/features.
  
  // If enabled, CompositorFrameSinkClient::OnBeginFrame is also treated as the
  // DidReceiveCompositorFrameAck. Both in providing the Ack for the previous
-diff --git a/content/common/features.cc b/content/common/features.cc
---- a/content/common/features.cc
-+++ b/content/common/features.cc
-@@ -241,8 +241,8 @@ BASE_FEATURE(kInMemoryCodeCache,
- // frames. Otherwise only toplevel frames and OOPIF are handled, and other
- // cases, e.g. PDF tiles are ignored. See https://crbug.com/1360351 for details.
- BASE_FEATURE(kInnerFrameCompositorSurfaceEviction,
--             "InnerFrameCompositorSurfaceEviction",
--             base::FEATURE_ENABLED_BY_DEFAULT);
-+             "InnerFrameCompositorSurfaceEviction", // guard this
-+             base::FEATURE_ENABLED_BY_DEFAULT);     // guard this
- 
- // Enable IOSurface based screen capturer.
- #if BUILDFLAG(IS_MAC)
+diff --git a/cromite_flags/content/common/features_cc/Evict-the-entire-FrameTree-like-desktop.inc b/cromite_flags/content/common/features_cc/Evict-the-entire-FrameTree-like-desktop.inc
+new file mode 100644
+--- /dev/null
++++ b/cromite_flags/content/common/features_cc/Evict-the-entire-FrameTree-like-desktop.inc
+@@ -0,0 +1 @@
++SET_CROMITE_FEATURE_ENABLED(kInnerFrameCompositorSurfaceEviction);
 --
 2.25.1

@@ -8,9 +8,7 @@ keyboard events.
 
 License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
- chrome/browser/about_flags.cc                 |  3 +
- chrome/browser/flag_descriptions.cc           |  6 ++
- chrome/browser/flag_descriptions.h            |  3 +
+ .../Keyboard-protection-flag.inc              | 10 +++
  .../renderer/core/events/keyboard_event.cc    | 66 +++++++++++++++++++
  .../renderer/core/events/keyboard_event.h     |  3 +
  ui/base/ui_base_features.cc                   |  8 +++
@@ -18,50 +16,24 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../dom/dom_keyboard_layout_map_win.cc        | 13 ++++
  .../keycodes/keyboard_code_conversion.cc      | 10 ++-
  ui/events/keycodes/keyboard_code_conversion.h |  2 +-
- 10 files changed, 113 insertions(+), 3 deletions(-)
+ 8 files changed, 111 insertions(+), 3 deletions(-)
+ create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Keyboard-protection-flag.inc
 
-diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
---- a/chrome/browser/about_flags.cc
-+++ b/chrome/browser/about_flags.cc
-@@ -5416,6 +5416,9 @@ const FeatureEntry kFeatureEntries[] = {
-     {"system-keyboard-lock", flag_descriptions::kSystemKeyboardLockName,
-      flag_descriptions::kSystemKeyboardLockDescription, kOsDesktop,
-      FEATURE_VALUE_TYPE(features::kSystemKeyboardLock)},
-+    {"system-keyboard-protection", flag_descriptions::kSystemKeyboardProtectionName,
-+     flag_descriptions::kSystemKeyboardProtectionDescription, kOsAll,
+diff --git a/cromite_flags/chrome/browser/about_flags_cc/Keyboard-protection-flag.inc b/cromite_flags/chrome/browser/about_flags_cc/Keyboard-protection-flag.inc
+new file mode 100644
+--- /dev/null
++++ b/cromite_flags/chrome/browser/about_flags_cc/Keyboard-protection-flag.inc
+@@ -0,0 +1,10 @@
++#ifdef FLAG_SECTION
++
++    {"system-keyboard-protection",
++     "System keyboard protection",
++     "Hides user preference on the system keyboard by setting the standard "
++     "eng layout and removing the layout information from the "
++     "javascript keyboard events.", kOsAll,
 +     FEATURE_VALUE_TYPE(features::kSystemKeyboardProtection)},
- #if BUILDFLAG(IS_ANDROID)
-     {"add-to-homescreen-iph", flag_descriptions::kAddToHomescreenIPHName,
-      flag_descriptions::kAddToHomescreenIPHDescription, kOsAndroid,
-diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descriptions.cc
---- a/chrome/browser/flag_descriptions.cc
-+++ b/chrome/browser/flag_descriptions.cc
-@@ -3340,6 +3340,12 @@ const char kSystemKeyboardLockDescription[] =
-     "keyboard shortcuts and have the events routed directly to the website "
-     "when in fullscreen mode.";
- 
-+const char kSystemKeyboardProtectionName[] = "System keyboard protection";
-+const char kSystemKeyboardProtectionDescription[] =
-+    "Hides user preference on the system keyboard by setting the standard "
-+    "eng layout and removing the layout information from the "
-+    "javascript keyboard events.";
 +
- const char kSystemSoundsName[] = "Power Sounds";
- const char kSystemSoundsDescription[] =
-     "Enable device charging and low battery warning sounds.";
-diff --git a/chrome/browser/flag_descriptions.h b/chrome/browser/flag_descriptions.h
---- a/chrome/browser/flag_descriptions.h
-+++ b/chrome/browser/flag_descriptions.h
-@@ -1923,6 +1923,9 @@ extern const char kSuppressToolbarCapturesDescription[];
- extern const char kSystemKeyboardLockName[];
- extern const char kSystemKeyboardLockDescription[];
- 
-+extern const char kSystemKeyboardProtectionName[];
-+extern const char kSystemKeyboardProtectionDescription[];
-+
- extern const char kSystemSoundsName[];
- extern const char kSystemSoundsDescription[];
- 
++#endif
 diff --git a/third_party/blink/renderer/core/events/keyboard_event.cc b/third_party/blink/renderer/core/events/keyboard_event.cc
 --- a/third_party/blink/renderer/core/events/keyboard_event.cc
 +++ b/third_party/blink/renderer/core/events/keyboard_event.cc

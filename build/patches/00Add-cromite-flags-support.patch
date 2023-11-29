@@ -15,12 +15,13 @@ Need: bromite-build-utils.patch
 License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
  base/BUILD.gn                                 |   4 +-
- base/feature_list.cc                          |  56 ++++++++
- base/feature_list.h                           |  84 ++++++++++-
- build/android/gyp/java_cpp_features.py        |  17 +++
+ base/feature_list.cc                          |  56 +++++++
+ base/feature_list.h                           |  84 +++++++++-
+ build/android/gyp/java_cpp_features.py        |  17 ++
  chrome/android/java/res/values/values.xml     |   3 +
  .../java/res/xml/privacy_preferences.xml      |   4 +
  chrome/browser/about_flags.cc                 |   7 +
+ chrome/browser/browser_features.cc            |   1 +
  .../flags/android/chrome_feature_list.cc      |   1 +
  .../flags/android/chrome_feature_list.h       |   1 +
  chrome/browser/ui/ui_features.cc              |   1 +
@@ -28,7 +29,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../content_settings/core/common/features.cc  |   1 +
  components/flags_ui/flags_state.cc            |  21 +++
  components/flags_ui/resources/experiment.html |   7 +-
- components/flags_ui/resources/experiment.ts   |  16 +++
+ components/flags_ui/resources/experiment.ts   |  16 ++
  components/flags_ui/resources/flags.css       |  19 +++
  components/flags_ui/resources/flags.html      |  13 ++
  components/flags_ui/resources/flags.ts        |  36 ++++-
@@ -39,8 +40,9 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  content/common/features.cc                    |   1 +
  content/public/common/content_features.cc     |   1 +
  content/public/common/content_features.h      |   1 +
- cromite_flags/BUILD.gn                        | 132 ++++++++++++++++++
+ cromite_flags/BUILD.gn                        | 150 ++++++++++++++++++
  .../browser/about_flags_cc/placeholder.txt    |   1 +
+ .../browser_features_cc/placeholder.txt       |   1 +
  .../chrome_feature_list_cc/placeholder.txt    |   1 +
  .../chrome_feature_list_h/placeholder.txt     |   1 +
  .../browser/ui/ui_features_cc/placeholder.txt |   1 +
@@ -57,17 +59,22 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../base/media_switches_h/placeholder.txt     |   1 +
  .../net/base/features_cc/placeholder.txt      |   1 +
  .../net/base/features_h/placeholder.txt       |   1 +
+ .../public/cpp/features_cc/placeholder.txt    |   1 +
+ .../public/cpp/features_h/placeholder.txt     |   1 +
  .../blink/common/features_cc/placeholder.txt  |   1 +
  .../blink/common/features_h/placeholder.txt   |   1 +
  media/base/media_switches.cc                  |   2 +-
  media/base/media_switches.h                   |   2 +-
  net/base/features.cc                          |   1 +
  net/base/features.h                           |   1 +
+ services/network/public/cpp/features.cc       |   1 +
+ services/network/public/cpp/features.h        |   1 +
  third_party/blink/common/features.cc          |   1 +
  third_party/blink/public/common/features.h    |   1 +
- 51 files changed, 450 insertions(+), 12 deletions(-)
+ 57 files changed, 474 insertions(+), 12 deletions(-)
  create mode 100755 cromite_flags/BUILD.gn
  create mode 100755 cromite_flags/chrome/browser/about_flags_cc/placeholder.txt
+ create mode 100755 cromite_flags/chrome/browser/browser_features_cc/placeholder.txt
  create mode 100755 cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/placeholder.txt
  create mode 100755 cromite_flags/chrome/browser/flags/android/chrome_feature_list_h/placeholder.txt
  create mode 100755 cromite_flags/chrome/browser/ui/ui_features_cc/placeholder.txt
@@ -84,6 +91,8 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  create mode 100755 cromite_flags/media/base/media_switches_h/placeholder.txt
  create mode 100755 cromite_flags/net/base/features_cc/placeholder.txt
  create mode 100755 cromite_flags/net/base/features_h/placeholder.txt
+ create mode 100755 cromite_flags/services/network/public/cpp/features_cc/placeholder.txt
+ create mode 100755 cromite_flags/services/network/public/cpp/features_h/placeholder.txt
  create mode 100755 cromite_flags/third_party/blink/common/features_cc/placeholder.txt
  create mode 100755 cromite_flags/third_party/blink/common/features_h/placeholder.txt
 
@@ -362,7 +371,7 @@ diff --git a/chrome/android/java/res/xml/privacy_preferences.xml b/chrome/androi
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -4091,6 +4091,10 @@ const FeatureEntry::FeatureVariation kWebAuthnAndroidCredManVariations[] = {
+@@ -4064,6 +4064,10 @@ const FeatureEntry::FeatureVariation kWebAuthnAndroidCredManVariations[] = {
       nullptr}};
  #endif  // BUILDFLAG(IS_ANDROID)
  
@@ -373,7 +382,7 @@ diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
  // RECORDING USER METRICS FOR FLAGS:
  // -----------------------------------------------------------------------------
  // The first line of the entry is the internal name.
-@@ -4117,6 +4121,9 @@ const FeatureEntry::FeatureVariation kWebAuthnAndroidCredManVariations[] = {
+@@ -4090,6 +4094,9 @@ const FeatureEntry::FeatureVariation kWebAuthnAndroidCredManVariations[] = {
  const FeatureEntry kFeatureEntries[] = {
  // Include generated flags for flag unexpiry; see //docs/flag_expiry.md and
  // //tools/flags/generate_unexpire_flags.py.
@@ -383,10 +392,19 @@ diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
  #include "build/chromeos_buildflags.h"
  #include "chrome/browser/unexpire_flags_gen.inc"
      {variations::switches::kEnableBenchmarking,
+diff --git a/chrome/browser/browser_features.cc b/chrome/browser/browser_features.cc
+--- a/chrome/browser/browser_features.cc
++++ b/chrome/browser/browser_features.cc
+@@ -310,4 +310,5 @@ BASE_FEATURE(kOmniboxTriggerForNoStatePrefetch,
+              "OmniboxTriggerForNoStatePrefetch",
+              base::FEATURE_DISABLED_BY_DEFAULT);
+ 
++#include "cromite_flags/chrome_browser_browser_features_cc.inc"
+ }  // namespace features
 diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browser/flags/android/chrome_feature_list.cc
 --- a/chrome/browser/flags/android/chrome_feature_list.cc
 +++ b/chrome/browser/flags/android/chrome_feature_list.cc
-@@ -1223,5 +1223,6 @@ BASE_FEATURE(kWebApkInstallService,
+@@ -1207,5 +1207,6 @@ BASE_FEATURE(kWebApkInstallService,
               "WebApkInstallService",
               base::FEATURE_DISABLED_BY_DEFAULT);
  
@@ -396,7 +414,7 @@ diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browse
 diff --git a/chrome/browser/flags/android/chrome_feature_list.h b/chrome/browser/flags/android/chrome_feature_list.h
 --- a/chrome/browser/flags/android/chrome_feature_list.h
 +++ b/chrome/browser/flags/android/chrome_feature_list.h
-@@ -232,6 +232,7 @@ constexpr base::FeatureParam<int> kAuxiliarySearchMaxTabsCountParam(
+@@ -228,6 +228,7 @@ constexpr base::FeatureParam<int> kAuxiliarySearchMaxTabsCountParam(
      "auxiliary_search_max_donation_tab",
      100);
  
@@ -416,7 +434,7 @@ diff --git a/chrome/browser/ui/ui_features.cc b/chrome/browser/ui/ui_features.cc
 diff --git a/chrome/common/chrome_features.cc b/chrome/common/chrome_features.cc
 --- a/chrome/common/chrome_features.cc
 +++ b/chrome/common/chrome_features.cc
-@@ -1653,4 +1653,5 @@ BASE_FEATURE(kSupportsRtcWakeOver24Hours,
+@@ -1664,4 +1664,5 @@ BASE_FEATURE(kSupportsRtcWakeOver24Hours,
               base::FEATURE_ENABLED_BY_DEFAULT);
  #endif  // BUILDFLAG(IS_CHROMEOS_ASH)
  
@@ -781,7 +799,7 @@ diff --git a/cromite_flags/BUILD.gn b/cromite_flags/BUILD.gn
 new file mode 100755
 --- /dev/null
 +++ b/cromite_flags/BUILD.gn
-@@ -0,0 +1,132 @@
+@@ -0,0 +1,150 @@
 +# This file is part of Bromite.
 +
 +# Bromite is free software: you can redistribute it and/or modify
@@ -847,6 +865,11 @@ new file mode 100755
 +  output_file = "chrome_browser_flags_android_chrome_feature_list_h.inc"
 +}
 +
++cpp_bromite_include("chrome_browser_browser_features_cc") {
++  inputs = [ "//cromite_flags/chrome/browser/browser_features_cc/placeholder.txt" ]
++  output_file = "chrome_browser_browser_features_cc.inc"
++}
++
 +cpp_bromite_include("chrome_browser_ui_ui_features_cc") {
 +  inputs = [ "//cromite_flags/chrome/browser/ui/ui_features_cc/placeholder.txt" ]
 +  output_file = "chrome_browser_ui_ui_features_cc.inc"
@@ -892,6 +915,16 @@ new file mode 100755
 +  output_file = "net_base_features_h.inc"
 +}
 +
++cpp_bromite_include("services_network_public_cpp_features_cc") {
++  inputs = [ "//cromite_flags/services/network/public/cpp/features_cc/placeholder.txt" ]
++  output_file = "services_network_public_cpp_features_cc.inc"
++}
++
++cpp_bromite_include("services_network_public_cpp_features_h") {
++  inputs = [ "//cromite_flags/services/network/public/cpp/features_h/placeholder.txt" ]
++  output_file = "services_network_public_cpp_features_h.inc"
++}
++
 +component("cromite_flags") {
 +  deps = [
 +    ":content_common_features_cc",
@@ -910,6 +943,9 @@ new file mode 100755
 +    ":chrome_browser_flags_android_chrome_feature_list_cc",
 +    ":chrome_browser_flags_android_chrome_feature_list_h",
 +    ":chrome_browser_ui_ui_features_cc",
++    ":chrome_browser_browser_features_cc",
++    ":services_network_public_cpp_features_cc",
++    ":services_network_public_cpp_features_h",
 +    ":third_party_blink_common_features_cc",
 +    ":third_party_blink_common_features_h",
 +  ]
@@ -918,6 +954,12 @@ diff --git a/cromite_flags/chrome/browser/about_flags_cc/placeholder.txt b/cromi
 new file mode 100755
 --- /dev/null
 +++ b/cromite_flags/chrome/browser/about_flags_cc/placeholder.txt
+@@ -0,0 +1 @@
++this file is intentionally empty
+diff --git a/cromite_flags/chrome/browser/browser_features_cc/placeholder.txt b/cromite_flags/chrome/browser/browser_features_cc/placeholder.txt
+new file mode 100755
+--- /dev/null
++++ b/cromite_flags/chrome/browser/browser_features_cc/placeholder.txt
 @@ -0,0 +1 @@
 +this file is intentionally empty
 diff --git a/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/placeholder.txt b/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/placeholder.txt
@@ -1016,6 +1058,18 @@ new file mode 100755
 +++ b/cromite_flags/net/base/features_h/placeholder.txt
 @@ -0,0 +1 @@
 +this file is intentionally empty
+diff --git a/cromite_flags/services/network/public/cpp/features_cc/placeholder.txt b/cromite_flags/services/network/public/cpp/features_cc/placeholder.txt
+new file mode 100755
+--- /dev/null
++++ b/cromite_flags/services/network/public/cpp/features_cc/placeholder.txt
+@@ -0,0 +1 @@
++this file is intentionally empty
+diff --git a/cromite_flags/services/network/public/cpp/features_h/placeholder.txt b/cromite_flags/services/network/public/cpp/features_h/placeholder.txt
+new file mode 100755
+--- /dev/null
++++ b/cromite_flags/services/network/public/cpp/features_h/placeholder.txt
+@@ -0,0 +1 @@
++this file is intentionally empty
 diff --git a/cromite_flags/third_party/blink/common/features_cc/placeholder.txt b/cromite_flags/third_party/blink/common/features_cc/placeholder.txt
 new file mode 100755
 --- /dev/null
@@ -1051,7 +1105,7 @@ diff --git a/media/base/media_switches.h b/media/base/media_switches.h
 diff --git a/net/base/features.cc b/net/base/features.cc
 --- a/net/base/features.cc
 +++ b/net/base/features.cc
-@@ -480,4 +480,5 @@ BASE_FEATURE(kSpdyHeadersToHttpResponseVerifyCorrectness,
+@@ -469,4 +469,5 @@ BASE_FEATURE(kSpdyHeadersToHttpResponseVerifyCorrectness,
               "SpdyHeadersToHttpResponseVerifyCorrectness",
               base::FEATURE_DISABLED_BY_DEFAULT);
  
@@ -1060,7 +1114,7 @@ diff --git a/net/base/features.cc b/net/base/features.cc
 diff --git a/net/base/features.h b/net/base/features.h
 --- a/net/base/features.h
 +++ b/net/base/features.h
-@@ -475,6 +475,7 @@ NET_EXPORT BASE_DECLARE_FEATURE(kSpdyHeadersToHttpResponseUseBuilder);
+@@ -467,6 +467,7 @@ NET_EXPORT BASE_DECLARE_FEATURE(kSpdyHeadersToHttpResponseUseBuilder);
  // for two weeks on Dev.
  NET_EXPORT BASE_DECLARE_FEATURE(kSpdyHeadersToHttpResponseVerifyCorrectness);
  
@@ -1068,10 +1122,30 @@ diff --git a/net/base/features.h b/net/base/features.h
  }  // namespace net::features
  
  #endif  // NET_BASE_FEATURES_H_
+diff --git a/services/network/public/cpp/features.cc b/services/network/public/cpp/features.cc
+--- a/services/network/public/cpp/features.cc
++++ b/services/network/public/cpp/features.cc
+@@ -422,4 +422,5 @@ BASE_FEATURE(kVisibilityAwareResourceScheduler,
+ 
+ BASE_FEATURE(kSharedZstd, "SharedZstd", base::FEATURE_ENABLED_BY_DEFAULT);
+ 
++#include "cromite_flags/services_network_public_cpp_features_cc.inc"
+ }  // namespace network::features
+diff --git a/services/network/public/cpp/features.h b/services/network/public/cpp/features.h
+--- a/services/network/public/cpp/features.h
++++ b/services/network/public/cpp/features.h
+@@ -158,6 +158,7 @@ BASE_DECLARE_FEATURE(kVisibilityAwareResourceScheduler);
+ COMPONENT_EXPORT(NETWORK_CPP)
+ BASE_DECLARE_FEATURE(kSharedZstd);
+ 
++#include "cromite_flags/services_network_public_cpp_features_h.inc"
+ }  // namespace features
+ }  // namespace network
+ 
 diff --git a/third_party/blink/common/features.cc b/third_party/blink/common/features.cc
 --- a/third_party/blink/common/features.cc
 +++ b/third_party/blink/common/features.cc
-@@ -2187,5 +2187,6 @@ bool IsKeepAliveURLLoaderServiceEnabled() {
+@@ -2168,5 +2168,6 @@ bool IsKeepAliveURLLoaderServiceEnabled() {
           base::FeatureList::IsEnabled(kFetchLaterAPI);
  }
  
@@ -1081,7 +1155,7 @@ diff --git a/third_party/blink/common/features.cc b/third_party/blink/common/fea
 diff --git a/third_party/blink/public/common/features.h b/third_party/blink/public/common/features.h
 --- a/third_party/blink/public/common/features.h
 +++ b/third_party/blink/public/common/features.h
-@@ -1399,6 +1399,7 @@ BLINK_COMMON_EXPORT bool IsKeepAliveURLLoaderServiceEnabled();
+@@ -1388,6 +1388,7 @@ BLINK_COMMON_EXPORT bool IsKeepAliveURLLoaderServiceEnabled();
  BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE(
      kRemoveAuthroizationOnCrossOriginRedirect);
  

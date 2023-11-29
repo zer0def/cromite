@@ -13,25 +13,26 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../contextmenu/ChromeContextMenuItem.java    |  5 ++-
  .../ChromeContextMenuPopulator.java           |  5 +++
  .../tab/TabContextMenuItemDelegate.java       |  8 +++++
- chrome/browser/about_flags.cc                 |  5 +++
  .../contextmenu/ContextMenuItemDelegate.java  |  2 ++
- chrome/browser/flag_descriptions.cc           |  4 +++
- chrome/browser/flag_descriptions.h            |  3 ++
  .../flags/android/chrome_feature_list.cc      |  1 +
  .../browser/flags/ChromeFeatureList.java      |  5 +++
  .../strings/android_chrome_strings.grd        |  9 +++++
  .../res/xml/accessibility_preferences.xml     |  5 +++
  .../accessibility/AccessibilitySettings.java  | 11 ++++++
  .../AccessibilitySettingsDelegate.java        |  2 ++
- third_party/blink/common/features.cc          |  4 +++
- third_party/blink/public/common/features.h    |  2 ++
+ ...Add-setting-to-invert-tap-and-long-tap.inc |  8 +++++
+ ...Add-setting-to-invert-tap-and-long-tap.inc |  3 ++
+ ...Add-setting-to-invert-tap-and-long-tap.inc |  1 +
  .../renderer/core/html/html_anchor_element.cc | 35 +++++++++++++++----
  .../renderer/core/html/html_anchor_element.h  |  9 +++--
  .../renderer/core/html/html_image_element.cc  | 17 +++++++++
  .../renderer/core/html/html_image_element.h   |  2 ++
  .../core/page/context_menu_controller.cc      | 32 ++++++++++++-----
  .../core/page/context_menu_controller.h       |  5 +--
- 23 files changed, 170 insertions(+), 20 deletions(-)
+ 21 files changed, 164 insertions(+), 20 deletions(-)
+ create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Add-setting-to-invert-tap-and-long-tap.inc
+ create mode 100644 cromite_flags/third_party/blink/common/features_cc/Add-setting-to-invert-tap-and-long-tap.inc
+ create mode 100644 cromite_flags/third_party/blink/common/features_h/Add-setting-to-invert-tap-and-long-tap.inc
 
 diff --git a/chrome/android/java/res/values/ids.xml b/chrome/android/java/res/values/ids.xml
 --- a/chrome/android/java/res/values/ids.xml
@@ -142,21 +143,6 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tab/TabContextM
      @Override
      public void onOpenImageInNewTab(GURL url, Referrer referrer) {
          LoadUrlParams loadUrlParams = new LoadUrlParams(url.getSpec());
-diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
---- a/chrome/browser/about_flags.cc
-+++ b/chrome/browser/about_flags.cc
-@@ -8406,6 +8406,11 @@ const FeatureEntry kFeatureEntries[] = {
-      FEATURE_VALUE_TYPE(features::kElasticOverscroll)},
- #endif
- 
-+    {"show-always-context-menu-on-links",
-+     flag_descriptions::kShowAlwaysContextMenuOnLinksName,
-+     flag_descriptions::kShowAlwaysContextMenuOnLinksDescription, kOsAndroid,
-+     FEATURE_VALUE_TYPE(blink::features::kShowAlwaysContextMenuOnLinks)},
-+
-     {"device-posture", flag_descriptions::kDevicePostureName,
-      flag_descriptions::kDevicePostureDescription, kOsAll,
-      FEATURE_VALUE_TYPE(features::kDevicePosture)},
 diff --git a/chrome/browser/contextmenu/java/src/org/chromium/chrome/browser/contextmenu/ContextMenuItemDelegate.java b/chrome/browser/contextmenu/java/src/org/chromium/chrome/browser/contextmenu/ContextMenuItemDelegate.java
 --- a/chrome/browser/contextmenu/java/src/org/chromium/chrome/browser/contextmenu/ContextMenuItemDelegate.java
 +++ b/chrome/browser/contextmenu/java/src/org/chromium/chrome/browser/contextmenu/ContextMenuItemDelegate.java
@@ -169,33 +155,6 @@ diff --git a/chrome/browser/contextmenu/java/src/org/chromium/chrome/browser/con
      /**
       * Called when the {@code url} is of an image and should be opened in a new tab.
       * @param url The image URL to open.
-diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descriptions.cc
---- a/chrome/browser/flag_descriptions.cc
-+++ b/chrome/browser/flag_descriptions.cc
-@@ -2056,6 +2056,10 @@ const char kMoveTopToolbarToBottomName[] = "Move top toolbar to bottom";
- const char kMoveTopToolbarToBottomDescription[] =
-     "Move the top toolbar to the bottom.";
- 
-+const char kShowAlwaysContextMenuOnLinksName[] = "Always show contextmenu on links";
-+const char kShowAlwaysContextMenuOnLinksDescription[] =
-+    "Use accessibility settings to set it.";
-+
- const char kIncognitoDownloadsWarningName[] =
-     "Enable Incognito downloads warning";
- const char kIncognitoDownloadsWarningDescription[] =
-diff --git a/chrome/browser/flag_descriptions.h b/chrome/browser/flag_descriptions.h
---- a/chrome/browser/flag_descriptions.h
-+++ b/chrome/browser/flag_descriptions.h
-@@ -1165,6 +1165,9 @@ extern const char kImprovedKeyboardShortcutsDescription[];
- extern const char kMoveTopToolbarToBottomName[];
- extern const char kMoveTopToolbarToBottomDescription[];
- 
-+extern const char kShowAlwaysContextMenuOnLinksName[];
-+extern const char kShowAlwaysContextMenuOnLinksDescription[];
-+
- extern const char kIncognitoReauthenticationForAndroidName[];
- extern const char kIncognitoReauthenticationForAndroidDescription[];
- 
 diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browser/flags/android/chrome_feature_list.cc
 --- a/chrome/browser/flags/android/chrome_feature_list.cc
 +++ b/chrome/browser/flags/android/chrome_feature_list.cc
@@ -331,32 +290,33 @@ diff --git a/components/browser_ui/accessibility/android/java/src/org/chromium/c
      /**
       * @return The BrowserContextHandle that should be used to read and update settings.
       */
-diff --git a/third_party/blink/common/features.cc b/third_party/blink/common/features.cc
---- a/third_party/blink/common/features.cc
-+++ b/third_party/blink/common/features.cc
-@@ -241,6 +241,10 @@ BASE_FEATURE(kBackgroundResourceFetch,
-              "BackgroundResourceFetch",
-              base::FEATURE_DISABLED_BY_DEFAULT);
- 
-+BASE_FEATURE(kShowAlwaysContextMenuOnLinks,
-+             "ShowAlwaysContextMenuOnLinks",
-+             base::FEATURE_DISABLED_BY_DEFAULT);
+diff --git a/cromite_flags/chrome/browser/about_flags_cc/Add-setting-to-invert-tap-and-long-tap.inc b/cromite_flags/chrome/browser/about_flags_cc/Add-setting-to-invert-tap-and-long-tap.inc
+new file mode 100644
+--- /dev/null
++++ b/cromite_flags/chrome/browser/about_flags_cc/Add-setting-to-invert-tap-and-long-tap.inc
+@@ -0,0 +1,8 @@
++#ifdef FLAG_SECTION
 +
- // Used to configure a per-origin allowlist of performance.mark events that are
- // permitted to be included in slow reports traces. See crbug.com/1181774.
- BASE_FEATURE(kBackgroundTracingPerformanceMark,
-diff --git a/third_party/blink/public/common/features.h b/third_party/blink/public/common/features.h
---- a/third_party/blink/public/common/features.h
-+++ b/third_party/blink/public/common/features.h
-@@ -143,6 +143,8 @@ BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE(kBackForwardCacheWithKeepaliveRequest);
- 
- BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE(kBackgroundResourceFetch);
- 
++    {"show-always-context-menu-on-links",
++     "Always show contextmenu on links",
++     "Use accessibility settings to set it.", kOsAndroid,
++     FEATURE_VALUE_TYPE(blink::features::kShowAlwaysContextMenuOnLinks)},
++
++#endif
+diff --git a/cromite_flags/third_party/blink/common/features_cc/Add-setting-to-invert-tap-and-long-tap.inc b/cromite_flags/third_party/blink/common/features_cc/Add-setting-to-invert-tap-and-long-tap.inc
+new file mode 100644
+--- /dev/null
++++ b/cromite_flags/third_party/blink/common/features_cc/Add-setting-to-invert-tap-and-long-tap.inc
+@@ -0,0 +1,3 @@
++CROMITE_FEATURE(kShowAlwaysContextMenuOnLinks,
++                "ShowAlwaysContextMenuOnLinks",
++                base::FEATURE_DISABLED_BY_DEFAULT);
+diff --git a/cromite_flags/third_party/blink/common/features_h/Add-setting-to-invert-tap-and-long-tap.inc b/cromite_flags/third_party/blink/common/features_h/Add-setting-to-invert-tap-and-long-tap.inc
+new file mode 100644
+--- /dev/null
++++ b/cromite_flags/third_party/blink/common/features_h/Add-setting-to-invert-tap-and-long-tap.inc
+@@ -0,0 +1 @@
 +BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE(kShowAlwaysContextMenuOnLinks);
-+
- // Used to configure a per-origin allowlist of performance.mark events that are
- // permitted to be included in slow reports traces. See crbug.com/1181774.
- BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE(kBackgroundTracingPerformanceMark);
 diff --git a/third_party/blink/renderer/core/html/html_anchor_element.cc b/third_party/blink/renderer/core/html/html_anchor_element.cc
 --- a/third_party/blink/renderer/core/html/html_anchor_element.cc
 +++ b/third_party/blink/renderer/core/html/html_anchor_element.cc

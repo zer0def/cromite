@@ -7,11 +7,9 @@ prevent coordinate-based fingerprinting scripts.
 The factor is changed at each change of origin.
 The feature is controlled by a feature flag (default enabled)
 ---
- chrome/browser/about_flags.cc                 |  5 ++
- chrome/browser/flag_descriptions.cc           |  6 ++
- chrome/browser/flag_descriptions.h            |  3 +
- third_party/blink/common/features.cc          |  4 +
- third_party/blink/public/common/features.h    |  3 +
+ .../Viewport-Protection-flag.inc              | 10 +++
+ .../features_cc/Viewport-Protection-flag.inc  |  3 +
+ .../features_h/Viewport-Protection-flag.inc   |  2 +
  .../common/widget/device_emulation_params.h   |  6 +-
  .../blink/renderer/core/css/media_values.cc   |  2 +-
  .../core/css/resolver/style_resolver.cc       |  7 +-
@@ -28,79 +26,41 @@ The feature is controlled by a feature flag (default enabled)
  .../blink/renderer/core/input/touch.cc        | 17 ++++-
  third_party/blink/renderer/core/page/page.cc  | 76 +++++++++++++++++++
  third_party/blink/renderer/core/page/page.h   |  7 ++
- 21 files changed, 251 insertions(+), 19 deletions(-)
+ 19 files changed, 245 insertions(+), 19 deletions(-)
+ create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Viewport-Protection-flag.inc
+ create mode 100644 cromite_flags/third_party/blink/common/features_cc/Viewport-Protection-flag.inc
+ create mode 100644 cromite_flags/third_party/blink/common/features_h/Viewport-Protection-flag.inc
 
-diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
---- a/chrome/browser/about_flags.cc
-+++ b/chrome/browser/about_flags.cc
-@@ -10460,6 +10460,11 @@ const FeatureEntry kFeatureEntries[] = {
-          kServiceWorkerSkipIgnorableFetchHandlerVariations,
-          "ServiceWorkerSkipIgnorableFetchHandler")},
- 
+diff --git a/cromite_flags/chrome/browser/about_flags_cc/Viewport-Protection-flag.inc b/cromite_flags/chrome/browser/about_flags_cc/Viewport-Protection-flag.inc
+new file mode 100644
+--- /dev/null
++++ b/cromite_flags/chrome/browser/about_flags_cc/Viewport-Protection-flag.inc
+@@ -0,0 +1,10 @@
++#ifdef FLAG_SECTION
++
 +    {"viewport-protection",
-+     flag_descriptions::kViewportProtectionName,
-+     flag_descriptions::kViewportProtectionDescription, kOsAll,
++     "Viewport Protection",
++     "Scale the viewport and the screen by a random factor to prevent "
++     "coordinate-based fingerprinting scripts. The factor is changed at each "
++     "change of origin.", kOsAll,
 +     FEATURE_VALUE_TYPE(blink::features::kViewportProtection)},
 +
- #if BUILDFLAG(IS_ANDROID)
-     {"block-external-form-redirects-no-gesture",
-      flag_descriptions::kIntentBlockExternalFormRedirectsNoGestureName,
-diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descriptions.cc
---- a/chrome/browser/flag_descriptions.cc
-+++ b/chrome/browser/flag_descriptions.cc
-@@ -7762,6 +7762,12 @@ const char kWebXrInternalsDescription[] =
-     "debug issues with the WebXR Device API.";
- #endif  // #if defined(ENABLE_VR)
- 
-+const char kViewportProtectionName[] = "Viewport Protection";
-+const char kViewportProtectionDescription[] =
-+    "Scale the viewport and the screen by a random factor to prevent "
-+    "coordinate-based fingerprinting scripts. The factor is changed at each "
-+    "change of origin.";
-+
- #if BUILDFLAG(ENABLE_WEBUI_TAB_STRIP)
- const char kWebUITabStripFlagId[] = "webui-tab-strip";
- const char kWebUITabStripName[] = "WebUI tab strip";
-diff --git a/chrome/browser/flag_descriptions.h b/chrome/browser/flag_descriptions.h
---- a/chrome/browser/flag_descriptions.h
-+++ b/chrome/browser/flag_descriptions.h
-@@ -4488,6 +4488,9 @@ extern const char kPaintPreviewDemoName[];
- extern const char kPaintPreviewDemoDescription[];
- #endif  // ENABLE_PAINT_PREVIEW && BUILDFLAG(IS_ANDROID)
- 
-+extern const char kViewportProtectionName[];
-+extern const char kViewportProtectionDescription[];
-+
- #if BUILDFLAG(ENABLE_VR)
- extern const char kWebXrInternalsName[];
- extern const char kWebXrInternalsDescription[];
-diff --git a/third_party/blink/common/features.cc b/third_party/blink/common/features.cc
---- a/third_party/blink/common/features.cc
-+++ b/third_party/blink/common/features.cc
-@@ -1443,6 +1443,10 @@ constexpr base::FeatureParam<bool> kPrivateAggregationApiDebugModeEnabledAtAll{
-     &kPrivateAggregationApi, "debug_mode_enabled_at_all",
-     /*default_value=*/true};
- 
-+BASE_FEATURE(kViewportProtection,
-+             "ViewportProtection",
-+             base::FEATURE_ENABLED_BY_DEFAULT);
-+
- BASE_FEATURE(kProcessHtmlDataImmediately,
-              "ProcessHtmlDataImmediately",
-              base::FEATURE_DISABLED_BY_DEFAULT);
-diff --git a/third_party/blink/public/common/features.h b/third_party/blink/public/common/features.h
---- a/third_party/blink/public/common/features.h
-+++ b/third_party/blink/public/common/features.h
-@@ -1363,6 +1363,9 @@ BLINK_COMMON_EXPORT bool IsFencedFramesEnabled();
- 
- BLINK_COMMON_EXPORT bool IsMaxUnthrottledTimeoutNestingLevelEnabled();
- 
++#endif
+diff --git a/cromite_flags/third_party/blink/common/features_cc/Viewport-Protection-flag.inc b/cromite_flags/third_party/blink/common/features_cc/Viewport-Protection-flag.inc
+new file mode 100644
+--- /dev/null
++++ b/cromite_flags/third_party/blink/common/features_cc/Viewport-Protection-flag.inc
+@@ -0,0 +1,3 @@
++CROMITE_FEATURE(kViewportProtection,
++                "ViewportProtection",
++                base::FEATURE_DISABLED_BY_DEFAULT);
+diff --git a/cromite_flags/third_party/blink/common/features_h/Viewport-Protection-flag.inc b/cromite_flags/third_party/blink/common/features_h/Viewport-Protection-flag.inc
+new file mode 100644
+--- /dev/null
++++ b/cromite_flags/third_party/blink/common/features_h/Viewport-Protection-flag.inc
+@@ -0,0 +1,2 @@
 +// Enable blink viewport protection
 +BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE(kViewportProtection);
-+
- // This function checks both kNewBaseUrlInheritanceBehavior and
- // kIsolateSandboxedIframes and returns true if either is enabled.
- BLINK_COMMON_EXPORT bool IsNewBaseUrlInheritanceBehaviorEnabled();
 diff --git a/third_party/blink/public/common/widget/device_emulation_params.h b/third_party/blink/public/common/widget/device_emulation_params.h
 --- a/third_party/blink/public/common/widget/device_emulation_params.h
 +++ b/third_party/blink/public/common/widget/device_emulation_params.h

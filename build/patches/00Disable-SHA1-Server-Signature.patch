@@ -4,22 +4,15 @@ Subject: Disable SHA1 Server Signature
 
 License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
- net/base/features.cc | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ .../net/base/features_cc/Disable-SHA1-Server-Signature.inc       | 1 +
+ 1 file changed, 1 insertion(+)
+ create mode 100644 cromite_flags/net/base/features_cc/Disable-SHA1-Server-Signature.inc
 
-diff --git a/net/base/features.cc b/net/base/features.cc
---- a/net/base/features.cc
-+++ b/net/base/features.cc
-@@ -88,8 +88,8 @@ BASE_FEATURE(kUseAlternativePortForGloballyReachableCheck,
-              base::FEATURE_DISABLED_BY_DEFAULT);
- 
- BASE_FEATURE(kSHA1ServerSignature,
--             "SHA1ServerSignature",
--             base::FEATURE_DISABLED_BY_DEFAULT);
-+             "SHA1ServerSignature",                  // disabled
-+             base::FEATURE_DISABLED_BY_DEFAULT);     // in bromite
- 
- BASE_FEATURE(kEnableTLS13EarlyData,
-              "EnableTLS13EarlyData",
+diff --git a/cromite_flags/net/base/features_cc/Disable-SHA1-Server-Signature.inc b/cromite_flags/net/base/features_cc/Disable-SHA1-Server-Signature.inc
+new file mode 100644
+--- /dev/null
++++ b/cromite_flags/net/base/features_cc/Disable-SHA1-Server-Signature.inc
+@@ -0,0 +1 @@
++SET_CROMITE_FEATURE_DISABLED(kSHA1ServerSignature);
 --
 2.25.1
