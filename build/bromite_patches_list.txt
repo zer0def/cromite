@@ -282,10 +282,10 @@ Timezone-customization.patch
 00Disable-Service-and-Shared-workers-on-3P-iframe.patch
 00Disable-Real-Box.patch
 00Always-allow-inspect-fallback.patch
+00Add-cromite-flags-support.patch
 
 00Temp-PerformanceNavigationTiming-privacy-fix.patch
 
-00Temp-Disable-kAutomaticLazyFrameLoadingToEmbeds.patch
 00Temp-disable-predictive-back-gesture.patch
 00TEMP-Add-a-log-to-track-strange-behavior.patch
 00Temp-guard-FileSystemAccessPersistentPermissions.patch

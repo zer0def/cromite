@@ -6,9 +6,10 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
  .../org/chromium/chrome/browser/IntentHandler.java   |  5 -----
  .../org/chromium/chrome/browser/share/LensUtils.java | 12 +-----------
- chrome/browser/flags/android/chrome_feature_list.cc  |  8 ++++----
  .../org/chromium/chrome/browser/gsa/GSAState.java    | 11 +++++------
- 4 files changed, 10 insertions(+), 26 deletions(-)
+ .../Disable-GSA-by-default.inc                       |  2 ++
+ 4 files changed, 8 insertions(+), 22 deletions(-)
+ create mode 100644 cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Disable-GSA-by-default.inc
 
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/IntentHandler.java b/chrome/android/java/src/org/chromium/chrome/browser/IntentHandler.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/IntentHandler.java
@@ -76,31 +77,6 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/share/LensUtils
      }
  
      public static boolean isGoogleLensFeatureEnabled(boolean isIncognito) {
-diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browser/flags/android/chrome_feature_list.cc
---- a/chrome/browser/flags/android/chrome_feature_list.cc
-+++ b/chrome/browser/flags/android/chrome_feature_list.cc
-@@ -725,8 +725,8 @@ BASE_FEATURE(kContextMenuGoogleLensSearchOptimizations,
-              base::FEATURE_DISABLED_BY_DEFAULT);
- 
- BASE_FEATURE(kContextMenuSearchWithGoogleLens,
--             "ContextMenuSearchWithGoogleLens",
--             base::FEATURE_ENABLED_BY_DEFAULT);
-+             "ContextMenuSearchWithGoogleLens",   // always disabled
-+             base::FEATURE_DISABLED_BY_DEFAULT);  // in bromite
- 
- BASE_FEATURE(kContextMenuShopWithGoogleLens,
-              "ContextMenuShopWithGoogleLens",
-@@ -827,8 +827,8 @@ BASE_FEATURE(kOfflineIndicatorV2,
-              base::FEATURE_ENABLED_BY_DEFAULT);
- 
- BASE_FEATURE(kExperimentsForAgsa,
--             "ExperimentsForAgsa",
--             base::FEATURE_ENABLED_BY_DEFAULT);
-+             "ExperimentsForAgsa",                 // disabled by default
-+             base::FEATURE_DISABLED_BY_DEFAULT);   // in Bromite
- 
- BASE_FEATURE(kExploreSites, "ExploreSites", base::FEATURE_DISABLED_BY_DEFAULT);
- 
 diff --git a/chrome/browser/gsa/java/src/org/chromium/chrome/browser/gsa/GSAState.java b/chrome/browser/gsa/java/src/org/chromium/chrome/browser/gsa/GSAState.java
 --- a/chrome/browser/gsa/java/src/org/chromium/chrome/browser/gsa/GSAState.java
 +++ b/chrome/browser/gsa/java/src/org/chromium/chrome/browser/gsa/GSAState.java
@@ -157,5 +133,12 @@ diff --git a/chrome/browser/gsa/java/src/org/chromium/chrome/browser/gsa/GSAStat
          return packageInfo == null ? null : packageInfo.versionName;
      }
  
+diff --git a/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Disable-GSA-by-default.inc b/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Disable-GSA-by-default.inc
+new file mode 100644
+--- /dev/null
++++ b/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Disable-GSA-by-default.inc
+@@ -0,0 +1,2 @@
++SET_CROMITE_FEATURE_DISABLED(kContextMenuSearchWithGoogleLens);
++SET_CROMITE_FEATURE_DISABLED(kExperimentsForAgsa);
 --
 2.25.1

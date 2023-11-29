@@ -4,24 +4,15 @@ Subject: Disable BackForwardCache
 
 License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
- content/public/common/content_features.cc | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ .../common/content_features_cc/Disable-BackForwardCache.inc      | 1 +
+ 1 file changed, 1 insertion(+)
+ create mode 100644 cromite_flags/content/public/common/content_features_cc/Disable-BackForwardCache.inc
 
-diff --git a/content/public/common/content_features.cc b/content/public/common/content_features.cc
---- a/content/public/common/content_features.cc
-+++ b/content/public/common/content_features.cc
-@@ -65,9 +65,9 @@ BASE_FEATURE(kBackgroundFetch,
-              base::FEATURE_ENABLED_BY_DEFAULT);
- 
- // Enable using the BackForwardCache.
--BASE_FEATURE(kBackForwardCache,
--             "BackForwardCache",
--             base::FEATURE_ENABLED_BY_DEFAULT);
-+BASE_FEATURE(kBackForwardCache,                   // ****
-+             "BackForwardCache",                  // always disabled
-+             base::FEATURE_DISABLED_BY_DEFAULT);  // in bromite
- 
- // Enable showing a page preview during back/forward navigations.
- BASE_FEATURE(kBackForwardTransitions,
+diff --git a/cromite_flags/content/public/common/content_features_cc/Disable-BackForwardCache.inc b/cromite_flags/content/public/common/content_features_cc/Disable-BackForwardCache.inc
+new file mode 100644
+--- /dev/null
++++ b/cromite_flags/content/public/common/content_features_cc/Disable-BackForwardCache.inc
+@@ -0,0 +1 @@
++SET_CROMITE_FEATURE_DISABLED(kBackForwardCache);
 --
 2.25.1

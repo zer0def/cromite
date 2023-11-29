@@ -4,22 +4,15 @@ Subject: Block Intents While Locked
 
 see  https://source.chromium.org/chromium/chromium/src/+/c5b50f4c2d42e7b808fd3e6fb3545cdb3f4d82c9
 ---
- chrome/browser/flags/android/chrome_feature_list.cc | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ .../chrome_feature_list_cc/Block-Intents-While-Locked.inc        | 1 +
+ 1 file changed, 1 insertion(+)
+ create mode 100644 cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Block-Intents-While-Locked.inc
 
-diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browser/flags/android/chrome_feature_list.cc
---- a/chrome/browser/flags/android/chrome_feature_list.cc
-+++ b/chrome/browser/flags/android/chrome_feature_list.cc
-@@ -540,8 +540,8 @@ BASE_FEATURE(kBaselineGM3SurfaceColors,
-              base::FEATURE_ENABLED_BY_DEFAULT);
- 
- BASE_FEATURE(kBlockIntentsWhileLocked,
--             "BlockIntentsWhileLocked",
--             base::FEATURE_DISABLED_BY_DEFAULT);
-+             "BlockIntentsWhileLocked",         // enabled
-+             base::FEATURE_ENABLED_BY_DEFAULT); // by default
- 
- BASE_FEATURE(kCacheActivityTaskID,
-              "CacheActivityTaskID",
+diff --git a/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Block-Intents-While-Locked.inc b/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Block-Intents-While-Locked.inc
+new file mode 100644
+--- /dev/null
++++ b/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Block-Intents-While-Locked.inc
+@@ -0,0 +1 @@
++SET_CROMITE_FEATURE_ENABLED(kBlockIntentsWhileLocked);
 --
 2.25.1

@@ -4,27 +4,16 @@ Subject: Disable PrivateStateTokens API
 
 License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
- services/network/public/cpp/features.cc | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ .../public/cpp/features_cc/Disable-PrivateStateTokens-API.inc   | 2 ++
+ 1 file changed, 2 insertions(+)
+ create mode 100644 cromite_flags/services/network/public/cpp/features_cc/Disable-PrivateStateTokens-API.inc
 
-diff --git a/services/network/public/cpp/features.cc b/services/network/public/cpp/features.cc
---- a/services/network/public/cpp/features.cc
-+++ b/services/network/public/cpp/features.cc
-@@ -168,12 +168,12 @@ BASE_FEATURE(kAttributionReportingCrossAppWeb,    // in bromite
- // set, and handling their responses, according to the protocol.
- // (See https://github.com/WICG/trust-token-api.)
- BASE_FEATURE(kPrivateStateTokens,
--             "PrivateStateTokens",
--             base::FEATURE_ENABLED_BY_DEFAULT);
-+             "PrivateStateTokens",                // must be disabled
-+             base::FEATURE_DISABLED_BY_DEFAULT);  // in bromite
- 
- // Secondary flag used by the FLEDGE ads experiment in the interim before
- // PSTs are fully rolled out to stable.
--BASE_FEATURE(kFledgePst, "TrustTokens", base::FEATURE_ENABLED_BY_DEFAULT);
-+BASE_FEATURE(kFledgePst, "TrustTokens", base::FEATURE_DISABLED_BY_DEFAULT); // must be disabled
- 
- // Determines which Trust Tokens operations require the TrustTokens origin trial
- // active in order to be used. This is runtime-configurable so that the Trust
+diff --git a/cromite_flags/services/network/public/cpp/features_cc/Disable-PrivateStateTokens-API.inc b/cromite_flags/services/network/public/cpp/features_cc/Disable-PrivateStateTokens-API.inc
+new file mode 100644
+--- /dev/null
++++ b/cromite_flags/services/network/public/cpp/features_cc/Disable-PrivateStateTokens-API.inc
+@@ -0,0 +1,2 @@
++SET_CROMITE_FEATURE_DISABLED(kPrivateStateTokens);
++SET_CROMITE_FEATURE_DISABLED(kFledgePst);
 --
 2.25.1

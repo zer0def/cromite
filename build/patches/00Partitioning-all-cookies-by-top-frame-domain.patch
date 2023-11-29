@@ -9,23 +9,27 @@ samesite=none first-party cookies are sent in third-party contexts.
 
 License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
- .../net/profile_network_context_service.cc       |  8 ++++----
- .../core/common/cookie_settings_base.cc          |  2 +-
- .../content_settings/core/common/features.cc     |  4 ++--
- components/permissions/features.cc               |  4 ++--
- content/public/common/content_features.cc        |  4 ++--
- net/base/features.cc                             | 16 ++++++++--------
- net/cookies/canonical_cookie.cc                  | 12 +-----------
- net/cookies/cookie_deletion_info.cc              |  3 ++-
- net/cookies/parsed_cookie.h                      |  7 ++++++-
- .../sqlite/sqlite_persistent_cookie_store.cc     | 10 ++++++++++
- net/url_request/url_request_http_job.cc          |  2 +-
- services/network/restricted_cookie_manager.cc    |  3 +++
- .../modules/cookie_store/cookie_init.idl         |  2 +-
- .../modules/cookie_store/cookie_store.cc         | 12 ++++++++++++
- .../cookie_store/cookie_store_delete_options.idl |  2 +-
- ui/webui/webui_allowlist.cc                      |  1 +
- 16 files changed, 57 insertions(+), 35 deletions(-)
+ .../browser/net/profile_network_context_service.cc   |  8 ++++----
+ .../core/common/cookie_settings_base.cc              |  2 +-
+ .../Partitioning-all-cookies-by-top-frame-domain.inc |  1 +
+ .../Partitioning-all-cookies-by-top-frame-domain.inc |  1 +
+ .../Partitioning-all-cookies-by-top-frame-domain.inc |  1 +
+ .../Partitioning-all-cookies-by-top-frame-domain.inc |  5 +++++
+ net/cookies/canonical_cookie.cc                      | 12 +-----------
+ net/cookies/cookie_deletion_info.cc                  |  3 ++-
+ net/cookies/parsed_cookie.h                          |  7 ++++++-
+ net/extras/sqlite/sqlite_persistent_cookie_store.cc  | 10 ++++++++++
+ net/url_request/url_request_http_job.cc              |  2 +-
+ services/network/restricted_cookie_manager.cc        |  3 +++
+ .../renderer/modules/cookie_store/cookie_init.idl    |  2 +-
+ .../renderer/modules/cookie_store/cookie_store.cc    | 12 ++++++++++++
+ .../cookie_store/cookie_store_delete_options.idl     |  2 +-
+ ui/webui/webui_allowlist.cc                          |  1 +
+ 16 files changed, 51 insertions(+), 21 deletions(-)
+ create mode 100644 cromite_flags/components/content_settings/core/common/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
+ create mode 100644 cromite_flags/components/permissions/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
+ create mode 100644 cromite_flags/content/public/common/content_features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
+ create mode 100644 cromite_flags/net/base/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
 
 diff --git a/chrome/browser/net/profile_network_context_service.cc b/chrome/browser/net/profile_network_context_service.cc
 --- a/chrome/browser/net/profile_network_context_service.cc
@@ -61,95 +65,34 @@ diff --git a/components/content_settings/core/common/cookie_settings_base.cc b/c
                  : ThirdPartyBlockingScope::kUnpartitionedAndPartitioned;
    }
    return {block_third ? CONTENT_SETTING_BLOCK : setting, scope,
-diff --git a/components/content_settings/core/common/features.cc b/components/content_settings/core/common/features.cc
---- a/components/content_settings/core/common/features.cc
-+++ b/components/content_settings/core/common/features.cc
-@@ -79,8 +79,8 @@ BASE_FEATURE(kImprovedSemanticsActivityIndicators,
-              base::FEATURE_DISABLED_BY_DEFAULT);
- 
- BASE_FEATURE(kTrackingProtection3pcd,
--             "TrackingProtection3pcd",
--             base::FEATURE_DISABLED_BY_DEFAULT);
-+             "TrackingProtection3pcd",           // disabled
-+             base::FEATURE_DISABLED_BY_DEFAULT); // by default
- 
- }  // namespace features
- }  // namespace content_settings
-diff --git a/components/permissions/features.cc b/components/permissions/features.cc
---- a/components/permissions/features.cc
-+++ b/components/permissions/features.cc
-@@ -156,8 +156,8 @@ BASE_FEATURE(kMitigateUnpartitionedWebviewPermissions,
- // This includes enabling prompts, a new settings page and page info and
- // omnibox integration.
- BASE_FEATURE(kPermissionStorageAccessAPI,
--             "PermissionStorageAccessAPI",
--             base::FEATURE_DISABLED_BY_DEFAULT);
-+             "PermissionStorageAccessAPI",        // guard
-+             base::FEATURE_DISABLED_BY_DEFAULT);  // this
- 
- // When enabled "window-placement" may be used as an alias for
- // "window-management". Additionally, reverse mappings (i.e. enum to string)
-diff --git a/content/public/common/content_features.cc b/content/public/common/content_features.cc
---- a/content/public/common/content_features.cc
-+++ b/content/public/common/content_features.cc
-@@ -186,8 +186,8 @@ BASE_FEATURE(kCompositeBGColorAnimation,
- // server side testing without cookies.
- // (See https://developer.chrome.com/en/docs/privacy-sandbox/chrome-testing)
- BASE_FEATURE(kCookieDeprecationFacilitatedTesting,
--             "CookieDeprecationFacilitatedTesting",
--             base::FEATURE_DISABLED_BY_DEFAULT);
-+             "CookieDeprecationFacilitatedTesting",  // disabled
-+             base::FEATURE_DISABLED_BY_DEFAULT);     // by default
- 
- // Set whether to enable cookie deprecation API for off-the-record profiles.
- const base::FeatureParam<bool>
-diff --git a/net/base/features.cc b/net/base/features.cc
---- a/net/base/features.cc
-+++ b/net/base/features.cc
-@@ -260,8 +260,8 @@ BASE_FEATURE(kWaitForFirstPartySetsInit,
-              base::FEATURE_DISABLED_BY_DEFAULT);
- 
- BASE_FEATURE(kPartitionedCookies,
--             "PartitionedCookies",
--             base::FEATURE_ENABLED_BY_DEFAULT);
-+             "PartitionedCookies",                  // guard this
-+             base::FEATURE_ENABLED_BY_DEFAULT);     // guard this
- 
- BASE_FEATURE(kBlockTruncatedCookies,
-              "BlockTruncatedCookies",
-@@ -272,8 +272,8 @@ BASE_FEATURE(kStaticKeyPinningEnforcement,
-              base::FEATURE_ENABLED_BY_DEFAULT);
- 
- BASE_FEATURE(kCookieDomainRejectNonASCII,
--             "CookieDomainRejectNonASCII",
--             base::FEATURE_DISABLED_BY_DEFAULT);
-+             "CookieDomainRejectNonASCII",          // guard this
-+             base::FEATURE_ENABLED_BY_DEFAULT);     // guard this
- 
- // Enables partitioning of third party storage (IndexedDB, CacheStorage, etc.)
- // by the top level site to reduce fingerprinting.
-@@ -446,8 +446,8 @@ BASE_FEATURE(kEnableSchemeBoundCookies,
- 
- // Enable third-party cookie blocking from the command line.
- BASE_FEATURE(kForceThirdPartyCookieBlocking,
--             "ForceThirdPartyCookieBlockingEnabled",
--             base::FEATURE_DISABLED_BY_DEFAULT);
-+             "ForceThirdPartyCookieBlockingEnabled", // disabled
-+             base::FEATURE_DISABLED_BY_DEFAULT);     // by default
- 
- BASE_FEATURE(kEnableEarlyHintsOnHttp11,
-              "EnableEarlyHintsOnHttp11",
-@@ -469,8 +469,8 @@ BASE_FEATURE(kDigestAuthEnableSecureAlgorithms,
- // are disabled by default. Partitioned storage will not be allowed if
- // third-party cookies are disabled due to a specific rule.
- BASE_FEATURE(kThirdPartyPartitionedStorageAllowedByDefault,
--             "ThirdPartyPartitionedStorageAllowedByDefault",
--             base::FEATURE_ENABLED_BY_DEFAULT);
-+             "ThirdPartyPartitionedStorageAllowedByDefault",  // must be
-+             base::FEATURE_DISABLED_BY_DEFAULT);              // disabled
- 
- BASE_FEATURE(kPriorityHeader,
-              "PriorityHeader",
+diff --git a/cromite_flags/components/content_settings/core/common/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc b/cromite_flags/components/content_settings/core/common/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
+new file mode 100644
+--- /dev/null
++++ b/cromite_flags/components/content_settings/core/common/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
+@@ -0,0 +1 @@
++SET_CROMITE_FEATURE_DISABLED(kTrackingProtection3pcd);
+diff --git a/cromite_flags/components/permissions/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc b/cromite_flags/components/permissions/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
+new file mode 100644
+--- /dev/null
++++ b/cromite_flags/components/permissions/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
+@@ -0,0 +1 @@
++SET_CROMITE_FEATURE_DISABLED(kPermissionStorageAccessAPI);
+diff --git a/cromite_flags/content/public/common/content_features_cc/Partitioning-all-cookies-by-top-frame-domain.inc b/cromite_flags/content/public/common/content_features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
+new file mode 100644
+--- /dev/null
++++ b/cromite_flags/content/public/common/content_features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
+@@ -0,0 +1 @@
++SET_CROMITE_FEATURE_DISABLED(kCookieDeprecationFacilitatedTesting);
+diff --git a/cromite_flags/net/base/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc b/cromite_flags/net/base/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
+new file mode 100644
+--- /dev/null
++++ b/cromite_flags/net/base/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
+@@ -0,0 +1,5 @@
++SET_CROMITE_FEATURE_ENABLED(kPartitionedCookies);
++SET_CROMITE_FEATURE_ENABLED(kCookieDomainRejectNonASCII);
++
++SET_CROMITE_FEATURE_DISABLED(kForceThirdPartyCookieBlocking);
++SET_CROMITE_FEATURE_DISABLED(kThirdPartyPartitionedStorageAllowedByDefault);
 diff --git a/net/cookies/canonical_cookie.cc b/net/cookies/canonical_cookie.cc
 --- a/net/cookies/canonical_cookie.cc
 +++ b/net/cookies/canonical_cookie.cc
@@ -239,7 +182,7 @@ diff --git a/net/extras/sqlite/sqlite_persistent_cookie_store.cc b/net/extras/sq
 diff --git a/net/url_request/url_request_http_job.cc b/net/url_request/url_request_http_job.cc
 --- a/net/url_request/url_request_http_job.cc
 +++ b/net/url_request/url_request_http_job.cc
-@@ -758,7 +758,7 @@ void URLRequestHttpJob::SetCookieHeaderAndStart(
+@@ -759,7 +759,7 @@ void URLRequestHttpJob::SetCookieHeaderAndStart(
  
        size_t n_partitioned_cookies = 0;
        bool may_set_sec_cookie_deprecation_header =

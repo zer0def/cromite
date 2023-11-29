@@ -15,90 +15,53 @@ fonts-fingerprint-mitigation flag, which is active by default.
 
 License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
- chrome/browser/about_flags.cc                 |   5 +
- chrome/browser/flag_descriptions.cc           |   5 +
- chrome/browser/flag_descriptions.h            |   3 +
- content/common/features.cc                    |   8 +-
+ .../Fonts-fingerprinting-mitigation.inc       |   8 +
+ .../Fonts-fingerprinting-mitigation.inc       |   2 +
+ .../Fonts-fingerprinting-mitigation.inc       |   5 +
  skia/ext/skia_utils_win.cc                    |  20 ++
  skia/ext/skia_utils_win.h                     |   3 +
- third_party/blink/common/features.cc          |   6 +-
  third_party/blink/public/common/features.h    |   3 +
  third_party/blink/renderer/platform/BUILD.gn  |   1 +
  .../renderer/platform/fonts/font_cache.h      |   2 +-
  .../fonts/skia/bromite_allowed_fonts.h        | 270 ++++++++++++++++++
  .../platform/fonts/skia/font_cache_skia.cc    |  44 ++-
  .../platform/fonts/win/font_cache_skia_win.cc |   7 +-
- 13 files changed, 363 insertions(+), 14 deletions(-)
+ 11 files changed, 356 insertions(+), 9 deletions(-)
+ create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Fonts-fingerprinting-mitigation.inc
+ create mode 100644 cromite_flags/content/common/features_cc/Fonts-fingerprinting-mitigation.inc
+ create mode 100644 cromite_flags/third_party/blink/common/features_cc/Fonts-fingerprinting-mitigation.inc
  create mode 100644 third_party/blink/renderer/platform/fonts/skia/bromite_allowed_fonts.h
 
-diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
---- a/chrome/browser/about_flags.cc
-+++ b/chrome/browser/about_flags.cc
-@@ -10429,6 +10429,11 @@ const FeatureEntry kFeatureEntries[] = {
-                                     kClipboardMaximumAgeVariations,
-                                     "ClipboardMaximumAge")},
- 
+diff --git a/cromite_flags/chrome/browser/about_flags_cc/Fonts-fingerprinting-mitigation.inc b/cromite_flags/chrome/browser/about_flags_cc/Fonts-fingerprinting-mitigation.inc
+new file mode 100644
+--- /dev/null
++++ b/cromite_flags/chrome/browser/about_flags_cc/Fonts-fingerprinting-mitigation.inc
+@@ -0,0 +1,8 @@
++#ifdef FLAG_SECTION
++
 +    {"fonts-fingerprint-mitigation",
-+     flag_descriptions::kFontsFingerprintMitigationName,
-+     flag_descriptions::kFontsFingerprintMitigationDescription, kOsAll,
++     "Enable fonts fingerprint mitigation",
++     "Filters the list of fonts allowing only standard ones to be used.", kOsAll,
 +     FEATURE_VALUE_TYPE(blink::features::kFontsFingerprintMitigation)},
 +
- #if BUILDFLAG(IS_CHROMEOS_ASH)
-     {"enable-media-dynamic-cgroup", flag_descriptions::kMediaDynamicCgroupName,
-      flag_descriptions::kMediaDynamicCgroupDescription, kOsCrOS,
-diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descriptions.cc
---- a/chrome/browser/flag_descriptions.cc
-+++ b/chrome/browser/flag_descriptions.cc
-@@ -159,6 +159,11 @@ const char kClipboardUnsanitizedContentDescription[] =
-     "Allows reading/writing unsanitized content from/to the clipboard. "
-     "Currently, it is only applicable to HTML format. See crbug.com/1268679.";
- 
-+const char kFontsFingerprintMitigationName[] =
-+    "Enable fonts fingerprint mitigation";
-+const char kFontsFingerprintMitigationDescription[] =
-+    "Filters the list of fonts allowing only standard ones to be used.";
++#endif
+diff --git a/cromite_flags/content/common/features_cc/Fonts-fingerprinting-mitigation.inc b/cromite_flags/content/common/features_cc/Fonts-fingerprinting-mitigation.inc
+new file mode 100644
+--- /dev/null
++++ b/cromite_flags/content/common/features_cc/Fonts-fingerprinting-mitigation.inc
+@@ -0,0 +1,2 @@
++SET_CROMITE_FEATURE_DISABLED(kAndroidDownloadableFontsMatching);
++SET_CROMITE_FEATURE_DISABLED(kFontSrcLocalMatching);
+diff --git a/cromite_flags/third_party/blink/common/features_cc/Fonts-fingerprinting-mitigation.inc b/cromite_flags/third_party/blink/common/features_cc/Fonts-fingerprinting-mitigation.inc
+new file mode 100644
+--- /dev/null
++++ b/cromite_flags/third_party/blink/common/features_cc/Fonts-fingerprinting-mitigation.inc
+@@ -0,0 +1,5 @@
++SET_CROMITE_FEATURE_DISABLED(kGMSCoreEmoji);
 +
- const char kChromeRootStoreEnabledName[] = "Chrome Root Store";
- const char kChromeRootStoreEnabledDescription[] =
-     "Enable use of Chrome Root Store over platform roots. "
-diff --git a/chrome/browser/flag_descriptions.h b/chrome/browser/flag_descriptions.h
---- a/chrome/browser/flag_descriptions.h
-+++ b/chrome/browser/flag_descriptions.h
-@@ -131,6 +131,9 @@ extern const char kClickToCallDescription[];
- extern const char kClipboardUnsanitizedContentName[];
- extern const char kClipboardUnsanitizedContentDescription[];
- 
-+extern const char kFontsFingerprintMitigationName[];
-+extern const char kFontsFingerprintMitigationDescription[];
-+
- extern const char kClipboardMaximumAgeName[];
- extern const char kClipboardMaximumAgeDescription[];
- 
-diff --git a/content/common/features.cc b/content/common/features.cc
---- a/content/common/features.cc
-+++ b/content/common/features.cc
-@@ -21,8 +21,8 @@ BASE_FEATURE(kAllowContentInitiatedDataUrlNavigations,
- // Allows Blink to request fonts from the Android Downloadable Fonts API through
- // the service implemented on the Java side.
- BASE_FEATURE(kAndroidDownloadableFontsMatching,
--             "AndroidDownloadableFontsMatching",
--             base::FEATURE_ENABLED_BY_DEFAULT);
-+             "AndroidDownloadableFontsMatching", // disabled
-+             base::FEATURE_DISABLED_BY_DEFAULT); // by default
- 
- // The following two features, when enabled, result in the browser process only
- // asking the renderer process to run beforeunload handlers if it knows such
-@@ -195,8 +195,8 @@ const base::FeatureParam<int> kFledgeLimitNumAuctionsParam{
- // font name or postscript name. Rolling out behind a flag, as enabling this
- // enables a font indexer on Android which we need to test in the field first.
- BASE_FEATURE(kFontSrcLocalMatching,
--             "FontSrcLocalMatching",
--             base::FEATURE_ENABLED_BY_DEFAULT);
-+             "FontSrcLocalMatching",             // disable
-+             base::FEATURE_DISABLED_BY_DEFAULT); // by default
- 
- // Feature controlling whether or not memory pressure signals will be forwarded
- // to the GPU process.
++CROMITE_FEATURE(kFontsFingerprintMitigation,
++                "FontsFingerprintMitigation",
++                base::FEATURE_ENABLED_BY_DEFAULT);
 diff --git a/skia/ext/skia_utils_win.cc b/skia/ext/skia_utils_win.cc
 --- a/skia/ext/skia_utils_win.cc
 +++ b/skia/ext/skia_utils_win.cc
@@ -149,33 +112,10 @@ diff --git a/skia/ext/skia_utils_win.h b/skia/ext/skia_utils_win.h
  // Creates an HBITMAP backed by 32-bits-per-pixel RGB data (the high bits are
  // unused in each pixel).
  SK_API base::win::ScopedBitmap CreateHBitmapXRGB8888(
-diff --git a/third_party/blink/common/features.cc b/third_party/blink/common/features.cc
---- a/third_party/blink/common/features.cc
-+++ b/third_party/blink/common/features.cc
-@@ -923,7 +923,7 @@ BASE_FEATURE(kFrequencyCappingForOverlayPopupDetection,
-              "FrequencyCappingForOverlayPopupDetection",
-              base::FEATURE_ENABLED_BY_DEFAULT);
- 
--BASE_FEATURE(kGMSCoreEmoji, "GMSCoreEmoji", base::FEATURE_ENABLED_BY_DEFAULT);
-+BASE_FEATURE(kGMSCoreEmoji, "GMSCoreEmoji", base::FEATURE_DISABLED_BY_DEFAULT);
- 
- BASE_FEATURE(kGainmapHdrImages,
-              "GainmapHdrImages",
-@@ -2036,6 +2036,10 @@ BASE_FEATURE(kWebRtcH264WithOpenH264FFmpeg,
-              base::FEATURE_ENABLED_BY_DEFAULT);
- #endif  // BUILDFLAG(RTC_USE_H264) && BUILDFLAG(ENABLE_FFMPEG_VIDEO_DECODERS)
- 
-+BASE_FEATURE(kFontsFingerprintMitigation,
-+             "FontsFingerprintMitigation",
-+             base::FEATURE_ENABLED_BY_DEFAULT);
-+
- // Exposes non-standard stats in the WebRTC getStats() API.
- BASE_FEATURE(kWebRtcExposeNonStandardStats,
-              "WebRtc-ExposeNonStandardStats",
 diff --git a/third_party/blink/public/common/features.h b/third_party/blink/public/common/features.h
 --- a/third_party/blink/public/common/features.h
 +++ b/third_party/blink/public/common/features.h
-@@ -249,6 +249,9 @@ BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE(kCompressParkableStrings);
+@@ -247,6 +247,9 @@ BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE(kCompressParkableStrings);
  BLINK_COMMON_EXPORT extern const base::FeatureParam<int>
      kMaxDiskDataAllocatorCapacityMB;
  

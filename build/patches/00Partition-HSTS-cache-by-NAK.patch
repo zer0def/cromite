@@ -504,7 +504,7 @@ diff --git a/net/url_request/url_request_http_job.cc b/net/url_request/url_reque
        return std::make_unique<URLRequestRedirectJob>(
            request, UpgradeSchemeToCryptographic(url),
            // Use status code 307 to preserve the method, so POST requests work.
-@@ -1055,7 +1055,7 @@ void URLRequestHttpJob::ProcessStrictTransportSecurityHeader() {
+@@ -1056,7 +1056,7 @@ void URLRequestHttpJob::ProcessStrictTransportSecurityHeader() {
    HttpResponseHeaders* headers = GetResponseHeaders();
    std::string value;
    if (headers->EnumerateHeader(nullptr, "Strict-Transport-Security", &value))
@@ -513,7 +513,7 @@ diff --git a/net/url_request/url_request_http_job.cc b/net/url_request/url_reque
  }
  
  void URLRequestHttpJob::OnStartCompleted(int result) {
-@@ -1125,7 +1125,7 @@ void URLRequestHttpJob::OnStartCompleted(int result) {
+@@ -1126,7 +1126,7 @@ void URLRequestHttpJob::OnStartCompleted(int result) {
      TransportSecurityState* state = context->transport_security_state();
      NotifySSLCertificateError(
          result, transaction_->GetResponseInfo()->ssl_info,

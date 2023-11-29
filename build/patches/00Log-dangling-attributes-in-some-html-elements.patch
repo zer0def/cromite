@@ -9,7 +9,7 @@ under enable-log-dangling-attributes about flag
 
 License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
- chrome/browser/about_flags.cc                 |  5 ++++-
+ ...gling-attributes-in-some-html-elements.inc |  8 +++++++
  .../blink/renderer/core/dom/document.cc       | 18 +++++++++++++++
  .../blink/renderer/core/dom/element.cc        | 20 ++++++++++++++++-
  third_party/blink/renderer/core/dom/element.h |  3 ++-
@@ -22,23 +22,22 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../core/loader/frame_load_request.cc         |  9 ++++++++
  .../blink/renderer/core/page/frame_tree.cc    | 22 +++++++++++++++++++
  .../platform/runtime_enabled_features.json5   | 10 +++++++--
- 13 files changed, 127 insertions(+), 5 deletions(-)
+ 13 files changed, 131 insertions(+), 4 deletions(-)
+ create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Log-dangling-attributes-in-some-html-elements.inc
 
-diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
---- a/chrome/browser/about_flags.cc
-+++ b/chrome/browser/about_flags.cc
-@@ -5378,7 +5378,10 @@ const FeatureEntry kFeatureEntries[] = {
-      flag_descriptions::kWebShareDescription, kOsWin | kOsCrOS | kOsMac,
-      FEATURE_VALUE_TYPE(features::kWebShare)},
- #endif  // BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_WIN) || BUILDFLAG(IS_MAC)
--
+diff --git a/cromite_flags/chrome/browser/about_flags_cc/Log-dangling-attributes-in-some-html-elements.inc b/cromite_flags/chrome/browser/about_flags_cc/Log-dangling-attributes-in-some-html-elements.inc
+new file mode 100644
+--- /dev/null
++++ b/cromite_flags/chrome/browser/about_flags_cc/Log-dangling-attributes-in-some-html-elements.inc
+@@ -0,0 +1,8 @@
++#ifdef FLAG_SECTION
++
 +    {"enable-log-dangling-attributes",
 +     "Log some dangling attributes",
 +     "NOTE: log only", kOsAll,
 +     FEATURE_VALUE_TYPE(blink::features::kLogDanglingAttributes)},
- #if BUILDFLAG(IS_LINUX)
-     {"ozone-platform-hint", flag_descriptions::kOzonePlatformHintName,
-      flag_descriptions::kOzonePlatformHintDescription, kOsLinux,
++
++#endif
 diff --git a/third_party/blink/renderer/core/dom/document.cc b/third_party/blink/renderer/core/dom/document.cc
 --- a/third_party/blink/renderer/core/dom/document.cc
 +++ b/third_party/blink/renderer/core/dom/document.cc
@@ -319,7 +318,7 @@ diff --git a/third_party/blink/renderer/core/page/frame_tree.cc b/third_party/bl
 diff --git a/third_party/blink/renderer/platform/runtime_enabled_features.json5 b/third_party/blink/renderer/platform/runtime_enabled_features.json5
 --- a/third_party/blink/renderer/platform/runtime_enabled_features.json5
 +++ b/third_party/blink/renderer/platform/runtime_enabled_features.json5
-@@ -1525,8 +1525,8 @@
+@@ -1518,8 +1518,8 @@
        // Experiment with preventing some instances of mutation XSS
        // by escaping "<" and ">" in attribute values.
        // See: crbug.com/1175016
@@ -330,7 +329,7 @@ diff --git a/third_party/blink/renderer/platform/runtime_enabled_features.json5 
      },
      {
        name: "EventTimingInteractionCount",
-@@ -2296,6 +2296,12 @@
+@@ -2289,6 +2289,12 @@
        // Use LongAnimationFrameMonitor to emit longtask entries
        name: "LongTaskFromLongAnimationFrame"
      },

@@ -15,7 +15,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  chrome/browser/signin/chrome_signin_client.cc |   7 +-
  .../ui/webui/policy/policy_ui_handler.cc      | 104 ++++++++++++-
  .../ui/webui/policy/policy_ui_handler.h       |   2 +
- .../commerce/core/commerce_feature_list.cc    |  24 +--
+ .../commerce/core/commerce_feature_list.cc    |   7 +
  .../core/browser/browser_policy_connector.cc  |   3 +
  .../common/command_line_policy_provider.cc    |   3 +
  .../core/common/policy_loader_command_line.cc | 140 ++++++++++++++++--
@@ -30,7 +30,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  components/policy_strings.grdp                |   4 +-
  .../gaia_cookie_manager_service.cc            |   4 +
  google_apis/gaia/gaia_auth_fetcher.cc         |   1 +
- 26 files changed, 311 insertions(+), 107 deletions(-)
+ 26 files changed, 306 insertions(+), 95 deletions(-)
 
 diff --git a/base/win/win_util.cc b/base/win/win_util.cc
 --- a/base/win/win_util.cc
@@ -431,61 +431,20 @@ diff --git a/chrome/browser/ui/webui/policy/policy_ui_handler.h b/chrome/browser
 diff --git a/components/commerce/core/commerce_feature_list.cc b/components/commerce/core/commerce_feature_list.cc
 --- a/components/commerce/core/commerce_feature_list.cc
 +++ b/components/commerce/core/commerce_feature_list.cc
-@@ -159,8 +159,8 @@ BASE_FEATURE(kCommercePriceTrackingChipExperiment,
- 
- #if BUILDFLAG(IS_ANDROID)
- BASE_FEATURE(kCommercePriceTrackingRegionLaunched,
--             "CommercePriceTrackingRegionLaunched",
--             base::FEATURE_ENABLED_BY_DEFAULT);
-+             "CommercePriceTrackingRegionLaunched",  // disabled
-+             base::FEATURE_DISABLED_BY_DEFAULT);     // by default
- #else
- BASE_FEATURE(kCommercePriceTrackingRegionLaunched,
-              "CommercePriceTrackingRegionLaunched",
-@@ -227,8 +227,8 @@ BASE_FEATURE(kShoppingList, "ShoppingList", base::FEATURE_DISABLED_BY_DEFAULT);
- #if BUILDFLAG(IS_ANDROID) || BUILDFLAG(IS_WIN) || BUILDFLAG(IS_MAC) || \
-     BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
- BASE_FEATURE(kShoppingListRegionLaunched,
--             "ShoppingListRegionLaunched",
--             base::FEATURE_ENABLED_BY_DEFAULT);
-+             "ShoppingListRegionLaunched",       // disabled
-+             base::FEATURE_DISABLED_BY_DEFAULT); // by default
- #else
- BASE_FEATURE(kShoppingListRegionLaunched,
-              "ShoppingListRegionLaunched",
-@@ -273,12 +273,12 @@ BASE_FEATURE(kDiscountConsentV2,
-              base::FEATURE_ENABLED_BY_DEFAULT);
- 
- BASE_FEATURE(kCommerceHintAndroid,
--             "CommerceHintAndroid",
--             base::FEATURE_DISABLED_BY_DEFAULT);
-+             "CommerceHintAndroid",              // disabled
-+             base::FEATURE_DISABLED_BY_DEFAULT); // by default
- 
- BASE_FEATURE(kMerchantWidePromotion,
--             "MerchantWidePromotion",
--             base::FEATURE_ENABLED_BY_DEFAULT);
-+             "MerchantWidePromotion",            // disabled
-+             base::FEATURE_DISABLED_BY_DEFAULT); // by default
- 
- BASE_FEATURE(kCodeBasedRBD, "CodeBasedRBD", base::FEATURE_ENABLED_BY_DEFAULT);
- 
-@@ -287,11 +287,11 @@ BASE_FEATURE(kChromeCartDomBasedHeuristics,
+@@ -293,6 +293,13 @@ BASE_FEATURE(kParcelTrackingRegionLaunched,
+              "ParcelTrackingRegionLaunched",
               base::FEATURE_DISABLED_BY_DEFAULT);
  
- BASE_FEATURE(kParcelTracking,
--             "ParcelTracking",
--             base::FEATURE_ENABLED_BY_DEFAULT);
-+             "ParcelTracking",                   // disabled
-+             base::FEATURE_DISABLED_BY_DEFAULT); // by default
- BASE_FEATURE(kParcelTrackingRegionLaunched,
--             "ParcelTrackingRegionLaunched",
--             base::FEATURE_DISABLED_BY_DEFAULT);
-+             "ParcelTrackingRegionLaunched",     // disabled
-+             base::FEATURE_DISABLED_BY_DEFAULT); // by default
- 
++SET_CROMITE_FEATURE_DISABLED(kCommercePriceTrackingRegionLaunched);
++SET_CROMITE_FEATURE_DISABLED(kShoppingListRegionLaunched);
++SET_CROMITE_FEATURE_DISABLED(kCommerceHintAndroid);
++SET_CROMITE_FEATURE_DISABLED(kMerchantWidePromotion);
++SET_CROMITE_FEATURE_DISABLED(kParcelTracking);
++SET_CROMITE_FEATURE_DISABLED(kParcelTrackingRegionLaunched);
++
  // Params for Discount Consent V2 in the NTP Cart module.
  const char kNtpChromeCartModuleDiscountConsentNtpVariationParam[] =
+     "discount-consent-ntp-variation";
 diff --git a/components/policy/core/browser/browser_policy_connector.cc b/components/policy/core/browser/browser_policy_connector.cc
 --- a/components/policy/core/browser/browser_policy_connector.cc
 +++ b/components/policy/core/browser/browser_policy_connector.cc

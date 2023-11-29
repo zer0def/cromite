@@ -25,17 +25,20 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../endpoint_fetcher_android.cc               |  50 ++++
  .../endpoint_fetcher/EndpointFetcher.java     |  26 +-
  .../EndpointHeaderResponse.java               |  31 ++
- .../flags/android/chrome_feature_list.cc      |   5 +
- .../flags/android/chrome_feature_list.h       |   1 +
+ .../flags/android/chrome_feature_list.cc      |   1 +
  .../browser/flags/ChromeFeatureList.java      |   1 +
  .../strings/android_chrome_strings.grd        |  23 +-
  .../endpoint_fetcher/endpoint_fetcher.cc      | 103 ++++++-
  .../endpoint_fetcher/endpoint_fetcher.h       |  23 +-
- 23 files changed, 933 insertions(+), 50 deletions(-)
+ .../Bromite-auto-updater.inc                  |   3 +
+ .../Bromite-auto-updater.inc                  |   1 +
+ 24 files changed, 932 insertions(+), 50 deletions(-)
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/omaha/inline/BromiteInlineUpdateController.java
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/omaha/inline/InlineUpdateController.java
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/omaha/inline/InlineUpdateControllerFactory.java
  create mode 100644 chrome/browser/endpoint_fetcher/java/src/org/chromium/chrome/browser/endpoint_fetcher/EndpointHeaderResponse.java
+ create mode 100644 cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Bromite-auto-updater.inc
+ create mode 100644 cromite_flags/chrome/browser/flags/android/chrome_feature_list_h/Bromite-auto-updater.inc
 
 diff --git a/build/android/java/templates/BuildConfig.template b/build/android/java/templates/BuildConfig.template
 --- a/build/android/java/templates/BuildConfig.template
@@ -1291,28 +1294,6 @@ diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browse
      &kBookmarksImprovedSaveFlow,
      &kBookmarksRefresh,
      &kOmahaMinSdkVersionAndroid,
-@@ -722,6 +723,10 @@ BASE_FEATURE(kContextMenuTranslateWithGoogleLens,
-              "ContextMenuTranslateWithGoogleLens",
-              base::FEATURE_DISABLED_BY_DEFAULT);
- 
-+BASE_FEATURE(kInlineUpdateFlow,
-+             "InlineUpdateFlow",
-+             base::FEATURE_ENABLED_BY_DEFAULT);
-+
- BASE_FEATURE(kLensCameraAssistedSearch,
-              "LensCameraAssistedSearch",
-              base::FEATURE_ENABLED_BY_DEFAULT);
-diff --git a/chrome/browser/flags/android/chrome_feature_list.h b/chrome/browser/flags/android/chrome_feature_list.h
---- a/chrome/browser/flags/android/chrome_feature_list.h
-+++ b/chrome/browser/flags/android/chrome_feature_list.h
-@@ -118,6 +118,7 @@ BASE_DECLARE_FEATURE(kGridTabSwitcherLandscapeAspectRatioPhones);
- BASE_DECLARE_FEATURE(kHideTabOnTabSwitcher);
- BASE_DECLARE_FEATURE(kImprovedIncognitoScreenshot);
- BASE_DECLARE_FEATURE(kIncognitoReauthenticationForAndroid);
-+BASE_DECLARE_FEATURE(kInlineUpdateFlow);
- BASE_DECLARE_FEATURE(kIncognitoScreenshot);
- BASE_DECLARE_FEATURE(kInfobarScrollOptimization);
- BASE_DECLARE_FEATURE(kImprovedA2HS);
 diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 --- a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 +++ b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
@@ -1626,5 +1607,19 @@ diff --git a/components/endpoint_fetcher/endpoint_fetcher.h b/components/endpoin
    base::WeakPtrFactory<EndpointFetcher> weak_ptr_factory_{this};
  };
  
+diff --git a/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Bromite-auto-updater.inc b/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Bromite-auto-updater.inc
+new file mode 100644
+--- /dev/null
++++ b/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Bromite-auto-updater.inc
+@@ -0,0 +1,3 @@
++CROMITE_FEATURE(kInlineUpdateFlow,
++                "InlineUpdateFlow",
++                base::FEATURE_ENABLED_BY_DEFAULT);
+diff --git a/cromite_flags/chrome/browser/flags/android/chrome_feature_list_h/Bromite-auto-updater.inc b/cromite_flags/chrome/browser/flags/android/chrome_feature_list_h/Bromite-auto-updater.inc
+new file mode 100644
+--- /dev/null
++++ b/cromite_flags/chrome/browser/flags/android/chrome_feature_list_h/Bromite-auto-updater.inc
+@@ -0,0 +1 @@
++BASE_DECLARE_FEATURE(kInlineUpdateFlow);
 --
 2.25.1

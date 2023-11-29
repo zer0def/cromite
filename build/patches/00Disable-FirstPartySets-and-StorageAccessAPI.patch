@@ -4,10 +4,11 @@ Subject: Disable FirstPartySets and StorageAccessAPI
 
 License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
- components/privacy_sandbox/privacy_sandbox_prefs.cc     | 2 +-
- components/privacy_sandbox/tracking_protection_prefs.cc | 4 ++--
- content/public/common/content_features.cc               | 6 +++---
- 3 files changed, 6 insertions(+), 6 deletions(-)
+ components/privacy_sandbox/privacy_sandbox_prefs.cc           | 2 +-
+ components/privacy_sandbox/tracking_protection_prefs.cc       | 4 ++--
+ .../Disable-FirstPartySets-and-StorageAccessAPI.inc           | 1 +
+ 3 files changed, 4 insertions(+), 3 deletions(-)
+ create mode 100644 cromite_flags/content/public/common/content_features_cc/Disable-FirstPartySets-and-StorageAccessAPI.inc
 
 diff --git a/components/privacy_sandbox/privacy_sandbox_prefs.cc b/components/privacy_sandbox/privacy_sandbox_prefs.cc
 --- a/components/privacy_sandbox/privacy_sandbox_prefs.cc
@@ -40,21 +41,11 @@ diff --git a/components/privacy_sandbox/tracking_protection_prefs.cc b/component
    registry->RegisterBooleanPref(
        prefs::kEnableDoNotTrack, false,
        user_prefs::PrefRegistrySyncable::SYNCABLE_PREF);
-diff --git a/content/public/common/content_features.cc b/content/public/common/content_features.cc
---- a/content/public/common/content_features.cc
-+++ b/content/public/common/content_features.cc
-@@ -405,9 +405,9 @@ BASE_FEATURE(kWebIdentityMDocs,
-              base::FEATURE_DISABLED_BY_DEFAULT);
- 
- // Enables usage of First Party Sets to determine cookie availability.
--BASE_FEATURE(kFirstPartySets,
--             "FirstPartySets",
--             base::FEATURE_ENABLED_BY_DEFAULT);
-+BASE_FEATURE(kFirstPartySets,                       // always
-+             "FirstPartySets",                      // disabled
-+             base::FEATURE_DISABLED_BY_DEFAULT);    // in bromite
- 
- // Controls whether to clear sites data on FPS transitions.
- const base::FeatureParam<bool> kFirstPartySetsClearSiteDataOnChangedSets{
+diff --git a/cromite_flags/content/public/common/content_features_cc/Disable-FirstPartySets-and-StorageAccessAPI.inc b/cromite_flags/content/public/common/content_features_cc/Disable-FirstPartySets-and-StorageAccessAPI.inc
+new file mode 100644
+--- /dev/null
++++ b/cromite_flags/content/public/common/content_features_cc/Disable-FirstPartySets-and-StorageAccessAPI.inc
+@@ -0,0 +1 @@
++SET_CROMITE_FEATURE_DISABLED(kFirstPartySets);
 --
 2.25.1
