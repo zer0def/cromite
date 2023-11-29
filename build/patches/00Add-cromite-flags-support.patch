@@ -183,11 +183,11 @@ diff --git a/base/feature_list.cc b/base/feature_list.cc
  
  void FeatureList::FinalizeInitialization() {
    DCHECK(!initialized_);
-+  LOG(INFO) << "---FinalizeInitialization";
++  //LOG(INFO) << "---FinalizeInitialization";
 +  for(auto const& [key, value]: internal::GetListOfNewFeatureState()) {
-+    LOG(INFO) << "---key " << key->name
-+              << " "
-+              << (value == base::FEATURE_ENABLED_BY_DEFAULT ? "1" : "0");
++    // LOG(INFO) << "---key " << key->name
++    //           << " "
++    //           << (value == base::FEATURE_ENABLED_BY_DEFAULT ? "1" : "0");
 +    RegisterOverride(key->name,
 +        value == base::FEATURE_ENABLED_BY_DEFAULT
 +          ? OverrideState::OVERRIDE_ENABLE_FEATURE
@@ -348,7 +348,7 @@ diff --git a/chrome/android/java/res/values/values.xml b/chrome/android/java/res
      <!-- Contextual Search -->
      <item name="contextual_search_sheet_full_height_fraction" format="float" type="dimen">0.95</item>
  
-+    <string name="cromite_flags_title">Cromite Flags (wip)</string>
++    <string name="cromite_flags_title">Open Cromite flags list</string>
 +    <string name="cromite_flags_url">chrome://flags/cromite</string>
 +
      <!-- Tablet tab strip -->
