@@ -49,7 +49,7 @@ diff --git a/base/android/content_uri_utils.h b/base/android/content_uri_utils.h
 diff --git a/base/android/java/src/org/chromium/base/ContentUriUtils.java b/base/android/java/src/org/chromium/base/ContentUriUtils.java
 --- a/base/android/java/src/org/chromium/base/ContentUriUtils.java
 +++ b/base/android/java/src/org/chromium/base/ContentUriUtils.java
-@@ -23,6 +23,9 @@ import org.chromium.base.annotations.CalledByNative;
+@@ -23,6 +23,9 @@ import org.jni_zero.CalledByNative;
  import java.io.File;
  import java.io.IOException;
  

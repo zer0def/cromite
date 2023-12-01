@@ -11,7 +11,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 diff --git a/chrome/browser/chrome_content_browser_client.cc b/chrome/browser/chrome_content_browser_client.cc
 --- a/chrome/browser/chrome_content_browser_client.cc
 +++ b/chrome/browser/chrome_content_browser_client.cc
-@@ -774,7 +774,7 @@ const char kDEPRECATED_AllowlistedExtensionID[] = "whitelisted-extension-id";
+@@ -767,7 +767,7 @@ namespace {
  // https://blogs.windows.com/blog/tag/code-integrity-guard/.
  BASE_FEATURE(kNetworkServiceCodeIntegrity,
               "NetworkServiceCodeIntegrity",

@@ -83,7 +83,7 @@ Enabled by default
 diff --git a/DEPS b/DEPS
 --- a/DEPS
 +++ b/DEPS
-@@ -515,6 +515,10 @@ vars = {
+@@ -504,6 +504,10 @@ vars = {
    # Three lines of non-changing comments so that
    # the commit queue can handle CLs rolling feed
    # and whatever else without interference from each other.
@@ -94,7 +94,7 @@ diff --git a/DEPS b/DEPS
    'highway_revision': '8f20644eca693cfb74aa795b0006b6779c370e7a',
    # Three lines of non-changing comments so that
    # the commit queue can handle CLs rolling ffmpeg
-@@ -1205,6 +1209,9 @@ deps = {
+@@ -1134,6 +1138,9 @@ deps = {
    'src/third_party/dawn':
      Var('dawn_git') + '/dawn.git' + '@' +  Var('dawn_revision'),
  
@@ -146,14 +146,14 @@ new file mode 100644
 diff --git a/build/linux/unbundle/replace_gn_files.py b/build/linux/unbundle/replace_gn_files.py
 --- a/build/linux/unbundle/replace_gn_files.py
 +++ b/build/linux/unbundle/replace_gn_files.py
-@@ -53,6 +53,7 @@ REPLACEMENTS = {
+@@ -55,6 +55,7 @@ REPLACEMENTS = {
    'libdrm': 'third_party/libdrm/BUILD.gn',
    'libevent': 'third_party/libevent/BUILD.gn',
    'libjpeg': 'third_party/libjpeg.gni',
 +  'libjxl' : 'third_party/libjxl/BUILD.gn',
    'libpng': 'third_party/libpng/BUILD.gn',
-   'libvpx': 'third_party/libvpx/BUILD.gn',
-   'libwebp': 'third_party/libwebp/BUILD.gn',
+   'libsecret' : 'third_party/libsecret/BUILD.gn',
+   'libusb': 'third_party/libusb/BUILD.gn',
 diff --git a/cc/base/devtools_instrumentation.cc b/cc/base/devtools_instrumentation.cc
 --- a/cc/base/devtools_instrumentation.cc
 +++ b/cc/base/devtools_instrumentation.cc
@@ -174,8 +174,8 @@ diff --git a/cc/base/devtools_instrumentation.h b/cc/base/devtools_instrumentati
  
  class CC_BASE_EXPORT ScopedImageTask {
   public:
--  enum ImageType { kAvif, kBmp, kGif, kIco, kJpeg, kPng, kWebP, kOther };
-+  enum ImageType { kJxl, kAvif, kBmp, kGif, kIco, kJpeg, kPng, kWebP, kOther };
+-  enum class ImageType { kAvif, kBmp, kGif, kIco, kJpeg, kPng, kWebP, kOther };
++  enum class ImageType { kJxl, kAvif, kBmp, kGif, kIco, kJpeg, kPng, kWebP, kOther };
  
    explicit ScopedImageTask(ImageType image_type)
        : image_type_(image_type), start_time_(base::TimeTicks::Now()) {}
@@ -304,7 +304,7 @@ new file mode 100644
 diff --git a/media/BUILD.gn b/media/BUILD.gn
 --- a/media/BUILD.gn
 +++ b/media/BUILD.gn
-@@ -37,6 +37,7 @@ buildflag_header("media_buildflags") {
+@@ -38,6 +38,7 @@ buildflag_header("media_buildflags") {
      "ENABLE_CAST_AUDIO_RENDERER=$enable_cast_audio_renderer",
      "ENABLE_DAV1D_DECODER=$enable_dav1d_decoder",
      "ENABLE_AV1_DECODER=$enable_av1_decoder",
@@ -315,7 +315,7 @@ diff --git a/media/BUILD.gn b/media/BUILD.gn
 diff --git a/media/media_options.gni b/media/media_options.gni
 --- a/media/media_options.gni
 +++ b/media/media_options.gni
-@@ -125,6 +125,9 @@ declare_args() {
+@@ -129,6 +129,9 @@ declare_args() {
    # `enable_libaom` should likely also be overriddent to false.
    enable_av1_decoder = enable_dav1d_decoder
  
@@ -363,7 +363,7 @@ diff --git a/net/base/mime_util_unittest.cc b/net/base/mime_util_unittest.cc
  #if BUILDFLAG(IS_CHROMEOS_ASH)
      // These are test cases for testing platform mime types on ChromeOS.
      {FILE_PATH_LITERAL("epub"), {"application/epub+zip"}},
-@@ -497,6 +499,7 @@ TEST(MimeUtilTest, TestGetExtensionsForMimeType) {
+@@ -496,6 +498,7 @@ TEST(MimeUtilTest, TestGetExtensionsForMimeType) {
        {"MeSsAge/*", 1, "eml"},
        {"message/", 0, nullptr, true},
        {"image/avif", 1, "avif"},
@@ -466,7 +466,7 @@ diff --git a/third_party/blink/common/mime_util/mime_util_unittest.cc b/third_pa
 diff --git a/third_party/blink/public/devtools_protocol/browser_protocol.pdl b/third_party/blink/public/devtools_protocol/browser_protocol.pdl
 --- a/third_party/blink/public/devtools_protocol/browser_protocol.pdl
 +++ b/third_party/blink/public/devtools_protocol/browser_protocol.pdl
-@@ -4133,6 +4133,7 @@ domain Emulation
+@@ -4218,6 +4218,7 @@ domain Emulation
    experimental type DisabledImageType extends string
      enum
        avif
@@ -607,7 +607,7 @@ diff --git a/third_party/blink/renderer/modules/webcodecs/image_decoder_fuzzer.c
 diff --git a/third_party/blink/renderer/platform/BUILD.gn b/third_party/blink/renderer/platform/BUILD.gn
 --- a/third_party/blink/renderer/platform/BUILD.gn
 +++ b/third_party/blink/renderer/platform/BUILD.gn
-@@ -2232,6 +2232,10 @@ source_set("blink_platform_unittests_sources") {
+@@ -2256,6 +2256,10 @@ source_set("blink_platform_unittests_sources") {
      sources += [ "text/locale_icu_test.cc" ]
    }
  
@@ -618,7 +618,7 @@ diff --git a/third_party/blink/renderer/platform/BUILD.gn b/third_party/blink/re
    sources += [ "testing/run_all_tests.cc" ]
  
    configs += [
-@@ -2275,6 +2279,7 @@ source_set("blink_platform_unittests_sources") {
+@@ -2299,6 +2303,7 @@ source_set("blink_platform_unittests_sources") {
      "//third_party/blink/renderer/platform/scheduler:unit_tests",
      "//third_party/blink/renderer/platform/wtf",
      "//third_party/libavif:libavif",
@@ -2221,7 +2221,7 @@ diff --git a/third_party/blink/tools/commit_stats/git-dirs.txt b/third_party/bli
 diff --git a/third_party/blink/web_tests/TestExpectations b/third_party/blink/web_tests/TestExpectations
 --- a/third_party/blink/web_tests/TestExpectations
 +++ b/third_party/blink/web_tests/TestExpectations
-@@ -4781,6 +4781,12 @@ crbug.com/1199522 http/tests/devtools/layers/layers-3d-view-hit-testing.js [ Fai
+@@ -4822,6 +4822,12 @@ crbug.com/1199522 http/tests/devtools/layers/layers-3d-view-hit-testing.js [ Fai
  # Started failing after rolling new version of check-layout-th.js
  css3/flexbox/perpendicular-writing-modes-inside-flex-item.html [ Failure ]
  
@@ -2237,7 +2237,7 @@ diff --git a/third_party/blink/web_tests/TestExpectations b/third_party/blink/we
 diff --git a/third_party/blink/web_tests/VirtualTestSuites b/third_party/blink/web_tests/VirtualTestSuites
 --- a/third_party/blink/web_tests/VirtualTestSuites
 +++ b/third_party/blink/web_tests/VirtualTestSuites
-@@ -447,6 +447,15 @@
+@@ -429,6 +429,15 @@
               "--disable-threaded-compositing", "--disable-threaded-animation"],
      "expires": "Jul 1, 2023"
    },
@@ -2652,7 +2652,7 @@ new file mode 100644
 diff --git a/tools/metrics/histograms/enums.xml b/tools/metrics/histograms/enums.xml
 --- a/tools/metrics/histograms/enums.xml
 +++ b/tools/metrics/histograms/enums.xml
-@@ -26498,7 +26498,7 @@ Called by update_debug_scenarios.py.-->
+@@ -26859,7 +26859,7 @@ Called by update_debug_scenarios.py.-->
    <int value="5" label="kImageICO"/>
    <int value="6" label="kImageBMP"/>
    <int value="7" label="kImageAVIF"/>
@@ -2661,7 +2661,7 @@ diff --git a/tools/metrics/histograms/enums.xml b/tools/metrics/histograms/enums
  </enum>
  
  <enum name="DecodeSwapChainNotUsedReason">
-@@ -65584,6 +65584,7 @@ from previous Chrome versions.
+@@ -66332,6 +66332,7 @@ from previous Chrome versions.
    <int value="188610022" label="NewMessageListView:enabled"/>
    <int value="189728101" label="FasterLocationReload:disabled"/>
    <int value="189777537" label="DisableInitialMostVisitedFadeIn:enabled"/>

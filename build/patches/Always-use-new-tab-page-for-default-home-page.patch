@@ -17,7 +17,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/homepage/HomepageManager.java b/chrome/android/java/src/org/chromium/chrome/browser/homepage/HomepageManager.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/homepage/HomepageManager.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/homepage/HomepageManager.java
-@@ -168,10 +168,6 @@ public class HomepageManager implements HomepagePolicyManager.HomepagePolicyStat
+@@ -169,10 +169,6 @@ public class HomepageManager implements HomepagePolicyManager.HomepagePolicyStat
       *         tab page if the homepage button is force enabled via flag.
       */
      public static GURL getDefaultHomepageGurl() {
@@ -26,12 +26,12 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/homepage/Homepa
 -        }
 -
          String homepagePartnerDefaultGurlSerialized =
-                 SharedPreferencesManager.getInstance().readString(
+                 ChromeSharedPreferences.getInstance().readString(
                          ChromePreferenceKeys.HOMEPAGE_PARTNER_CUSTOMIZED_DEFAULT_GURL, "");
 diff --git a/chrome/browser/partnercustomizations/java/src/org/chromium/chrome/browser/partnercustomizations/PartnerBrowserCustomizations.java b/chrome/browser/partnercustomizations/java/src/org/chromium/chrome/browser/partnercustomizations/PartnerBrowserCustomizations.java
 --- a/chrome/browser/partnercustomizations/java/src/org/chromium/chrome/browser/partnercustomizations/PartnerBrowserCustomizations.java
 +++ b/chrome/browser/partnercustomizations/java/src/org/chromium/chrome/browser/partnercustomizations/PartnerBrowserCustomizations.java
-@@ -214,7 +214,7 @@ public class PartnerBrowserCustomizations {
+@@ -215,7 +215,7 @@ public class PartnerBrowserCustomizations {
                      boolean systemOrPreStable =
                              (context.getApplicationInfo().flags & ApplicationInfo.FLAG_SYSTEM) == 1
                              || !VersionInfo.isStableBuild();

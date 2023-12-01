@@ -43,7 +43,7 @@ diff --git a/chrome/browser/language/android/java/src/org/chromium/chrome/browse
 -                if (shouldUseSystemManagedLocale()) {
 -                    setSystemManagedAppLanguage(languageName);
 -                } else {
--                    SharedPreferencesManager.getInstance().writeString(
+-                    ChromeSharedPreferences.getInstance().writeString(
 -                            ChromePreferenceKeys.APPLICATION_OVERRIDE_LANGUAGE, languageName);
 -                }
 -            }
@@ -73,10 +73,10 @@ diff --git a/content/public/android/java/src/org/chromium/content/browser/sms/Sm
 -import com.google.android.gms.common.ConnectionResult;
 -import com.google.android.gms.common.GoogleApiAvailability;
 -
- import org.chromium.base.ContextUtils;
- import org.chromium.base.Log;
- import org.chromium.base.ResettersForTesting;
-@@ -44,17 +41,11 @@ public class SmsProviderGms {
+ import org.jni_zero.CalledByNative;
+ import org.jni_zero.JNINamespace;
+ import org.jni_zero.NativeMethods;
+@@ -45,17 +42,11 @@ public class SmsProviderGms {
  
      @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
      public SmsProviderGms(long smsProviderGmsAndroid, @GmsBackend int backend,
@@ -95,7 +95,7 @@ diff --git a/content/public/android/java/src/org/chromium/content/browser/sms/Sm
          if (mBackend == GmsBackend.AUTO || mBackend == GmsBackend.USER_CONSENT) {
              mUserConsentReceiver = new SmsUserConsentReceiver(this, mContext);
          }
-@@ -86,12 +77,7 @@ public class SmsProviderGms {
+@@ -87,12 +78,7 @@ public class SmsProviderGms {
      @CalledByNative
      private static SmsProviderGms create(long smsProviderGmsAndroid, @GmsBackend int backend) {
          Log.d(TAG, "Creating SmsProviderGms");
@@ -109,7 +109,7 @@ diff --git a/content/public/android/java/src/org/chromium/content/browser/sms/Sm
      }
  
      @CalledByNative
-@@ -180,13 +166,6 @@ public class SmsProviderGms {
+@@ -181,13 +167,6 @@ public class SmsProviderGms {
      }
  
      public Wrappers.SmsRetrieverClientWrapper getClient() {

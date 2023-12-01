@@ -26,7 +26,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 diff --git a/chrome/browser/browser_features.h b/chrome/browser/browser_features.h
 --- a/chrome/browser/browser_features.h
 +++ b/chrome/browser/browser_features.h
-@@ -58,6 +58,7 @@ BASE_DECLARE_FEATURE(kTabCaptureBlueBorderCrOS);
+@@ -54,6 +54,7 @@ BASE_DECLARE_FEATURE(kTabCaptureBlueBorderCrOS);
  
  BASE_DECLARE_FEATURE(kWebUsbDeviceDetection);
  
@@ -37,7 +37,7 @@ diff --git a/chrome/browser/browser_features.h b/chrome/browser/browser_features
 diff --git a/chrome/browser/net/system_network_context_manager.cc b/chrome/browser/net/system_network_context_manager.cc
 --- a/chrome/browser/net/system_network_context_manager.cc
 +++ b/chrome/browser/net/system_network_context_manager.cc
-@@ -957,7 +957,6 @@ void SystemNetworkContextManager::SetEnableCertificateTransparencyForTesting(
+@@ -981,7 +981,6 @@ void SystemNetworkContextManager::SetEnableCertificateTransparencyForTesting(
  bool SystemNetworkContextManager::IsCertificateTransparencyEnabled() {
    if (certificate_transparency_enabled_for_testing_.has_value())
      return certificate_transparency_enabled_for_testing_.value();
@@ -45,7 +45,7 @@ diff --git a/chrome/browser/net/system_network_context_manager.cc b/chrome/brows
  // TODO(carlosil): Figure out if we can/should remove the OFFICIAL_BUILD
  // check now that enforcement does not rely on build dates.
  //    Certificate Transparency is enabled:
-@@ -965,10 +964,7 @@ bool SystemNetworkContextManager::IsCertificateTransparencyEnabled() {
+@@ -989,10 +988,7 @@ bool SystemNetworkContextManager::IsCertificateTransparencyEnabled() {
  //   - on an opt-in basis for other builds and embedders, controlled with the
  //     kCertificateTransparencyAskBeforeEnabling flag
    return base::FeatureList::IsEnabled(
@@ -142,7 +142,7 @@ diff --git a/net/url_request/report_sender.cc b/net/url_request/report_sender.cc
 diff --git a/services/network/network_context.cc b/services/network/network_context.cc
 --- a/services/network/network_context.cc
 +++ b/services/network/network_context.cc
-@@ -2796,7 +2796,7 @@ URLRequestContextOwner NetworkContext::MakeURLRequestContext(
+@@ -2821,7 +2821,7 @@ URLRequestContextOwner NetworkContext::MakeURLRequestContext(
    // TransportSecurityState.  Since no requests have been made yet, safe to do
    // this even after the call to Build().
  

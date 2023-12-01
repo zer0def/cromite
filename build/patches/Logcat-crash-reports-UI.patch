@@ -28,7 +28,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/crash/MinidumpUploadServiceImpl.java b/chrome/android/java/src/org/chromium/chrome/browser/crash/MinidumpUploadServiceImpl.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/crash/MinidumpUploadServiceImpl.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/crash/MinidumpUploadServiceImpl.java
-@@ -44,6 +44,11 @@ import java.lang.annotation.Retention;
+@@ -46,6 +46,11 @@ import java.lang.annotation.Retention;
  import java.lang.annotation.RetentionPolicy;
  import java.util.concurrent.atomic.AtomicBoolean;
  
@@ -40,7 +40,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/crash/MinidumpU
  /**
   * Service that is responsible for uploading crash minidumps to the Google crash server.
   */
-@@ -92,6 +97,23 @@ public class MinidumpUploadServiceImpl extends MinidumpUploadService.Impl {
+@@ -94,6 +99,23 @@ public class MinidumpUploadServiceImpl extends MinidumpUploadService.Impl {
          getService().setIntentRedelivery(true);
      }
  
@@ -160,7 +160,7 @@ diff --git a/chrome/browser/net/chrome_network_delegate.cc b/chrome/browser/net/
 diff --git a/chrome/browser/ui/BUILD.gn b/chrome/browser/ui/BUILD.gn
 --- a/chrome/browser/ui/BUILD.gn
 +++ b/chrome/browser/ui/BUILD.gn
-@@ -665,6 +665,7 @@ static_library("ui") {
+@@ -662,6 +662,7 @@ static_library("ui") {
      "//third_party/re2",
      "//third_party/webrtc_overrides:webrtc_component",
      "//third_party/zlib",
@@ -581,7 +581,7 @@ diff --git a/components/crash/core/browser/resources/crashes.ts b/components/cra
 --- a/components/crash/core/browser/resources/crashes.ts
 +++ b/components/crash/core/browser/resources/crashes.ts
 @@ -12,7 +12,7 @@ import './strings.m.js';
- import {assert} from 'chrome://resources/js/assert_ts.js';
+ import {assert} from 'chrome://resources/js/assert.js';
  import {addWebUiListener} from 'chrome://resources/js/cr.js';
  import {loadTimeData} from 'chrome://resources/js/load_time_data.js';
 -import {appendParam, getRequiredElement} from 'chrome://resources/js/util_ts.js';
@@ -891,7 +891,7 @@ diff --git a/components/minidump_uploader/android/java/src/org/chromium/componen
 diff --git a/components/upload_list/text_log_upload_list.cc b/components/upload_list/text_log_upload_list.cc
 --- a/components/upload_list/text_log_upload_list.cc
 +++ b/components/upload_list/text_log_upload_list.cc
-@@ -165,6 +165,7 @@ std::unique_ptr<UploadList::UploadInfo> TextLogUploadList::TryParseCsvLogEntry(
+@@ -168,6 +168,7 @@ std::unique_ptr<UploadList::UploadInfo> TextLogUploadList::TryParseCsvLogEntry(
    }
    auto info = std::make_unique<TextLogUploadList::UploadInfo>(components[1],
                                                                upload_time);

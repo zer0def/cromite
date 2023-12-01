@@ -16,7 +16,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 diff --git a/chrome/android/BUILD.gn b/chrome/android/BUILD.gn
 --- a/chrome/android/BUILD.gn
 +++ b/chrome/android/BUILD.gn
-@@ -397,7 +397,6 @@ if (current_toolchain == default_toolchain) {
+@@ -391,7 +391,6 @@ if (current_toolchain == default_toolchain) {
        "//chrome/browser/recent_tabs:helper_java",
        "//chrome/browser/recent_tabs:java",
        "//chrome/browser/safe_browsing/android:java",
@@ -24,7 +24,7 @@ diff --git a/chrome/android/BUILD.gn b/chrome/android/BUILD.gn
        "//chrome/browser/screenshot_monitor:java",
        "//chrome/browser/search_engines/android:java",
        "//chrome/browser/search_resumption:java",
-@@ -1033,8 +1032,6 @@ if (current_toolchain == default_toolchain) {
+@@ -1028,8 +1027,6 @@ if (current_toolchain == default_toolchain) {
        "//chrome/browser/recent_tabs:java",
        "//chrome/browser/recent_tabs:junit",
        "//chrome/browser/recent_tabs/internal:junit",
@@ -33,7 +33,7 @@ diff --git a/chrome/android/BUILD.gn b/chrome/android/BUILD.gn
        "//chrome/browser/screenshot_monitor:java",
        "//chrome/browser/search_engines/android:java",
        "//chrome/browser/search_engines/android:junit",
-@@ -1638,8 +1635,6 @@ if (current_toolchain == default_toolchain) {
+@@ -1639,8 +1636,6 @@ if (current_toolchain == default_toolchain) {
        "//chrome/browser/quick_delete:javatests",
        "//chrome/browser/safe_browsing/android:java",
        "//chrome/browser/safe_browsing/android:javatests",
@@ -45,7 +45,7 @@ diff --git a/chrome/android/BUILD.gn b/chrome/android/BUILD.gn
 diff --git a/chrome/android/chrome_java_sources.gni b/chrome/android/chrome_java_sources.gni
 --- a/chrome/android/chrome_java_sources.gni
 +++ b/chrome/android/chrome_java_sources.gni
-@@ -1000,7 +1000,6 @@ chrome_java_sources = [
+@@ -1008,7 +1008,6 @@ chrome_java_sources = [
    "java/src/org/chromium/chrome/browser/safe_browsing/SafeBrowsingPasswordReuseDialogBridge.java",
    "java/src/org/chromium/chrome/browser/safe_browsing/SafeBrowsingReferringAppBridge.java",
    "java/src/org/chromium/chrome/browser/safe_browsing/SafeBrowsingSettingsLauncher.java",
@@ -56,7 +56,7 @@ diff --git a/chrome/android/chrome_java_sources.gni b/chrome/android/chrome_java
 diff --git a/chrome/android/java/res/xml/main_preferences.xml b/chrome/android/java/res/xml/main_preferences.xml
 --- a/chrome/android/java/res/xml/main_preferences.xml
 +++ b/chrome/android/java/res/xml/main_preferences.xml
-@@ -61,11 +61,6 @@
+@@ -67,11 +67,6 @@ found in the LICENSE file.
          android:key="privacy"
          android:order="11"
          android:title="@string/prefs_privacy_security"/>
@@ -66,12 +66,12 @@ diff --git a/chrome/android/java/res/xml/main_preferences.xml b/chrome/android/j
 -        android:order="12"
 -        android:title="@string/prefs_safety_check"/>
      <Preference
-         android:fragment="org.chromium.components.adblock.settings.AdblockSettingsFragment"
-         android:key="eyeo_adblock"
+         android:fragment="org.chromium.chrome.browser.settings.AdBlockPreferences"
+         android:key="adblock"
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/settings/SettingsActivity.java b/chrome/android/java/src/org/chromium/chrome/browser/settings/SettingsActivity.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/settings/SettingsActivity.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/settings/SettingsActivity.java
-@@ -67,9 +67,6 @@ import org.chromium.chrome.browser.privacy_sandbox.PrivacySandboxSettingsBaseFra
+@@ -65,9 +65,6 @@ import org.chromium.chrome.browser.privacy_sandbox.PrivacySandboxSettingsBaseFra
  import org.chromium.chrome.browser.profiles.Profile;
  import org.chromium.chrome.browser.profiles.ProfileManagerUtils;
  import org.chromium.chrome.browser.safe_browsing.settings.SafeBrowsingSettingsFragmentBase;
@@ -81,9 +81,9 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/settings/Settin
  import org.chromium.chrome.browser.search_engines.settings.SearchEngineSettings;
  import org.chromium.chrome.browser.signin.SyncConsentActivityLauncherImpl;
  import org.chromium.chrome.browser.site_settings.ChromeSiteSettingsDelegate;
-@@ -500,12 +497,6 @@ public class SettingsActivity extends ChromeBaseAppCompatActivity
-             ((BaseSiteSettingsFragment) fragment)
-                     .setSiteSettingsDelegate(new ChromeSiteSettingsDelegate(this, mProfile));
+@@ -523,12 +520,6 @@ public class SettingsActivity extends ChromeBaseAppCompatActivity
+             baseSiteSettingsFragment.setCustomTabIntentHelper(
+                     LaunchIntentDispatcher::createCustomTabActivityIntent);
          }
 -        if (fragment instanceof SafetyCheckSettingsFragment) {
 -            SafetyCheckCoordinator.create((SafetyCheckSettingsFragment) fragment,
@@ -119,7 +119,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/settings/Settin
 diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -3513,7 +3513,6 @@ static_library("browser") {
+@@ -3517,7 +3517,6 @@ static_library("browser") {
        "//chrome/browser/reading_list/android",
        "//chrome/browser/recent_tabs:jni_headers",
        "//chrome/browser/safe_browsing/android:safe_browsing_enums",
@@ -130,7 +130,7 @@ diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 diff --git a/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/browser/omnibox/suggestions/action/OmniboxPedal.java b/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/browser/omnibox/suggestions/action/OmniboxPedal.java
 --- a/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/browser/omnibox/suggestions/action/OmniboxPedal.java
 +++ b/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/browser/omnibox/suggestions/action/OmniboxPedal.java
-@@ -44,9 +44,6 @@ public class OmniboxPedal extends OmniboxAction {
+@@ -52,9 +52,6 @@ public class OmniboxPedal extends OmniboxAction {
              case OmniboxPedalId.UPDATE_CREDIT_CARD:
                  delegate.openSettingsPage(SettingsFragment.PAYMENT_METHODS);
                  break;

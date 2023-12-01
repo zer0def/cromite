@@ -19,7 +19,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/download/OMADownloadHandler.java b/chrome/android/java/src/org/chromium/chrome/browser/download/OMADownloadHandler.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/download/OMADownloadHandler.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/download/OMADownloadHandler.java
-@@ -968,44 +968,6 @@ public class OMADownloadHandler extends BroadcastReceiver {
+@@ -969,44 +969,6 @@ public class OMADownloadHandler extends BroadcastReceiver {
          protected Boolean doInBackground() {
              HttpURLConnection urlConnection = null;
              boolean success = false;
@@ -67,7 +67,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/download/OMADow
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/feedback/ConnectivityChecker.java b/chrome/android/java/src/org/chromium/chrome/browser/feedback/ConnectivityChecker.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/feedback/ConnectivityChecker.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/feedback/ConnectivityChecker.java
-@@ -136,42 +136,7 @@ public final class ConnectivityChecker {
+@@ -137,42 +137,7 @@ public final class ConnectivityChecker {
              postResult(callback, ConnectivityCheckResult.ERROR);
              return;
          }
@@ -178,8 +178,8 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/net/connectivit
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/omaha/OmahaBase.java b/chrome/android/java/src/org/chromium/chrome/browser/omaha/OmahaBase.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/omaha/OmahaBase.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/omaha/OmahaBase.java
-@@ -461,8 +461,7 @@ public class OmahaBase {
-                         + "}");
+@@ -463,8 +463,7 @@ public class OmahaBase {
+                 }""");
          try {
              URL url = new URL(getRequestGenerator().getServerUrl());
 -            HttpURLConnection connection =

@@ -25,7 +25,7 @@ diff --git a/components/privacy_sandbox/privacy_sandbox_prefs.cc b/components/pr
 diff --git a/components/privacy_sandbox/tracking_protection_prefs.cc b/components/privacy_sandbox/tracking_protection_prefs.cc
 --- a/components/privacy_sandbox/tracking_protection_prefs.cc
 +++ b/components/privacy_sandbox/tracking_protection_prefs.cc
-@@ -27,13 +27,13 @@ void RegisterProfilePrefs(PrefRegistrySimple* registry) {
+@@ -47,13 +47,13 @@ void RegisterProfilePrefs(PrefRegistrySimple* registry) {
  
    // Tracking Protection Settings Prefs
    registry->RegisterBooleanPref(

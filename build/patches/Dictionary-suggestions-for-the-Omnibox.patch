@@ -27,7 +27,7 @@ diff --git a/chrome/android/java/res/layout/url_bar.xml b/chrome/android/java/re
 diff --git a/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/browser/omnibox/LocationBarMediator.java b/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/browser/omnibox/LocationBarMediator.java
 --- a/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/browser/omnibox/LocationBarMediator.java
 +++ b/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/browser/omnibox/LocationBarMediator.java
-@@ -278,8 +278,16 @@ class LocationBarMediator
+@@ -290,8 +290,16 @@ class LocationBarMediator
              if (mNativeInitialized) RecordUserAction.record("FocusLocation");
              // Don't clear Omnibox if the user just pasted text to NTP Omnibox.
              if (mShouldClearOmniboxOnFocus) {
@@ -57,15 +57,15 @@ diff --git a/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/brow
  import android.os.SystemClock;
  import android.text.Editable;
  import android.text.InputType;
-@@ -106,6 +107,7 @@ public abstract class UrlBar extends AutocompleteEditText {
+@@ -104,6 +105,7 @@ public abstract class UrlBar extends AutocompleteEditText {
      private boolean mAllowFocus = true;
  
      private boolean mPendingScroll;
 +    private boolean mPendingSelectAll;
      private int mPreviousWidth;
  
-     @ScrollType
-@@ -307,6 +309,27 @@ public abstract class UrlBar extends AutocompleteEditText {
+     @ScrollType private int mPreviousScrollType;
+@@ -301,6 +303,27 @@ public abstract class UrlBar extends AutocompleteEditText {
              mPendingScroll = false;
          }
          fixupTextDirection();

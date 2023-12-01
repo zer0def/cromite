@@ -34,7 +34,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 diff --git a/chrome/browser/net/profile_network_context_service.cc b/chrome/browser/net/profile_network_context_service.cc
 --- a/chrome/browser/net/profile_network_context_service.cc
 +++ b/chrome/browser/net/profile_network_context_service.cc
-@@ -613,14 +613,14 @@ ProfileNetworkContextService::CreateCookieManagerParams(
+@@ -578,14 +578,14 @@ ProfileNetworkContextService::CreateCookieManagerParams(
    // UI to interact with SameSite cookies on accounts.google.com, which is used
    // for displaying a list of available accounts on the NTP
    // (chrome://new-tab-page), etc.
@@ -56,7 +56,7 @@ diff --git a/chrome/browser/net/profile_network_context_service.cc b/chrome/brow
 diff --git a/components/content_settings/core/common/cookie_settings_base.cc b/components/content_settings/core/common/cookie_settings_base.cc
 --- a/components/content_settings/core/common/cookie_settings_base.cc
 +++ b/components/content_settings/core/common/cookie_settings_base.cc
-@@ -318,7 +318,7 @@ CookieSettingsBase::GetCookieSettingInternal(
+@@ -414,7 +414,7 @@ CookieSettingsBase::GetCookieSettingInternal(
    absl::optional<ThirdPartyBlockingScope> scope;
    if (block_third) {
      scope = IsAllowed(setting)
@@ -64,7 +64,7 @@ diff --git a/components/content_settings/core/common/cookie_settings_base.cc b/c
 +                ? ThirdPartyBlockingScope::kUnpartitionedAndPartitioned
                  : ThirdPartyBlockingScope::kUnpartitionedAndPartitioned;
    }
-   return {block_third ? CONTENT_SETTING_BLOCK : setting, scope,
+ 
 diff --git a/cromite_flags/components/content_settings/core/common/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc b/cromite_flags/components/content_settings/core/common/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
 new file mode 100644
 --- /dev/null
@@ -96,7 +96,7 @@ new file mode 100644
 diff --git a/net/cookies/canonical_cookie.cc b/net/cookies/canonical_cookie.cc
 --- a/net/cookies/canonical_cookie.cc
 +++ b/net/cookies/canonical_cookie.cc
-@@ -1469,8 +1469,6 @@ bool CanonicalCookie::IsCanonicalForFromStorage() const {
+@@ -1488,8 +1488,6 @@ bool CanonicalCookie::IsCanonicalForFromStorage() const {
    if (IsPartitioned()) {
      if (CookiePartitionKey::HasNonce(partition_key_))
        return true;
@@ -105,7 +105,7 @@ diff --git a/net/cookies/canonical_cookie.cc b/net/cookies/canonical_cookie.cc
    }
  
    return true;
-@@ -1727,15 +1725,7 @@ bool CanonicalCookie::IsCookiePartitionedValid(const GURL& url,
+@@ -1746,15 +1744,7 @@ bool CanonicalCookie::IsCookiePartitionedValid(const GURL& url,
                                                 bool secure,
                                                 bool is_partitioned,
                                                 bool partition_has_nonce) {
@@ -162,7 +162,7 @@ diff --git a/net/cookies/parsed_cookie.h b/net/cookies/parsed_cookie.h
 diff --git a/net/extras/sqlite/sqlite_persistent_cookie_store.cc b/net/extras/sqlite/sqlite_persistent_cookie_store.cc
 --- a/net/extras/sqlite/sqlite_persistent_cookie_store.cc
 +++ b/net/extras/sqlite/sqlite_persistent_cookie_store.cc
-@@ -814,6 +814,16 @@ bool SQLitePersistentCookieStore::Backend::DoInitializeDatabase() {
+@@ -741,6 +741,16 @@ bool SQLitePersistentCookieStore::Backend::DoInitializeDatabase() {
    if (!restore_old_session_cookies_)
      DeleteSessionCookiesOnStartup();
  
@@ -182,21 +182,21 @@ diff --git a/net/extras/sqlite/sqlite_persistent_cookie_store.cc b/net/extras/sq
 diff --git a/net/url_request/url_request_http_job.cc b/net/url_request/url_request_http_job.cc
 --- a/net/url_request/url_request_http_job.cc
 +++ b/net/url_request/url_request_http_job.cc
-@@ -759,7 +759,7 @@ void URLRequestHttpJob::SetCookieHeaderAndStart(
+@@ -788,7 +788,7 @@ void URLRequestHttpJob::SetCookieHeaderAndStart(
  
-       size_t n_partitioned_cookies = 0;
-       bool may_set_sec_cookie_deprecation_header =
--          !request_->context()->cookie_deprecation_label().value_or("").empty();
-+          false;
+     size_t n_partitioned_cookies = 0;
+     bool may_set_sec_cookie_deprecation_header =
+-        !request_->context()->cookie_deprecation_label().value_or("").empty();
++        false;
  
-       // TODO(crbug.com/1031664): Reduce the number of times the cookie list
-       // is iterated over. Get metrics for every cookie which is included.
+     // TODO(crbug.com/1031664): Reduce the number of times the cookie list
+     // is iterated over. Get metrics for every cookie which is included.
 diff --git a/services/network/restricted_cookie_manager.cc b/services/network/restricted_cookie_manager.cc
 --- a/services/network/restricted_cookie_manager.cc
 +++ b/services/network/restricted_cookie_manager.cc
-@@ -808,6 +808,9 @@ void RestrictedCookieManager::SetCookieFromString(
-   std::move(callback).Run(site_for_cookies_ok, top_frame_origin_ok);
-   callback = base::DoNothing();
+@@ -933,6 +933,9 @@ void RestrictedCookieManager::SetCookieFromString(
+ 
+   std::move(callback).Run();
  
 +  // https://bugs.chromium.org/p/chromium/issues/detail?id=911299
 +  if (!site_for_cookies_ok || !top_frame_origin_ok) return;
@@ -217,7 +217,7 @@ diff --git a/third_party/blink/renderer/modules/cookie_store/cookie_init.idl b/t
 diff --git a/third_party/blink/renderer/modules/cookie_store/cookie_store.cc b/third_party/blink/renderer/modules/cookie_store/cookie_store.cc
 --- a/third_party/blink/renderer/modules/cookie_store/cookie_store.cc
 +++ b/third_party/blink/renderer/modules/cookie_store/cookie_store.cc
-@@ -321,6 +321,10 @@ ScriptPromise CookieStore::set(ScriptState* script_state,
+@@ -322,6 +322,10 @@ ScriptPromise CookieStore::set(ScriptState* script_state,
    CookieInit* set_options = CookieInit::Create();
    set_options->setName(name);
    set_options->setValue(value);
@@ -228,7 +228,7 @@ diff --git a/third_party/blink/renderer/modules/cookie_store/cookie_store.cc b/t
    return set(script_state, set_options, exception_state);
  }
  
-@@ -343,6 +347,10 @@ ScriptPromise CookieStore::Delete(ScriptState* script_state,
+@@ -344,6 +348,10 @@ ScriptPromise CookieStore::Delete(ScriptState* script_state,
    set_options->setName(name);
    set_options->setValue("deleted");
    set_options->setExpires(0);
@@ -239,7 +239,7 @@ diff --git a/third_party/blink/renderer/modules/cookie_store/cookie_store.cc b/t
    return DoWrite(script_state, set_options, exception_state);
  }
  
-@@ -357,6 +365,10 @@ ScriptPromise CookieStore::Delete(ScriptState* script_state,
+@@ -358,6 +366,10 @@ ScriptPromise CookieStore::Delete(ScriptState* script_state,
    set_options->setPath(options->path());
    set_options->setSameSite("strict");
    set_options->setPartitioned(options->partitioned());

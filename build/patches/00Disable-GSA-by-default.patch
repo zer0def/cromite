@@ -14,7 +14,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/IntentHandler.java b/chrome/android/java/src/org/chromium/chrome/browser/IntentHandler.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/IntentHandler.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/IntentHandler.java
-@@ -38,7 +38,6 @@ import org.chromium.chrome.browser.document.ChromeLauncherActivity;
+@@ -39,7 +39,6 @@ import org.chromium.chrome.browser.document.ChromeLauncherActivity;
  import org.chromium.chrome.browser.externalnav.IntentWithRequestMetadataHandler;
  import org.chromium.chrome.browser.externalnav.IntentWithRequestMetadataHandler.RequestMetadata;
  import org.chromium.chrome.browser.flags.ChromeFeatureList;
@@ -22,7 +22,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/IntentHandler.j
  import org.chromium.chrome.browser.omnibox.suggestions.AutocompleteControllerProvider;
  import org.chromium.chrome.browser.profiles.Profile;
  import org.chromium.chrome.browser.renderer_host.ChromeNavigationUIData;
-@@ -264,8 +263,6 @@ public class IntentHandler {
+@@ -265,8 +264,6 @@ public class IntentHandler {
      private static int sReferrerId;
      private static String sPendingIncognitoUrl;
  
@@ -31,7 +31,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/IntentHandler.j
      private static final String PACKAGE_GMAIL = "com.google.android.gm";
      private static final String PACKAGE_PLUS = "com.google.android.apps.plus";
      private static final String PACKAGE_HANGOUTS = "com.google.android.talk";
-@@ -456,8 +453,6 @@ public class IntentHandler {
+@@ -457,8 +454,6 @@ public class IntentHandler {
              return ExternalAppId.LINE;
          } else if (packageName.equals(PACKAGE_WHATSAPP)) {
              return ExternalAppId.WHATSAPP;
@@ -43,15 +43,15 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/IntentHandler.j
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/share/LensUtils.java b/chrome/android/java/src/org/chromium/chrome/browser/share/LensUtils.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/share/LensUtils.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/share/LensUtils.java
-@@ -12,7 +12,6 @@ import org.chromium.base.ResettersForTesting;
- import org.chromium.chrome.R;
+@@ -11,7 +11,6 @@ import android.text.TextUtils;
+ import org.chromium.base.ResettersForTesting;
  import org.chromium.chrome.browser.IntentHandler;
  import org.chromium.chrome.browser.flags.ChromeFeatureList;
 -import org.chromium.chrome.browser.gsa.GSAState;
  import org.chromium.components.externalauth.ExternalAuthUtils;
  
  /**
-@@ -64,12 +63,7 @@ public class LensUtils {
+@@ -59,12 +58,7 @@ public class LensUtils {
              if (context == null) {
                  return "";
              }
@@ -64,7 +64,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/share/LensUtils
          }
      }
  
-@@ -121,11 +115,7 @@ public class LensUtils {
+@@ -116,11 +110,7 @@ public class LensUtils {
       * @return Whether the package is valid.
       */
      public static boolean isValidAgsaPackage(final ExternalAuthUtils externalAuthUtils) {

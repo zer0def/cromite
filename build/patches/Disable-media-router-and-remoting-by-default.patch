@@ -13,7 +13,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 diff --git a/chrome/browser/media/router/media_router_feature.cc b/chrome/browser/media/router/media_router_feature.cc
 --- a/chrome/browser/media/router/media_router_feature.cc
 +++ b/chrome/browser/media/router/media_router_feature.cc
-@@ -106,6 +106,7 @@ void ClearMediaRouterStoredPrefsForTesting() {
+@@ -105,6 +105,7 @@ void ClearMediaRouterStoredPrefsForTesting() {
  }
  
  bool MediaRouterEnabled(content::BrowserContext* context) {
@@ -21,7 +21,7 @@ diff --git a/chrome/browser/media/router/media_router_feature.cc b/chrome/browse
  #if !BUILDFLAG(IS_ANDROID)
    if (!base::FeatureList::IsEnabled(kMediaRouter))
      return false;
-@@ -147,7 +148,7 @@ void RegisterProfilePrefs(PrefRegistrySimple* registry) {
+@@ -146,7 +147,7 @@ void RegisterProfilePrefs(PrefRegistrySimple* registry) {
    registry->RegisterStringPref(prefs::kMediaRouterReceiverIdHashToken, "",
                                 PrefRegistry::PUBLIC);
    registry->RegisterBooleanPref(
@@ -30,7 +30,7 @@ diff --git a/chrome/browser/media/router/media_router_feature.cc b/chrome/browse
    registry->RegisterBooleanPref(
        media_router::prefs::kMediaRouterShowCastSessionsStartedByOtherDevices,
        true);
-@@ -218,4 +219,7 @@ absl::optional<base::TimeDelta> GetCastMirroringPlayoutDelay() {
+@@ -217,4 +218,7 @@ absl::optional<base::TimeDelta> GetCastMirroringPlayoutDelay() {
  
  #endif  // !BUILDFLAG(IS_ANDROID)
  
@@ -41,7 +41,7 @@ diff --git a/chrome/browser/media/router/media_router_feature.cc b/chrome/browse
 diff --git a/chrome/browser/profiles/profile_impl.cc b/chrome/browser/profiles/profile_impl.cc
 --- a/chrome/browser/profiles/profile_impl.cc
 +++ b/chrome/browser/profiles/profile_impl.cc
-@@ -413,7 +413,7 @@ void ProfileImpl::RegisterProfilePrefs(
+@@ -418,7 +418,7 @@ void ProfileImpl::RegisterProfilePrefs(
  #endif
  
    registry->RegisterBooleanPref(prefs::kForceEphemeralProfiles, false);
@@ -53,7 +53,7 @@ diff --git a/chrome/browser/profiles/profile_impl.cc b/chrome/browser/profiles/p
 diff --git a/third_party/blink/renderer/modules/remoteplayback/remote_playback.cc b/third_party/blink/renderer/modules/remoteplayback/remote_playback.cc
 --- a/third_party/blink/renderer/modules/remoteplayback/remote_playback.cc
 +++ b/third_party/blink/renderer/modules/remoteplayback/remote_playback.cc
-@@ -101,7 +101,7 @@ KURL GetAvailabilityUrl(const WebURL& source,
+@@ -92,7 +92,7 @@ KURL GetAvailabilityUrl(const WebURL& source,
  }
  
  bool IsBackgroundAvailabilityMonitoringDisabled() {

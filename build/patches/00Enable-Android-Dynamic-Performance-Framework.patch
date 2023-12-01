@@ -23,7 +23,7 @@ diff --git a/chrome/version.gni b/chrome/version.gni
 diff --git a/components/viz/common/features.cc b/components/viz/common/features.cc
 --- a/components/viz/common/features.cc
 +++ b/components/viz/common/features.cc
-@@ -291,9 +291,10 @@ const base::FeatureParam<double> kADPFMidFrameBoostDurationMultiplier{
+@@ -306,9 +306,10 @@ const base::FeatureParam<double> kADPFMidFrameBoostDurationMultiplier{
  
  // If enabled, Chrome includes the Renderer Main thread(s) into the
  // ADPF(Android Dynamic Performance Framework) hint session.
@@ -34,7 +34,7 @@ diff --git a/components/viz/common/features.cc b/components/viz/common/features.
 +             "EnableADPFRendererMain",           // enabled
 +             base::FEATURE_ENABLED_BY_DEFAULT);  // by default
  
- // If enabled, surface activation and draw do not block on dependencies.
- BASE_FEATURE(kDrawImmediatelyWhenInteractive,
+ // If enabled, Chrome verifies that Renderer threads do not belong to the
+ // Browser process asynchronously via a mojo call to the Browser before
 --
 2.25.1

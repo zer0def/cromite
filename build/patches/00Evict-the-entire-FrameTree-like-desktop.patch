@@ -12,7 +12,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 diff --git a/components/viz/common/features.cc b/components/viz/common/features.cc
 --- a/components/viz/common/features.cc
 +++ b/components/viz/common/features.cc
-@@ -233,7 +233,7 @@ BASE_FEATURE(kRendererAllocatesImages,
+@@ -248,7 +248,7 @@ BASE_FEATURE(kRendererAllocatesImages,
  // evicts itself. This differs from Destkop platforms which evict the entire
  // FrameTree along with the topmost viz::Surface. When this feature is enabled,
  // Android will begin also evicting the entire FrameTree.

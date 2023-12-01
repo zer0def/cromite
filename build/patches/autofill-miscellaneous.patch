@@ -23,7 +23,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 diff --git a/chrome/browser/prefs/browser_prefs.cc b/chrome/browser/prefs/browser_prefs.cc
 --- a/chrome/browser/prefs/browser_prefs.cc
 +++ b/chrome/browser/prefs/browser_prefs.cc
-@@ -1133,11 +1133,11 @@ void RegisterProfilePrefsForMigration(
+@@ -1112,11 +1112,11 @@ void RegisterProfilePrefsForMigration(
                                     PrefRegistry::LOSSY_PREF);
  
    // Deprecated 11/2022.
@@ -41,7 +41,7 @@ diff --git a/chrome/browser/prefs/browser_prefs.cc b/chrome/browser/prefs/browse
 diff --git a/chrome/browser/ui/autofill/chrome_autofill_client.cc b/chrome/browser/ui/autofill/chrome_autofill_client.cc
 --- a/chrome/browser/ui/autofill/chrome_autofill_client.cc
 +++ b/chrome/browser/ui/autofill/chrome_autofill_client.cc
-@@ -215,12 +215,7 @@ ChromeAutofillClient::GetURLLoaderFactory() {
+@@ -218,12 +218,7 @@ ChromeAutofillClient::GetURLLoaderFactory() {
  }
  
  AutofillDownloadManager* ChromeAutofillClient::GetDownloadManager() {
@@ -88,7 +88,7 @@ diff --git a/components/autofill/core/browser/autofill_download_manager.cc b/com
  
  // Gets HTTP body payload for API POST request.
  absl::optional<std::string> GetAPIBodyPayload(
-@@ -521,18 +498,7 @@ bool IsRawMetadataUploadingEnabled(version_info::Channel channel) {
+@@ -514,18 +491,7 @@ absl::optional<std::string> GetAPIQueryPayload(
  }
  
  std::string GetAPIKeyForUrl(version_info::Channel channel) {
@@ -108,7 +108,7 @@ diff --git a/components/autofill/core/browser/autofill_download_manager.cc b/com
  }
  
  }  // namespace
-@@ -744,6 +710,7 @@ std::tuple<GURL, std::string> AutofillDownloadManager::GetRequestURLAndMethod(
+@@ -733,6 +699,7 @@ std::tuple<GURL, std::string> AutofillDownloadManager::GetRequestURLAndMethod(
    // ID of the resource to add to the API request URL. Nothing will be added if
    // |resource_id| is empty.
    std::string resource_id;
@@ -116,7 +116,7 @@ diff --git a/components/autofill/core/browser/autofill_download_manager.cc b/com
    std::string method = "POST";
  
    if (request_data.request_type == AutofillDownloadManager::REQUEST_QUERY) {
-@@ -764,11 +731,15 @@ std::tuple<GURL, std::string> AutofillDownloadManager::GetRequestURLAndMethod(
+@@ -753,11 +720,15 @@ std::tuple<GURL, std::string> AutofillDownloadManager::GetRequestURLAndMethod(
  
    // Add the query parameter to set the response format to a serialized proto.
    url = net::AppendQueryParameter(url, "alt", "proto");
@@ -148,22 +148,22 @@ diff --git a/components/autofill/core/browser/autofill_download_manager.h b/comp
 diff --git a/components/autofill/core/browser/browser_autofill_manager.h b/components/autofill/core/browser/browser_autofill_manager.h
 --- a/components/autofill/core/browser/browser_autofill_manager.h
 +++ b/components/autofill/core/browser/browser_autofill_manager.h
-@@ -766,9 +766,9 @@ class BrowserAutofillManager : public AutofillManager,
+@@ -744,9 +744,9 @@ class BrowserAutofillManager : public AutofillManager,
        autocomplete_unrecognized_fallback_logger_;
  
    // Have we logged whether Autofill is enabled for this page load?
 -  bool has_logged_autofill_enabled_ = false;
 +  bool has_logged_autofill_enabled_ = true;
-   // Have we logged an address suggestions count metric for this page?
--  bool has_logged_address_suggestions_count_ = false;
-+  bool has_logged_address_suggestions_count_ = true;
    // Have we shown Autofill suggestions at least once?
-   bool did_show_suggestions_ = false;
+-  bool did_show_suggestions_ = false;
++  bool did_show_suggestions_ = true;
    // Has the user manually edited at least one form field among the autofillable
+   // ones?
+   bool user_did_type_ = false;
 diff --git a/components/autofill/core/common/autofill_features.cc b/components/autofill/core/common/autofill_features.cc
 --- a/components/autofill/core/common/autofill_features.cc
 +++ b/components/autofill/core/common/autofill_features.cc
-@@ -811,6 +811,7 @@ BASE_FEATURE(kAutofillUploadThrottling,
+@@ -843,6 +843,7 @@ BASE_FEATURE(kAutofillUploadThrottling,
               "AutofillUploadThrottling",
               base::FEATURE_ENABLED_BY_DEFAULT);
  
@@ -183,8 +183,8 @@ diff --git a/components/autofill/core/common/autofill_prefs.cc b/components/auto
        user_prefs::PrefRegistrySyncable::SYNCABLE_PREF);
    registry->RegisterIntegerPref(
        prefs::kAutofillLastVersionDeduped, 0,
-@@ -156,10 +156,10 @@ void RegisterProfilePrefs(user_prefs::PrefRegistrySyncable* registry) {
-       prefs::kAutofillLastVersionDisusedAddressesDeleted, 0,
+@@ -153,10 +153,10 @@ void RegisterProfilePrefs(user_prefs::PrefRegistrySyncable* registry) {
+       prefs::kAutofillHasSeenIban, false,
        user_prefs::PrefRegistrySyncable::SYNCABLE_PREF);
    registry->RegisterBooleanPref(
 -      prefs::kAutofillCreditCardEnabled, true,
@@ -196,7 +196,7 @@ diff --git a/components/autofill/core/common/autofill_prefs.cc b/components/auto
        user_prefs::PrefRegistrySyncable::SYNCABLE_PREF);
  
    // Non-synced prefs. Used for per-device choices, e.g., signin promo.
-@@ -201,9 +201,9 @@ void RegisterProfilePrefs(user_prefs::PrefRegistrySyncable* registry) {
+@@ -196,9 +196,9 @@ void RegisterProfilePrefs(user_prefs::PrefRegistrySyncable* registry) {
  #endif
  
    // Deprecated prefs registered for migration.
@@ -205,9 +205,9 @@ diff --git a/components/autofill/core/common/autofill_prefs.cc b/components/auto
    registry->RegisterBooleanPref(prefs::kAutofillOrphanRowsRemoved, false);
 -  registry->RegisterBooleanPref(prefs::kAutofillIbanEnabled, true);
 +  registry->RegisterBooleanPref(prefs::kAutofillIbanEnabled, false);
- 
- #if BUILDFLAG(IS_ANDROID)
-   registry->RegisterBooleanPref(prefs::kAutofillUsingVirtualViewStructure,
+   registry->RegisterIntegerPref(
+       prefs::kAutofillLastVersionDisusedAddressesDeleted, 0);
+   registry->RegisterIntegerPref(
 diff --git a/components/password_manager/core/browser/password_generation_frame_helper.cc b/components/password_manager/core/browser/password_generation_frame_helper.cc
 --- a/components/password_manager/core/browser/password_generation_frame_helper.cc
 +++ b/components/password_manager/core/browser/password_generation_frame_helper.cc

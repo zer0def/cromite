@@ -44,10 +44,10 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/contextualsearc
 diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browser/flags/android/chrome_feature_list.cc
 --- a/chrome/browser/flags/android/chrome_feature_list.cc
 +++ b/chrome/browser/flags/android/chrome_feature_list.cc
-@@ -202,6 +202,7 @@ const base::Feature* const kFeaturesExposedToJava[] = {
+@@ -200,6 +200,7 @@ const base::Feature* const kFeaturesExposedToJava[] = {
+     &kCCTClientDataHeader,
      &kCCTDeprecatedAPIs,
      &kCCTFeatureUsage,
-     &kCCTIncognito,
 +    &kChromeSmartSelection,
      &kCCTIncognitoAvailableToThirdParty,
      &kCCTIntentFeatureOverrides,
@@ -66,7 +66,7 @@ diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/f
 diff --git a/content/public/android/java/src/org/chromium/content/browser/selection/SelectionPopupControllerImpl.java b/content/public/android/java/src/org/chromium/content/browser/selection/SelectionPopupControllerImpl.java
 --- a/content/public/android/java/src/org/chromium/content/browser/selection/SelectionPopupControllerImpl.java
 +++ b/content/public/android/java/src/org/chromium/content/browser/selection/SelectionPopupControllerImpl.java
-@@ -1120,7 +1120,7 @@ public class SelectionPopupControllerImpl extends ActionModeCallbackHelper
+@@ -1138,7 +1138,7 @@ public class SelectionPopupControllerImpl extends ActionModeCallbackHelper
       */
      @Override
      public boolean canWebSearch() {

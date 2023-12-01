@@ -32,10 +32,10 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 diff --git a/chrome/android/java/res/xml/privacy_preferences.xml b/chrome/android/java/res/xml/privacy_preferences.xml
 --- a/chrome/android/java/res/xml/privacy_preferences.xml
 +++ b/chrome/android/java/res/xml/privacy_preferences.xml
-@@ -43,6 +43,12 @@ found in the LICENSE file.
-         android:title="@string/settings_incognito_tab_lock_title"
-         android:summary="@string/settings_incognito_tab_lock_summary_android_setting_off"
-         android:persistent="false"/>
+@@ -108,6 +108,12 @@ found in the LICENSE file.
+         android:title="@string/cablev2_paask_title"
+         android:summary="@string/cablev2_paask_body"
+         android:fragment="org.chromium.chrome.browser.webauthn.PrivacySettingsFragment" />
 +    <org.chromium.components.browser_ui.settings.SpinnerPreference
 +        android:key="history_expire_days_threshold"
 +        android:persistent="false"
@@ -75,7 +75,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/privacy/setting
      @Override
      public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
          getActivity().setTitle(R.string.prefs_privacy_security);
-@@ -210,6 +216,40 @@ public class PrivacySettings
+@@ -206,6 +212,40 @@ public class PrivacySettings
          Preference syncAndServicesLink = findPreference(PREF_SYNC_AND_SERVICES_LINK);
          syncAndServicesLink.setSummary(buildSyncAndServicesLink());
  
@@ -114,9 +114,9 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/privacy/setting
 +        });
 +
          Preference thirdPartyCookies = findPreference(PREF_THIRD_PARTY_COOKIES);
+         Preference doNotTrackPref = findPreference(PREF_DO_NOT_TRACK);
  
-         if (showTrackingProtectionUI()) {
-@@ -411,6 +451,29 @@ public class PrivacySettings
+@@ -402,6 +442,29 @@ public class PrivacySettings
                  || ChromeFeatureList.isEnabled(ChromeFeatureList.TRACKING_PROTECTION_3PCD);
      }
  
@@ -161,7 +161,7 @@ diff --git a/chrome/browser/history/history_service_factory.cc b/chrome/browser/
 diff --git a/chrome/browser/profiles/profile_impl.cc b/chrome/browser/profiles/profile_impl.cc
 --- a/chrome/browser/profiles/profile_impl.cc
 +++ b/chrome/browser/profiles/profile_impl.cc
-@@ -368,6 +368,7 @@ std::unique_ptr<Profile> Profile::CreateProfile(const base::FilePath& path,
+@@ -370,6 +370,7 @@ std::unique_ptr<Profile> Profile::CreateProfile(const base::FilePath& path,
  void ProfileImpl::RegisterProfilePrefs(
      user_prefs::PrefRegistrySyncable* registry) {
    registry->RegisterBooleanPref(prefs::kSavingBrowserHistoryDisabled, false);
@@ -172,7 +172,7 @@ diff --git a/chrome/browser/profiles/profile_impl.cc b/chrome/browser/profiles/p
 diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chrome/browser/ui/android/strings/android_chrome_strings.grd
 --- a/chrome/browser/ui/android/strings/android_chrome_strings.grd
 +++ b/chrome/browser/ui/android/strings/android_chrome_strings.grd
-@@ -1416,6 +1416,18 @@ Your Google account may have other forms of browsing history like searches and a
+@@ -1307,6 +1307,18 @@ Your Google account may have other forms of browsing history like searches and a
        <message name="IDS_CLEAR_HISTORY_TITLE" desc="Title for Clear History in Clear Browsing Data dialog">
          Browsing history
        </message>

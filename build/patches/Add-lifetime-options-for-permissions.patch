@@ -76,7 +76,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  components/page_info/page_info.cc             |  2 +
  components/page_info/page_info.h              |  1 +
  .../permissions/PermissionDialogDelegate.java | 13 +++
- .../permissions/PermissionDialogModel.java    | 81 ++++++++++++++++++-
+ .../PermissionDialogModelFactory.java         | 81 ++++++++++++++++++-
  .../permission_dialog_delegate.cc             | 19 +++++
  .../permission_dialog_delegate.h              |  1 +
  .../permission_prompt_android.cc              |  8 ++
@@ -233,14 +233,14 @@ diff --git a/chrome/browser/permissions/one_time_permissions_tracker_factory.cc 
 diff --git a/chrome/browser/ui/views/permissions/embedded_permission_prompt_ask_view.cc b/chrome/browser/ui/views/permissions/embedded_permission_prompt_ask_view.cc
 --- a/chrome/browser/ui/views/permissions/embedded_permission_prompt_ask_view.cc
 +++ b/chrome/browser/ui/views/permissions/embedded_permission_prompt_ask_view.cc
-@@ -34,7 +34,7 @@ void EmbeddedPermissionPromptAskView::RunButtonCallback(int button_id) {
+@@ -33,7 +33,7 @@ void EmbeddedPermissionPromptAskView::RunButtonCallback(int button_id) {
  
    if (delegate()) {
      if (button == ButtonType::kAllowThisTime) {
--      delegate()->AcceptThisTime();
-+      delegate()->AcceptThisTime(content_settings::LifetimeMode::OnlyThisTime);
+-      delegate()->AllowThisTime();
++      delegate()->AllowThisTime(content_settings::LifetimeMode::OnlyThisTime);
      } else if (button == ButtonType::kAllow) {
-       delegate()->Accept();
+       delegate()->Allow();
      }
 diff --git a/chrome/browser/ui/views/permissions/permission_prompt_bubble_base_view.cc b/chrome/browser/ui/views/permissions/permission_prompt_bubble_base_view.cc
 --- a/chrome/browser/ui/views/permissions/permission_prompt_bubble_base_view.cc
@@ -257,7 +257,7 @@ diff --git a/chrome/browser/ui/views/permissions/permission_prompt_bubble_base_v
 diff --git a/components/autofill/content/browser/content_autofill_driver.cc b/components/autofill/content/browser/content_autofill_driver.cc
 --- a/components/autofill/content/browser/content_autofill_driver.cc
 +++ b/components/autofill/content/browser/content_autofill_driver.cc
-@@ -412,8 +412,8 @@ void ContentAutofillDriver::FormsSeen(
+@@ -489,8 +489,8 @@ void ContentAutofillDriver::FormsSeen(
                          const std::vector<FormGlobalId>& removed_forms) {
                         target->GetAutofillManager().OnFormsSeen(
                             WithNewVersion(updated_forms), removed_forms);
@@ -268,7 +268,7 @@ diff --git a/components/autofill/content/browser/content_autofill_driver.cc b/co
                             WithNewVersion(updated_forms), removed_forms);
                         }
                       });
-@@ -443,8 +443,8 @@ void ContentAutofillDriver::FormSubmitted(
+@@ -520,8 +520,8 @@ void ContentAutofillDriver::FormSubmitted(
          }
          target->GetAutofillManager().OnFormSubmitted(
              WithNewVersion(form), known_success, submission_source);
@@ -279,7 +279,7 @@ diff --git a/components/autofill/content/browser/content_autofill_driver.cc b/co
              WithNewVersion(form), known_success, submission_source);
          }
        });
-@@ -468,8 +468,8 @@ void ContentAutofillDriver::TextFieldDidChange(const FormData& raw_form,
+@@ -545,8 +545,8 @@ void ContentAutofillDriver::TextFieldDidChange(const FormData& raw_form,
           base::TimeTicks timestamp) {
          target->GetAutofillManager().OnTextFieldDidChange(
              WithNewVersion(form), field, bounding_box, timestamp);
@@ -290,7 +290,7 @@ diff --git a/components/autofill/content/browser/content_autofill_driver.cc b/co
              WithNewVersion(form), field, bounding_box, timestamp);
          }
        });
-@@ -491,8 +491,8 @@ void ContentAutofillDriver::TextFieldDidScroll(const FormData& raw_form,
+@@ -568,8 +568,8 @@ void ContentAutofillDriver::TextFieldDidScroll(const FormData& raw_form,
           const FormFieldData& field, const gfx::RectF& bounding_box) {
          target->GetAutofillManager().OnTextFieldDidScroll(WithNewVersion(form),
                                                            field, bounding_box);
@@ -301,7 +301,7 @@ diff --git a/components/autofill/content/browser/content_autofill_driver.cc b/co
                WithNewVersion(form), field, bounding_box);
          }
        });
-@@ -515,8 +515,8 @@ void ContentAutofillDriver::SelectControlDidChange(
+@@ -592,8 +592,8 @@ void ContentAutofillDriver::SelectControlDidChange(
           const FormFieldData& field, const gfx::RectF& bounding_box) {
          target->GetAutofillManager().OnSelectControlDidChange(
              WithNewVersion(form), field, bounding_box);
@@ -312,7 +312,7 @@ diff --git a/components/autofill/content/browser/content_autofill_driver.cc b/co
              WithNewVersion(form), field, bounding_box);
          }
        });
-@@ -541,8 +541,8 @@ void ContentAutofillDriver::AskForValuesToFill(
+@@ -618,8 +618,8 @@ void ContentAutofillDriver::AskForValuesToFill(
           AutofillSuggestionTriggerSource trigger_source) {
          target->GetAutofillManager().OnAskForValuesToFill(
              WithNewVersion(form), field, bounding_box, trigger_source);
@@ -323,7 +323,7 @@ diff --git a/components/autofill/content/browser/content_autofill_driver.cc b/co
                WithNewVersion(form), field, bounding_box, trigger_source);
          }
        });
-@@ -556,8 +556,8 @@ void ContentAutofillDriver::HidePopup() {
+@@ -633,8 +633,8 @@ void ContentAutofillDriver::HidePopup() {
      DCHECK(!target->IsPrerendering())
          << "We should never affect UI while prerendering";
      target->GetAutofillManager().OnHidePopup();
@@ -334,7 +334,7 @@ diff --git a/components/autofill/content/browser/content_autofill_driver.cc b/co
    });
  }
  
-@@ -569,8 +569,8 @@ void ContentAutofillDriver::FocusNoLongerOnForm(bool had_interacted_form) {
+@@ -646,8 +646,8 @@ void ContentAutofillDriver::FocusNoLongerOnForm(bool had_interacted_form) {
        this, had_interacted_form,
        [](autofill::AutofillDriver* target, bool had_interacted_form) {
          target->GetAutofillManager().OnFocusNoLongerOnForm(had_interacted_form);
@@ -345,7 +345,7 @@ diff --git a/components/autofill/content/browser/content_autofill_driver.cc b/co
        });
  }
  
-@@ -590,15 +590,15 @@ void ContentAutofillDriver::FocusOnFormField(const FormData& raw_form,
+@@ -667,15 +667,15 @@ void ContentAutofillDriver::FocusOnFormField(const FormData& raw_form,
           const FormFieldData& field, const gfx::RectF& bounding_box) {
          target->GetAutofillManager().OnFocusOnFormField(WithNewVersion(form),
                                                          field, bounding_box);
@@ -365,7 +365,7 @@ diff --git a/components/autofill/content/browser/content_autofill_driver.cc b/co
          }
        });
  }
-@@ -614,8 +614,8 @@ void ContentAutofillDriver::DidFillAutofillFormData(const FormData& raw_form,
+@@ -691,8 +691,8 @@ void ContentAutofillDriver::DidFillAutofillFormData(const FormData& raw_form,
           base::TimeTicks timestamp) {
          target->GetAutofillManager().OnDidFillAutofillFormData(
              WithNewVersion(form), timestamp);
@@ -376,7 +376,7 @@ diff --git a/components/autofill/content/browser/content_autofill_driver.cc b/co
              WithNewVersion(form), timestamp);
          }
        });
-@@ -627,8 +627,8 @@ void ContentAutofillDriver::DidEndTextFieldEditing() {
+@@ -704,8 +704,8 @@ void ContentAutofillDriver::DidEndTextFieldEditing() {
    }
    router().DidEndTextFieldEditing(this, [](autofill::AutofillDriver* target) {
      target->GetAutofillManager().OnDidEndTextFieldEditing();
@@ -387,7 +387,7 @@ diff --git a/components/autofill/content/browser/content_autofill_driver.cc b/co
    });
  }
  
-@@ -643,8 +643,8 @@ void ContentAutofillDriver::SelectOrSelectListFieldOptionsDidChange(
+@@ -720,8 +720,8 @@ void ContentAutofillDriver::SelectOrSelectListFieldOptionsDidChange(
          cast(target)
              ->GetAutofillManager()
              .OnSelectOrSelectListFieldOptionsDidChange(WithNewVersion(form));
@@ -398,7 +398,7 @@ diff --git a/components/autofill/content/browser/content_autofill_driver.cc b/co
              WithNewVersion(form));
          }
        });
-@@ -666,8 +666,8 @@ void ContentAutofillDriver::JavaScriptChangedAutofilledValue(
+@@ -743,8 +743,8 @@ void ContentAutofillDriver::JavaScriptChangedAutofilledValue(
           const FormFieldData& field, const std::u16string& old_value) {
          target->GetAutofillManager().OnJavaScriptChangedAutofilledValue(
              WithNewVersion(form), field, old_value);
@@ -409,7 +409,7 @@ diff --git a/components/autofill/content/browser/content_autofill_driver.cc b/co
              WithNewVersion(form), field, old_value);
          }
        });
-@@ -682,8 +682,8 @@ void ContentAutofillDriver::OnContextMenuShownInField(
+@@ -759,8 +759,8 @@ void ContentAutofillDriver::OnContextMenuShownInField(
           const FieldGlobalId& field_global_id) {
          target->GetAutofillManager().OnContextMenuShownInField(form_global_id,
                                                                 field_global_id);
@@ -420,7 +420,7 @@ diff --git a/components/autofill/content/browser/content_autofill_driver.cc b/co
        });
  }
  
-@@ -708,6 +708,10 @@ ContentAutofillDriver::GetAutofillAgent() {
+@@ -785,6 +785,10 @@ ContentAutofillDriver::GetAutofillAgent() {
    return autofill_agent_;
  }
  
@@ -434,7 +434,7 @@ diff --git a/components/autofill/content/browser/content_autofill_driver.cc b/co
 diff --git a/components/autofill/content/browser/content_autofill_driver.h b/components/autofill/content/browser/content_autofill_driver.h
 --- a/components/autofill/content/browser/content_autofill_driver.h
 +++ b/components/autofill/content/browser/content_autofill_driver.h
-@@ -132,7 +132,7 @@ class ContentAutofillDriver : public AutofillDriver,
+@@ -133,7 +133,7 @@ class ContentAutofillDriver : public AutofillDriver,
      autofill_manager_ = std::move(autofill_manager);
      secondary_autofill_manager_ = std::move(secondary_autofill_manager);
    }
@@ -506,7 +506,7 @@ diff --git a/components/browser_ui/site_settings/android/java/src/org/chromium/c
  import org.chromium.components.embedder_support.util.Origin;
  import org.chromium.content_public.browser.BrowserContextHandle;
  
-@@ -558,6 +559,11 @@ public class SingleWebsiteSettings extends BaseSiteSettingsFragment
+@@ -551,6 +552,11 @@ public class SingleWebsiteSettings extends BaseSiteSettingsFragment
          }
      }
  
@@ -518,7 +518,7 @@ diff --git a/components/browser_ui/site_settings/android/java/src/org/chromium/c
      private void setUpClearDataPreference() {
          ClearWebsiteStorage preference = findPreference(PREF_CLEAR_DATA);
          long usage = mSite.getTotalUsage();
-@@ -1024,6 +1030,10 @@ public class SingleWebsiteSettings extends BaseSiteSettingsFragment
+@@ -1034,6 +1040,10 @@ public class SingleWebsiteSettings extends BaseSiteSettingsFragment
          if (contentType == mHighlightedPermission) {
              switchPreference.setBackgroundColor(mHighlightColor);
          }
@@ -532,15 +532,15 @@ diff --git a/components/browser_ui/site_settings/android/java/src/org/chromium/c
 diff --git a/components/browser_ui/site_settings/android/java/src/org/chromium/components/browser_ui/site_settings/WebsitePreferenceBridge.java b/components/browser_ui/site_settings/android/java/src/org/chromium/components/browser_ui/site_settings/WebsitePreferenceBridge.java
 --- a/components/browser_ui/site_settings/android/java/src/org/chromium/components/browser_ui/site_settings/WebsitePreferenceBridge.java
 +++ b/components/browser_ui/site_settings/android/java/src/org/chromium/components/browser_ui/site_settings/WebsitePreferenceBridge.java
-@@ -9,6 +9,7 @@ import org.chromium.base.annotations.CalledByNative;
- import org.chromium.base.annotations.NativeMethods;
+@@ -10,6 +10,7 @@ import org.jni_zero.NativeMethods;
+ import org.chromium.base.Callback;
  import org.chromium.components.content_settings.ContentSettingValues;
  import org.chromium.components.content_settings.ContentSettingsType;
 +import org.chromium.components.content_settings.SessionModel;
  import org.chromium.components.location.LocationUtils;
  import org.chromium.content_public.browser.BrowserContextHandle;
  import org.chromium.url.GURL;
-@@ -55,7 +56,8 @@ public class WebsitePreferenceBridge {
+@@ -56,7 +57,8 @@ public class WebsitePreferenceBridge {
  
      @CalledByNative
      private static void insertPermissionInfoIntoList(@ContentSettingsType int type,
@@ -550,7 +550,7 @@ diff --git a/components/browser_ui/site_settings/android/java/src/org/chromium/c
          if (type == ContentSettingsType.MEDIASTREAM_CAMERA
                  || type == ContentSettingsType.MEDIASTREAM_MIC) {
              for (PermissionInfo info : list) {
-@@ -64,7 +66,7 @@ public class WebsitePreferenceBridge {
+@@ -65,7 +67,7 @@ public class WebsitePreferenceBridge {
                  }
              }
          }
@@ -593,7 +593,7 @@ diff --git a/components/browser_ui/site_settings/android/website_preference_brid
 diff --git a/components/browser_ui/strings/android/browser_ui_strings.grd b/components/browser_ui/strings/android/browser_ui_strings.grd
 --- a/components/browser_ui/strings/android/browser_ui_strings.grd
 +++ b/components/browser_ui/strings/android/browser_ui_strings.grd
-@@ -642,6 +642,11 @@
+@@ -688,6 +688,11 @@
        <message name="IDS_PAGE_INFO_URL_TRUNCATED" desc="Accessibility announcement when the URL in PageInfo switches from full to truncated display">
          URL truncated
        </message>
@@ -602,13 +602,13 @@ diff --git a/components/browser_ui/strings/android/browser_ui_strings.grd b/comp
 +        (only this session)
 +      </message>
 +
-       <message name="IDS_PAGE_INFO_AD_PERSONALIZATION_TITLE" desc="The title of the 'Ad personalization' section in Page Info.">
-         Ad personalization
+       <message name="IDS_PAGE_INFO_AD_PRIVACY_HEADER" desc="A label that represents the new ad-related settings. 1) Navigate to any site. 2) Click the icon (often a lock) to the left of the URL in the address bar. Information about the page you're viewing appears. The 'Ad privacy' label will appear above the 'Site settings' button.">
+         Ad privacy
        </message>
 diff --git a/components/content_settings/android/BUILD.gn b/components/content_settings/android/BUILD.gn
 --- a/components/content_settings/android/BUILD.gn
 +++ b/components/content_settings/android/BUILD.gn
-@@ -60,6 +60,7 @@ java_cpp_enum("content_settings_enums_javagen") {
+@@ -61,6 +61,7 @@ java_cpp_enum("content_settings_enums_javagen") {
      "../core/common/cookie_controls_breakage_confidence_level.h",
      "../core/common/cookie_controls_enforcement.h",
      "../core/common/cookie_controls_status.h",
@@ -619,7 +619,7 @@ diff --git a/components/content_settings/android/BUILD.gn b/components/content_s
 diff --git a/components/content_settings/core/browser/content_settings_utils.cc b/components/content_settings/core/browser/content_settings_utils.cc
 --- a/components/content_settings/core/browser/content_settings_utils.cc
 +++ b/components/content_settings/core/browser/content_settings_utils.cc
-@@ -174,6 +174,42 @@ bool IsConstraintPersistent(const ContentSettingConstraints& constraints) {
+@@ -173,6 +173,42 @@ bool IsConstraintPersistent(const ContentSettingConstraints& constraints) {
    return constraints.session_model() == SessionModel::Durable;
  }
  
@@ -709,7 +709,7 @@ diff --git a/components/content_settings/core/common/content_settings_constraint
 diff --git a/components/page_info/android/java/src/org/chromium/components/page_info/PageInfoController.java b/components/page_info/android/java/src/org/chromium/components/page_info/PageInfoController.java
 --- a/components/page_info/android/java/src/org/chromium/components/page_info/PageInfoController.java
 +++ b/components/page_info/android/java/src/org/chromium/components/page_info/PageInfoController.java
-@@ -336,9 +336,9 @@ public class PageInfoController implements PageInfoMainController, ModalDialogPr
+@@ -337,9 +337,9 @@ public class PageInfoController implements PageInfoMainController, ModalDialogPr
       */
      @CalledByNative
      private void addPermissionSection(String name, String nameMidSentence, int type,
@@ -808,7 +808,7 @@ diff --git a/components/page_info/android/page_info_controller_android.cc b/comp
 diff --git a/components/page_info/page_info.cc b/components/page_info/page_info.cc
 --- a/components/page_info/page_info.cc
 +++ b/components/page_info/page_info.cc
-@@ -1184,6 +1184,8 @@ void PageInfo::PopulatePermissionInfo(PermissionInfo& permission_info,
+@@ -1188,6 +1188,8 @@ void PageInfo::PopulatePermissionInfo(PermissionInfo& permission_info,
    permission_info.source = info.source;
    permission_info.is_one_time = (info.metadata.session_model() ==
                                   content_settings::SessionModel::OneTime);
@@ -820,7 +820,7 @@ diff --git a/components/page_info/page_info.cc b/components/page_info/page_info.
 diff --git a/components/page_info/page_info.h b/components/page_info/page_info.h
 --- a/components/page_info/page_info.h
 +++ b/components/page_info/page_info.h
-@@ -199,6 +199,7 @@ class PageInfo : private content_settings::CookieControlsObserver,
+@@ -200,6 +200,7 @@ class PageInfo : private content_settings::CookieControlsObserver,
          content_settings::SETTING_SOURCE_NONE;
      // Whether the permission is a one-time grant.
      bool is_one_time = false;
@@ -831,9 +831,9 @@ diff --git a/components/page_info/page_info.h b/components/page_info/page_info.h
 diff --git a/components/permissions/android/java/src/org/chromium/components/permissions/PermissionDialogDelegate.java b/components/permissions/android/java/src/org/chromium/components/permissions/PermissionDialogDelegate.java
 --- a/components/permissions/android/java/src/org/chromium/components/permissions/PermissionDialogDelegate.java
 +++ b/components/permissions/android/java/src/org/chromium/components/permissions/PermissionDialogDelegate.java
-@@ -8,6 +8,7 @@ import org.chromium.base.annotations.CalledByNative;
- import org.chromium.base.annotations.JNINamespace;
- import org.chromium.base.annotations.NativeMethods;
+@@ -11,6 +11,7 @@ import org.jni_zero.JNINamespace;
+ import org.jni_zero.NativeMethods;
+ 
  import org.chromium.ui.base.WindowAndroid;
 +import org.chromium.components.content_settings.LifetimeMode;
  
@@ -849,7 +849,7 @@ diff --git a/components/permissions/android/java/src/org/chromium/components/per
      public WindowAndroid getWindow() {
          return mWindow;
      }
-@@ -79,6 +83,15 @@ public class PermissionDialogDelegate {
+@@ -75,6 +79,15 @@ public class PermissionDialogDelegate {
          PermissionDialogDelegateJni.get().accept(mNativeDelegatePtr, PermissionDialogDelegate.this);
      }
  
@@ -865,10 +865,10 @@ diff --git a/components/permissions/android/java/src/org/chromium/components/per
      public void onCancel() {
          assert mNativeDelegatePtr != 0;
          PermissionDialogDelegateJni.get().cancel(mNativeDelegatePtr, PermissionDialogDelegate.this);
-diff --git a/components/permissions/android/java/src/org/chromium/components/permissions/PermissionDialogModel.java b/components/permissions/android/java/src/org/chromium/components/permissions/PermissionDialogModel.java
---- a/components/permissions/android/java/src/org/chromium/components/permissions/PermissionDialogModel.java
-+++ b/components/permissions/android/java/src/org/chromium/components/permissions/PermissionDialogModel.java
-@@ -16,6 +16,17 @@ import org.chromium.ui.UiUtils;
+diff --git a/components/permissions/android/java/src/org/chromium/components/permissions/PermissionDialogModelFactory.java b/components/permissions/android/java/src/org/chromium/components/permissions/PermissionDialogModelFactory.java
+--- a/components/permissions/android/java/src/org/chromium/components/permissions/PermissionDialogModelFactory.java
++++ b/components/permissions/android/java/src/org/chromium/components/permissions/PermissionDialogModelFactory.java
+@@ -12,6 +12,17 @@ import org.chromium.ui.UiUtils;
  import org.chromium.ui.modaldialog.ModalDialogProperties;
  import org.chromium.ui.modelutil.PropertyModel;
  
@@ -884,18 +884,18 @@ diff --git a/components/permissions/android/java/src/org/chromium/components/per
 +import org.chromium.components.content_settings.LifetimeMode;
 +
  /**
-  * This class creates the model for permission dialog.
+  * This class creates the model for the permission dialog.
   */
-@@ -41,7 +52,7 @@ class PermissionDialogModel {
-             secondaryTextView.setVisibility(View.VISIBLE);
-         }
+@@ -27,7 +38,7 @@ class PermissionDialogModelFactory {
+         String messageText = delegate.getMessageText();
+         assert !TextUtils.isEmpty(messageText);
  
 -        return new PropertyModel.Builder(ModalDialogProperties.ALL_KEYS)
 +        PropertyModel pm = new PropertyModel.Builder(ModalDialogProperties.ALL_KEYS)
                  .with(ModalDialogProperties.CONTROLLER, controller)
                  .with(ModalDialogProperties.FOCUS_DIALOG, true)
                  .with(ModalDialogProperties.CUSTOM_VIEW, customView)
-@@ -53,6 +64,74 @@ class PermissionDialogModel {
+@@ -39,5 +50,73 @@ class PermissionDialogModelFactory {
                  .with(ModalDialogProperties.BUTTON_TAP_PROTECTION_PERIOD_MS,
                          UiUtils.PROMPT_INPUT_PROTECTION_SHORT_DELAY_MS)
                  .build();
@@ -923,29 +923,29 @@ diff --git a/components/permissions/android/java/src/org/chromium/components/per
 +            // Create radio buttons with lifetime options.
 +            RadioGroup radioGroup = new RadioGroup(context);
 +
-+            RadioButton radioButon = new RadioButton(context);
-+            radioButon.setText(context.getString(
++            RadioButton radioButton = new RadioButton(context);
++            radioButton.setText(context.getString(
 +                        org.chromium.components.permissions.R.string.session_permissions_only_this_this));
-+            radioButon.setId(LifetimeMode.ONLY_THIS_TIME);
-+            radioGroup.addView(radioButon);
++            radioButton.setId(LifetimeMode.ONLY_THIS_TIME);
++            radioGroup.addView(radioButton);
 +
-+            radioButon = new RadioButton(context);
-+            radioButon.setText(context.getString(
++            radioButton = new RadioButton(context);
++            radioButton.setText(context.getString(
 +                        org.chromium.components.permissions.R.string.session_permissions_until_page_close));
-+            radioButon.setId(LifetimeMode.UNTIL_ORIGIN_CLOSED);
-+            radioGroup.addView(radioButon);
++            radioButton.setId(LifetimeMode.UNTIL_ORIGIN_CLOSED);
++            radioGroup.addView(radioButton);
 +
-+            radioButon = new RadioButton(context);
-+            radioButon.setText(context.getString(
++            radioButton = new RadioButton(context);
++            radioButton.setText(context.getString(
 +                        org.chromium.components.permissions.R.string.session_permissions_until_browser_close));
-+            radioButon.setId(LifetimeMode.UNTIL_BROWSER_CLOSED);
-+            radioGroup.addView(radioButon);
++            radioButton.setId(LifetimeMode.UNTIL_BROWSER_CLOSED);
++            radioGroup.addView(radioButton);
 +
-+            radioButon = new RadioButton(context);
-+            radioButon.setText(context.getString(
++            radioButton = new RadioButton(context);
++            radioButton.setText(context.getString(
 +                        org.chromium.components.permissions.R.string.session_permissions_forever));
-+            radioButon.setId(LifetimeMode.ALWAYS);
-+            radioGroup.addView(radioButon);
++            radioButton.setId(LifetimeMode.ALWAYS);
++            radioGroup.addView(radioButton);
 +
 +            radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
 +                @Override
@@ -958,7 +958,7 @@ diff --git a/components/permissions/android/java/src/org/chromium/components/per
 +        }
 +
 +        return pm;
-+    }
+     }
 +
 +    private static boolean contains(final int[] array, final int key) {
 +        int length = array.length;
@@ -967,13 +967,12 @@ diff --git a/components/permissions/android/java/src/org/chromium/components/per
 +                return true;
 +        }
 +        return false;
-     }
- 
-     private static View loadDialogView(Context context) {
++    }
+ }
 diff --git a/components/permissions/android/permission_prompt/permission_dialog_delegate.cc b/components/permissions/android/permission_prompt/permission_dialog_delegate.cc
 --- a/components/permissions/android/permission_prompt/permission_dialog_delegate.cc
 +++ b/components/permissions/android/permission_prompt/permission_dialog_delegate.cc
-@@ -68,6 +68,11 @@ void PermissionDialogJavaDelegate::DismissDialog() {
+@@ -113,6 +113,11 @@ void PermissionDialogJavaDelegate::DismissDialog() {
    Java_PermissionDialogDelegate_dismissFromNative(env, j_delegate_);
  }
  
@@ -985,7 +984,7 @@ diff --git a/components/permissions/android/permission_prompt/permission_dialog_
  // static
  void PermissionDialogDelegate::Create(
      content::WebContents* web_contents,
-@@ -96,12 +101,26 @@ PermissionDialogDelegate* PermissionDialogDelegate::CreateForTesting(
+@@ -141,12 +146,26 @@ PermissionDialogDelegate* PermissionDialogDelegate::CreateForTesting(
  void PermissionDialogDelegate::Accept(JNIEnv* env,
                                        const JavaParamRef<jobject>& obj) {
    DCHECK(permission_prompt_);
@@ -1015,9 +1014,9 @@ diff --git a/components/permissions/android/permission_prompt/permission_dialog_
 diff --git a/components/permissions/android/permission_prompt/permission_dialog_delegate.h b/components/permissions/android/permission_prompt/permission_dialog_delegate.h
 --- a/components/permissions/android/permission_prompt/permission_dialog_delegate.h
 +++ b/components/permissions/android/permission_prompt/permission_dialog_delegate.h
-@@ -35,6 +35,7 @@ class PermissionDialogJavaDelegate {
-                                   PermissionDialogDelegate* owner);
-   virtual void CreateDialog();
+@@ -41,6 +41,7 @@ class PermissionDialogJavaDelegate {
+       const favicon_base::FaviconRawBitmapResult& favicon_result);
+ 
    virtual void DismissDialog();
 +  virtual int GetSelectedLifetimeOption();
  
@@ -1026,7 +1025,7 @@ diff --git a/components/permissions/android/permission_prompt/permission_dialog_
 diff --git a/components/permissions/android/permission_prompt/permission_prompt_android.cc b/components/permissions/android/permission_prompt/permission_prompt_android.cc
 --- a/components/permissions/android/permission_prompt/permission_prompt_android.cc
 +++ b/components/permissions/android/permission_prompt/permission_prompt_android.cc
-@@ -47,6 +47,14 @@ void PermissionPromptAndroid::Accept() {
+@@ -52,6 +52,14 @@ void PermissionPromptAndroid::Accept() {
    delegate_->Accept();
  }
  
@@ -1044,7 +1043,7 @@ diff --git a/components/permissions/android/permission_prompt/permission_prompt_
 diff --git a/components/permissions/android/permission_prompt/permission_prompt_android.h b/components/permissions/android/permission_prompt/permission_prompt_android.h
 --- a/components/permissions/android/permission_prompt/permission_prompt_android.h
 +++ b/components/permissions/android/permission_prompt/permission_prompt_android.h
-@@ -46,7 +46,9 @@ class PermissionPromptAndroid : public PermissionPrompt {
+@@ -47,7 +47,9 @@ class PermissionPromptAndroid : public PermissionPrompt {
  
    void Closing();
    void Accept();
@@ -1401,7 +1400,7 @@ diff --git a/components/permissions/permission_request.cc b/components/permissio
  PermissionRequest::~PermissionRequest() {
    DCHECK(delete_callback_.is_null());
  }
-@@ -276,19 +284,37 @@ bool PermissionRequest::ShouldUseTwoOriginPrompt() const {
+@@ -279,19 +287,37 @@ bool PermissionRequest::ShouldUseTwoOriginPrompt() const {
               permissions::features::kPermissionStorageAccessAPI);
  }
  
@@ -1480,7 +1479,7 @@ diff --git a/components/permissions/permission_request.h b/components/permission
  
    // Called when the user has cancelled the permission request. This
    // corresponds to a denial, but is segregated in case the context needs to
-@@ -174,6 +183,9 @@ class PermissionRequest {
+@@ -180,6 +189,9 @@ class PermissionRequest {
    // Called once a decision is made about the permission.
    PermissionDecidedCallback permission_decided_callback_;
  
@@ -1511,7 +1510,7 @@ diff --git a/components/permissions/permission_request_manager.cc b/components/p
      }
      request->RequestFinished();
      return;
-@@ -568,7 +568,8 @@ void PermissionRequestManager::Accept() {
+@@ -574,7 +574,8 @@ void PermissionRequestManager::Accept() {
                                  (*requests_iter)->request_type(),
                                  PermissionAction::GRANTED);
      PermissionGrantedIncludingDuplicates(*requests_iter,
@@ -1521,8 +1520,8 @@ diff --git a/components/permissions/permission_request_manager.cc b/components/p
  
  #if !BUILDFLAG(IS_ANDROID)
      absl::optional<ContentSettingsType> content_settings_type =
-@@ -586,7 +587,7 @@ void PermissionRequestManager::Accept() {
-   FinalizeCurrentRequests(PermissionAction::GRANTED);
+@@ -592,7 +593,7 @@ void PermissionRequestManager::Accept() {
+   CurrentRequestsDecided(PermissionAction::GRANTED);
  }
  
 -void PermissionRequestManager::AcceptThisTime() {
@@ -1530,7 +1529,7 @@ diff --git a/components/permissions/permission_request_manager.cc b/components/p
    if (ignore_callbacks_from_prompt_)
      return;
    DCHECK(view_);
-@@ -597,7 +598,8 @@ void PermissionRequestManager::AcceptThisTime() {
+@@ -603,7 +604,8 @@ void PermissionRequestManager::AcceptThisTime() {
                                  (*requests_iter)->request_type(),
                                  PermissionAction::GRANTED_ONCE);
      PermissionGrantedIncludingDuplicates(*requests_iter,
@@ -1540,7 +1539,7 @@ diff --git a/components/permissions/permission_request_manager.cc b/components/p
    }
  
    NotifyRequestDecided(PermissionAction::GRANTED_ONCE);
-@@ -605,6 +607,15 @@ void PermissionRequestManager::AcceptThisTime() {
+@@ -611,6 +613,15 @@ void PermissionRequestManager::AcceptThisTime() {
  }
  
  void PermissionRequestManager::Deny() {
@@ -1556,7 +1555,7 @@ diff --git a/components/permissions/permission_request_manager.cc b/components/p
    if (ignore_callbacks_from_prompt_)
      return;
    DCHECK(view_);
-@@ -627,7 +638,7 @@ void PermissionRequestManager::Deny() {
+@@ -633,7 +644,7 @@ void PermissionRequestManager::Deny() {
      StorePermissionActionForUMA((*requests_iter)->requesting_origin(),
                                  (*requests_iter)->request_type(),
                                  PermissionAction::DENIED);
@@ -1565,7 +1564,7 @@ diff --git a/components/permissions/permission_request_manager.cc b/components/p
    }
  
    NotifyRequestDecided(PermissionAction::DENIED);
-@@ -1165,32 +1176,32 @@ PermissionRequestManager::VisitDuplicateRequests(
+@@ -1184,32 +1195,32 @@ PermissionRequestManager::VisitDuplicateRequests(
  
  void PermissionRequestManager::PermissionGrantedIncludingDuplicates(
      PermissionRequest* request,
@@ -1608,7 +1607,7 @@ diff --git a/components/permissions/permission_request_manager.cc b/components/p
        request);
  }
  
-@@ -1439,7 +1450,7 @@ void PermissionRequestManager::LogWarningToConsole(const char* message) {
+@@ -1458,7 +1469,7 @@ void PermissionRequestManager::LogWarningToConsole(const char* message) {
  void PermissionRequestManager::DoAutoResponseForTesting() {
    switch (auto_response_for_test_) {
      case ACCEPT_ONCE:
@@ -1631,8 +1630,8 @@ diff --git a/components/permissions/permission_request_manager.h b/components/pe
 +  void DenyThisTime(content_settings::LifetimeMode lifetime_option) override;
    void Dismiss() override;
    void Ignore() override;
-   void OpenHelpCenterLink(const ui::Event& event) override;
-@@ -362,9 +364,12 @@ class PermissionRequestManager
+   void FinalizeCurrentRequests() override;
+@@ -365,9 +367,12 @@ class PermissionRequestManager
  
    // Calls PermissionGranted on a request and all its duplicates.
    void PermissionGrantedIncludingDuplicates(PermissionRequest* request,

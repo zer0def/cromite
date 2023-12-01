@@ -16,7 +16,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../chrome/browser/omaha/OmahaBase.java       |  57 +++-
  .../chrome/browser/omaha/UpdateConfigs.java   |  30 +-
  .../browser/omaha/UpdateMenuItemHelper.java   |  82 +++++-
- .../browser/omaha/UpdateStatusProvider.java   | 161 ++++++++---
+ .../browser/omaha/UpdateStatusProvider.java   | 163 ++++++++---
  .../browser/omaha/VersionNumberGetter.java    |   3 +-
  .../inline/BromiteInlineUpdateController.java | 272 ++++++++++++++++++
  .../omaha/inline/InlineUpdateController.java  |  51 ++++
@@ -32,7 +32,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../endpoint_fetcher/endpoint_fetcher.h       |  23 +-
  .../Bromite-auto-updater.inc                  |   3 +
  .../Bromite-auto-updater.inc                  |   1 +
- 24 files changed, 932 insertions(+), 50 deletions(-)
+ 24 files changed, 932 insertions(+), 52 deletions(-)
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/omaha/inline/BromiteInlineUpdateController.java
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/omaha/inline/InlineUpdateController.java
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/omaha/inline/InlineUpdateControllerFactory.java
@@ -55,7 +55,7 @@ diff --git a/build/android/java/templates/BuildConfig.template b/build/android/j
 diff --git a/build/config/android/rules.gni b/build/config/android/rules.gni
 --- a/build/config/android/rules.gni
 +++ b/build/config/android/rules.gni
-@@ -1894,6 +1894,9 @@ if (enable_java_templates && is_android) {
+@@ -1899,6 +1899,9 @@ if (enable_java_templates && is_android) {
        sources = [ "//build/android/java/templates/BuildConfig.template" ]
        defines = []
  
@@ -68,7 +68,7 @@ diff --git a/build/config/android/rules.gni b/build/config/android/rules.gni
 diff --git a/chrome/android/chrome_java_sources.gni b/chrome/android/chrome_java_sources.gni
 --- a/chrome/android/chrome_java_sources.gni
 +++ b/chrome/android/chrome_java_sources.gni
-@@ -872,6 +872,9 @@ chrome_java_sources = [
+@@ -878,6 +878,9 @@ chrome_java_sources = [
    "java/src/org/chromium/chrome/browser/omaha/UpdateConfigs.java",
    "java/src/org/chromium/chrome/browser/omaha/UpdateMenuItemHelper.java",
    "java/src/org/chromium/chrome/browser/omaha/UpdateStatusProvider.java",
@@ -184,7 +184,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/omaha/OmahaBase
      }
  
      /**
-@@ -567,6 +573,10 @@ public class OmahaBase {
+@@ -569,6 +575,10 @@ public class OmahaBase {
      /** Sends the request to the server and returns the response. */
      static String sendRequestToServer(HttpURLConnection urlConnection, String request)
              throws RequestFailureException {
@@ -195,7 +195,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/omaha/OmahaBase
          try {
              OutputStream out = new BufferedOutputStream(urlConnection.getOutputStream());
              OutputStreamWriter writer = new OutputStreamWriter(out);
-@@ -637,4 +647,47 @@ public class OmahaBase {
+@@ -639,4 +649,47 @@ public class OmahaBase {
                  // updateStatus is only used for the on-demand check.
                  null);
      }
@@ -460,7 +460,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/omaha/UpdateSta
 +import org.chromium.chrome.browser.omaha.inline.InlineUpdateControllerFactory;
  import org.chromium.chrome.browser.omaha.metrics.UpdateSuccessMetrics;
  import org.chromium.chrome.browser.preferences.ChromePreferenceKeys;
- import org.chromium.chrome.browser.preferences.SharedPreferencesManager;
+ import org.chromium.chrome.browser.preferences.ChromeSharedPreferences;
 @@ -34,30 +43,37 @@ import java.io.File;
  import java.lang.annotation.Retention;
  import java.lang.annotation.RetentionPolicy;
@@ -676,7 +676,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/omaha/UpdateSta
              // Push custom configurations for certain update states.
              switch (forcedUpdateState) {
                  case UpdateState.UPDATE_AVAILABLE:
-@@ -279,27 +366,33 @@ public class UpdateStatusProvider {
+@@ -279,29 +366,33 @@ public class UpdateStatusProvider {
              return status;
          }
  
@@ -689,16 +689,18 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/omaha/UpdateSta
 -                status.latestVersion = VersionNumberGetter.getInstance().getLatestKnownVersion();
 -
 -                boolean allowedToUpdate = checkForSufficientStorage()
+-                        // Disable the version update check for automotive. See b/297925838.
+-                        && !BuildInfo.getInstance().isAutomotive
 -                        && PackageUtils.isPackageInstalled(
 -                                GooglePlayServicesUtil.GOOGLE_PLAY_STORE_PACKAGE);
 -                status.updateState =
 -                        allowedToUpdate ? UpdateState.UPDATE_AVAILABLE : UpdateState.NONE;
 -
--                SharedPreferencesManager.getInstance().removeKey(
+-                ChromeSharedPreferences.getInstance().removeKey(
 -                        ChromePreferenceKeys.LATEST_UNSUPPORTED_VERSION);
 -            } else if (!VersionNumberGetter.isCurrentOsVersionSupported()) {
 -                status.updateState = UpdateState.UNSUPPORTED_OS_VERSION;
--                status.latestUnsupportedVersion = SharedPreferencesManager.getInstance().readString(
+-                status.latestUnsupportedVersion = ChromeSharedPreferences.getInstance().readString(
 -                        ChromePreferenceKeys.LATEST_UNSUPPORTED_VERSION, null);
 -            } else {
 -                status.updateState = UpdateState.NONE;
@@ -1207,7 +1209,7 @@ diff --git a/chrome/browser/endpoint_fetcher/endpoint_fetcher_android.cc b/chrom
 diff --git a/chrome/browser/endpoint_fetcher/java/src/org/chromium/chrome/browser/endpoint_fetcher/EndpointFetcher.java b/chrome/browser/endpoint_fetcher/java/src/org/chromium/chrome/browser/endpoint_fetcher/EndpointFetcher.java
 --- a/chrome/browser/endpoint_fetcher/java/src/org/chromium/chrome/browser/endpoint_fetcher/EndpointFetcher.java
 +++ b/chrome/browser/endpoint_fetcher/java/src/org/chromium/chrome/browser/endpoint_fetcher/EndpointFetcher.java
-@@ -70,6 +70,24 @@ public final class EndpointFetcher {
+@@ -71,6 +71,24 @@ public final class EndpointFetcher {
                  postData, timeout, headers, annotation.getHashCode(), callback);
      }
  
@@ -1232,7 +1234,7 @@ diff --git a/chrome/browser/endpoint_fetcher/java/src/org/chromium/chrome/browse
      @NativeMethods
      public interface Natives {
          void nativeFetchOAuth(Profile profile, String oathConsumerName, String url,
-@@ -78,7 +96,13 @@ public final class EndpointFetcher {
+@@ -79,7 +97,13 @@ public final class EndpointFetcher {
          void nativeFetchChromeAPIKey(Profile profile, String url, String httpsMethod,
                  String contentType, String postData, long timeout, String[] headers,
                  int annotationHashCode, Callback<EndpointResponse> callback);
@@ -1286,9 +1288,9 @@ new file mode 100644
 diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browser/flags/android/chrome_feature_list.cc
 --- a/chrome/browser/flags/android/chrome_feature_list.cc
 +++ b/chrome/browser/flags/android/chrome_feature_list.cc
-@@ -271,6 +271,7 @@ const base::Feature* const kFeaturesExposedToJava[] = {
-     &kNotificationPermissionBottomSheet,
+@@ -269,6 +269,7 @@ const base::Feature* const kFeaturesExposedToJava[] = {
      &kPageAnnotationsService,
+     &kPaintPreviewNewColdStartHeuristic,
      &kPreconnectOnTabCreation,
 +    &kInlineUpdateFlow,
      &kBookmarksImprovedSaveFlow,
@@ -1297,7 +1299,7 @@ diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browse
 diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 --- a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 +++ b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
-@@ -305,6 +305,7 @@ public abstract class ChromeFeatureList {
+@@ -304,6 +304,7 @@ public abstract class ChromeFeatureList {
              "IncognitoReauthenticationForAndroid";
      public static final String INCOGNITO_SCREENSHOT = "IncognitoScreenshot";
      public static final String INFOBAR_SCROLL_OPTIMIZATION = "InfobarScrollOptimization";
@@ -1308,7 +1310,7 @@ diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/f
 diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chrome/browser/ui/android/strings/android_chrome_strings.grd
 --- a/chrome/browser/ui/android/strings/android_chrome_strings.grd
 +++ b/chrome/browser/ui/android/strings/android_chrome_strings.grd
-@@ -2216,6 +2216,12 @@ Your Google account may have other forms of browsing history like searches and a
+@@ -2109,6 +2109,12 @@ Your Google account may have other forms of browsing history like searches and a
        <message name="IDS_DEPRECATION_WARNING" desc="Warning about Chrome updates no longer being supported">
          Chrome updates are no longer supported for this version of Android
        </message>
@@ -1321,7 +1323,7 @@ diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chro
  
        <!-- Account management UI strings. -->
        <message name="IDS_ACCOUNT_MANAGEMENT_TITLE" desc="Header title for the account management screen. [CHAR_LIMIT=32]">
-@@ -3840,7 +3846,10 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
+@@ -3746,7 +3752,10 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
  
        <!-- Main menu items -->
        <message name="IDS_MENU_UPDATE" desc="Menu item for updating chrome. [CHAR_LIMIT=24]">
@@ -1333,7 +1335,7 @@ diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chro
        </message>
        <message name="IDS_MENU_UPDATE_SUMMARY_DEFAULT" desc="Summary string for update menu item explaining that a newer version of Chrome is available. [CHAR_LIMIT=30]">
          Newer version is available
-@@ -3851,6 +3860,18 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
+@@ -3757,6 +3766,18 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
        <message name="IDS_MENU_UPDATE_UNSUPPORTED_SUMMARY_DEFAULT" desc="Summary string for update menu item explaining that the Android version on the device is unsupported. [CHAR_LIMIT=30]">
          Android version is unsupported
        </message>
