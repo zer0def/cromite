@@ -21,8 +21,8 @@ on:
         description: 'runner?'
         required: false
         default: 'ubuntu-latest'
-  schedule:
-   - cron: '0 1 * * *'
+#  schedule:
+#   - cron: '0 1 * * *'
 
 env:
   CHR_VERSION: ${{ github.event.inputs.version }}
