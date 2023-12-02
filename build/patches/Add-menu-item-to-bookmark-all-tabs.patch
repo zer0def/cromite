@@ -122,7 +122,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/bookmarks/Bookm
  import org.chromium.components.bookmarks.BookmarkId;
  import org.chromium.components.bookmarks.BookmarkItem;
  import org.chromium.components.bookmarks.BookmarkType;
-@@ -84,6 +89,8 @@ import java.io.File;
+@@ -85,6 +90,8 @@ import java.io.File;
  class BookmarkBridge {
      private final ObserverList<BookmarkModelObserver> mObservers = new ObserverList<>();
  
@@ -131,7 +131,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/bookmarks/Bookm
      private long mNativeBookmarkBridge;
      private boolean mIsDestroyed;
      private boolean mIsDoingExtensiveChanges;
-@@ -389,6 +396,16 @@ class BookmarkBridge {
+@@ -390,6 +397,16 @@ class BookmarkBridge {
          return mMobileFolderId;
      }
  
@@ -148,7 +148,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/bookmarks/Bookm
      /**
       * @return Id representing the special "other" folder from bookmark model.
       */
-@@ -1033,6 +1050,50 @@ class BookmarkBridge {
+@@ -1034,6 +1051,50 @@ class BookmarkBridge {
          return BookmarkBridgeJni.get().addToReadingList(mNativeBookmarkBridge, title, url);
      }
  
@@ -199,7 +199,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/bookmarks/Bookm
      /**
       * @param url The URL of the reading list item.
       * @return The reading list item with the URL, or null if no such reading list item.
-@@ -1272,6 +1333,9 @@ class BookmarkBridge {
+@@ -1273,6 +1334,9 @@ class BookmarkBridge {
          BookmarkId getBookmarkIdForWebContents(
                  long nativeBookmarkBridge, WebContents webContents, boolean onlyEditable);
  
@@ -209,7 +209,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/bookmarks/Bookm
          BookmarkItem getBookmarkById(long nativeBookmarkBridge, long id, int type);
  
          void getTopLevelFolderIds(long nativeBookmarkBridge, List<BookmarkId> bookmarksList);
-@@ -1283,6 +1347,8 @@ class BookmarkBridge {
+@@ -1284,6 +1348,8 @@ class BookmarkBridge {
  
          BookmarkId getRootFolderId(long nativeBookmarkBridge);
  
