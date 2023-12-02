@@ -56,7 +56,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../one_time_permissions_tracker.cc           | 33 +++++++-
  .../one_time_permissions_tracker.h            |  5 +-
  .../one_time_permissions_tracker_factory.cc   |  2 +-
- .../embedded_permission_prompt_ask_view.cc    |  2 +-
+ .../permissions/embedded_permission_prompt.cc |  2 +-
  .../permission_prompt_bubble_base_view.cc     |  2 +-
  .../browser/content_autofill_driver.cc        | 64 ++++++++-------
  .../content/browser/content_autofill_driver.h |  2 +-
@@ -67,7 +67,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../android/website_preference_bridge.cc      |  7 +-
  .../strings/android/browser_ui_strings.grd    |  5 ++
  components/content_settings/android/BUILD.gn  |  1 +
- .../core/browser/content_settings_utils.cc    | 36 +++++++++
+ .../core/browser/content_settings_utils.cc    | 36 ++++++++
  .../core/browser/content_settings_utils.h     |  6 ++
  .../common/content_settings_constraints.h     | 11 +++
  .../page_info/PageInfoController.java         |  4 +-
@@ -76,7 +76,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  components/page_info/page_info.cc             |  2 +
  components/page_info/page_info.h              |  1 +
  .../permissions/PermissionDialogDelegate.java | 13 +++
- .../PermissionDialogModelFactory.java         | 81 ++++++++++++++++++-
+ .../PermissionDialogModelFactory.java         | 82 ++++++++++++++++++-
  .../permission_dialog_delegate.cc             | 19 +++++
  .../permission_dialog_delegate.h              |  1 +
  .../permission_prompt_android.cc              |  8 ++
@@ -89,9 +89,9 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  components/permissions/permission_prompt.h    |  3 +-
  components/permissions/permission_request.cc  | 30 ++++++-
  components/permissions/permission_request.h   | 16 +++-
- .../permissions/permission_request_manager.cc | 45 +++++++----
+ .../permissions/permission_request_manager.cc | 45 ++++++----
  .../permissions/permission_request_manager.h  | 11 ++-
- 39 files changed, 547 insertions(+), 92 deletions(-)
+ 39 files changed, 548 insertions(+), 92 deletions(-)
 
 diff --git a/chrome/browser/permissions/last_tab_standing_tracker.cc b/chrome/browser/permissions/last_tab_standing_tracker.cc
 --- a/chrome/browser/permissions/last_tab_standing_tracker.cc
@@ -230,18 +230,18 @@ diff --git a/chrome/browser/permissions/one_time_permissions_tracker_factory.cc 
 -  return std::make_unique<OneTimePermissionsTracker>();
 +  return std::make_unique<OneTimePermissionsTracker>(context);
  }
-diff --git a/chrome/browser/ui/views/permissions/embedded_permission_prompt_ask_view.cc b/chrome/browser/ui/views/permissions/embedded_permission_prompt_ask_view.cc
---- a/chrome/browser/ui/views/permissions/embedded_permission_prompt_ask_view.cc
-+++ b/chrome/browser/ui/views/permissions/embedded_permission_prompt_ask_view.cc
-@@ -33,7 +33,7 @@ void EmbeddedPermissionPromptAskView::RunButtonCallback(int button_id) {
+diff --git a/chrome/browser/ui/views/permissions/embedded_permission_prompt.cc b/chrome/browser/ui/views/permissions/embedded_permission_prompt.cc
+--- a/chrome/browser/ui/views/permissions/embedded_permission_prompt.cc
++++ b/chrome/browser/ui/views/permissions/embedded_permission_prompt.cc
+@@ -177,7 +177,7 @@ void EmbeddedPermissionPrompt::Allow() {
+ }
  
-   if (delegate()) {
-     if (button == ButtonType::kAllowThisTime) {
--      delegate()->AllowThisTime();
-+      delegate()->AllowThisTime(content_settings::LifetimeMode::OnlyThisTime);
-     } else if (button == ButtonType::kAllow) {
-       delegate()->Allow();
-     }
+ void EmbeddedPermissionPrompt::AllowThisTime() {
+-  delegate_->AcceptThisTime();
++  delegate_->AcceptThisTime(content_settings::LifetimeMode::OnlyThisTime);
+   CloseCurrentViewAndMaybeShowNext(/*first_prompt=*/false);
+ }
+ 
 diff --git a/chrome/browser/ui/views/permissions/permission_prompt_bubble_base_view.cc b/chrome/browser/ui/views/permissions/permission_prompt_bubble_base_view.cc
 --- a/chrome/browser/ui/views/permissions/permission_prompt_bubble_base_view.cc
 +++ b/chrome/browser/ui/views/permissions/permission_prompt_bubble_base_view.cc
@@ -868,7 +868,7 @@ diff --git a/components/permissions/android/java/src/org/chromium/components/per
 diff --git a/components/permissions/android/java/src/org/chromium/components/permissions/PermissionDialogModelFactory.java b/components/permissions/android/java/src/org/chromium/components/permissions/PermissionDialogModelFactory.java
 --- a/components/permissions/android/java/src/org/chromium/components/permissions/PermissionDialogModelFactory.java
 +++ b/components/permissions/android/java/src/org/chromium/components/permissions/PermissionDialogModelFactory.java
-@@ -12,6 +12,17 @@ import org.chromium.ui.UiUtils;
+@@ -12,6 +12,18 @@ import org.chromium.ui.UiUtils;
  import org.chromium.ui.modaldialog.ModalDialogProperties;
  import org.chromium.ui.modelutil.PropertyModel;
  
@@ -878,6 +878,7 @@ diff --git a/components/permissions/android/java/src/org/chromium/components/per
 +import android.widget.LinearLayout;
 +import android.widget.RadioButton;
 +import android.widget.RadioGroup;
++import android.widget.TextView;
 +import org.chromium.base.ApiCompatibilityUtils;
 +import org.chromium.ui.base.ViewUtils;
 +import org.chromium.components.content_settings.ContentSettingsType;
@@ -886,7 +887,7 @@ diff --git a/components/permissions/android/java/src/org/chromium/components/per
  /**
   * This class creates the model for the permission dialog.
   */
-@@ -27,7 +38,7 @@ class PermissionDialogModelFactory {
+@@ -27,7 +39,7 @@ class PermissionDialogModelFactory {
          String messageText = delegate.getMessageText();
          assert !TextUtils.isEmpty(messageText);
  
@@ -895,7 +896,7 @@ diff --git a/components/permissions/android/java/src/org/chromium/components/per
                  .with(ModalDialogProperties.CONTROLLER, controller)
                  .with(ModalDialogProperties.FOCUS_DIALOG, true)
                  .with(ModalDialogProperties.CUSTOM_VIEW, customView)
-@@ -39,5 +50,73 @@ class PermissionDialogModelFactory {
+@@ -39,5 +51,73 @@ class PermissionDialogModelFactory {
                  .with(ModalDialogProperties.BUTTON_TAP_PROTECTION_PERIOD_MS,
                          UiUtils.PROMPT_INPUT_PROTECTION_SHORT_DELAY_MS)
                  .build();
@@ -958,7 +959,7 @@ diff --git a/components/permissions/android/java/src/org/chromium/components/per
 +        }
 +
 +        return pm;
-     }
++    }
 +
 +    private static boolean contains(final int[] array, final int key) {
 +        int length = array.length;
@@ -967,7 +968,7 @@ diff --git a/components/permissions/android/java/src/org/chromium/components/per
 +                return true;
 +        }
 +        return false;
-+    }
+     }
  }
 diff --git a/components/permissions/android/permission_prompt/permission_dialog_delegate.cc b/components/permissions/android/permission_prompt/permission_dialog_delegate.cc
 --- a/components/permissions/android/permission_prompt/permission_dialog_delegate.cc

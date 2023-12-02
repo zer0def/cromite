@@ -10,9 +10,9 @@ Original License: BSD-3-Clause - https://spdx.org/licenses/BSD-3-Clause.html
 License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 ---
  chrome/android/java/res/layout/url_bar.xml    |  1 +
- .../browser/omnibox/LocationBarMediator.java  | 12 ++++++++--
+ .../browser/omnibox/LocationBarMediator.java  | 13 +++++++++--
  .../chrome/browser/omnibox/UrlBar.java        | 23 +++++++++++++++++++
- 3 files changed, 34 insertions(+), 2 deletions(-)
+ 3 files changed, 35 insertions(+), 2 deletions(-)
 
 diff --git a/chrome/android/java/res/layout/url_bar.xml b/chrome/android/java/res/layout/url_bar.xml
 --- a/chrome/android/java/res/layout/url_bar.xml
@@ -27,7 +27,7 @@ diff --git a/chrome/android/java/res/layout/url_bar.xml b/chrome/android/java/re
 diff --git a/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/browser/omnibox/LocationBarMediator.java b/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/browser/omnibox/LocationBarMediator.java
 --- a/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/browser/omnibox/LocationBarMediator.java
 +++ b/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/browser/omnibox/LocationBarMediator.java
-@@ -290,8 +290,16 @@ class LocationBarMediator
+@@ -290,8 +290,17 @@ class LocationBarMediator
              if (mNativeInitialized) RecordUserAction.record("FocusLocation");
              // Don't clear Omnibox if the user just pasted text to NTP Omnibox.
              if (mShouldClearOmniboxOnFocus) {
@@ -35,9 +35,10 @@ diff --git a/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/brow
 -                        UrlBarData.EMPTY, UrlBar.ScrollType.NO_SCROLL, SelectionState.SELECT_END);
 +                UrlBarData data = mLocationBarDataProvider.getUrlBarData();
 +                @SelectionState int selectionState = SelectionState.SELECT_ALL;
-+                if (mTemplateUrlServiceSupplier.hasValue()) {
-+                    String searchParams = mTemplateUrlServiceSupplier.get().getSearchQueryForUrl(
-+                                                mLocationBarDataProvider.getUrlBarData().url);
++                GURL url = mLocationBarDataProvider.getUrlBarData().url;
++                if (url != null && mTemplateUrlServiceSupplier.hasValue()) {
++                    String searchParams =
++                        mTemplateUrlServiceSupplier.get().getSearchQueryForUrl(url);
 +                    if (searchParams != null && !searchParams.isEmpty()) {
 +                        data = UrlBarData.forUrlAndText(data.url, data.displayText, searchParams);
 +                    }

@@ -28,8 +28,8 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  chrome/common/chrome_features.cc              |   1 +
  .../content_settings/core/common/features.cc  |   1 +
  components/flags_ui/flags_state.cc            |  21 +++
- components/flags_ui/resources/app.html        |  33 +++-
- components/flags_ui/resources/app.ts          |  37 ++++-
+ components/flags_ui/resources/app.html        |  42 ++++-
+ components/flags_ui/resources/app.ts          |  41 ++++-
  components/flags_ui/resources/experiment.html |   7 +-
  components/flags_ui/resources/experiment.ts   |  16 ++
  .../flags_ui/resources/flags_browser_proxy.ts |   5 +
@@ -70,7 +70,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  services/network/public/cpp/features.h        |   1 +
  third_party/blink/common/features.cc          |   1 +
  third_party/blink/public/common/features.h    |   1 +
- 56 files changed, 475 insertions(+), 13 deletions(-)
+ 56 files changed, 488 insertions(+), 13 deletions(-)
  create mode 100755 cromite_flags/BUILD.gn
  create mode 100755 cromite_flags/chrome/browser/about_flags_cc/placeholder.txt
  create mode 100755 cromite_flags/chrome/browser/browser_features_cc/placeholder.txt
@@ -483,10 +483,13 @@ diff --git a/components/flags_ui/flags_state.cc b/components/flags_ui/flags_stat
 diff --git a/components/flags_ui/resources/app.html b/components/flags_ui/resources/app.html
 --- a/components/flags_ui/resources/app.html
 +++ b/components/flags_ui/resources/app.html
-@@ -473,6 +473,24 @@
+@@ -473,7 +473,32 @@
        padding-top: 1.5rem;
      }
    }
++  #appcontainer {
++    overflow-y: scroll;
++  }
 +  .cromite #header {
 +    display: none;
 +  }
@@ -505,10 +508,15 @@ diff --git a/components/flags_ui/resources/app.html b/components/flags_ui/resour
 +  .cromite #tab-content-cromite {
 +    display: block !important;
 +  }
++  .cromite .section-header-title {
++    display: none;
++  }
  </style>
++<div id="appcontainer">
  <div id="header">
    <div class="flex-container">
-@@ -545,6 +563,11 @@
+     <div class="flex search-container">
+@@ -545,6 +570,11 @@
            aria-selected="false" aria-controls="panel2"
            tabindex="-1">$i18n{unavailable}</a>
  </if>
@@ -520,7 +528,7 @@ diff --git a/components/flags_ui/resources/app.html b/components/flags_ui/resour
      </div>
      <div id="tabpanels">
        <div id="tab-content-available" class="tab-content selected"
-@@ -564,6 +587,14 @@
+@@ -564,6 +594,14 @@
          </div>
        </div>
  </if>
@@ -535,17 +543,27 @@ diff --git a/components/flags_ui/resources/app.html b/components/flags_ui/resour
      </div>
      <div id="needs-restart">
        <div class="flex-container">
-@@ -578,4 +609,4 @@
+@@ -578,4 +616,6 @@
        </div>
      </div>
    </div>
 -</div>
 \ No newline at end of file
 +</div>
++
++</div>
 diff --git a/components/flags_ui/resources/app.ts b/components/flags_ui/resources/app.ts
 --- a/components/flags_ui/resources/app.ts
 +++ b/components/flags_ui/resources/app.ts
-@@ -204,6 +204,10 @@ export class FlagsAppElement extends CustomElement {
+@@ -193,6 +193,7 @@ export class FlagsAppElement extends CustomElement {
+     return getTemplate();
+   }
+ 
++  private onlyCromiteFlags: boolean = false;
+   private announceStatusDelayMs: number = 100;
+   private featuresResolver: PromiseResolver<void> = new PromiseResolver();
+   private flagSearch: FlagSearch = new FlagSearch(this);
+@@ -204,6 +205,10 @@ export class FlagsAppElement extends CustomElement {
    // </if>
  
    tabs: Tab[] = [
@@ -556,20 +574,23 @@ diff --git a/components/flags_ui/resources/app.ts b/components/flags_ui/resource
      {
        tabEl: this.getRequiredElement('#tab-available'),
        panelEl: this.getRequiredElement('#tab-content-available'),
-@@ -217,6 +221,8 @@ export class FlagsAppElement extends CustomElement {
+@@ -217,6 +222,11 @@ export class FlagsAppElement extends CustomElement {
    ];
  
    connectedCallback() {
-+    if (location.pathname == '/cromite')
-+      document.body.classList.add('cromite');
++    if (location.pathname == '/cromite') {
++      this.onlyCromiteFlags = true;
++      this.getRequiredElement("#appcontainer").classList.add('cromite');
++      document.title = "Cromite Flags List";
++    }
      // Get and display the data upon loading.
      this.requestExperimentalFeaturesData();
      // There is no restart button on iOS.
-@@ -277,20 +283,29 @@ export class FlagsAppElement extends CustomElement {
+@@ -277,20 +287,29 @@ export class FlagsAppElement extends CustomElement {
      const defaultFeatures: Feature[] = [];
      const nonDefaultFeatures: Feature[] = [];
  
-+    if (document.body.classList.contains("cromite")) {
++    if (this.onlyCromiteFlags) {
 +      experimentalFeaturesData.supportedFeatures =
 +        experimentalFeaturesData.supportedFeatures.filter(item => item.is_new);
 +    }
@@ -582,12 +603,12 @@ diff --git a/components/flags_ui/resources/app.ts b/components/flags_ui/resource
          nonDefaultFeatures,
 -        this.getRequiredElement('#non-default-experiments'));
 +        this.getRequiredElement('#non-default-experiments'),
-+        this.getRequiredElement('non-default-cromite-experiments'), false);
++        this.getRequiredElement('#non-default-cromite-experiments'), false);
  
      this.renderExperiments(
 -        defaultFeatures, this.getRequiredElement('#default-experiments'));
 +        defaultFeatures, this.getRequiredElement('#default-experiments'),
-+        this.getRequiredElement('cromite-experiments'), false);
++        this.getRequiredElement('#cromite-experiments'), false);
  
      // <if expr="not is_ios">
      this.renderExperiments(
@@ -598,7 +619,7 @@ diff --git a/components/flags_ui/resources/app.ts b/components/flags_ui/resource
      // </if>
  
      this.showRestartToast(experimentalFeaturesData.needsRestart);
-@@ -401,16 +416,23 @@ export class FlagsAppElement extends CustomElement {
+@@ -401,16 +420,23 @@ export class FlagsAppElement extends CustomElement {
    }
  
    private renderExperiments(
@@ -623,7 +644,7 @@ diff --git a/components/flags_ui/resources/app.ts b/components/flags_ui/resource
        if (select) {
          experiment.addEventListener('select-change', e => {
            e.preventDefault();
-@@ -434,9 +456,14 @@ export class FlagsAppElement extends CustomElement {
+@@ -434,9 +460,14 @@ export class FlagsAppElement extends CustomElement {
            this.showRestartToast(true);
          });
        }

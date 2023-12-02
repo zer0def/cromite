@@ -73,7 +73,7 @@ Pre-requisites: eyeo Browser Ad filtering Solution: Base Module
  .../adblock_internals/adblock_internals.ts    |  43 ++
  .../safe_browsing_blocking_page_test.cc       |   7 +
  ...subresource_filter_browser_test_harness.cc |   8 +-
- chrome/browser/ui/BUILD.gn                    |  11 +
+ chrome/browser/ui/BUILD.gn                    |  10 +
  chrome/browser/ui/prefs/pref_watcher.cc       |  13 +
  chrome/browser/ui/tab_helpers.cc              |  18 +
  .../ui/webui/adblock_internals/BUILD.gn       |  23 +
@@ -129,7 +129,7 @@ Pre-requisites: eyeo Browser Ad filtering Solution: Base Module
  .../xhr_result_3_subresource_loading.json     |   1 +
  .../test/data/adblock/wbn/index.html.mustache | 157 ++++++
  chrome/test/data/adblock/xpath3.html          |  23 +
- 123 files changed, 7677 insertions(+), 10 deletions(-)
+ 123 files changed, 7676 insertions(+), 10 deletions(-)
  create mode 100644 chrome/browser/adblock/README.md
  create mode 100644 chrome/browser/adblock/adblock_content_browser_client.cc
  create mode 100644 chrome/browser/adblock/adblock_content_browser_client.h
@@ -302,7 +302,7 @@ diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
      "after_startup_task_utils.cc",
      "after_startup_task_utils.h",
      "app_mode/app_mode_utils.cc",
-@@ -2149,6 +2172,7 @@ static_library("browser") {
+@@ -2151,6 +2174,7 @@ static_library("browser") {
      "//chrome/browser/ui/color:color_headers",
      "//chrome/browser/ui/color:mixers",
      "//chrome/browser/ui/webui:configs",
@@ -310,7 +310,7 @@ diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
      "//chrome/browser/ui/webui/app_service_internals:mojo_bindings",
      "//chrome/browser/ui/webui/feed:mojo_bindings",
      "//chrome/browser/ui/webui/internals/user_education:mojo_bindings",
-@@ -2171,6 +2195,8 @@ static_library("browser") {
+@@ -2173,6 +2197,8 @@ static_library("browser") {
      "//chrome/common/notifications",
      "//chrome/installer/util:with_no_strings",
      "//chrome/services/speech/buildflags",
@@ -319,7 +319,7 @@ diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
      "//components/assist_ranker",
      "//components/autofill/content/browser",
      "//components/autofill/core/browser",
-@@ -3461,6 +3487,8 @@ static_library("browser") {
+@@ -3463,6 +3489,8 @@ static_library("browser") {
        "webauthn/android/webauthn_request_delegate_android.cc",
        "webauthn/android/webauthn_request_delegate_android.h",
      ]
@@ -328,7 +328,7 @@ diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
      public_deps += [
        "//chrome/android/features/dev_ui:buildflags",
        "//components/image_fetcher/core",
-@@ -3650,6 +3678,7 @@ static_library("browser") {
+@@ -3652,6 +3680,7 @@ static_library("browser") {
        "//url",
      ]
  
@@ -7578,7 +7578,7 @@ diff --git a/chrome/browser/ui/BUILD.gn b/chrome/browser/ui/BUILD.gn
      "webui/autofill_and_password_manager_internals/autofill_internals_ui.cc",
      "webui/autofill_and_password_manager_internals/autofill_internals_ui.h",
      "webui/autofill_and_password_manager_internals/internals_ui_handler.cc",
-@@ -436,11 +444,13 @@ static_library("ui") {
+@@ -436,6 +444,7 @@ static_library("ui") {
      "//chrome/browser/storage_access_api",
      "//chrome/browser/ui/side_panel:side_panel_enums",
      "//chrome/browser/ui/webui/location_internals:mojo_bindings",
@@ -7586,13 +7586,7 @@ diff --git a/chrome/browser/ui/BUILD.gn b/chrome/browser/ui/BUILD.gn
      "//chrome/browser/ui/webui/omnibox:mojo_bindings",
      "//chrome/browser/ui/webui/segmentation_internals:mojo_bindings",
      "//chrome/browser/ui/webui/suggest_internals:mojo_bindings",
-     "//chrome/browser/ui/webui/usb_internals:mojo_bindings",
-     "//chrome/browser/v8_compile_hints/proto",
-+    "//chrome/browser/ui/webui:configs",
-     "//chrome/common",
-     "//chrome/common/net",
-     "//chrome/common/search:mojo_bindings",
-@@ -452,6 +462,7 @@ static_library("ui") {
+@@ -452,6 +461,7 @@ static_library("ui") {
      "//components/about_ui",
      "//components/access_code_cast/common:metrics",
      "//components/account_id",

@@ -148,7 +148,7 @@ diff --git a/chrome/android/BUILD.gn b/chrome/android/BUILD.gn
 diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -3488,6 +3488,17 @@ static_library("browser") {
+@@ -3490,6 +3490,17 @@ static_library("browser") {
        "webauthn/android/webauthn_request_delegate_android.h",
      ]
  
@@ -166,7 +166,7 @@ diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
  
      public_deps += [
        "//chrome/android/features/dev_ui:buildflags",
-@@ -3678,6 +3689,9 @@ static_library("browser") {
+@@ -3680,6 +3691,9 @@ static_library("browser") {
        "//url",
      ]
  
@@ -1504,8 +1504,8 @@ new file mode 100644
 +import androidx.annotation.UiThread;
 +
 +import org.chromium.base.ThreadUtils;
-+import org.chromium.base.annotations.CalledByNative;
-+import org.chromium.base.annotations.NativeMethods;
++import org.jni_zero.CalledByNative;
++import org.jni_zero.NativeMethods;
 +import org.chromium.components.adblock.controller.R;
 +
 +import java.net.MalformedURLException;
@@ -1820,8 +1820,8 @@ new file mode 100644
 +
 +import org.chromium.base.ContextUtils;
 +import org.chromium.base.ThreadUtils;
-+import org.chromium.base.annotations.CalledByNative;
-+import org.chromium.base.annotations.NativeMethods;
++import org.jni_zero.CalledByNative;
++import org.jni_zero.NativeMethods;
 +
 +import java.net.MalformedURLException;
 +import java.net.URL;
@@ -2173,8 +2173,8 @@ new file mode 100644
 +
 +import org.chromium.base.ContextUtils;
 +import org.chromium.base.ThreadUtils;
-+import org.chromium.base.annotations.CalledByNative;
-+import org.chromium.base.annotations.NativeMethods;
++import org.jni_zero.CalledByNative;
++import org.jni_zero.NativeMethods;
 +
 +import java.net.MalformedURLException;
 +import java.net.URL;

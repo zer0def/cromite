@@ -22,7 +22,7 @@ diff --git a/chrome/android/java/res/xml/privacy_preferences.xml b/chrome/androi
 +        android:title="@string/close_tabs_on_exit_title"
 +        android:summary="@string/close_tabs_on_exit_summary"
 +        android:defaultValue="false" />
-     <Preference
+     <PreferenceCategory
          android:key="services_category"
          android:title="@string/services_category_title">
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java b/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java
@@ -68,16 +68,16 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/privacy/setting
  import org.chromium.chrome.R;
  import org.chromium.chrome.browser.enterprise.util.ManagedBrowserUtils;
  import org.chromium.chrome.browser.flags.ChromeFeatureList;
-@@ -88,6 +91,8 @@ public class PrivacySettings
+@@ -89,6 +92,8 @@ public class PrivacySettings
      private final SharedPreferencesManager mSharedPreferencesManager =
-             SharedPreferencesManager.getInstance();
+             ChromeSharedPreferences.getInstance();
  
 +    private static final String PREF_CLOSE_TABS_ON_EXIT = "close_tabs_on_exit";
 +
      private ManagedPreferenceDelegate mManagedPreferenceDelegate;
      private IncognitoLockSettings mIncognitoLockSettings;
  
-@@ -242,7 +247,11 @@ public class PrivacySettings
+@@ -243,7 +248,11 @@ public class PrivacySettings
      @Override
      public boolean onPreferenceChange(Preference preference, Object newValue) {
          String key = preference.getKey();
@@ -90,7 +90,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/privacy/setting
              UserPrefs.get(getProfile())
                      .setBoolean(Pref.CAN_MAKE_PAYMENT_ENABLED, (boolean) newValue);
          } else if (PREF_HTTPS_FIRST_MODE.equals(key)) {
-@@ -289,6 +298,11 @@ public class PrivacySettings
+@@ -290,6 +299,11 @@ public class PrivacySettings
                      PreloadPagesSettingsFragment.getPreloadPagesSummaryString(getContext()));
          }
  

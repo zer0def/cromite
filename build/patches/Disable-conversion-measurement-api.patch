@@ -162,7 +162,7 @@ diff --git a/content/browser/attribution_reporting/attribution_os_level_manager.
  // static
  bool AttributionOsLevelManager::ShouldUseOsWebSource(
      GlobalRenderFrameHostId render_frame_id) {
-+  if ((true)) return network::mojom::AttributionSupport::kNone;
++  if ((true)) return false;
    return GetContentClient()
        ->browser()
        ->ShouldUseOsWebSourceAttributionReporting(

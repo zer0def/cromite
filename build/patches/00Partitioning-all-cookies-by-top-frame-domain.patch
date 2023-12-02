@@ -20,12 +20,12 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  net/cookies/parsed_cookie.h                          |  7 ++++++-
  net/extras/sqlite/sqlite_persistent_cookie_store.cc  | 10 ++++++++++
  net/url_request/url_request_http_job.cc              |  2 +-
- services/network/restricted_cookie_manager.cc        |  3 +++
+ services/network/restricted_cookie_manager.cc        |  6 ++++++
  .../renderer/modules/cookie_store/cookie_init.idl    |  2 +-
  .../renderer/modules/cookie_store/cookie_store.cc    | 12 ++++++++++++
  .../cookie_store/cookie_store_delete_options.idl     |  2 +-
  ui/webui/webui_allowlist.cc                          |  1 +
- 16 files changed, 51 insertions(+), 21 deletions(-)
+ 16 files changed, 54 insertions(+), 21 deletions(-)
  create mode 100644 cromite_flags/components/content_settings/core/common/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
  create mode 100644 cromite_flags/components/permissions/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
  create mode 100644 cromite_flags/content/public/common/content_features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
@@ -194,11 +194,14 @@ diff --git a/net/url_request/url_request_http_job.cc b/net/url_request/url_reque
 diff --git a/services/network/restricted_cookie_manager.cc b/services/network/restricted_cookie_manager.cc
 --- a/services/network/restricted_cookie_manager.cc
 +++ b/services/network/restricted_cookie_manager.cc
-@@ -933,6 +933,9 @@ void RestrictedCookieManager::SetCookieFromString(
+@@ -933,6 +933,12 @@ void RestrictedCookieManager::SetCookieFromString(
  
    std::move(callback).Run();
  
 +  // https://bugs.chromium.org/p/chromium/issues/detail?id=911299
++  bool site_for_cookies_ok =
++      BoundSiteForCookies().IsEquivalent(site_for_cookies);
++  bool top_frame_origin_ok = top_frame_origin == BoundTopFrameOrigin();
 +  if (!site_for_cookies_ok || !top_frame_origin_ok) return;
 +
    net::CookieInclusionStatus status;

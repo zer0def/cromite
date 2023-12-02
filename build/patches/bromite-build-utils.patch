@@ -443,7 +443,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/accessibility/s
 +import org.chromium.chrome.browser.flags.ChromeFeatureList;
 +import org.chromium.chrome.browser.flags.CromiteNativeUtils;
 +import org.chromium.chrome.browser.preferences.ChromePreferenceKeys;
-+import org.chromium.chrome.browser.preferences.SharedPreferencesManager;
++import org.chromium.chrome.browser.preferences.ChromeSharedPreferences;
 +
  /** The Chrome implementation of AccessibilitySettingsDelegate. */
  public class ChromeAccessibilitySettingsDelegate implements AccessibilitySettingsDelegate {
@@ -542,10 +542,10 @@ new file mode 100755
 +
 +import org.chromium.chrome.browser.flags.ChromeFeatureList;
 +import org.chromium.chrome.browser.preferences.ChromePreferenceKeys;
-+import org.chromium.chrome.browser.preferences.SharedPreferencesManager;
++import org.chromium.chrome.browser.preferences.ChromeSharedPreferences;
 +
-+import org.chromium.base.annotations.CalledByNative;
-+import org.chromium.base.annotations.NativeMethods;
++import org.jni_zero.CalledByNative;
++import org.jni_zero.NativeMethods;
 +
 +public class CromiteNativeUtils {
 +    /**
@@ -561,7 +561,7 @@ new file mode 100755
 +        CachedFlag cachedFlag = ChromeFeatureList.sAllCachedFlags.get(featureName);
 +        String preferenceName = cachedFlag.getSharedPreferenceKey();
 +
-+        SharedPreferencesManager.getInstance().writeBoolean(preferenceName, newValue);
++        ChromeSharedPreferences.getInstance().writeBoolean(preferenceName, newValue);
 +        cachedFlag.setValueReturnedOverride(newValue);
 +    }
 +

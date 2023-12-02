@@ -381,7 +381,7 @@ new file mode 100644
 +import org.chromium.components.browser_ui.settings.SettingsUtils;
 +
 +import org.chromium.chrome.browser.preferences.ChromePreferenceKeys;
-+import org.chromium.chrome.browser.preferences.SharedPreferencesManager;
++import org.chromium.chrome.browser.preferences.ChromeSharedPreferences;
 +
 +import org.chromium.chrome.browser.app.tabmodel.TabWindowManagerSingleton;
 +import org.chromium.chrome.browser.tabmodel.TabWindowManager;
@@ -410,11 +410,11 @@ new file mode 100644
 +
 +        ChromeSwitchPreference alwaysDesktopModeSwitch =
 +                (ChromeSwitchPreference) findPreference(PREF_STICK_DESKTOP_MODE_SWITCH);
-+        boolean enabled = SharedPreferencesManager.getInstance().readBoolean(
++        boolean enabled = ChromeSharedPreferences.getInstance().readBoolean(
 +            ChromePreferenceKeys.USERAGENT_STICKY_DESKTOP_MODE, false);
 +        alwaysDesktopModeSwitch.setChecked(enabled);
 +        alwaysDesktopModeSwitch.setOnPreferenceChangeListener((preference, newValue) -> {
-+            SharedPreferencesManager.getInstance().writeBoolean(
++            ChromeSharedPreferences.getInstance().writeBoolean(
 +                ChromePreferenceKeys.USERAGENT_STICKY_DESKTOP_MODE, (boolean) newValue);
 +            UpdateAllTabs();
 +            return true;
@@ -498,7 +498,7 @@ new file mode 100644
 +    }
 +
 +    private void UpdateAllTabs() {
-+        final boolean alwaysDesktopModeEnabled = SharedPreferencesManager.getInstance().readBoolean(
++        final boolean alwaysDesktopModeEnabled = ChromeSharedPreferences.getInstance().readBoolean(
 +            ChromePreferenceKeys.USERAGENT_ALWAYS_DESKTOP_MODE, false);
 +        TabWindowManagerSingleton.getInstance().SetOverrideUserAgentForAllTabs(alwaysDesktopModeEnabled);
 +    }
@@ -535,7 +535,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tab/TabImpl.jav
  
 +import org.chromium.content_public.browser.NavigationController;
 +import org.chromium.chrome.browser.preferences.ChromePreferenceKeys;
-+import org.chromium.chrome.browser.preferences.SharedPreferencesManager;
++import org.chromium.chrome.browser.preferences.ChromeSharedPreferences;
 +import org.chromium.components.embedder_support.util.UrlUtilities;
 +
  /**
@@ -545,10 +545,10 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tab/TabImpl.jav
                  params.setOverrideUserAgent(calculateUserAgentOverrideOption(null));
              }
  
-+            final boolean stickyDesktopModeEnabled = SharedPreferencesManager.getInstance().readBoolean(
++            final boolean stickyDesktopModeEnabled = ChromeSharedPreferences.getInstance().readBoolean(
 +                ChromePreferenceKeys.USERAGENT_STICKY_DESKTOP_MODE, false);
 +            if (stickyDesktopModeEnabled) {
-+                boolean alwaysDesktopModeEnabled = SharedPreferencesManager.getInstance().readBoolean(
++                boolean alwaysDesktopModeEnabled = ChromeSharedPreferences.getInstance().readBoolean(
 +                    ChromePreferenceKeys.USERAGENT_ALWAYS_DESKTOP_MODE, false);
 +
 +                if (UrlUtilities.isInternalScheme(UrlFormatter.fixupUrl(params.getUrl()))) {
@@ -580,9 +580,9 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tab/TabImpl.jav
  
 -            ContentUtils.setUserAgentOverride(mWebContents,
 -                    calculateUserAgentOverrideOption(null) == UserAgentOverrideOption.TRUE);
-+            if (SharedPreferencesManager.getInstance().readBoolean(
++            if (ChromeSharedPreferences.getInstance().readBoolean(
 +                        ChromePreferenceKeys.USERAGENT_STICKY_DESKTOP_MODE, false) &&
-+                SharedPreferencesManager.getInstance().readBoolean(
++                ChromeSharedPreferences.getInstance().readBoolean(
 +                        ChromePreferenceKeys.USERAGENT_ALWAYS_DESKTOP_MODE, false)) {
 +                ContentUtils.setUserAgentOverride(mWebContents, true);
 +            } else {
@@ -607,9 +607,9 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tab/TabImpl.jav
      }
  
      private @UserAgentOverrideOption int calculateUserAgentOverrideOption(@Nullable GURL url) {
-+        if (SharedPreferencesManager.getInstance().readBoolean(
++        if (ChromeSharedPreferences.getInstance().readBoolean(
 +                    ChromePreferenceKeys.USERAGENT_STICKY_DESKTOP_MODE, false) &&
-+                SharedPreferencesManager.getInstance().readBoolean(
++                ChromeSharedPreferences.getInstance().readBoolean(
 +                    ChromePreferenceKeys.USERAGENT_ALWAYS_DESKTOP_MODE, false)) {
 +            return UserAgentOverrideOption.INHERIT;
 +        }
@@ -669,7 +669,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tab/TabUtils.ja
  
 +import org.chromium.chrome.browser.app.tabmodel.TabWindowManagerSingleton;
 +import org.chromium.chrome.browser.preferences.ChromePreferenceKeys;
-+import org.chromium.chrome.browser.preferences.SharedPreferencesManager;
++import org.chromium.chrome.browser.preferences.ChromeSharedPreferences;
 +
  import java.lang.annotation.Retention;
  import java.lang.annotation.RetentionPolicy;
@@ -688,10 +688,10 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tab/TabUtils.ja
 -                tabUserAgent = TabUserAgent.DEFAULT;
 -            }
 -            tab.setUserAgent(tabUserAgent);
-+        SharedPreferencesManager.getInstance().writeBoolean(
++        ChromeSharedPreferences.getInstance().writeBoolean(
 +            ChromePreferenceKeys.USERAGENT_ALWAYS_DESKTOP_MODE, switchToDesktop);
 +
-+        final boolean stickyDesktopModeEnabled = SharedPreferencesManager.getInstance().readBoolean(
++        final boolean stickyDesktopModeEnabled = ChromeSharedPreferences.getInstance().readBoolean(
 +                ChromePreferenceKeys.USERAGENT_STICKY_DESKTOP_MODE, false);
 +        if (stickyDesktopModeEnabled) {
 +            TabWindowManagerSingleton.getInstance().SetOverrideUserAgentForAllTabs(switchToDesktop);
@@ -831,7 +831,7 @@ diff --git a/chrome/browser/android/preferences/privacy_preferences_manager_impl
 +        std::vector<std::string> cors_exempt_header_list;
 +        iter.GetCurrentValue()->GetRendererInterface()->InitializeRenderer(
 +          /*user_agent*/ ua, /*metadata*/ blink::UserAgentMetadata(),
-+          cors_exempt_header_list, content::AttributionManager::GetSupport(),
++          cors_exempt_header_list,
 +          g_browser_process->GetOriginTrialsSettingsStorage()->GetSettings());
 +      }
 +    }

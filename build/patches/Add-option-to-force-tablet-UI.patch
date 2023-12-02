@@ -29,13 +29,13 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/accessibility/s
 +    private static class ForceTabletUIDelegate implements BooleanPreferenceDelegate {
 +        @Override
 +        public boolean isEnabled() {
-+            return SharedPreferencesManager.getInstance().readBoolean(
++            return ChromeSharedPreferences.getInstance().readBoolean(
 +                      ChromePreferenceKeys.FLAGS_FORCE_TABLET_UI_ENABLED, false);
 +        }
 +
 +        @Override
 +        public void setEnabled(boolean value) {
-+            SharedPreferencesManager.getInstance().writeBoolean(
++            ChromeSharedPreferences.getInstance().writeBoolean(
 +                      ChromePreferenceKeys.FLAGS_FORCE_TABLET_UI_ENABLED, value);
 +        }
 +    }
@@ -65,7 +65,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ui/RootUiCoordi
          int stubId = R.id.find_toolbar_stub;
 -        if (DeviceFormFactor.isNonMultiDisplayContextOnTablet(mActivity)) {
 +        if (DeviceFormFactor.isNonMultiDisplayContextOnTablet(mActivity) &&
-+                !SharedPreferencesManager.getInstance().readBoolean(
++                !ChromeSharedPreferences.getInstance().readBoolean(
 +                      ChromePreferenceKeys.FLAGS_FORCE_TABLET_UI_ENABLED, false)) {
              stubId = R.id.find_toolbar_tablet_stub;
          }
@@ -247,7 +247,7 @@ diff --git a/ui/android/java/src/org/chromium/ui/base/DeviceFormFactor.java b/ui
  import org.chromium.base.ContextUtils;
  import org.chromium.base.ThreadUtils;
 +import org.chromium.chrome.browser.preferences.ChromePreferenceKeys;
-+import org.chromium.chrome.browser.preferences.SharedPreferencesManager;
++import org.chromium.chrome.browser.preferences.ChromeSharedPreferences;
  import org.chromium.ui.R;
  import org.chromium.ui.display.DisplayAndroid;
  import org.chromium.ui.display.DisplayUtil;
@@ -255,7 +255,7 @@ diff --git a/ui/android/java/src/org/chromium/ui/base/DeviceFormFactor.java b/ui
       *         E.g. http://developer.samsung.com/samsung-dex/testing
       */
      public static boolean isNonMultiDisplayContextOnTablet(Context context) {
-+        if (SharedPreferencesManager.getInstance().readBoolean(
++        if (ChromeSharedPreferences.getInstance().readBoolean(
 +                ChromePreferenceKeys.FLAGS_FORCE_TABLET_UI_ENABLED, false))
 +            return true;
          return detectScreenWidthBucket(context) >= SCREEN_BUCKET_TABLET;

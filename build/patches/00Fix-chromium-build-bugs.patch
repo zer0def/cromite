@@ -8,13 +8,14 @@ https://bugs.chromium.org/p/chromium/issues/detail?id=1491776#c10
  BUILD.gn                                           |  1 -
  .../navigation_predictor_metrics_document_data.h   |  2 ++
  chrome/browser/safe_browsing/BUILD.gn              |  1 +
+ .../omnibox/browser/autocomplete_classifier.cc     |  4 ++--
  components/omnibox/browser/omnibox_field_trial.cc  |  4 ++--
  .../phishing_classifier/phishing_image_embedder.cc | 14 +++-----------
  content/browser/browser_interface_binders.cc       |  1 +
  crypto/BUILD.gn                                    |  3 +++
  net/BUILD.gn                                       |  1 +
  third_party/libevent/BUILD.gn                      |  2 ++
- 9 files changed, 15 insertions(+), 14 deletions(-)
+ 10 files changed, 17 insertions(+), 16 deletions(-)
 
 diff --git a/BUILD.gn b/BUILD.gn
 --- a/BUILD.gn
@@ -50,6 +51,20 @@ diff --git a/chrome/browser/safe_browsing/BUILD.gn b/chrome/browser/safe_browsin
      ]
      if (safe_browsing_mode == 1) {
        # "Safe Browsing Full" files in addition to the "basic" ones to use for
+diff --git a/components/omnibox/browser/autocomplete_classifier.cc b/components/omnibox/browser/autocomplete_classifier.cc
+--- a/components/omnibox/browser/autocomplete_classifier.cc
++++ b/components/omnibox/browser/autocomplete_classifier.cc
+@@ -95,8 +95,8 @@ void AutocompleteClassifier::Classify(
+     metrics::OmniboxEventProto::PageClassification page_classification,
+     AutocompleteMatch* match,
+     GURL* alternate_nav_url) {
+-  TRACE_EVENT1("omnibox", "AutocompleteClassifier::Classify", "text",
+-               base::UTF16ToUTF8(text));
++  // TRACE_EVENT1("omnibox", "AutocompleteClassifier::Classify", "text",
++  //              base::UTF16ToUTF8(text));
+   DCHECK(!inside_classify_);
+   base::AutoReset<bool> reset(&inside_classify_, true);
+   AutocompleteInput input(text, page_classification, *scheme_classifier_);
 diff --git a/components/omnibox/browser/omnibox_field_trial.cc b/components/omnibox/browser/omnibox_field_trial.cc
 --- a/components/omnibox/browser/omnibox_field_trial.cc
 +++ b/components/omnibox/browser/omnibox_field_trial.cc

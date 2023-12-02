@@ -50,7 +50,7 @@ diff --git a/components/browser_ui/accessibility/android/java/src/org/chromium/c
  import org.chromium.content_public.browser.ContentFeatureMap;
  
 +import org.chromium.chrome.browser.preferences.ChromePreferenceKeys;
-+import org.chromium.chrome.browser.preferences.SharedPreferencesManager;
++import org.chromium.chrome.browser.preferences.ChromeSharedPreferences;
 +
  /**
   * Fragment to keep track of all the accessibility related preferences.

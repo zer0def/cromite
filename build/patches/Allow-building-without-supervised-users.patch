@@ -6,6 +6,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 ---
  chrome/android/BUILD.gn                                   | 1 -
  chrome/android/chrome_java_sources.gni                    | 1 -
+ .../chrome/browser/feed/FeedSurfaceCoordinator.java       | 5 +----
  chrome/browser/BUILD.gn                                   | 6 ------
  .../browser/extensions/api/settings_private/prefs_util.cc | 2 ++
  chrome/browser/profiles/profile_impl.cc                   | 4 ++++
@@ -16,7 +17,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  components/supervised_user/core/common/pref_names.h       | 4 ++++
  .../core/common/supervised_user_constants.cc              | 2 ++
  .../supervised_user/core/common/supervised_user_utils.cc  | 8 ++++++++
- 12 files changed, 29 insertions(+), 13 deletions(-)
+ 13 files changed, 30 insertions(+), 17 deletions(-)
 
 diff --git a/chrome/android/BUILD.gn b/chrome/android/BUILD.gn
 --- a/chrome/android/BUILD.gn
@@ -40,6 +41,28 @@ diff --git a/chrome/android/chrome_java_sources.gni b/chrome/android/chrome_java
    "java/src/org/chromium/chrome/browser/survey/ChromeSurveyController.java",
    "java/src/org/chromium/chrome/browser/sync/SyncErrorNotifier.java",
    "java/src/org/chromium/chrome/browser/sync/TrustedVaultClient.java",
+diff --git a/chrome/android/feed/core/java/src/org/chromium/chrome/browser/feed/FeedSurfaceCoordinator.java b/chrome/android/feed/core/java/src/org/chromium/chrome/browser/feed/FeedSurfaceCoordinator.java
+--- a/chrome/android/feed/core/java/src/org/chromium/chrome/browser/feed/FeedSurfaceCoordinator.java
++++ b/chrome/android/feed/core/java/src/org/chromium/chrome/browser/feed/FeedSurfaceCoordinator.java
+@@ -69,7 +69,6 @@ import org.chromium.components.browser_ui.widget.displaystyle.UiConfig;
+ import org.chromium.components.feature_engagement.EventConstants;
+ import org.chromium.components.feature_engagement.Tracker;
+ import org.chromium.components.prefs.PrefService;
+-import org.chromium.components.supervised_user.SupervisedUserPreferences;
+ import org.chromium.components.user_prefs.UserPrefs;
+ import org.chromium.third_party.android.swiperefresh.SwipeRefreshLayout;
+ import org.chromium.ui.base.DeviceFormFactor;
+@@ -788,9 +787,7 @@ public class FeedSurfaceCoordinator
+      * Returns true if the supervised user feed should be displayed.
+      */
+     public boolean shouldDisplaySupervisedFeed() {
+-        PrefService prefService = UserPrefs.get(mProfile);
+-        return SupervisedUserPreferences.isSubjectToParentalControls(prefService)
+-                && ChromeFeatureList.isEnabled(ChromeFeatureList.KID_FRIENDLY_CONTENT_FEED);
++        return false;
+     }
+ 
+     /**
 diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn

@@ -121,7 +121,7 @@ diff --git a/chrome/android/java/res/xml/privacy_preferences.xml b/chrome/androi
 +        android:key="referers_policy"
 +        android:title="@string/referers_policy_title"
 +        android:fragment="org.chromium.chrome.browser.privacy.settings.RefererSettingsFragment"/>
-     <Preference
+     <PreferenceCategory
          android:key="services_category"
          android:title="@string/services_category_title">
 diff --git a/chrome/android/java/res/xml/referer_policy_preferences.xml b/chrome/android/java/res/xml/referer_policy_preferences.xml
@@ -171,7 +171,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/privacy/setting
  import org.chromium.chrome.browser.privacy.secure_dns.SecureDnsSettings;
  import org.chromium.chrome.browser.privacy_guide.PrivacyGuideInteractions;
  import org.chromium.chrome.browser.privacy_sandbox.PrivacySandboxBridge;
-@@ -80,6 +81,7 @@ public class PrivacySettings
+@@ -81,6 +82,7 @@ public class PrivacySettings
      private static final String PREF_DO_NOT_TRACK = "do_not_track";
      private static final String PREF_SAFE_BROWSING = "safe_browsing";
      private static final String PREF_SYNC_AND_SERVICES_LINK = "sync_and_services_link";
@@ -179,7 +179,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/privacy/setting
      private static final String PREF_PRIVACY_SANDBOX = "privacy_sandbox";
      private static final String PREF_PROXY_OPTIONS = "proxy";
      private static final String PREF_PRIVACY_GUIDE = "privacy_guide";
-@@ -357,6 +359,10 @@ public class PrivacySettings
+@@ -358,6 +360,10 @@ public class PrivacySettings
                              : R.string.text_off);
          }
  

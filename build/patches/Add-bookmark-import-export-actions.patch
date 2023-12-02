@@ -15,7 +15,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../menu/bookmark_toolbar_menu_improved.xml   |  14 +
  .../browser/TabbedModeTabDelegateFactory.java |   5 +-
  .../app/bookmarks/BookmarkActivity.java       |  32 ++
- .../browser/bookmarks/BookmarkBridge.java     | 279 +++++++++++++++++
+ .../browser/bookmarks/BookmarkBridge.java     | 280 +++++++++++++++++
  .../browser/bookmarks/BookmarkDelegate.java   |  10 +
  .../bookmarks/BookmarkManagerCoordinator.java |   9 +
  .../bookmarks/BookmarkManagerMediator.java    |  23 ++
@@ -53,7 +53,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  ui/shell_dialogs/select_file_dialog_linux.cc  |   4 +
  ui/shell_dialogs/select_file_dialog_linux.h   |   2 +
  ui/shell_dialogs/select_file_dialog_win.cc    |   5 +
- 43 files changed, 919 insertions(+), 29 deletions(-)
+ 43 files changed, 920 insertions(+), 29 deletions(-)
  create mode 100644 cromite_flags/chrome/browser/about_flags_cc/add-bookmark-import-export-actions.inc
  create mode 100644 cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/add-bookmark-import-export-actions.inc
  create mode 100644 cromite_flags/chrome/browser/flags/android/chrome_feature_list_h/add-bookmark-import-export-actions.inc
@@ -242,7 +242,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/bookmarks/Bookm
  import android.text.TextUtils;
  import android.util.Pair;
  
-@@ -38,6 +51,32 @@ import org.chromium.url.GURL;
+@@ -38,6 +51,33 @@ import org.chromium.url.GURL;
  import java.util.ArrayList;
  import java.util.List;
  
@@ -251,7 +251,8 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/bookmarks/Bookm
 +import org.chromium.chrome.browser.document.ChromeLauncherActivity;
 +import org.chromium.chrome.browser.IntentHandler;
 +import org.chromium.chrome.browser.preferences.ChromePreferenceKeys;
-+import org.chromium.chrome.browser.preferences.SharedPreferencesManager;
++import org.chromium.base.shared_preferences.SharedPreferencesManager;
++import org.chromium.chrome.browser.preferences.ChromeSharedPreferences;
 +import org.chromium.chrome.browser.flags.ChromeFeatureList;
 +import org.chromium.ui.base.PageTransition;
 +import org.chromium.ui.base.WindowAndroid;
@@ -275,7 +276,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/bookmarks/Bookm
  /**
   * Provides the communication channel for Android to fetch and manipulate the bookmark model stored
   * in native.
-@@ -451,6 +490,209 @@ class BookmarkBridge {
+@@ -451,6 +491,209 @@ class BookmarkBridge {
                  .getTotalBookmarkCount(mNativeBookmarkBridge, id.getId(), id.getType());
      }
  
@@ -317,7 +318,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/bookmarks/Bookm
 +                                Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
 +
 +        // get last exported uri path, if any
-+        SharedPreferencesManager sharedPrefs = SharedPreferencesManager.getInstance();
++        SharedPreferencesManager sharedPrefs = ChromeSharedPreferences.getInstance();
 +        String bookmarksPath = sharedPrefs.readString(ChromePreferenceKeys.BOOKMARKS_LAST_EXPORT_URI, standardBoorkmarkName);
 +        Uri lastSelectedUri = Uri.parse(bookmarksPath);
 +
@@ -485,7 +486,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/bookmarks/Bookm
      /**
       * Synchronously gets a list of bookmarks that match the specified search query.
       *
-@@ -979,6 +1221,39 @@ class BookmarkBridge {
+@@ -979,6 +1222,39 @@ class BookmarkBridge {
          depthList.add(depth);
      }
  
@@ -500,7 +501,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/bookmarks/Bookm
 +                }
 +            });
 +        } else {
-+            SharedPreferencesManager sharedPrefs = SharedPreferencesManager.getInstance();
++            SharedPreferencesManager sharedPrefs = ChromeSharedPreferences.getInstance();
 +            sharedPrefs.writeString(ChromePreferenceKeys.BOOKMARKS_LAST_EXPORT_URI, bookmarksPath);
 +
 +            Context context = ContextUtils.getApplicationContext();
@@ -525,7 +526,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/bookmarks/Bookm
      private static List<Pair<Integer, Integer>> createPairsList(int[] left, int[] right) {
          List<Pair<Integer, Integer>> pairList = new ArrayList<>();
          for (int i = 0; i < left.length; i++) {
-@@ -1024,6 +1299,10 @@ class BookmarkBridge {
+@@ -1024,6 +1300,10 @@ class BookmarkBridge {
          void getChildIds(
                  long nativeBookmarkBridge, long id, int type, List<BookmarkId> bookmarksList);
  

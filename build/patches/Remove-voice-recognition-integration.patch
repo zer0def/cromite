@@ -5,23 +5,23 @@ Subject: Remove voice recognition integration
 License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 ---
  .../start_surface/StartSurfaceMediator.java   | 15 +---
- .../features/tasks/TasksSurfaceMediator.java  |  4 -
+ .../features/tasks/TasksSurfaceMediator.java  |  4 --
  .../browser/metrics/UmaSessionStats.java      | 19 -----
- .../chrome/browser/ntp/NewTabPage.java        | 41 +--------
+ .../chrome/browser/ntp/NewTabPage.java        | 41 +----------
  .../browser/ntp/search/SearchBoxMediator.java |  1 -
  .../browser/searchwidget/SearchActivity.java  |  6 +-
- .../SearchActivityLocationBarLayout.java      | 44 +---------
+ .../SearchActivityLocationBarLayout.java      | 44 +-----------
  .../browser/toolbar/ToolbarManager.java       |  5 --
- .../chrome/browser/ui/RootUiCoordinator.java  | 23 +----
+ .../chrome/browser/ui/RootUiCoordinator.java  | 23 +-----
  chrome/browser/ui/android/omnibox/BUILD.gn    |  1 -
  .../chrome/browser/omnibox/LocationBar.java   |  6 --
- .../omnibox/LocationBarCoordinator.java       | 13 ---
- .../browser/omnibox/LocationBarMediator.java  | 84 +------------------
- .../chrome/browser/omnibox/OmniboxStub.java   |  9 --
- .../suggestions/AutocompleteController.java   | 25 ------
- .../suggestions/AutocompleteCoordinator.java  |  8 --
- .../suggestions/AutocompleteMediator.java     |  9 --
- 17 files changed, 8 insertions(+), 305 deletions(-)
+ .../omnibox/LocationBarCoordinator.java       | 13 ----
+ .../browser/omnibox/LocationBarMediator.java  | 72 +------------------
+ .../chrome/browser/omnibox/OmniboxStub.java   |  9 ---
+ .../suggestions/AutocompleteController.java   | 25 -------
+ .../suggestions/AutocompleteCoordinator.java  |  8 ---
+ .../suggestions/AutocompleteMediator.java     |  9 ---
+ 17 files changed, 9 insertions(+), 292 deletions(-)
 
 diff --git a/chrome/android/features/start_surface/java/src/org/chromium/chrome/features/start_surface/StartSurfaceMediator.java b/chrome/android/features/start_surface/java/src/org/chromium/chrome/features/start_surface/StartSurfaceMediator.java
 --- a/chrome/android/features/start_surface/java/src/org/chromium/chrome/features/start_surface/StartSurfaceMediator.java
@@ -632,7 +632,31 @@ diff --git a/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/brow
              return false;
          }
          boolean isToolbarMicEnabled = mIsToolbarMicEnabledSupplier.getAsBoolean();
-@@ -1364,16 +1347,6 @@ class LocationBarMediator
+@@ -1146,6 +1129,7 @@ class LocationBarMediator
+     }
+ 
+     private boolean shouldShowLensButton() {
++        if ((true)) return false;
+         if (shouldShowDeleteButton()) return false;
+ 
+         // When this method is called on UI inflation, return false as the native is not ready.
+@@ -1153,15 +1137,6 @@ class LocationBarMediator
+             return false;
+         }
+ 
+-        // Never show Lens in the old search widget page context.
+-        // This widget must guarantee consistent feature set regardless of search engine choice or
+-        // other aspects that may not be met by Lens.
+-        LocationBarDataProvider dataProvider = getLocationBarDataProvider();
+-        if (dataProvider.getPageClassification(dataProvider.isIncognito(), /* isPrefetch= */ false)
+-                == PageClassification.ANDROID_SEARCH_WIDGET_VALUE) {
+-            return false;
+-        }
+-
+         // When this method is called after native initialized, check omnibox conditions and Lens
+         // eligibility.
+         if (mIsTablet && mShouldShowButtonsWhenUnfocused) {
+@@ -1364,16 +1339,6 @@ class LocationBarMediator
          }
      }
  
@@ -649,7 +673,13 @@ diff --git a/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/brow
      @Override
      public void addUrlFocusChangeListener(UrlFocusChangeListener listener) {
          mUrlFocusChangeListeners.addObserver(listener);
-@@ -1395,61 +1368,6 @@ class LocationBarMediator
+@@ -1389,30 +1354,11 @@ class LocationBarMediator
+         return mUrlHasFocus;
+     }
+ 
+-    @Override
+     public void clearOmniboxFocus() {
+         setUrlBarFocus(
                  /* shouldBeFocused= */ false, /* pastedText= */ null, OmniboxFocusReason.UNFOCUS);
      }
  
@@ -671,28 +701,13 @@ diff --git a/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/brow
 -    }
 -
 -    @Override
--    public void setSearchQuery(String query) {
--        if (TextUtils.isEmpty(query)) return;
--
--        if (!mNativeInitialized) {
--            mDeferredNativeRunnables.add(() -> setSearchQuery(query));
--            return;
--        }
--
--        // Ensure the UrlBar has focus before entering text. If the UrlBar is not focused,
--        // autocomplete text will be updated but the visible text will not.
--        setUrlBarFocus(
--                /* shouldBeFocused= */ true,
--                /* pastedText= */ null,
--                OmniboxFocusReason.SEARCH_QUERY);
--        setUrlBarText(
--                UrlBarData.forNonUrlText(query),
--                UrlBar.ScrollType.NO_SCROLL,
--                SelectionState.SELECT_ALL);
--        mAutocompleteCoordinator.startAutocompleteForQuery(query);
--        mUrlCoordinator.setKeyboardVisibility(true, false);
--    }
--
+     public void setSearchQuery(String query) {
+         if (TextUtils.isEmpty(query)) return;
+ 
+@@ -1435,20 +1381,6 @@ class LocationBarMediator
+         mUrlCoordinator.setKeyboardVisibility(true, false);
+     }
+ 
 -    @Override
 -    public LocationBarDataProvider getLocationBarDataProvider() {
 -        return mLocationBarDataProvider;
@@ -707,10 +722,9 @@ diff --git a/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/brow
 -    public WindowAndroid getWindowAndroid() {
 -        return mWindowAndroid;
 -    }
--
+ 
      // UrlBarDelegate implementation.
  
-     @Nullable
 diff --git a/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/browser/omnibox/OmniboxStub.java b/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/browser/omnibox/OmniboxStub.java
 --- a/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/browser/omnibox/OmniboxStub.java
 +++ b/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/browser/omnibox/OmniboxStub.java

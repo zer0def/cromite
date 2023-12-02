@@ -121,7 +121,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../user_scripts/renderer/scripts_run_info.h  |  69 ++
  .../renderer/user_script_injector.cc          | 227 +++++
  .../renderer/user_script_injector.h           |  86 ++
- .../user_scripts/renderer/user_script_set.cc  | 266 ++++++
+ .../user_scripts/renderer/user_script_set.cc  | 264 ++++++
  .../user_scripts/renderer/user_script_set.h   | 101 +++
  .../renderer/user_script_set_manager.cc       |  77 ++
  .../renderer/user_script_set_manager.h        |  61 ++
@@ -134,7 +134,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../strings/userscripts_strings.grdp          |  54 ++
  .../Experimental-user-scripts-support.inc     |  13 +
  tools/gritsettings/resource_ids.spec          |   6 +
- 107 files changed, 9490 insertions(+), 2 deletions(-)
+ 107 files changed, 9488 insertions(+), 2 deletions(-)
  create mode 100644 components/user_scripts/README.md
  create mode 100755 components/user_scripts/android/BUILD.gn
  create mode 100644 components/user_scripts/android/java/res/layout/accept_script_item.xml
@@ -1867,9 +1867,9 @@ new file mode 100644
 +import android.app.AlertDialog;
 +import android.content.DialogInterface;
 +
-+import org.chromium.base.annotations.CalledByNative;
-+import org.chromium.base.annotations.JNINamespace;
-+import org.chromium.base.annotations.NativeMethods;
++import org.jni_zero.CalledByNative;
++import org.jni_zero.JNINamespace;
++import org.jni_zero.NativeMethods;
 +import org.chromium.base.ContentUriUtils;
 +import org.chromium.base.Log;
 +import org.chromium.ui.base.WindowAndroid;
@@ -9539,7 +9539,7 @@ diff --git a/components/user_scripts/renderer/user_script_set.cc b/components/us
 new file mode 100755
 --- /dev/null
 +++ b/components/user_scripts/renderer/user_script_set.cc
-@@ -0,0 +1,266 @@
+@@ -0,0 +1,264 @@
 +// Copyright 2014 The Chromium Authors. All rights reserved.
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
@@ -9784,8 +9784,7 @@ new file mode 100755
 +        base::StrCat({kUserScriptHead, script_content, kUserScriptTail});
 +    source = blink::WebString::FromUTF8(content);
 +  } else {
-+    source = blink::WebString::FromUTF8(script_content.data(),
-+                                        script_content.length());
++    source = blink::WebString::FromUTF8(script_content);
 +  }
 +  script_sources_[url] = source;
 +  return source;
@@ -9800,8 +9799,7 @@ new file mode 100755
 +  base::StringPiece script_content = file.GetContent();
 +  return script_sources_
 +      .insert(std::make_pair(
-+          url, blink::WebString::FromUTF8(script_content.data(),
-+                                          script_content.length())))
++          url, blink::WebString::FromUTF8(script_content)))
 +      .first->second;
 +}
 +
@@ -10475,10 +10473,10 @@ diff --git a/tools/gritsettings/resource_ids.spec b/tools/gritsettings/resource_
      "includes": [7220]
    },
 +  "components/user_scripts/renderer/resources/user_scripts_renderer_resources.grd": {
-+    "includes": [7000],
++    "includes": [7240],
 +  },
 +  "components/user_scripts/browser/resources/browser_resources.grd": {
-+    "includes": [7020],
++    "includes": [7260],
 +  },
    # END components/ section.
  

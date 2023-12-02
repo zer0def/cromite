@@ -1260,7 +1260,7 @@ new file mode 100644
 +
 +package org.chromium.chrome.browser.endpoint_fetcher;
 +
-+import org.chromium.base.annotations.CalledByNative;
++import org.jni_zero.CalledByNative;
 +
 +public class EndpointHeaderResponse {
 +    private final String mResponseString;

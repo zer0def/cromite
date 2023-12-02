@@ -169,18 +169,18 @@ new file mode 100644
 diff --git a/chrome/android/java/res/xml/privacy_preferences.xml b/chrome/android/java/res/xml/privacy_preferences.xml
 --- a/chrome/android/java/res/xml/privacy_preferences.xml
 +++ b/chrome/android/java/res/xml/privacy_preferences.xml
-@@ -67,6 +67,11 @@ found in the LICENSE file.
+@@ -66,6 +66,11 @@ found in the LICENSE file.
+         android:key="secure_dns"
          android:title="@string/settings_secure_dns_title"
          android:fragment="org.chromium.chrome.browser.privacy.secure_dns.SecureDnsSettings" />
-     <PreferenceCategory
++    <Preference
 +        android:key="incognito_settings"
 +        android:title="@string/incognito_settings_title"
 +        android:summary="@string/incognito_settings_summary"
 +        android:fragment="org.chromium.chrome.browser.privacy.settings.IncognitoSettings"/>
-+    <Preference
+     <PreferenceCategory
          android:key="services_category"
          android:title="@string/services_category_title">
-       <org.chromium.components.browser_ui.settings.ChromeSwitchPreference
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/AlwaysIncognitoLinkInterceptor.java b/chrome/android/java/src/org/chromium/chrome/browser/AlwaysIncognitoLinkInterceptor.java
 new file mode 100644
 --- /dev/null

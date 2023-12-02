@@ -12,16 +12,16 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../android/java/res/layout/ntp_shortcuts.xml | 65 +++++++++++++++++++
  .../feedback/ChromeFeedbackCollector.java     |  1 +
  .../feedback/SimplifiedNtpFeedbackSource.java | 38 +++++++++++
+ .../identity_disc/IdentityDiscController.java |  5 +-
  .../NativePageNavigationDelegateImpl.java     |  4 +-
  .../chrome/browser/ntp/NewTabPageLayout.java  | 30 ++++++++-
  .../SuggestionsNavigationDelegate.java        | 17 +++++
  .../flags/android/chrome_feature_list.cc      |  1 +
  .../browser/flags/ChromeFeatureList.java      |  1 +
- .../signin/public/base/signin_switches.cc     |  3 +
  .../Restore-Simplified-NTP-launch.inc         | 12 ++++
  .../Restore-Simplified-NTP-launch.inc         |  3 +
  .../Restore-Simplified-NTP-launch.inc         |  1 +
- 15 files changed, 181 insertions(+), 4 deletions(-)
+ 15 files changed, 182 insertions(+), 5 deletions(-)
  create mode 100644 chrome/android/java/res/layout/ntp_shortcuts.xml
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/feedback/SimplifiedNtpFeedbackSource.java
  create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Restore-Simplified-NTP-launch.inc
@@ -191,6 +191,21 @@ new file mode 100644
 +        return mMap;
 +    }
 +}
+diff --git a/chrome/android/java/src/org/chromium/chrome/browser/identity_disc/IdentityDiscController.java b/chrome/android/java/src/org/chromium/chrome/browser/identity_disc/IdentityDiscController.java
+--- a/chrome/android/java/src/org/chromium/chrome/browser/identity_disc/IdentityDiscController.java
++++ b/chrome/android/java/src/org/chromium/chrome/browser/identity_disc/IdentityDiscController.java
+@@ -165,7 +165,10 @@ public class IdentityDiscController implements NativeInitObserver, ProfileDataCa
+ 
+         mButtonData.setButtonSpec(
+                 buttonSpecWithDrawableAndDescription(mButtonData.getButtonSpec(), email));
+-        mButtonData.setCanShow(true);
++        if (email == null)
++            mButtonData.setCanShow(false);
++        else
++            mButtonData.setCanShow(true);
+     }
+ 
+     private ButtonSpec buttonSpecWithDrawableAndDescription(
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/native_page/NativePageNavigationDelegateImpl.java b/chrome/android/java/src/org/chromium/chrome/browser/native_page/NativePageNavigationDelegateImpl.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/native_page/NativePageNavigationDelegateImpl.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/native_page/NativePageNavigationDelegateImpl.java
@@ -338,17 +353,6 @@ diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/f
      public static final String MESSAGES_FOR_ANDROID_INFRASTRUCTURE =
              "MessagesForAndroidInfrastructure";
      public static final String MESSAGES_FOR_ANDROID_PERMISSION_UPDATE =
-diff --git a/components/signin/public/base/signin_switches.cc b/components/signin/public/base/signin_switches.cc
---- a/components/signin/public/base/signin_switches.cc
-+++ b/components/signin/public/base/signin_switches.cc
-@@ -95,4 +95,7 @@ BASE_FEATURE(kRemoveSignedInAccountsDialog,
-              base::FEATURE_ENABLED_BY_DEFAULT);
- #endif
- 
-+#if BUILDFLAG(IS_ANDROID)
-+SET_CROMITE_FEATURE_DISABLED(kIdentityStatusConsistency);
-+#endif
- }  // namespace switches
 diff --git a/cromite_flags/chrome/browser/about_flags_cc/Restore-Simplified-NTP-launch.inc b/cromite_flags/chrome/browser/about_flags_cc/Restore-Simplified-NTP-launch.inc
 new file mode 100644
 --- /dev/null

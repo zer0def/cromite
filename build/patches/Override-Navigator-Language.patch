@@ -37,7 +37,7 @@ diff --git a/chrome/browser/language/android/java/src/org/chromium/chrome/browse
 +                if (shouldUseSystemManagedLocale()) {
 +                    setSystemManagedAppLanguage(languageName);
 +                } else {
-+                    SharedPreferencesManager.getInstance().writeString(
++                    ChromeSharedPreferences.getInstance().writeString(
 +                            ChromePreferenceKeys.APPLICATION_OVERRIDE_LANGUAGE, languageName);
 +                }
 +            }

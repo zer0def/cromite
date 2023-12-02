@@ -56,7 +56,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/privacy/setting
  import org.chromium.components.browser_ui.settings.SettingsLauncher;
  import org.chromium.components.browser_ui.settings.SettingsUtils;
  import org.chromium.components.browser_ui.site_settings.ContentSettingsResources;
-@@ -63,6 +64,9 @@ import org.chromium.chrome.browser.preferences.SharedPreferencesManager;
+@@ -64,6 +65,9 @@ import org.chromium.chrome.browser.preferences.ChromeSharedPreferences;
  import org.chromium.components.browser_ui.settings.ChromeSwitchPreference;
  import org.chromium.components.browser_ui.settings.ManagedPreferenceDelegate;
  
@@ -66,7 +66,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/privacy/setting
  /**
   * Fragment to keep track of the all the privacy related preferences.
   */
-@@ -100,6 +104,8 @@ public class PrivacySettings
+@@ -101,6 +105,8 @@ public class PrivacySettings
      private ChromeSwitchPreference allowCustomTabIntentsPref;
      private ChromeSwitchPreference openExternalLinksPref;
  
@@ -75,7 +75,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/privacy/setting
      @Override
      public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
          getActivity().setTitle(R.string.prefs_privacy_security);
-@@ -206,6 +212,40 @@ public class PrivacySettings
+@@ -207,6 +213,40 @@ public class PrivacySettings
          Preference syncAndServicesLink = findPreference(PREF_SYNC_AND_SERVICES_LINK);
          syncAndServicesLink.setSummary(buildSyncAndServicesLink());
  
@@ -116,7 +116,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/privacy/setting
          Preference thirdPartyCookies = findPreference(PREF_THIRD_PARTY_COOKIES);
          Preference doNotTrackPref = findPreference(PREF_DO_NOT_TRACK);
  
-@@ -402,6 +442,29 @@ public class PrivacySettings
+@@ -403,6 +443,29 @@ public class PrivacySettings
                  || ChromeFeatureList.isEnabled(ChromeFeatureList.TRACKING_PROTECTION_3PCD);
      }
  

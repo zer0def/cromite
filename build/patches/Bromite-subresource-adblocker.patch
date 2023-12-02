@@ -631,8 +631,8 @@ new file mode 100755
 @@ -0,0 +1,20 @@
 +package org.chromium.chrome.browser.flags;
 +
-+import org.chromium.base.annotations.CalledByNative;
-+import org.chromium.base.annotations.NativeMethods;
++import org.jni_zero.CalledByNative;
++import org.jni_zero.NativeMethods;
 +
 +public class AdBlockNativeGateway {
 +    public static void setAdBlockFiltersURL(String url) {
