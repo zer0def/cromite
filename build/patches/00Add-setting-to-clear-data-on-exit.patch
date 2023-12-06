@@ -19,7 +19,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  chrome/browser/profiles/profile_manager.cc    | 13 ++++
  chrome/browser/profiles/profile_manager.h     |  2 +
  .../clear_browsing_data_dialog.html           | 44 +++++++++++
- .../clear_browsing_data_dialog.ts             |  1 +
+ .../clear_browsing_data_dialog.ts             |  2 +
  .../strings/android_chrome_strings.grd        |  3 +
  .../settings_localized_strings_provider.cc    |  1 +
  .../core/browsing_data_policies_utils.cc      | 20 ++---
@@ -29,7 +29,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  components/browsing_data/core/pref_names.cc   | 27 +++++++
  components/browsing_data/core/pref_names.h    |  9 +++
  content/browser/storage_partition_impl.cc     |  1 +
- 25 files changed, 319 insertions(+), 16 deletions(-)
+ 25 files changed, 320 insertions(+), 16 deletions(-)
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/browsing_data/ClearBrowsingDataFragmentAtStart.java
 
 diff --git a/chrome/android/chrome_java_sources.gni b/chrome/android/chrome_java_sources.gni
@@ -482,6 +482,14 @@ diff --git a/chrome/browser/resources/settings/clear_browsing_data_dialog/clear_
      ],
        },
  
+@@ -332,6 +333,7 @@ export class SettingsClearBrowsingDataDialogElement extends
+     }
+     this.clearButtonDisabled_ =
+         this.getSelectedDataTypes_(tab as HTMLElement).length === 0;
++    if ((tab as HTMLElement).id == "atstart-tab") this.clearButtonDisabled_ = true;
+   }
+ 
+   /**
 diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chrome/browser/ui/android/strings/android_chrome_strings.grd
 --- a/chrome/browser/ui/android/strings/android_chrome_strings.grd
 +++ b/chrome/browser/ui/android/strings/android_chrome_strings.grd
