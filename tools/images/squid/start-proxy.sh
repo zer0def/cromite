@@ -1,6 +1,6 @@
 #!/bin/bash
 
-sudo apt update && sudo apt upgrade
+#sudo apt update && sudo apt upgrade
 
 echo Connect /tmp/forward-proxy/proxy.sock to 127.0.0.1:8118
 test -e /tmp/forward-proxy/proxy.sock && sudo rm /tmp/forward-proxy/proxy.sock
