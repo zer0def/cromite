@@ -3,15 +3,27 @@ Date: Sun, 7 May 2023 14:03:55 +0000
 Subject: WIN Disable updater
 
 ---
- .../browser_process_platform_part_win.cc      |  3 ++
- chrome/browser/updater/BUILD.gn               |  9 ------
- .../browser/updater/browser_updater_client.cc | 32 +------------------
- 3 files changed, 4 insertions(+), 40 deletions(-)
+ chrome/browser/active_use_util.h              |  2 +-
+ .../browser_process_platform_part_win.cc      |  1 +
+ chrome/browser/updater/BUILD.gn               |  9 -----
+ .../browser/updater/browser_updater_client.cc | 33 +------------------
+ 4 files changed, 3 insertions(+), 42 deletions(-)
 
+diff --git a/chrome/browser/active_use_util.h b/chrome/browser/active_use_util.h
+--- a/chrome/browser/active_use_util.h
++++ b/chrome/browser/active_use_util.h
+@@ -9,6 +9,6 @@
+ #include "chrome/install_static/buildflags.h"
+ 
+ constexpr bool kShouldRecordActiveUse =
+-    !BUILDFLAG(IS_WIN) || BUILDFLAG(USE_GOOGLE_UPDATE_INTEGRATION);
++    false;
+ 
+ #endif  // CHROME_BROWSER_ACTIVE_USE_UTIL_H_
 diff --git a/chrome/browser/browser_process_platform_part_win.cc b/chrome/browser/browser_process_platform_part_win.cc
 --- a/chrome/browser/browser_process_platform_part_win.cc
 +++ b/chrome/browser/browser_process_platform_part_win.cc
-@@ -5,12 +5,15 @@
+@@ -5,6 +5,7 @@
  #include "chrome/browser/browser_process_platform_part_win.h"
  
  #include "chrome/browser/active_use_util.h"
@@ -19,14 +31,6 @@ diff --git a/chrome/browser/browser_process_platform_part_win.cc b/chrome/browse
  
  BrowserProcessPlatformPart::BrowserProcessPlatformPart() = default;
  BrowserProcessPlatformPart::~BrowserProcessPlatformPart() = default;
- 
- void BrowserProcessPlatformPart::PlatformSpecificCommandLineProcessing(
-     const base::CommandLine& command_line) {
-+#if BUILDFLAG(USE_GOOGLE_UPDATE_INTEGRATION)
-   if (!did_run_updater_ && ShouldRecordActiveUse(command_line))
-     did_run_updater_.emplace();
-+#endif
- }
 diff --git a/chrome/browser/updater/BUILD.gn b/chrome/browser/updater/BUILD.gn
 --- a/chrome/browser/updater/BUILD.gn
 +++ b/chrome/browser/updater/BUILD.gn
@@ -49,7 +53,7 @@ diff --git a/chrome/browser/updater/BUILD.gn b/chrome/browser/updater/BUILD.gn
 diff --git a/chrome/browser/updater/browser_updater_client.cc b/chrome/browser/updater/browser_updater_client.cc
 --- a/chrome/browser/updater/browser_updater_client.cc
 +++ b/chrome/browser/updater/browser_updater_client.cc
-@@ -29,19 +29,6 @@ BrowserUpdaterClient::~BrowserUpdaterClient() = default;
+@@ -30,19 +30,6 @@ BrowserUpdaterClient::~BrowserUpdaterClient() = default;
  
  void BrowserUpdaterClient::Register(base::OnceClosure complete) {
    DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
@@ -69,7 +73,7 @@ diff --git a/chrome/browser/updater/browser_updater_client.cc b/chrome/browser/u
  }
  
  void BrowserUpdaterClient::RegistrationCompleted(base::OnceClosure complete,
-@@ -72,18 +59,6 @@ void BrowserUpdaterClient::GetUpdaterVersionCompleted(
+@@ -73,18 +60,6 @@ void BrowserUpdaterClient::GetUpdaterVersionCompleted(
  void BrowserUpdaterClient::CheckForUpdate(
      updater::UpdateService::StateChangeCallback version_updater_callback) {
    DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
@@ -88,7 +92,7 @@ diff --git a/chrome/browser/updater/browser_updater_client.cc b/chrome/browser/u
  }
  
  void BrowserUpdaterClient::UpdateCompleted(
-@@ -129,12 +104,7 @@ void BrowserUpdaterClient::IsBrowserRegisteredCompleted(
+@@ -130,13 +105,7 @@ void BrowserUpdaterClient::IsBrowserRegisteredCompleted(
      base::OnceCallback<void(bool)> callback,
      const std::vector<updater::UpdateService::AppState>& apps) {
    DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
@@ -96,7 +100,8 @@ diff --git a/chrome/browser/updater/browser_updater_client.cc b/chrome/browser/u
 -  std::move(callback).Run(
 -      std::find_if(apps.begin(), apps.end(),
 -                   [&](const updater::UpdateService::AppState& app) {
--                     return app.app_id == app_id;
+-                     return base::EqualsCaseInsensitiveASCII(app.app_id,
+-                                                             app_id);
 -                   }) != apps.end());
 +  std::move(callback).Run(true);
  }

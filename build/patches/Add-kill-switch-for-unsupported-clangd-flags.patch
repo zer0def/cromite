@@ -14,9 +14,9 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 diff --git a/build/config/compiler/BUILD.gn b/build/config/compiler/BUILD.gn
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -1845,6 +1845,11 @@ config("default_warnings") {
-           # TODO(crbug.com/1412713) Evaluate and possibly enable.
-           "-Wno-deprecated-this-capture",
+@@ -1889,6 +1889,11 @@ config("default_warnings") {
+           # TODO(crbug.com/1495100): Evaluate and possibly enable.
+           "-Wno-delayed-template-parsing-in-cxx20",
          ]
 +        if (skip_clangd_unsupported_options) {
 +          cflags -= [
@@ -36,8 +36,8 @@ diff --git a/build_overrides/build.gni b/build_overrides/build.gni
 +  # Allows clangd builds by suppressing unsupported parameters
 +  skip_clangd_unsupported_options = false
 +
-   # Allows third-party repositories to use C++17 for MSVC builds
-   # TODO(https://crbug.com/pdfium/1932) Remove once pdfium builds on MSVC C++20
-   msvc_use_cxx17 = false
+   # Allow projects that wish to stay on C++17 to override Chromium's default.
+   # TODO(crbug.com/1402249): evaluate removing this end of 2023
+   use_cxx17 = false
 --
 2.25.1

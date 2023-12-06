@@ -41,7 +41,7 @@ new file mode 100644
 diff --git a/third_party/blink/renderer/core/dom/document.cc b/third_party/blink/renderer/core/dom/document.cc
 --- a/third_party/blink/renderer/core/dom/document.cc
 +++ b/third_party/blink/renderer/core/dom/document.cc
-@@ -4580,6 +4580,14 @@ void Document::ProcessBaseElement() {
+@@ -4556,6 +4556,14 @@ void Document::ProcessBaseElement() {
    KURL base_element_url;
    if (href) {
      String stripped_href = StripLeadingAndTrailingHTMLSpaces(*href);
@@ -56,7 +56,7 @@ diff --git a/third_party/blink/renderer/core/dom/document.cc b/third_party/blink
      if (!stripped_href.empty())
        base_element_url = KURL(FallbackBaseURL(), stripped_href);
    }
-@@ -4598,6 +4606,14 @@ void Document::ProcessBaseElement() {
+@@ -4573,6 +4581,14 @@ void Document::ProcessBaseElement() {
          !GetExecutionContext()->GetSecurityOrigin()->CanRequest(
              base_element_url)) {
        UseCounter::Count(*this, WebFeature::kBaseWithCrossOriginHref);
@@ -71,7 +71,7 @@ diff --git a/third_party/blink/renderer/core/dom/document.cc b/third_party/blink
      }
    }
  
-@@ -4617,6 +4633,8 @@ void Document::ProcessBaseElement() {
+@@ -4592,6 +4608,8 @@ void Document::ProcessBaseElement() {
      if (target->Contains('<'))
        UseCounter::Count(*this, WebFeature::kBaseWithOpenBracketInTarget);
      base_target_ = *target;
@@ -83,7 +83,7 @@ diff --git a/third_party/blink/renderer/core/dom/document.cc b/third_party/blink
 diff --git a/third_party/blink/renderer/core/dom/element.cc b/third_party/blink/renderer/core/dom/element.cc
 --- a/third_party/blink/renderer/core/dom/element.cc
 +++ b/third_party/blink/renderer/core/dom/element.cc
-@@ -2608,8 +2608,26 @@ void Element::StripScriptingAttributes(
+@@ -2587,8 +2587,26 @@ void Element::StripScriptingAttributes(
    attribute_vector.Shrink(destination);
  }
  
@@ -163,14 +163,14 @@ diff --git a/third_party/blink/renderer/core/html/html_base_element.cc b/third_p
 +  Element::ParserSetAttributes(attribute_vector);
 +}
 +
- KURL HTMLBaseElement::href() const {
+ String HTMLBaseElement::href() const {
    // This does not use the GetURLAttribute function because that will resolve
    // relative to the document's base URL; base elements like this one can be
 diff --git a/third_party/blink/renderer/core/html/html_base_element.h b/third_party/blink/renderer/core/html/html_base_element.h
 --- a/third_party/blink/renderer/core/html/html_base_element.h
 +++ b/third_party/blink/renderer/core/html/html_base_element.h
 @@ -37,6 +37,8 @@ class CORE_EXPORT HTMLBaseElement final : public HTMLElement {
-   KURL href() const;
+   String href() const;
    void setHref(const AtomicString&);
  
 +  void ParserSetAttributes(Vector<Attribute, kAttributePrealloc>&) override;
@@ -318,7 +318,7 @@ diff --git a/third_party/blink/renderer/core/page/frame_tree.cc b/third_party/bl
 diff --git a/third_party/blink/renderer/platform/runtime_enabled_features.json5 b/third_party/blink/renderer/platform/runtime_enabled_features.json5
 --- a/third_party/blink/renderer/platform/runtime_enabled_features.json5
 +++ b/third_party/blink/renderer/platform/runtime_enabled_features.json5
-@@ -1518,8 +1518,8 @@
+@@ -1578,8 +1578,8 @@
        // Experiment with preventing some instances of mutation XSS
        // by escaping "<" and ">" in attribute values.
        // See: crbug.com/1175016
@@ -329,7 +329,7 @@ diff --git a/third_party/blink/renderer/platform/runtime_enabled_features.json5 
      },
      {
        name: "EventTimingInteractionCount",
-@@ -2289,6 +2289,12 @@
+@@ -2374,6 +2374,12 @@
        // Use LongAnimationFrameMonitor to emit longtask entries
        name: "LongTaskFromLongAnimationFrame"
      },

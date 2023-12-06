@@ -30,7 +30,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/bookmarks/TabBo
  
      /**
       * Constructor.
-@@ -96,6 +102,13 @@ public class TabBookmarker {
+@@ -104,6 +110,13 @@ public class TabBookmarker {
              return;
          }
  

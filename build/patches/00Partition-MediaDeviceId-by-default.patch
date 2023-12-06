@@ -16,7 +16,7 @@ diff --git a/components/media_device_salt/media_device_salt_service.cc b/compone
 +++ b/components/media_device_salt/media_device_salt_service.cc
 @@ -29,6 +29,9 @@ BASE_FEATURE(kMediaDeviceIdRandomSaltsPerStorageKey,
               "MediaDeviceIdRandomSaltsPerStorageKey",
-              base::FEATURE_DISABLED_BY_DEFAULT);
+              base::FEATURE_ENABLED_BY_DEFAULT);
  
 +SET_CROMITE_FEATURE_ENABLED(kMediaDeviceIdPartitioning);
 +SET_CROMITE_FEATURE_ENABLED(kMediaDeviceIdRandomSaltsPerStorageKey);

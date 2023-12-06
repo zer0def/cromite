@@ -28,15 +28,15 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  chrome/common/chrome_features.cc              |   1 +
  .../content_settings/core/common/features.cc  |   1 +
  components/flags_ui/flags_state.cc            |  21 +++
+ components/flags_ui/resources/app.html        |  42 ++++-
+ components/flags_ui/resources/app.ts          |  41 ++++-
  components/flags_ui/resources/experiment.html |   7 +-
  components/flags_ui/resources/experiment.ts   |  16 ++
- components/flags_ui/resources/flags.css       |  19 +++
- components/flags_ui/resources/flags.html      |  13 ++
- components/flags_ui/resources/flags.ts        |  36 ++++-
  .../flags_ui/resources/flags_browser_proxy.ts |   5 +
  .../core/offline_page_feature.cc              |   1 +
  .../offline_pages/core/offline_page_feature.h |   1 +
  components/permissions/features.cc            |   1 +
+ .../version_ui/version_handler_helper.cc      |   2 +-
  content/common/features.cc                    |   1 +
  content/public/common/content_features.cc     |   1 +
  content/public/common/content_features.h      |   1 +
@@ -71,7 +71,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  services/network/public/cpp/features.h        |   1 +
  third_party/blink/common/features.cc          |   1 +
  third_party/blink/public/common/features.h    |   1 +
- 57 files changed, 474 insertions(+), 12 deletions(-)
+ 57 files changed, 489 insertions(+), 14 deletions(-)
  create mode 100755 cromite_flags/BUILD.gn
  create mode 100755 cromite_flags/chrome/browser/about_flags_cc/placeholder.txt
  create mode 100755 cromite_flags/chrome/browser/browser_features_cc/placeholder.txt
@@ -108,7 +108,7 @@ diff --git a/base/BUILD.gn b/base/BUILD.gn
    sources = [
      "allocator/allocator_check.cc",
      "allocator/allocator_check.h",
-@@ -1034,7 +1036,7 @@ component("base") {
+@@ -1037,7 +1039,7 @@ component("base") {
      "//build/config/compiler:wglobal_constructors",
    ]
  
@@ -344,7 +344,7 @@ diff --git a/build/android/gyp/java_cpp_features.py b/build/android/gyp/java_cpp
 diff --git a/chrome/android/java/res/values/values.xml b/chrome/android/java/res/values/values.xml
 --- a/chrome/android/java/res/values/values.xml
 +++ b/chrome/android/java/res/values/values.xml
-@@ -42,6 +42,9 @@ found in the LICENSE file.
+@@ -44,6 +44,9 @@ found in the LICENSE file.
      <!-- Contextual Search -->
      <item name="contextual_search_sheet_full_height_fraction" format="float" type="dimen">0.95</item>
  
@@ -357,7 +357,7 @@ diff --git a/chrome/android/java/res/values/values.xml b/chrome/android/java/res
 diff --git a/chrome/android/java/res/xml/privacy_preferences.xml b/chrome/android/java/res/xml/privacy_preferences.xml
 --- a/chrome/android/java/res/xml/privacy_preferences.xml
 +++ b/chrome/android/java/res/xml/privacy_preferences.xml
-@@ -99,6 +99,10 @@ found in the LICENSE file.
+@@ -58,6 +58,10 @@ found in the LICENSE file.
          android:title="@string/tabgrid_use_icons_title"
          android:summary="@string/tabgrid_use_icons_summary"
          android:defaultValue="false" />
@@ -366,14 +366,14 @@ diff --git a/chrome/android/java/res/xml/privacy_preferences.xml b/chrome/androi
 +        android:title="@string/cromite_flags_title"
 +        app:url="@string/cromite_flags_url" />
      <Preference
-         android:key="privacy_sandbox"
-         android:title="@string/prefs_privacy_sandbox"
+         android:key="preload_pages"
+         android:title="@string/preload_pages_title"
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -4064,6 +4064,10 @@ const FeatureEntry::FeatureVariation kWebAuthnAndroidCredManVariations[] = {
-      nullptr}};
- #endif  // BUILDFLAG(IS_ANDROID)
+@@ -4033,6 +4033,10 @@ const flags_ui::FeatureEntry::FeatureVariation
+          std::size(kParcelTrackingTestDataOutForDelivery), nullptr},
+ };
  
 +#define FEATURE_PARAM_SECTION
 +#include "cromite_flags/chrome_browser_about_flags_cc.inc"
@@ -382,7 +382,7 @@ diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
  // RECORDING USER METRICS FOR FLAGS:
  // -----------------------------------------------------------------------------
  // The first line of the entry is the internal name.
-@@ -4090,6 +4094,9 @@ const FeatureEntry::FeatureVariation kWebAuthnAndroidCredManVariations[] = {
+@@ -4059,6 +4063,9 @@ const flags_ui::FeatureEntry::FeatureVariation
  const FeatureEntry kFeatureEntries[] = {
  // Include generated flags for flag unexpiry; see //docs/flag_expiry.md and
  // //tools/flags/generate_unexpire_flags.py.
@@ -395,16 +395,16 @@ diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 diff --git a/chrome/browser/browser_features.cc b/chrome/browser/browser_features.cc
 --- a/chrome/browser/browser_features.cc
 +++ b/chrome/browser/browser_features.cc
-@@ -310,4 +310,5 @@ BASE_FEATURE(kOmniboxTriggerForNoStatePrefetch,
-              "OmniboxTriggerForNoStatePrefetch",
+@@ -298,4 +298,5 @@ BASE_FEATURE(kPayloadTestComponent,
               base::FEATURE_DISABLED_BY_DEFAULT);
+ #endif
  
 +#include "cromite_flags/chrome_browser_browser_features_cc.inc"
  }  // namespace features
 diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browser/flags/android/chrome_feature_list.cc
 --- a/chrome/browser/flags/android/chrome_feature_list.cc
 +++ b/chrome/browser/flags/android/chrome_feature_list.cc
-@@ -1207,5 +1207,6 @@ BASE_FEATURE(kWebApkInstallService,
+@@ -1225,5 +1225,6 @@ BASE_FEATURE(kWebApkInstallService,
               "WebApkInstallService",
               base::FEATURE_DISABLED_BY_DEFAULT);
  
@@ -414,7 +414,7 @@ diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browse
 diff --git a/chrome/browser/flags/android/chrome_feature_list.h b/chrome/browser/flags/android/chrome_feature_list.h
 --- a/chrome/browser/flags/android/chrome_feature_list.h
 +++ b/chrome/browser/flags/android/chrome_feature_list.h
-@@ -228,6 +228,7 @@ constexpr base::FeatureParam<int> kAuxiliarySearchMaxTabsCountParam(
+@@ -231,6 +231,7 @@ constexpr base::FeatureParam<int> kAuxiliarySearchMaxTabsCountParam(
      "auxiliary_search_max_donation_tab",
      100);
  
@@ -425,7 +425,7 @@ diff --git a/chrome/browser/flags/android/chrome_feature_list.h b/chrome/browser
 diff --git a/chrome/browser/ui/ui_features.cc b/chrome/browser/ui/ui_features.cc
 --- a/chrome/browser/ui/ui_features.cc
 +++ b/chrome/browser/ui/ui_features.cc
-@@ -394,4 +394,5 @@ BASE_FEATURE(kStopLoadingAnimationForHiddenWindow,
+@@ -383,4 +383,5 @@ BASE_FEATURE(kStopLoadingAnimationForHiddenWindow,
               "StopLoadingAnimationForHiddenWindow",
               base::FEATURE_ENABLED_BY_DEFAULT);
  
@@ -434,7 +434,7 @@ diff --git a/chrome/browser/ui/ui_features.cc b/chrome/browser/ui/ui_features.cc
 diff --git a/chrome/common/chrome_features.cc b/chrome/common/chrome_features.cc
 --- a/chrome/common/chrome_features.cc
 +++ b/chrome/common/chrome_features.cc
-@@ -1664,4 +1664,5 @@ BASE_FEATURE(kSupportsRtcWakeOver24Hours,
+@@ -1717,4 +1717,5 @@ BASE_FEATURE(kSupportsRtcWakeOver24Hours,
               base::FEATURE_ENABLED_BY_DEFAULT);
  #endif  // BUILDFLAG(IS_CHROMEOS_ASH)
  
@@ -443,9 +443,9 @@ diff --git a/chrome/common/chrome_features.cc b/chrome/common/chrome_features.cc
 diff --git a/components/content_settings/core/common/features.cc b/components/content_settings/core/common/features.cc
 --- a/components/content_settings/core/common/features.cc
 +++ b/components/content_settings/core/common/features.cc
-@@ -82,5 +82,6 @@ BASE_FEATURE(kTrackingProtection3pcd,
-              "TrackingProtection3pcd",
-              base::FEATURE_DISABLED_BY_DEFAULT);
+@@ -94,5 +94,6 @@ BASE_FEATURE(kTpcdHeuristicsGrants,
+ const base::FeatureParam<bool> kTpcdReadHeuristicsGrants{
+     &kTpcdHeuristicsGrants, kTpcdReadHeuristicsGrantsName, false};
  
 +#include "cromite_flags/components_content_settings_core_common_features_cc.inc"
  }  // namespace features
@@ -481,6 +481,186 @@ diff --git a/components/flags_ui/flags_state.cc b/components/flags_ui/flags_stat
      switch (entry.type) {
        case FeatureEntry::SINGLE_VALUE:
        case FeatureEntry::SINGLE_DISABLE_VALUE:
+diff --git a/components/flags_ui/resources/app.html b/components/flags_ui/resources/app.html
+--- a/components/flags_ui/resources/app.html
++++ b/components/flags_ui/resources/app.html
+@@ -473,7 +473,32 @@
+       padding-top: 1.5rem;
+     }
+   }
++  #appcontainer {
++    overflow-y: scroll;
++  }
++  .cromite #header {
++    display: none;
++  }
++  .cromite .blurb-container {
++    display: none;
++  }
++  .cromite #tabs {
++    display: none;
++  }
++  .cromite #tab-content-available {
++    display: none;
++  }
++  .cromite #tab-content-unavailable {
++    display: none;
++  }
++  .cromite #tab-content-cromite {
++    display: block !important;
++  }
++  .cromite .section-header-title {
++    display: none;
++  }
+ </style>
++<div id="appcontainer">
+ <div id="header">
+   <div class="flex-container">
+     <div class="flex search-container">
+@@ -545,6 +570,11 @@
+           aria-selected="false" aria-controls="panel2"
+           tabindex="-1">$i18n{unavailable}</a>
+ </if>
++      <a href="#tab-content-cromite" id="tab-cromite" class="tab"
++          role="tab"
++          aria-selected="true"
++          aria-controls="panel1"
++          tabindex="5">Cromite</a>
+     </div>
+     <div id="tabpanels">
+       <div id="tab-content-available" class="tab-content selected"
+@@ -564,6 +594,14 @@
+         </div>
+       </div>
+ </if>
++      <div id="tab-content-cromite" class="tab-content"
++          role="tabpanel" aria-labelledby="tab-cromite" aria-hidden="false">
++        <!-- Non default experiments. -->
++        <div id="non-default-cromite-experiments"></div>
++        <!-- Experiments with default settings. -->
++        <div id="cromite-experiments"></div>
++        <div class="no-match hidden" role="alert">$i18n{no-results}</div>
++      </div>
+     </div>
+     <div id="needs-restart">
+       <div class="flex-container">
+@@ -578,4 +616,6 @@
+       </div>
+     </div>
+   </div>
+-</div>
+\ No newline at end of file
++</div>
++
++</div>
+diff --git a/components/flags_ui/resources/app.ts b/components/flags_ui/resources/app.ts
+--- a/components/flags_ui/resources/app.ts
++++ b/components/flags_ui/resources/app.ts
+@@ -193,6 +193,7 @@ export class FlagsAppElement extends CustomElement {
+     return getTemplate();
+   }
+ 
++  private onlyCromiteFlags: boolean = false;
+   private announceStatusDelayMs: number = 100;
+   private featuresResolver: PromiseResolver<void> = new PromiseResolver();
+   private flagSearch: FlagSearch = new FlagSearch(this);
+@@ -204,6 +205,10 @@ export class FlagsAppElement extends CustomElement {
+   // </if>
+ 
+   tabs: Tab[] = [
++    {
++      tabEl: this.getRequiredElement('#tab-cromite')!,
++      panelEl: this.getRequiredElement('#tab-content-cromite')!,
++    },
+     {
+       tabEl: this.getRequiredElement('#tab-available'),
+       panelEl: this.getRequiredElement('#tab-content-available'),
+@@ -217,6 +222,11 @@ export class FlagsAppElement extends CustomElement {
+   ];
+ 
+   connectedCallback() {
++    if (location.pathname == '/cromite') {
++      this.onlyCromiteFlags = true;
++      this.getRequiredElement("#appcontainer").classList.add('cromite');
++      document.title = "Cromite Flags List";
++    }
+     // Get and display the data upon loading.
+     this.requestExperimentalFeaturesData();
+     // There is no restart button on iOS.
+@@ -277,20 +287,29 @@ export class FlagsAppElement extends CustomElement {
+     const defaultFeatures: Feature[] = [];
+     const nonDefaultFeatures: Feature[] = [];
+ 
++    if (this.onlyCromiteFlags) {
++      experimentalFeaturesData.supportedFeatures =
++        experimentalFeaturesData.supportedFeatures.filter(item => item.is_new);
++    }
++    experimentalFeaturesData.supportedFeatures.sort(
++        (a,b) => (a.internal_name.localeCompare(b.internal_name)));
+     experimentalFeaturesData.supportedFeatures.forEach(
+         f => (f.is_default ? defaultFeatures : nonDefaultFeatures).push(f));
+ 
+     this.renderExperiments(
+         nonDefaultFeatures,
+-        this.getRequiredElement('#non-default-experiments'));
++        this.getRequiredElement('#non-default-experiments'),
++        this.getRequiredElement('#non-default-cromite-experiments'), false);
+ 
+     this.renderExperiments(
+-        defaultFeatures, this.getRequiredElement('#default-experiments'));
++        defaultFeatures, this.getRequiredElement('#default-experiments'),
++        this.getRequiredElement('#cromite-experiments'), false);
+ 
+     // <if expr="not is_ios">
+     this.renderExperiments(
+         experimentalFeaturesData.unsupportedFeatures,
+-        this.getRequiredElement('#unavailable-experiments'), true);
++        this.getRequiredElement('#unavailable-experiments'),
++        undefined, true);
+     // </if>
+ 
+     this.showRestartToast(experimentalFeaturesData.needsRestart);
+@@ -401,16 +420,23 @@ export class FlagsAppElement extends CustomElement {
+   }
+ 
+   private renderExperiments(
+-      features: Feature[], container: HTMLElement, unsupported = false) {
++      features: Feature[], container: HTMLElement,
++      cromiteContainer: HTMLElement | undefined, unsupported: boolean = false) {
+     const fragment = document.createDocumentFragment();
++    const fragmentCromite = document.createDocumentFragment();
++    const show_permalink = !document.body.classList.contains('cromite');
+     for (const feature of features) {
+       const experiment = document.createElement('flags-experiment');
+ 
+       experiment.toggleAttribute('unsupported', unsupported);
++      experiment.permalink = show_permalink;
+       experiment.data = feature;
+       experiment.id = feature.internal_name;
+ 
+       const select = experiment.getSelect();
++      // if (select && feature.is_cromite && !feature.is_new) {
++      //   select.disabled = true;
++      // }
+       if (select) {
+         experiment.addEventListener('select-change', e => {
+           e.preventDefault();
+@@ -434,9 +460,14 @@ export class FlagsAppElement extends CustomElement {
+           this.showRestartToast(true);
+         });
+       }
+-      fragment.appendChild(experiment);
++      if (feature.is_cromite)
++        fragmentCromite.appendChild(experiment);
++      else
++        fragment.appendChild(experiment);
+     }
+     container.replaceChildren(fragment);
++    if (!!cromiteContainer)
++      cromiteContainer.replaceChildren(fragmentCromite);
+   }
+ 
+   /**
 diff --git a/components/flags_ui/resources/experiment.html b/components/flags_ui/resources/experiment.html
 --- a/components/flags_ui/resources/experiment.html
 +++ b/components/flags_ui/resources/experiment.html
@@ -570,156 +750,6 @@ diff --git a/components/flags_ui/resources/experiment.ts b/components/flags_ui/r
          experimentSelect.appendChild(optionEl);
        }
  
-diff --git a/components/flags_ui/resources/flags.css b/components/flags_ui/resources/flags.css
---- a/components/flags_ui/resources/flags.css
-+++ b/components/flags_ui/resources/flags.css
-@@ -468,3 +468,22 @@ button.primary:-webkit-any(:active, :hover) {
-     padding-top: 1.5rem;
-   }
- }
-+
-+.cromite #header {
-+  display: none;
-+}
-+.cromite .blurb-container {
-+  display: none;
-+}
-+.cromite #tabs {
-+  display: none;
-+}
-+.cromite #tab-content-available {
-+  display: none;
-+}
-+.cromite #tab-content-unavailable {
-+  display: none;
-+}
-+.cromite #tab-content-cromite {
-+  display: block !important;
-+}
-diff --git a/components/flags_ui/resources/flags.html b/components/flags_ui/resources/flags.html
---- a/components/flags_ui/resources/flags.html
-+++ b/components/flags_ui/resources/flags.html
-@@ -92,6 +92,11 @@
-           aria-selected="false" aria-controls="panel2"
-           tabindex="-1">$i18n{unavailable}</a>
- </if>
-+      <a href="#tab-content-cromite" id="tab-cromite" class="tab"
-+          role="tab"
-+          aria-selected="true"
-+          aria-controls="panel1"
-+          tabindex="5">Cromite</a>
-     </div>
-     <div id="tabpanels">
-       <div id="tab-content-available" class="tab-content selected"
-@@ -111,6 +116,14 @@
-         </div>
-       </div>
- </if>
-+      <div id="tab-content-cromite" class="tab-content"
-+          role="tabpanel" aria-labelledby="tab-cromite" aria-hidden="false">
-+        <!-- Non default experiments. -->
-+        <div id="non-default-cromite-experiments"></div>
-+        <!-- Experiments with default settings. -->
-+        <div id="cromite-experiments"></div>
-+        <div class="no-match hidden" role="alert">$i18n{no-results}</div>
-+      </div>
-     </div>
-     <div id="needs-restart" jsvalues="class:needsRestart ? 'show' : ''">
-       <div class="flex-container">
-diff --git a/components/flags_ui/resources/flags.ts b/components/flags_ui/resources/flags.ts
---- a/components/flags_ui/resources/flags.ts
-+++ b/components/flags_ui/resources/flags.ts
-@@ -39,6 +39,10 @@ interface Tab {
- }
- 
- const tabs: Tab[] = [
-+  {
-+    tabEl: document.body.querySelector('#tab-cromite')!,
-+    panelEl: document.body.querySelector('#tab-content-cromite')!,
-+  },
-   {
-     tabEl: document.body.querySelector('#tab-available')!,
-     panelEl: document.body.querySelector('#tab-content-available')!,
-@@ -84,18 +88,27 @@ function render(experimentalFeaturesData: ExperimentalFeaturesData) {
-   const defaultFeatures: Feature[] = [];
-   const nonDefaultFeatures: Feature[] = [];
- 
-+  if (document.body.classList.contains("cromite")) {
-+    experimentalFeaturesData.supportedFeatures =
-+      experimentalFeaturesData.supportedFeatures.filter(item => item.is_new);
-+  }
-+  experimentalFeaturesData.supportedFeatures.sort(
-+      (a,b) => (a.internal_name.localeCompare(b.internal_name)));
-   experimentalFeaturesData.supportedFeatures.forEach(
-       f => (f.is_default ? defaultFeatures : nonDefaultFeatures).push(f));
- 
-   renderExperiments(
--      nonDefaultFeatures, getRequiredElement('non-default-experiments'));
-+      nonDefaultFeatures, getRequiredElement('non-default-experiments'),
-+      getRequiredElement('non-default-cromite-experiments'), false);
- 
--  renderExperiments(defaultFeatures, getRequiredElement('default-experiments'));
-+  renderExperiments(defaultFeatures, getRequiredElement('default-experiments'),
-+      getRequiredElement('cromite-experiments'), false);
- 
-   // <if expr="not is_ios">
-   renderExperiments(
-       experimentalFeaturesData.unsupportedFeatures,
--      getRequiredElement('unavailable-experiments'), true);
-+      getRequiredElement('unavailable-experiments'),
-+      undefined, true);
-   // </if>
- 
-   showRestartToast(experimentalFeaturesData.needsRestart);
-@@ -248,16 +261,22 @@ function resetAllFlags() {
- }
- 
- function renderExperiments(
--    features: Feature[], container: HTMLElement, unsupported = false) {
-+    features: Feature[], container: HTMLElement, cromiteContainer: HTMLElement | undefined, unsupported: boolean) {
-   const fragment = document.createDocumentFragment();
-+  const fragmentCromite = document.createDocumentFragment();
-+  const show_permalink = !document.body.classList.contains('cromite');
-   for (const feature of features) {
-     const experiment = document.createElement('flags-experiment');
- 
-     experiment.toggleAttribute('unsupported', unsupported);
-+    experiment.permalink = show_permalink;
-     experiment.data = feature;
-     experiment.id = feature.internal_name;
- 
-     const select = experiment.getSelect();
-+    // if (select && feature.is_cromite && !feature.is_new) {
-+    //   select.disabled = true;
-+    // }
-     if (select) {
-       experiment.addEventListener('select-change', () => {
-         showRestartToast(true);
-@@ -281,9 +300,14 @@ function renderExperiments(
-         return false;
-       });
-     }
--    fragment.appendChild(experiment);
-+    if (feature.is_cromite)
-+      fragmentCromite.appendChild(experiment);
-+    else
-+      fragment.appendChild(experiment);
-   }
-   container.replaceChildren(fragment);
-+  if (!!cromiteContainer)
-+    cromiteContainer.replaceChildren(fragmentCromite);
- }
- 
- /**
-@@ -507,6 +531,8 @@ function setupRestartButton() {
- // </if>
- 
- document.addEventListener('DOMContentLoaded', function() {
-+  if (location.pathname == '/cromite')
-+    document.body.classList.add('cromite');
-   // Get and display the data upon loading.
-   requestExperimentalFeaturesData();
-   // There is no restart button on iOS.
 diff --git a/components/flags_ui/resources/flags_browser_proxy.ts b/components/flags_ui/resources/flags_browser_proxy.ts
 --- a/components/flags_ui/resources/flags_browser_proxy.ts
 +++ b/components/flags_ui/resources/flags_browser_proxy.ts
@@ -758,7 +788,7 @@ diff --git a/components/offline_pages/core/offline_page_feature.h b/components/o
 diff --git a/components/permissions/features.cc b/components/permissions/features.cc
 --- a/components/permissions/features.cc
 +++ b/components/permissions/features.cc
-@@ -171,6 +171,7 @@ BASE_FEATURE(kBlockMidiByDefault,
+@@ -159,6 +159,7 @@ BASE_FEATURE(kBlockMidiByDefault,
               "BlockMidiByDefault",
               base::FEATURE_ENABLED_BY_DEFAULT);
  
@@ -766,10 +796,22 @@ diff --git a/components/permissions/features.cc b/components/permissions/feature
  }  // namespace features
  namespace feature_params {
  
+diff --git a/components/version_ui/version_handler_helper.cc b/components/version_ui/version_handler_helper.cc
+--- a/components/version_ui/version_handler_helper.cc
++++ b/components/version_ui/version_handler_helper.cc
+@@ -37,7 +37,7 @@ base::Value::List GetVariationsList() {
+   // displayed locally (and is useful for diagnostics purposes).
+   base::FieldTrialListIncludingLowAnonymity::GetActiveFieldTrialGroups(
+       &active_groups);
+-#if !defined(NDEBUG)
++#if true
+   const unsigned char kNonBreakingHyphenUTF8[] = {0xE2, 0x80, 0x91, '\0'};
+   const std::string kNonBreakingHyphenUTF8String(
+       reinterpret_cast<const char*>(kNonBreakingHyphenUTF8));
 diff --git a/content/common/features.cc b/content/common/features.cc
 --- a/content/common/features.cc
 +++ b/content/common/features.cc
-@@ -529,4 +529,5 @@ BASE_FEATURE(kWindowOpenFileSelectFix,
+@@ -571,4 +571,5 @@ BASE_FEATURE(kWindowOpenFileSelectFix,
  
  // Please keep features in alphabetical order.
  
@@ -778,7 +820,7 @@ diff --git a/content/common/features.cc b/content/common/features.cc
 diff --git a/content/public/common/content_features.cc b/content/public/common/content_features.cc
 --- a/content/public/common/content_features.cc
 +++ b/content/public/common/content_features.cc
-@@ -1321,4 +1321,5 @@ bool IsVideoCaptureServiceEnabledForBrowserProcess() {
+@@ -1361,4 +1361,5 @@ bool IsVideoCaptureServiceEnabledForBrowserProcess() {
           VideoCaptureServiceConfiguration::kEnabledForBrowserProcess;
  }
  
@@ -787,7 +829,7 @@ diff --git a/content/public/common/content_features.cc b/content/public/common/c
 diff --git a/content/public/common/content_features.h b/content/public/common/content_features.h
 --- a/content/public/common/content_features.h
 +++ b/content/public/common/content_features.h
-@@ -327,6 +327,7 @@ CONTENT_EXPORT BASE_DECLARE_FEATURE(kWebRtcPipeWireCapturer);
+@@ -335,6 +335,7 @@ CONTENT_EXPORT BASE_DECLARE_FEATURE(kWebRtcPipeWireCapturer);
  CONTENT_EXPORT bool IsVideoCaptureServiceEnabledForOutOfProcess();
  CONTENT_EXPORT bool IsVideoCaptureServiceEnabledForBrowserProcess();
  
@@ -1085,7 +1127,7 @@ new file mode 100755
 diff --git a/media/base/media_switches.cc b/media/base/media_switches.cc
 --- a/media/base/media_switches.cc
 +++ b/media/base/media_switches.cc
-@@ -1743,5 +1743,5 @@ uint32_t GetPassthroughAudioFormats() {
+@@ -1750,5 +1750,5 @@ uint32_t GetPassthroughAudioFormats() {
    return 0;
  #endif  // BUILDFLAG(ENABLE_PASSTHROUGH_AUDIO_CODECS)
  }
@@ -1095,7 +1137,7 @@ diff --git a/media/base/media_switches.cc b/media/base/media_switches.cc
 diff --git a/media/base/media_switches.h b/media/base/media_switches.h
 --- a/media/base/media_switches.h
 +++ b/media/base/media_switches.h
-@@ -505,5 +505,5 @@ MEDIA_EXPORT bool IsOutOfProcessVideoDecodingEnabled();
+@@ -517,5 +517,5 @@ MEDIA_EXPORT bool IsOutOfProcessVideoDecodingEnabled();
  MEDIA_EXPORT uint32_t GetPassthroughAudioFormats();
  
  }  // namespace media
@@ -1105,18 +1147,18 @@ diff --git a/media/base/media_switches.h b/media/base/media_switches.h
 diff --git a/net/base/features.cc b/net/base/features.cc
 --- a/net/base/features.cc
 +++ b/net/base/features.cc
-@@ -469,4 +469,5 @@ BASE_FEATURE(kSpdyHeadersToHttpResponseVerifyCorrectness,
-              "SpdyHeadersToHttpResponseVerifyCorrectness",
-              base::FEATURE_DISABLED_BY_DEFAULT);
+@@ -477,4 +477,5 @@ BASE_FEATURE(kNewCertPathBuilderIterationLimit,
+              "NewCertPathBuilderIterationLimit",
+              base::FEATURE_ENABLED_BY_DEFAULT);
  
 +#include "cromite_flags/net_base_features_cc.inc"
  }  // namespace net::features
 diff --git a/net/base/features.h b/net/base/features.h
 --- a/net/base/features.h
 +++ b/net/base/features.h
-@@ -467,6 +467,7 @@ NET_EXPORT BASE_DECLARE_FEATURE(kSpdyHeadersToHttpResponseUseBuilder);
- // for two weeks on Dev.
- NET_EXPORT BASE_DECLARE_FEATURE(kSpdyHeadersToHttpResponseVerifyCorrectness);
+@@ -470,6 +470,7 @@ NET_EXPORT BASE_DECLARE_FEATURE(kReceiveEcn);
+ 
+ NET_EXPORT BASE_DECLARE_FEATURE(kNewCertPathBuilderIterationLimit);
  
 +#include "cromite_flags/net_base_features_h.inc"
  }  // namespace net::features
@@ -1125,18 +1167,18 @@ diff --git a/net/base/features.h b/net/base/features.h
 diff --git a/services/network/public/cpp/features.cc b/services/network/public/cpp/features.cc
 --- a/services/network/public/cpp/features.cc
 +++ b/services/network/public/cpp/features.cc
-@@ -422,4 +422,5 @@ BASE_FEATURE(kVisibilityAwareResourceScheduler,
- 
- BASE_FEATURE(kSharedZstd, "SharedZstd", base::FEATURE_ENABLED_BY_DEFAULT);
+@@ -431,4 +431,5 @@ const base::FeatureParam<bool> kSkipTpcdMitigationsForAdsSupport{
+     &kSkipTpcdMitigationsForAds, /*name=*/"SkipTpcdMitigationsForAdsSupport",
+     /*default_value=*/false};
  
 +#include "cromite_flags/services_network_public_cpp_features_cc.inc"
  }  // namespace network::features
 diff --git a/services/network/public/cpp/features.h b/services/network/public/cpp/features.h
 --- a/services/network/public/cpp/features.h
 +++ b/services/network/public/cpp/features.h
-@@ -158,6 +158,7 @@ BASE_DECLARE_FEATURE(kVisibilityAwareResourceScheduler);
+@@ -168,6 +168,7 @@ extern const base::FeatureParam<bool> kSkipTpcdMitigationsForAdsMetadata;
  COMPONENT_EXPORT(NETWORK_CPP)
- BASE_DECLARE_FEATURE(kSharedZstd);
+ extern const base::FeatureParam<bool> kSkipTpcdMitigationsForAdsSupport;
  
 +#include "cromite_flags/services_network_public_cpp_features_h.inc"
  }  // namespace features
@@ -1145,7 +1187,7 @@ diff --git a/services/network/public/cpp/features.h b/services/network/public/cp
 diff --git a/third_party/blink/common/features.cc b/third_party/blink/common/features.cc
 --- a/third_party/blink/common/features.cc
 +++ b/third_party/blink/common/features.cc
-@@ -2168,5 +2168,6 @@ bool IsKeepAliveURLLoaderServiceEnabled() {
+@@ -2222,5 +2222,6 @@ bool IsKeepAliveURLLoaderServiceEnabled() {
           base::FeatureList::IsEnabled(kFetchLaterAPI);
  }
  
@@ -1155,7 +1197,7 @@ diff --git a/third_party/blink/common/features.cc b/third_party/blink/common/fea
 diff --git a/third_party/blink/public/common/features.h b/third_party/blink/public/common/features.h
 --- a/third_party/blink/public/common/features.h
 +++ b/third_party/blink/public/common/features.h
-@@ -1388,6 +1388,7 @@ BLINK_COMMON_EXPORT bool IsKeepAliveURLLoaderServiceEnabled();
+@@ -1427,6 +1427,7 @@ BLINK_COMMON_EXPORT bool IsKeepAliveURLLoaderServiceEnabled();
  BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE(
      kRemoveAuthroizationOnCrossOriginRedirect);
  

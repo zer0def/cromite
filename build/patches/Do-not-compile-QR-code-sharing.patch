@@ -14,7 +14,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 diff --git a/chrome/android/BUILD.gn b/chrome/android/BUILD.gn
 --- a/chrome/android/BUILD.gn
 +++ b/chrome/android/BUILD.gn
-@@ -3416,7 +3416,6 @@ generate_jni("chrome_jni_headers") {
+@@ -3456,7 +3456,6 @@ generate_jni("chrome_jni_headers") {
      "../browser/share/android/java/src/org/chromium/chrome/browser/share/link_to_text/LinkToTextBridge.java",
      "../browser/share/android/java/src/org/chromium/chrome/browser/share/long_screenshots/bitmap_generation/LongScreenshotsTabService.java",
      "../browser/share/android/java/src/org/chromium/chrome/browser/share/long_screenshots/bitmap_generation/LongScreenshotsTabServiceFactory.java",
@@ -67,7 +67,7 @@ diff --git a/chrome/browser/share/android/java/src/org/chromium/chrome/browser/s
  import org.chromium.chrome.browser.share.send_tab_to_self.SendTabToSelfAndroidBridge;
  import org.chromium.chrome.browser.share.send_tab_to_self.SendTabToSelfCoordinator;
  import org.chromium.chrome.browser.share.share_sheet.ChromeOptionShareCallback;
-@@ -288,9 +287,6 @@ public abstract class ChromeProvidedSharingOptionsProviderBase {
+@@ -287,9 +286,6 @@ public abstract class ChromeProvidedSharingOptionsProviderBase {
      }
  
      private void maybeAddQrCodeFirstPartyOption() {
@@ -77,7 +77,7 @@ diff --git a/chrome/browser/share/android/java/src/org/chromium/chrome/browser/s
      }
  
      private void maybeAddScreenshotFirstPartyOption() {
-@@ -442,21 +438,6 @@ public abstract class ChromeProvidedSharingOptionsProviderBase {
+@@ -441,21 +437,6 @@ public abstract class ChromeProvidedSharingOptionsProviderBase {
                  .build();
      }
  

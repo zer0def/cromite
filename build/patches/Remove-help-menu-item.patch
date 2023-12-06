@@ -67,7 +67,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/KeyboardShortcu
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActivity.java b/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActivity.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActivity.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActivity.java
-@@ -2404,16 +2404,6 @@ public abstract class ChromeActivity<C extends ChromeActivityComponent>
+@@ -2417,16 +2417,6 @@ public abstract class ChromeActivity<C extends ChromeActivityComponent>
  
          final Tab currentTab = getActivityTab();
  
@@ -120,7 +120,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/browsing_data/C
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/customtabs/BaseCustomTabActivity.java b/chrome/android/java/src/org/chromium/chrome/browser/customtabs/BaseCustomTabActivity.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/customtabs/BaseCustomTabActivity.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/customtabs/BaseCustomTabActivity.java
-@@ -580,7 +580,7 @@ public abstract class BaseCustomTabActivity extends ChromeActivity<BaseCustomTab
+@@ -588,7 +588,7 @@ public abstract class BaseCustomTabActivity extends ChromeActivity<BaseCustomTab
      @Override
      public boolean onMenuOrKeyboardAction(int id, boolean fromMenu) {
          // Disable creating new tabs, bookmark, history, print, help, focus_url, etc.
@@ -162,7 +162,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/password_manage
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/PrivacySettings.java b/chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/PrivacySettings.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/PrivacySettings.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/PrivacySettings.java
-@@ -379,6 +379,7 @@ public class PrivacySettings
+@@ -371,6 +371,7 @@ public class PrivacySettings
                  menu.add(Menu.NONE, R.id.menu_id_targeted_help, Menu.NONE, R.string.menu_help);
          help.setIcon(TraceEventVectorDrawableCompat.create(
                  getResources(), R.drawable.ic_help_and_feedback, getActivity().getTheme()));
@@ -173,7 +173,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/privacy/setting
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/settings/SettingsActivity.java b/chrome/android/java/src/org/chromium/chrome/browser/settings/SettingsActivity.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/settings/SettingsActivity.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/settings/SettingsActivity.java
-@@ -395,6 +395,7 @@ public class SettingsActivity extends ChromeBaseAppCompatActivity
+@@ -414,6 +414,7 @@ public class SettingsActivity extends ChromeBaseAppCompatActivity
                  Menu.NONE, R.id.menu_id_general_help, Menu.CATEGORY_SECONDARY, R.string.menu_help);
          help.setIcon(TraceEventVectorDrawableCompat.create(
                  getResources(), R.drawable.ic_help_and_feedback, getTheme()));
@@ -184,7 +184,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/settings/Settin
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/sync/settings/GoogleServicesSettings.java b/chrome/android/java/src/org/chromium/chrome/browser/sync/settings/GoogleServicesSettings.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/sync/settings/GoogleServicesSettings.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/sync/settings/GoogleServicesSettings.java
-@@ -170,6 +170,7 @@ public class GoogleServicesSettings extends ChromeBaseSettingsFragment
+@@ -165,6 +165,7 @@ public class GoogleServicesSettings extends ChromeBaseSettingsFragment
          MenuItem help =
                  menu.add(Menu.NONE, R.id.menu_id_targeted_help, Menu.NONE, R.string.menu_help);
          help.setIcon(R.drawable.ic_help_and_feedback);
@@ -195,7 +195,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/sync/settings/G
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/sync/settings/ManageSyncSettings.java b/chrome/android/java/src/org/chromium/chrome/browser/sync/settings/ManageSyncSettings.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/sync/settings/ManageSyncSettings.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/sync/settings/ManageSyncSettings.java
-@@ -264,6 +264,7 @@ public class ManageSyncSettings extends ChromeBaseSettingsFragment
+@@ -265,6 +265,7 @@ public class ManageSyncSettings extends ChromeBaseSettingsFragment
          MenuItem help =
                  menu.add(Menu.NONE, R.id.menu_id_targeted_help, Menu.NONE, R.string.menu_help);
          help.setIcon(R.drawable.ic_help_and_feedback);
@@ -262,7 +262,7 @@ diff --git a/chrome/browser/prefetch/android/java/src/org/chromium/chrome/browse
 diff --git a/chrome/browser/privacy_sandbox/android/java/src/org/chromium/chrome/browser/privacy_sandbox/PrivacySandboxSettingsBaseFragment.java b/chrome/browser/privacy_sandbox/android/java/src/org/chromium/chrome/browser/privacy_sandbox/PrivacySandboxSettingsBaseFragment.java
 --- a/chrome/browser/privacy_sandbox/android/java/src/org/chromium/chrome/browser/privacy_sandbox/PrivacySandboxSettingsBaseFragment.java
 +++ b/chrome/browser/privacy_sandbox/android/java/src/org/chromium/chrome/browser/privacy_sandbox/PrivacySandboxSettingsBaseFragment.java
-@@ -80,6 +80,7 @@ public abstract class PrivacySandboxSettingsBaseFragment
+@@ -77,6 +77,7 @@ public abstract class PrivacySandboxSettingsBaseFragment
                  menu.add(Menu.NONE, R.id.menu_id_targeted_help, Menu.NONE, R.string.menu_help);
          help.setIcon(TraceEventVectorDrawableCompat.create(
                  getResources(), R.drawable.ic_help_and_feedback, getActivity().getTheme()));

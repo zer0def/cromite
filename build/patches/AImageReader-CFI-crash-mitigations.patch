@@ -86,15 +86,15 @@ diff --git a/base/android/android_image_reader_compat.h b/base/android/android_i
 diff --git a/chrome/browser/flag-metadata.json b/chrome/browser/flag-metadata.json
 --- a/chrome/browser/flag-metadata.json
 +++ b/chrome/browser/flag-metadata.json
-@@ -3028,9 +3028,9 @@
+@@ -2842,9 +2842,9 @@
      "expiry_milestone": 125
    },
    {
 -    "name": "enable-image-reader",
--    "owners": [ "vikassoni", "liberato" ],
+-    "owners": [ "vikassoni@chromium.org", "liberato@chromium.org" ],
 -    "expiry_milestone": 125
 +    "name": "enable-image-reader",          // Bromite: do not expire
-+    "owners": [ "vikassoni", "liberato" ],  // flag
++    "owners": [ "vikassoni@chromium.org", "liberato@chromium.org" ],  // flag
 +    "expiry_milestone": -1
    },
    {
@@ -205,7 +205,7 @@ diff --git a/gpu/config/gpu_workaround_list.txt b/gpu/config/gpu_workaround_list
 diff --git a/gpu/ipc/service/gpu_init.cc b/gpu/ipc/service/gpu_init.cc
 --- a/gpu/ipc/service/gpu_init.cc
 +++ b/gpu/ipc/service/gpu_init.cc
-@@ -628,6 +628,13 @@ bool GpuInit::InitializeAndStartSandbox(base::CommandLine* command_line,
+@@ -668,6 +668,13 @@ bool GpuInit::InitializeAndStartSandbox(base::CommandLine* command_line,
    }
  #endif  // BUILDFLAG(IS_WIN)
  

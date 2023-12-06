@@ -16,7 +16,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabGridViewBinder.java b/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabGridViewBinder.java
 --- a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabGridViewBinder.java
 +++ b/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabGridViewBinder.java
-@@ -288,8 +288,12 @@ class TabGridViewBinder {
+@@ -287,8 +287,12 @@ class TabGridViewBinder {
                  // Adjust bitmap to thumbnail.
                  TabUtils.setBitmapAndUpdateImageMatrix(thumbnail, result, thumbnailSize);
              } else if (isMostRecentRequest) {
@@ -31,7 +31,7 @@ diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser
              }
          };
          if (sThumbnailFetcherForTesting != null) {
-@@ -325,6 +329,7 @@ class TabGridViewBinder {
+@@ -324,6 +328,7 @@ class TabGridViewBinder {
       */
      private static void setFavicon(ViewLookupCachingFrameLayout rootView, PropertyModel model,
              TabListFaviconProvider.TabFavicon favicon) {
@@ -67,7 +67,7 @@ diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser
 diff --git a/chrome/android/java/res/xml/privacy_preferences.xml b/chrome/android/java/res/xml/privacy_preferences.xml
 --- a/chrome/android/java/res/xml/privacy_preferences.xml
 +++ b/chrome/android/java/res/xml/privacy_preferences.xml
-@@ -94,6 +94,11 @@ found in the LICENSE file.
+@@ -53,6 +53,11 @@ found in the LICENSE file.
          android:title="@string/open_external_links_incognito_title"
          android:summary="@string/open_external_links_incognito_summary"
          android:defaultValue="false" />
@@ -77,20 +77,20 @@ diff --git a/chrome/android/java/res/xml/privacy_preferences.xml b/chrome/androi
 +        android:summary="@string/tabgrid_use_icons_summary"
 +        android:defaultValue="false" />
      <Preference
-         android:key="privacy_sandbox"
-         android:title="@string/prefs_privacy_sandbox"
+         android:key="preload_pages"
+         android:title="@string/preload_pages_title"
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActivity.java b/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActivity.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActivity.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActivity.java
-@@ -142,6 +142,7 @@ import org.chromium.chrome.browser.preferences.ChromePreferenceKeys;
+@@ -144,6 +144,7 @@ import org.chromium.chrome.browser.preferences.ChromePreferenceKeys;
+ import org.chromium.chrome.browser.preferences.ChromeSharedPreferences;
  import org.chromium.chrome.browser.preferences.Pref;
- import org.chromium.chrome.browser.preferences.SharedPreferencesManager;
  import org.chromium.chrome.browser.printing.TabPrinter;
 +import org.chromium.chrome.browser.privacy.settings.PrivacySettings;
  import org.chromium.chrome.browser.profiles.Profile;
  import org.chromium.chrome.browser.readaloud.ReadAloudController;
  import org.chromium.chrome.browser.selection.SelectionPopupBackPressHandler;
-@@ -658,7 +659,7 @@ public abstract class ChromeActivity<C extends ChromeActivityComponent>
+@@ -663,7 +664,7 @@ public abstract class ChromeActivity<C extends ChromeActivityComponent>
  
              TabModelSelector tabModelSelector = mTabModelOrchestrator.getTabModelSelector();
              setTabContentManager(new TabContentManager(this, mBrowserControlsManagerSupplier.get(),
@@ -102,7 +102,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActiv
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/compositor/layouts/content/TabContentManager.java b/chrome/android/java/src/org/chromium/chrome/browser/compositor/layouts/content/TabContentManager.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/compositor/layouts/content/TabContentManager.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/compositor/layouts/content/TabContentManager.java
-@@ -344,9 +344,12 @@ public class TabContentManager {
+@@ -345,9 +345,12 @@ public class TabContentManager {
       * @param forceUpdate Whether to obtain the thumbnail from the live content.
       * @param writeBack When {@code forceUpdate}, whether to write the thumbnail to cache.
       */
@@ -120,7 +120,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/compositor/layo
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/PrivacySettings.java b/chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/PrivacySettings.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/PrivacySettings.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/PrivacySettings.java
-@@ -65,6 +65,11 @@ import org.chromium.chrome.browser.preferences.SharedPreferencesManager;
+@@ -66,6 +66,11 @@ import org.chromium.chrome.browser.preferences.ChromeSharedPreferences;
  import org.chromium.components.browser_ui.settings.ChromeSwitchPreference;
  import org.chromium.components.browser_ui.settings.ManagedPreferenceDelegate;
  
@@ -132,7 +132,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/privacy/setting
  import java.util.ArrayList;
  import java.util.List;
  
-@@ -72,7 +77,15 @@ import java.util.List;
+@@ -73,7 +78,15 @@ import java.util.List;
   * Fragment to keep track of the all the privacy related preferences.
   */
  public class PrivacySettings
@@ -149,7 +149,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/privacy/setting
      private static final String PREF_CAN_MAKE_PAYMENT = "can_make_payment";
      private static final String PREF_PRELOAD_PAGES = "preload_pages";
      private static final String PREF_HTTPS_FIRST_MODE = "https_first_mode";
-@@ -139,6 +152,21 @@ public class PrivacySettings
+@@ -136,6 +149,21 @@ public class PrivacySettings
              }
          }
  
@@ -171,7 +171,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/privacy/setting
          Preference privacyGuidePreference = findPreference(PREF_PRIVACY_GUIDE);
          // Record the launch of PG from the S&P link-row entry point
          privacyGuidePreference.setOnPreferenceClickListener(preference -> {
-@@ -294,6 +322,7 @@ public class PrivacySettings
+@@ -293,6 +321,7 @@ public class PrivacySettings
  
      public static final String PREF_ALLOW_CUSTOM_TAB_INTENTS = "allow_custom_tab_intents";
      public static final String PREF_OPEN_EXTERNAL_LINKS_INCOGNITO = "open_external_links_incognito";
@@ -179,7 +179,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/privacy/setting
  
      @Override
      public boolean onPreferenceChange(Preference preference, Object newValue) {
-@@ -319,6 +348,13 @@ public class PrivacySettings
+@@ -318,6 +347,13 @@ public class PrivacySettings
              SharedPreferences.Editor sharedPreferencesEditor = ContextUtils.getAppSharedPreferences().edit();
              sharedPreferencesEditor.putBoolean(PREF_OPEN_EXTERNAL_LINKS_INCOGNITO, (boolean)newValue);
              sharedPreferencesEditor.apply();
@@ -193,7 +193,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/privacy/setting
          }
          return true;
      }
-@@ -361,6 +397,10 @@ public class PrivacySettings
+@@ -360,6 +396,10 @@ public class PrivacySettings
                              : R.string.text_off);
          }
  
@@ -207,7 +207,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/privacy/setting
 diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chrome/browser/ui/android/strings/android_chrome_strings.grd
 --- a/chrome/browser/ui/android/strings/android_chrome_strings.grd
 +++ b/chrome/browser/ui/android/strings/android_chrome_strings.grd
-@@ -5463,6 +5463,14 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
+@@ -5390,6 +5390,14 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
          Your <ph name="FQDN">%1$s<ex>www.amazon.com</ex></ph> timer ran out. It'll start again tomorrow.
        </message>
  

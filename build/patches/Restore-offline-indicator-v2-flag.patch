@@ -90,7 +90,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/offlinepages/in
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tabbed_mode/TabbedRootUiCoordinator.java b/chrome/android/java/src/org/chromium/chrome/browser/tabbed_mode/TabbedRootUiCoordinator.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/tabbed_mode/TabbedRootUiCoordinator.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/tabbed_mode/TabbedRootUiCoordinator.java
-@@ -837,7 +837,8 @@ public class TabbedRootUiCoordinator extends RootUiCoordinator {
+@@ -848,7 +848,8 @@ public class TabbedRootUiCoordinator extends RootUiCoordinator {
      private void initStatusIndicatorCoordinator(LayoutManagerImpl layoutManager) {
          // TODO(crbug.com/1035584): Disable on tablets for now as we need to do one or two extra
          // things for tablets.
@@ -100,7 +100,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tabbed_mode/Tab
              return;
          }
  
-@@ -859,6 +860,11 @@ public class TabbedRootUiCoordinator extends RootUiCoordinator {
+@@ -870,6 +871,11 @@ public class TabbedRootUiCoordinator extends RootUiCoordinator {
          mStatusIndicatorCoordinator.addObserver(mStatusIndicatorObserver);
          mStatusIndicatorCoordinator.addObserver(mStatusBarColorController);
  
@@ -115,14 +115,14 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tabbed_mode/Tab
 diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browser/flags/android/chrome_feature_list.cc
 --- a/chrome/browser/flags/android/chrome_feature_list.cc
 +++ b/chrome/browser/flags/android/chrome_feature_list.cc
-@@ -273,6 +273,7 @@ const base::Feature* const kFeaturesExposedToJava[] = {
+@@ -270,6 +270,7 @@ const base::Feature* const kFeaturesExposedToJava[] = {
      &kNewTabSearchEngineUrlAndroid,
      &kNotificationPermissionVariant,
      &kNotificationPermissionBottomSheet,
 +    &kOfflineIndicatorV2,
      &kPageAnnotationsService,
+     &kPaintPreviewNewColdStartHeuristic,
      &kPreconnectOnTabCreation,
-     &kInlineUpdateFlow,
 diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 --- a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 +++ b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java

@@ -10,12 +10,12 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 diff --git a/third_party/blink/renderer/platform/runtime_enabled_features.json5 b/third_party/blink/renderer/platform/runtime_enabled_features.json5
 --- a/third_party/blink/renderer/platform/runtime_enabled_features.json5
 +++ b/third_party/blink/renderer/platform/runtime_enabled_features.json5
-@@ -3152,8 +3152,8 @@
+@@ -3232,8 +3232,8 @@
        status: "stable",
      },
      {
 -      name: "RemoveDataUrlInSvgUse",
--      status: "experimental",
+-      status: "stable",
 +      name: "RemoveDataUrlInSvgUse",  // enabled
 +      status: "stable",               // by default
      },

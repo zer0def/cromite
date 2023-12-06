@@ -95,7 +95,7 @@ diff --git a/chrome/browser/extensions/BUILD.gn b/chrome/browser/extensions/BUIL
      "api/favicon/favicon_util.cc",
      "api/favicon/favicon_util.h",
      "api/feedback_private/chrome_feedback_private_delegate.cc",
-@@ -827,6 +835,7 @@ static_library("extensions") {
+@@ -818,6 +826,7 @@ static_library("extensions") {
      "//chrome/browser/safe_browsing:metrics_collector",
      "//chrome/browser/ui/tabs:tab_enums",
      "//chrome/browser/web_applications",
@@ -2155,7 +2155,7 @@ diff --git a/chrome/browser/extensions/api/api_browser_context_keyed_service_fac
  #include "chrome/browser/extensions/api/font_settings/font_settings_api.h"
  #include "chrome/browser/extensions/api/history/history_api.h"
  #include "chrome/browser/extensions/api/identity/identity_api.h"
-@@ -73,6 +79,7 @@ namespace chrome_extensions {
+@@ -74,6 +80,7 @@ namespace chrome_extensions {
  
  void EnsureApiBrowserContextKeyedServiceFactoriesBuilt() {
    extensions::ActivityLogAPI::GetFactoryInstance();
@@ -2163,9 +2163,9 @@ diff --git a/chrome/browser/extensions/api/api_browser_context_keyed_service_fac
    extensions::AutofillPrivateEventRouterFactory::GetInstance();
    extensions::BluetoothLowEnergyAPI::GetFactoryInstance();
    extensions::BookmarksAPI::GetFactoryInstance();
-@@ -82,6 +89,7 @@ void EnsureApiBrowserContextKeyedServiceFactoriesBuilt() {
-   extensions::CookiesAPI::GetFactoryInstance();
-   extensions::DeveloperPrivateAPI::GetFactoryInstance();
+@@ -86,6 +93,7 @@ void EnsureApiBrowserContextKeyedServiceFactoriesBuilt() {
+   extensions::DocumentScanAPIHandler::GetFactoryInstance();
+ #endif
    extensions::ExtensionActionAPI::GetFactoryInstance();
 +  extensions::EyeoFilteringPrivateAPI::GetFactoryInstance();
    extensions::FontSettingsAPI::GetFactoryInstance();
@@ -3577,7 +3577,7 @@ diff --git a/chrome/common/extensions/api/_api_features.json b/chrome/common/ext
  
  // This features file defines extension APIs implemented under src/chrome.
  // See chrome/common/extensions/api/_features.md to understand this file, as
-@@ -95,6 +99,16 @@
+@@ -94,6 +98,16 @@
        "chrome://extensions/*"
      ]
    }],
@@ -3594,7 +3594,7 @@ diff --git a/chrome/common/extensions/api/_api_features.json b/chrome/common/ext
    "app": {
      "blocklist": [
        "2FC374607C2DF285634B67C64A2E356C607091C3",  // Quickoffice
-@@ -497,6 +511,14 @@
+@@ -495,6 +509,14 @@
      "channel": "stable",
      "contexts": []
    },
@@ -3634,7 +3634,7 @@ diff --git a/chrome/common/extensions/api/_permission_features.json b/chrome/com
    "autofillPrivate": {
      "channel": "trunk",
      "extension_types": ["extension", "platform_app"],
-@@ -343,6 +351,10 @@
+@@ -352,6 +360,10 @@
        "extension", "legacy_packaged_app", "hosted_app", "platform_app"
      ]
    },
@@ -4120,7 +4120,7 @@ diff --git a/chrome/common/extensions/permissions/permission_set_unittest.cc b/c
 diff --git a/chrome/test/BUILD.gn b/chrome/test/BUILD.gn
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -3592,6 +3592,12 @@ if (!is_android) {
+@@ -3716,6 +3716,12 @@ if (!is_android) {
          ]
        }
  
@@ -5439,7 +5439,7 @@ diff --git a/tools/metrics/histograms/enums.xml b/tools/metrics/histograms/enums
  -->
  
  <histogram-configuration>
-@@ -35307,7 +35310,7 @@ Called by update_extension_histograms.py.-->
+@@ -35688,7 +35691,7 @@ Called by update_extension_histograms.py.-->
    <int value="19" label="APP_WINDOW_ON_MAXIMIZED"/>
    <int value="20" label="APP_WINDOW_ON_MINIMIZED"/>
    <int value="21" label="APP_WINDOW_ON_RESTORED"/>
@@ -5448,7 +5448,7 @@ diff --git a/tools/metrics/histograms/enums.xml b/tools/metrics/histograms/enums
    <int value="23" label="DELETED_AUDIO_MODEM_ON_TRANSMIT_FAIL"/>
    <int value="24" label="DELETED_AUDIO_ON_DEVICE_CHANGED"/>
    <int value="25" label="AUDIO_ON_DEVICES_CHANGED"/>
-@@ -38455,6 +38458,8 @@ Called by update_extension_permission.py.-->
+@@ -38829,6 +38832,8 @@ Called by update_extension_permission.py.-->
    <int value="252" label="kAccessibilityServicePrivate"/>
    <int value="253" label="kUserScripts"/>
    <int value="254" label="kChromeOSBluetoothPeripheralsInfo"/>

@@ -12,16 +12,16 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../android/java/res/layout/ntp_shortcuts.xml | 65 +++++++++++++++++++
  .../feedback/ChromeFeedbackCollector.java     |  1 +
  .../feedback/SimplifiedNtpFeedbackSource.java | 38 +++++++++++
+ .../identity_disc/IdentityDiscController.java |  5 +-
  .../NativePageNavigationDelegateImpl.java     |  4 +-
  .../chrome/browser/ntp/NewTabPageLayout.java  | 30 ++++++++-
  .../SuggestionsNavigationDelegate.java        | 17 +++++
  .../flags/android/chrome_feature_list.cc      |  1 +
  .../browser/flags/ChromeFeatureList.java      |  1 +
- .../signin/public/base/signin_switches.cc     |  3 +
  .../Restore-Simplified-NTP-launch.inc         | 12 ++++
  .../Restore-Simplified-NTP-launch.inc         |  3 +
  .../Restore-Simplified-NTP-launch.inc         |  1 +
- 15 files changed, 181 insertions(+), 4 deletions(-)
+ 15 files changed, 182 insertions(+), 5 deletions(-)
  create mode 100644 chrome/android/java/res/layout/ntp_shortcuts.xml
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/feedback/SimplifiedNtpFeedbackSource.java
  create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Restore-Simplified-NTP-launch.inc
@@ -31,7 +31,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 diff --git a/chrome/android/chrome_java_resources.gni b/chrome/android/chrome_java_resources.gni
 --- a/chrome/android/chrome_java_resources.gni
 +++ b/chrome/android/chrome_java_resources.gni
-@@ -561,6 +561,7 @@ chrome_java_resources = [
+@@ -566,6 +566,7 @@ chrome_java_resources = [
    "java/res/layout/new_tab_page_incognito.xml",
    "java/res/layout/new_tab_page_layout.xml",
    "java/res/layout/new_tab_page_tile_grid_placeholder.xml",
@@ -42,7 +42,7 @@ diff --git a/chrome/android/chrome_java_resources.gni b/chrome/android/chrome_ja
 diff --git a/chrome/android/chrome_java_sources.gni b/chrome/android/chrome_java_sources.gni
 --- a/chrome/android/chrome_java_sources.gni
 +++ b/chrome/android/chrome_java_sources.gni
-@@ -623,6 +623,7 @@ chrome_java_sources = [
+@@ -626,6 +626,7 @@ chrome_java_sources = [
    "java/src/org/chromium/chrome/browser/feedback/FeedFeedbackCollector.java",
    "java/src/org/chromium/chrome/browser/feedback/HelpAndFeedbackLauncherImpl.java",
    "java/src/org/chromium/chrome/browser/feedback/ScreenshotTask.java",
@@ -191,6 +191,21 @@ new file mode 100644
 +        return mMap;
 +    }
 +}
+diff --git a/chrome/android/java/src/org/chromium/chrome/browser/identity_disc/IdentityDiscController.java b/chrome/android/java/src/org/chromium/chrome/browser/identity_disc/IdentityDiscController.java
+--- a/chrome/android/java/src/org/chromium/chrome/browser/identity_disc/IdentityDiscController.java
++++ b/chrome/android/java/src/org/chromium/chrome/browser/identity_disc/IdentityDiscController.java
+@@ -165,7 +165,10 @@ public class IdentityDiscController implements NativeInitObserver, ProfileDataCa
+ 
+         mButtonData.setButtonSpec(
+                 buttonSpecWithDrawableAndDescription(mButtonData.getButtonSpec(), email));
+-        mButtonData.setCanShow(true);
++        if (email == null)
++            mButtonData.setCanShow(false);
++        else
++            mButtonData.setCanShow(true);
+     }
+ 
+     private ButtonSpec buttonSpecWithDrawableAndDescription(
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/native_page/NativePageNavigationDelegateImpl.java b/chrome/android/java/src/org/chromium/chrome/browser/native_page/NativePageNavigationDelegateImpl.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/native_page/NativePageNavigationDelegateImpl.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/native_page/NativePageNavigationDelegateImpl.java
@@ -226,7 +241,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ntp/NewTabPageL
      /**
       * Whether the tiles shown in the layout have finished loading.
       * With {@link #mHasShownView}, it's one of the 2 flags used to track initialisation progress.
-@@ -277,6 +280,7 @@ public class NewTabPageLayout extends LinearLayout {
+@@ -278,6 +281,7 @@ public class NewTabPageLayout extends LinearLayout {
          initializeMostVisitedTilesCoordinator(profile, lifecycleDispatcher, tileGroupDelegate,
                  touchEnabledDelegate, isScrollableMvtEnabled(), searchProviderIsGoogle);
          initializeSearchBoxBackground();
@@ -234,7 +249,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ntp/NewTabPageL
          initializeSearchBoxTextView();
          initializeVoiceSearchButton();
          initializeLensButton();
-@@ -702,16 +706,22 @@ public class NewTabPageLayout extends LinearLayout {
+@@ -703,16 +707,22 @@ public class NewTabPageLayout extends LinearLayout {
                  marginLayoutParams.leftMargin = lateralPaddingsForNTP;
                  marginLayoutParams.rightMargin = lateralPaddingsForNTP;
              }
@@ -245,7 +260,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ntp/NewTabPageL
                              ? R.dimen.tile_grid_layout_top_margin
                              : R.dimen.tile_grid_layout_no_logo_top_margin);
 +            }
-             marginLayoutParams.bottomMargin = getResources().getDimensionPixelOffset(
+             marginLayoutParams.bottomMargin = getResources().getDimensionPixelSize(
                      R.dimen.tile_carousel_layout_bottom_margin);
          } else {
              // Set a bit more top padding on the tile grid if there is no logo.
@@ -259,7 +274,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ntp/NewTabPageL
              marginLayoutParams.bottomMargin = getGridMvtBottomMargin();
          }
  
-@@ -1013,6 +1023,22 @@ public class NewTabPageLayout extends LinearLayout {
+@@ -1014,6 +1024,22 @@ public class NewTabPageLayout extends LinearLayout {
          return iphCommandBuilder;
      }
  
@@ -319,7 +334,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/suggestions/Sug
 diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browser/flags/android/chrome_feature_list.cc
 --- a/chrome/browser/flags/android/chrome_feature_list.cc
 +++ b/chrome/browser/flags/android/chrome_feature_list.cc
-@@ -263,6 +263,7 @@ const base::Feature* const kFeaturesExposedToJava[] = {
+@@ -260,6 +260,7 @@ const base::Feature* const kFeaturesExposedToJava[] = {
      &kIncognitoReauthenticationForAndroid,
      &kIncognitoScreenshot,
      &kInfobarScrollOptimization,
@@ -338,17 +353,6 @@ diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/f
      public static final String MESSAGES_FOR_ANDROID_INFRASTRUCTURE =
              "MessagesForAndroidInfrastructure";
      public static final String MESSAGES_FOR_ANDROID_PERMISSION_UPDATE =
-diff --git a/components/signin/public/base/signin_switches.cc b/components/signin/public/base/signin_switches.cc
---- a/components/signin/public/base/signin_switches.cc
-+++ b/components/signin/public/base/signin_switches.cc
-@@ -84,4 +84,7 @@ BASE_FEATURE(kSearchEngineChoiceFre,
- 
- BASE_FEATURE(kUnoDesktop, "UnoDesktop", base::FEATURE_DISABLED_BY_DEFAULT);
- 
-+#if BUILDFLAG(IS_ANDROID)
-+SET_CROMITE_FEATURE_DISABLED(kIdentityStatusConsistency);
-+#endif
- }  // namespace switches
 diff --git a/cromite_flags/chrome/browser/about_flags_cc/Restore-Simplified-NTP-launch.inc b/cromite_flags/chrome/browser/about_flags_cc/Restore-Simplified-NTP-launch.inc
 new file mode 100644
 --- /dev/null

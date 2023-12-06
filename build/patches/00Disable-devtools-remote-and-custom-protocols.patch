@@ -3,12 +3,12 @@ Date: Mon, 17 Apr 2023 12:38:44 +0000
 Subject: Disable devtools remote and custom protocols
 
 ---
- chrome/browser/ui/webui/devtools_ui_data_source.cc | 4 ++--
+ chrome/browser/ui/webui/devtools/devtools_ui_data_source.cc | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/chrome/browser/ui/webui/devtools_ui_data_source.cc b/chrome/browser/ui/webui/devtools_ui_data_source.cc
---- a/chrome/browser/ui/webui/devtools_ui_data_source.cc
-+++ b/chrome/browser/ui/webui/devtools_ui_data_source.cc
+diff --git a/chrome/browser/ui/webui/devtools/devtools_ui_data_source.cc b/chrome/browser/ui/webui/devtools/devtools_ui_data_source.cc
+--- a/chrome/browser/ui/webui/devtools/devtools_ui_data_source.cc
++++ b/chrome/browser/ui/webui/devtools/devtools_ui_data_source.cc
 @@ -175,7 +175,7 @@ void DevToolsDataSource::StartDataRequest(
    // Serve request to devtools://remote from remote location.
    std::string remote_path_prefix(chrome::kChromeUIDevToolsRemotePath);

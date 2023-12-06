@@ -141,9 +141,9 @@ diff --git a/chrome/android/java/res/xml/main_preferences.xml b/chrome/android/j
      xmlns:app="http://schemas.android.com/apk/res-auto"
      android:orderingFromXml="false">
 @@ -75,6 +66,11 @@ Use of this source code is governed by the GPLv3 that can be found in the compon
-         android:key="safety_check"
-         android:order="12"
-         android:title="@string/prefs_safety_check"/>
+         android:key="adblock"
+         android:order="13"
+         android:title="@string/prefs_adblock"/>
 +    <Preference
 +        android:fragment="org.chromium.components.adblock.settings.AdblockSettingsFragment"
 +        android:key="eyeo_adblock"
@@ -167,7 +167,7 @@ diff --git a/chrome/android/java/res/xml/main_preferences.xml b/chrome/android/j
 diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -165,8 +165,6 @@ static_library("browser") {
+@@ -166,8 +166,6 @@ static_library("browser") {
      "adblock/adblock_content_browser_client.h",
      "adblock/adblock_controller_factory.cc",
      "adblock/adblock_controller_factory.h",
@@ -469,7 +469,7 @@ diff --git a/chrome/browser/profiles/chrome_browser_main_extra_parts_profiles.cc
  #include "chrome/browser/adblock/content_security_policy_injector_factory.h"
  #include "chrome/browser/adblock/element_hider_factory.h"
  #include "chrome/browser/adblock/resource_classification_runner_factory.h"
-@@ -756,7 +755,6 @@ void ChromeBrowserMainExtraPartsProfiles::
+@@ -781,7 +780,6 @@ void ChromeBrowserMainExtraPartsProfiles::
    ExitTypeServiceFactory::GetInstance();
  #endif
    adblock::AdblockControllerFactory::GetInstance();
@@ -488,7 +488,7 @@ diff --git a/chrome/browser/resources/settings/BUILD.gn b/chrome/browser/resourc
      "appearance_page/appearance_fonts_page.ts",
      "appearance_page/appearance_page.ts",
      "appearance_page/home_url_input.ts",
-@@ -372,6 +373,7 @@ build_webui("build") {
+@@ -374,6 +375,7 @@ build_webui("build") {
    ts_composite = true
    ts_definitions = [
      "//tools/typescript/definitions/autofill_private.d.ts",
@@ -1041,7 +1041,7 @@ diff --git a/chrome/browser/resources/settings/page_visibility.ts b/chrome/brows
 diff --git a/chrome/browser/resources/settings/route.ts b/chrome/browser/resources/settings/route.ts
 --- a/chrome/browser/resources/settings/route.ts
 +++ b/chrome/browser/resources/settings/route.ts
-@@ -187,6 +187,10 @@ function createBrowserSettingsRoutes(): SettingsRoutes {
+@@ -189,6 +189,10 @@ function createBrowserSettingsRoutes(): SettingsRoutes {
      r.FONTS = r.APPEARANCE.createChild('/fonts');
    }
  
@@ -1066,7 +1066,7 @@ diff --git a/chrome/browser/resources/settings/router.ts b/chrome/browser/resour
 diff --git a/chrome/browser/resources/settings/settings.ts b/chrome/browser/resources/settings/settings.ts
 --- a/chrome/browser/resources/settings/settings.ts
 +++ b/chrome/browser/resources/settings/settings.ts
-@@ -47,6 +47,7 @@ export {AppearanceBrowserProxy, AppearanceBrowserProxyImpl} from './appearance_p
+@@ -48,6 +48,7 @@ export {AppearanceBrowserProxy, AppearanceBrowserProxyImpl} from './appearance_p
  export {SettingsAppearancePageElement, SystemTheme} from './appearance_page/appearance_page.js';
  export {HomeUrlInputElement} from './appearance_page/home_url_input.js';
  export {SettingsAutofillPageElement} from './autofill_page/autofill_page.js';
@@ -1077,7 +1077,7 @@ diff --git a/chrome/browser/resources/settings/settings.ts b/chrome/browser/reso
 diff --git a/chrome/browser/resources/settings/settings_menu/settings_menu.html b/chrome/browser/resources/settings/settings_menu/settings_menu.html
 --- a/chrome/browser/resources/settings/settings_menu/settings_menu.html
 +++ b/chrome/browser/resources/settings/settings_menu/settings_menu.html
-@@ -140,6 +140,11 @@
+@@ -141,6 +141,11 @@
            $i18n{a11yPageTitle}
            <paper-ripple></paper-ripple>
          </a>
@@ -1100,7 +1100,7 @@ diff --git a/chrome/browser/ui/tab_helpers.cc b/chrome/browser/ui/tab_helpers.cc
  #include "chrome/browser/bookmarks/bookmark_model_factory.h"
  #include "chrome/browser/breadcrumbs/breadcrumb_manager_tab_helper.h"
  #include "chrome/browser/browser_process.h"
-@@ -350,6 +351,8 @@ void TabHelpers::AttachTabHelpers(WebContents* web_contents) {
+@@ -362,6 +363,8 @@ void TabHelpers::AttachTabHelpers(WebContents* web_contents) {
      }
    }
  
@@ -1109,7 +1109,7 @@ diff --git a/chrome/browser/ui/tab_helpers.cc b/chrome/browser/ui/tab_helpers.cc
    AdblockWebContentObserver::CreateForWebContents(
        web_contents,
        adblock::SubscriptionServiceFactory::GetForBrowserContext(
-@@ -358,7 +361,8 @@ void TabHelpers::AttachTabHelpers(WebContents* web_contents) {
+@@ -370,7 +373,8 @@ void TabHelpers::AttachTabHelpers(WebContents* web_contents) {
            web_contents->GetBrowserContext()),
        adblock::SitekeyStorageFactory::GetForBrowserContext(
            web_contents->GetBrowserContext()),
@@ -1117,7 +1117,7 @@ diff --git a/chrome/browser/ui/tab_helpers.cc b/chrome/browser/ui/tab_helpers.cc
 +      std::make_unique<adblock::FrameHierarchyBuilder>(),
 +      HostContentSettingsMapFactory::GetForProfile(profile));
    autofill::ChromeAutofillClient::CreateForWebContents(web_contents);
-   if (breadcrumbs::IsEnabled())
+   if (breadcrumbs::IsEnabled()) {
      BreadcrumbManagerTabHelper::CreateForWebContents(web_contents);
 diff --git a/chrome/browser/ui/webui/adblock_internals/adblock_internals_page_handler_impl.cc b/chrome/browser/ui/webui/adblock_internals/adblock_internals_page_handler_impl.cc
 --- a/chrome/browser/ui/webui/adblock_internals/adblock_internals_page_handler_impl.cc
@@ -1184,7 +1184,7 @@ diff --git a/chrome/common/extensions/api/_permission_features.json b/chrome/com
    "autofillPrivate": {
      "channel": "trunk",
      "extension_types": ["extension", "platform_app"],
-@@ -351,10 +347,6 @@
+@@ -360,10 +356,6 @@
        "extension", "legacy_packaged_app", "hosted_app", "platform_app"
      ]
    },
@@ -1223,15 +1223,15 @@ diff --git a/chrome/common/extensions/api/adblock_private.idl b/chrome/common/ex
 diff --git a/chrome/test/BUILD.gn b/chrome/test/BUILD.gn
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -28,7 +28,6 @@ import("//chrome/test/base/js2gtest.gni")
+@@ -27,7 +27,6 @@ import("//chrome/services/speech/buildflags/buildflags.gni")
  import("//chrome/test/include_js_tests.gni")
  import("//chrome/version.gni")
  import("//chromeos/ash/components/assistant/assistant.gni")
 -import("//components/adblock/features.gni")
  import("//components/captive_portal/core/features.gni")
+ import("//components/compose/features.gni")
  import("//components/enterprise/buildflags/buildflags.gni")
- import("//components/feed/features.gni")
-@@ -2754,10 +2753,6 @@ if (!is_android) {
+@@ -2867,10 +2866,6 @@ if (!is_android) {
        sources += [ "../browser/chrome_for_testing/chrome_for_testing_info_bar_browsertest.cc" ]
      }
  
@@ -4395,7 +4395,7 @@ new file mode 100644
 diff --git a/components/resources/BUILD.gn b/components/resources/BUILD.gn
 --- a/components/resources/BUILD.gn
 +++ b/components/resources/BUILD.gn
-@@ -76,7 +76,6 @@ grit("components_resources") {
+@@ -78,7 +78,6 @@ grit("components_resources") {
  
    deps += [
      "//components/resources/adblocking:copy_snippets_lib",
@@ -11963,7 +11963,7 @@ new file mode 100755
 diff --git a/third_party/blink/renderer/core/css/style_engine.cc b/third_party/blink/renderer/core/css/style_engine.cc
 --- a/third_party/blink/renderer/core/css/style_engine.cc
 +++ b/third_party/blink/renderer/core/css/style_engine.cc
-@@ -623,6 +623,14 @@ void StyleEngine::UpdateActiveStyleSheetsInShadow(
+@@ -626,6 +626,14 @@ void StyleEngine::UpdateActiveStyleSheetsInShadow(
    }
  }
  
@@ -11981,7 +11981,7 @@ diff --git a/third_party/blink/renderer/core/css/style_engine.cc b/third_party/b
 diff --git a/third_party/blink/renderer/core/css/style_engine.h b/third_party/blink/renderer/core/css/style_engine.h
 --- a/third_party/blink/renderer/core/css/style_engine.h
 +++ b/third_party/blink/renderer/core/css/style_engine.h
-@@ -243,6 +243,7 @@ class CORE_EXPORT StyleEngine final : public GarbageCollected<StyleEngine>,
+@@ -246,6 +246,7 @@ class CORE_EXPORT StyleEngine final : public GarbageCollected<StyleEngine>,
        const ComputedStyle* embedder_style) const;
    void ViewportStyleSettingChanged();
  

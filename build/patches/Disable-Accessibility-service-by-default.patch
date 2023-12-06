@@ -14,7 +14,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chrome/browser/ui/android/strings/android_chrome_strings.grd
 --- a/chrome/browser/ui/android/strings/android_chrome_strings.grd
 +++ b/chrome/browser/ui/android/strings/android_chrome_strings.grd
-@@ -1826,6 +1826,12 @@ Your Google account may have other forms of browsing history like searches and a
+@@ -1719,6 +1719,12 @@ Your Google account may have other forms of browsing history like searches and a
        <message name="IDS_SAFETY_CHECK_BUTTON" desc="Text for the button to start Safety check.">
          Check now
        </message>
@@ -50,7 +50,7 @@ diff --git a/components/browser_ui/accessibility/android/java/src/org/chromium/c
  import org.chromium.content_public.browser.ContentFeatureMap;
  
 +import org.chromium.chrome.browser.preferences.ChromePreferenceKeys;
-+import org.chromium.chrome.browser.preferences.SharedPreferencesManager;
++import org.chromium.chrome.browser.preferences.ChromeSharedPreferences;
 +
  /**
   * Fragment to keep track of all the accessibility related preferences.
@@ -58,7 +58,7 @@ diff --git a/components/browser_ui/accessibility/android/java/src/org/chromium/c
 diff --git a/content/public/android/java/src/org/chromium/content/browser/accessibility/WebContentsAccessibilityImpl.java b/content/public/android/java/src/org/chromium/content/browser/accessibility/WebContentsAccessibilityImpl.java
 --- a/content/public/android/java/src/org/chromium/content/browser/accessibility/WebContentsAccessibilityImpl.java
 +++ b/content/public/android/java/src/org/chromium/content/browser/accessibility/WebContentsAccessibilityImpl.java
-@@ -1021,6 +1021,11 @@ public class WebContentsAccessibilityImpl extends AccessibilityNodeProviderCompa
+@@ -1024,6 +1024,11 @@ public class WebContentsAccessibilityImpl extends AccessibilityNodeProviderCompa
              structure.setChildCount(0);
              return;
          }

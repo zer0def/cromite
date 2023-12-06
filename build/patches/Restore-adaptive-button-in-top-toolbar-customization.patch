@@ -27,8 +27,8 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/settings/MainSe
 +import org.chromium.chrome.browser.toolbar.adaptive.AdaptiveToolbarFeatures;
  import org.chromium.chrome.browser.toolbar.adaptive.AdaptiveToolbarStatePredictor;
  import org.chromium.chrome.browser.tracing.settings.DeveloperSettings;
- import org.chromium.components.browser_ui.settings.ChromeBasePreference;
-@@ -225,7 +226,9 @@ public class MainSettings extends ChromeBaseSettingsFragment
+ import org.chromium.chrome.browser.ui.signin.SyncPromoController;
+@@ -233,7 +234,9 @@ public class MainSettings extends ChromeBaseSettingsFragment
  
          new AdaptiveToolbarStatePredictor(null).recomputeUiState(uiState -> {
              // We don't show the toolbar shortcut settings page if disabled from finch.
@@ -89,7 +89,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/share/ShareButt
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -675,18 +675,12 @@ const FeatureEntry::FeatureParam kAdaptiveButtonCustomization_Share[] = {
+@@ -689,18 +689,12 @@ const FeatureEntry::FeatureParam kAdaptiveButtonCustomization_Share[] = {
      {"default_segment", "share"},
      {"show_ui_only_after_ready", "false"},
      {"ignore_segmentation_results", "true"}};
@@ -111,13 +111,13 @@ diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 diff --git a/chrome/browser/flag-metadata.json b/chrome/browser/flag-metadata.json
 --- a/chrome/browser/flag-metadata.json
 +++ b/chrome/browser/flag-metadata.json
-@@ -49,9 +49,10 @@
+@@ -47,9 +47,10 @@
      "expiry_milestone": 120
    },
    {
 +    // restored in Bromite
      "name": "adaptive-button-in-top-toolbar-customization",
-     "owners": [ "shaktisahu", "chrome-segmentation-platform@google.com" ],
+     "owners": [ "shaktisahu@chromium.org", "chrome-segmentation-platform@google.com" ],
 -    "expiry_milestone": 120
 +    "expiry_milestone": -1
    },
@@ -142,7 +142,7 @@ diff --git a/chrome/browser/ui/android/toolbar/java/src/org/chromium/chrome/brow
 diff --git a/chrome/browser/ui/android/toolbar/java/src/org/chromium/chrome/browser/toolbar/adaptive/AdaptiveToolbarFeatures.java b/chrome/browser/ui/android/toolbar/java/src/org/chromium/chrome/browser/toolbar/adaptive/AdaptiveToolbarFeatures.java
 --- a/chrome/browser/ui/android/toolbar/java/src/org/chromium/chrome/browser/toolbar/adaptive/AdaptiveToolbarFeatures.java
 +++ b/chrome/browser/ui/android/toolbar/java/src/org/chromium/chrome/browser/toolbar/adaptive/AdaptiveToolbarFeatures.java
-@@ -16,8 +16,18 @@ import org.chromium.chrome.browser.signin.services.UnifiedConsentServiceBridge;
+@@ -16,8 +16,18 @@ import org.chromium.chrome.browser.readaloud.ReadAloudFeatures;
  
  /**
   * A utility class for handling feature flags used by {@link AdaptiveToolbarButtonController}.
@@ -260,7 +260,7 @@ diff --git a/chrome/browser/ui/android/toolbar/java/src/org/chromium/chrome/brow
 diff --git a/chrome/browser/ui/android/toolbar/java/src/org/chromium/chrome/browser/toolbar/adaptive/AdaptiveToolbarStatePredictorTest.java b/chrome/browser/ui/android/toolbar/java/src/org/chromium/chrome/browser/toolbar/adaptive/AdaptiveToolbarStatePredictorTest.java
 --- a/chrome/browser/ui/android/toolbar/java/src/org/chromium/chrome/browser/toolbar/adaptive/AdaptiveToolbarStatePredictorTest.java
 +++ b/chrome/browser/ui/android/toolbar/java/src/org/chromium/chrome/browser/toolbar/adaptive/AdaptiveToolbarStatePredictorTest.java
-@@ -68,6 +68,21 @@ public class AdaptiveToolbarStatePredictorTest {
+@@ -76,6 +76,21 @@ public class AdaptiveToolbarStatePredictorTest {
          statePredictor.recomputeUiState(verifyResultCallback(expected));
      }
  

@@ -39,7 +39,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../profiles/profile_shortcut_manager_win.cc  |   2 +-
  .../settings/settings_menu/settings_menu.html |   5 ++-
  .../strings/android_chrome_strings.grd        |   2 +-
- chrome/common/url_constants.cc                |   4 +-
+ chrome/common/url_constants.h                 |   4 +-
  .../strings/android/browser_ui_strings.grd    |   2 +-
  .../drawable-hdpi/fre_product_logo.png        | Bin 3912 -> 22295 bytes
  .../drawable-mdpi/fre_product_logo.png        | Bin 2490 -> 12171 bytes
@@ -116,7 +116,7 @@ diff --git a/chrome/android/java/res/xml/legal_information_preferences.xml b/chr
 diff --git a/chrome/android/java/res/xml/main_preferences.xml b/chrome/android/java/res/xml/main_preferences.xml
 --- a/chrome/android/java/res/xml/main_preferences.xml
 +++ b/chrome/android/java/res/xml/main_preferences.xml
-@@ -8,20 +8,20 @@
+@@ -14,20 +14,20 @@ found in the LICENSE file.
          android:order="0"/>
      <PreferenceCategory
          android:key="account_and_google_services_section"
@@ -13147,7 +13147,7 @@ e)fqMZZ`3a)Ds&5H<cfp<0000<MNUMnLSTYHt&Yn8
 diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -2078,6 +2078,7 @@ static_library("browser") {
+@@ -2083,6 +2083,7 @@ static_library("browser") {
      "//build:chromeos_buildflags",
      "//build/config/chromebox_for_meetings:buildflags",
      "//build/config/compiler:compiler_buildflags",
@@ -13158,7 +13158,7 @@ diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 diff --git a/chrome/browser/prefs/chrome_pref_service_factory.cc b/chrome/browser/prefs/chrome_pref_service_factory.cc
 --- a/chrome/browser/prefs/chrome_pref_service_factory.cc
 +++ b/chrome/browser/prefs/chrome_pref_service_factory.cc
-@@ -28,6 +28,7 @@
+@@ -24,6 +24,7 @@
  #include "build/branding_buildflags.h"
  #include "build/build_config.h"
  #include "build/chromeos_buildflags.h"
@@ -13166,7 +13166,7 @@ diff --git a/chrome/browser/prefs/chrome_pref_service_factory.cc b/chrome/browse
  #include "chrome/browser/browser_process.h"
  #include "chrome/browser/policy/chrome_browser_policy_connector.h"
  #include "chrome/browser/prefs/chrome_command_line_pref_store.h"
-@@ -285,10 +286,7 @@ std::unique_ptr<ProfilePrefStoreManager> CreateProfilePrefStoreManager(
+@@ -274,10 +275,7 @@ std::unique_ptr<ProfilePrefStoreManager> CreateProfilePrefStoreManager(
  #endif
    std::string seed;
    CHECK(ui::ResourceBundle::HasSharedInstance());
@@ -13209,7 +13209,7 @@ diff --git a/chrome/browser/resources/settings/settings_menu/settings_menu.html 
 diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chrome/browser/ui/android/strings/android_chrome_strings.grd
 --- a/chrome/browser/ui/android/strings/android_chrome_strings.grd
 +++ b/chrome/browser/ui/android/strings/android_chrome_strings.grd
-@@ -2296,7 +2296,7 @@ Your Google account may have other forms of browsing history like searches and a
+@@ -2189,7 +2189,7 @@ Your Google account may have other forms of browsing history like searches and a
          About Chrome
        </message>
        <message name="IDS_LEGAL_INFORMATION_SUMMARY" desc="Summary for legal information" meaning="Android">
@@ -13218,31 +13218,31 @@ diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chro
        </message>
        <message name="IDS_APPLICATION_VERSION_TITLE" desc="Title for application version">
          Application version
-diff --git a/chrome/common/url_constants.cc b/chrome/common/url_constants.cc
---- a/chrome/common/url_constants.cc
-+++ b/chrome/common/url_constants.cc
-@@ -79,7 +79,7 @@ const char kChromeHelpViaMenuURL[] =
+diff --git a/chrome/common/url_constants.h b/chrome/common/url_constants.h
+--- a/chrome/common/url_constants.h
++++ b/chrome/common/url_constants.h
+@@ -114,7 +114,7 @@ inline constexpr char kChromeHelpViaMenuURL[] =
  #endif  // BUILDFLAG(IS_CHROMEOS_ASH)
  
- const char kChromeHelpViaWebUIURL[] =
--    "https://support.google.com/chrome/?p=help&ctx=settings";
-+    "https://github.com/uazo/bromite-buildtools/issues";
+ inline constexpr char kChromeHelpViaWebUIURL[] =
+-    "https://support.google.com/chrome?p=help&ctx=settings";
++    "https://github.com/uazo/cromite/issues";
  #if BUILDFLAG(IS_CHROMEOS_ASH)
- const char kChromeOsHelpViaWebUIURL[] =
+ inline constexpr char kChromeOsHelpViaWebUIURL[] =
  #if BUILDFLAG(GOOGLE_CHROME_BRANDING)
-@@ -111,7 +111,7 @@ const char kChromeSearchScheme[] = "chrome-search";
- const char kChromeUIUntrustedNewTabPageUrl[] =
+@@ -180,7 +180,7 @@ inline constexpr char kChromeUIUntrustedNewTabPageUrl[] =
      "chrome-untrusted://new-tab-page/";
  
--const char kChromiumProjectURL[] = "https://www.chromium.org/";
-+const char kChromiumProjectURL[] = "https://github.com/uazo/bromite-buildtools/";
+ // The URL for the Chromium project used in the About dialog.
+-inline constexpr char16_t kChromiumProjectURL[] = u"https://www.chromium.org/";
++inline constexpr char16_t kChromiumProjectURL[] = u"https://www.cromite.org/";
  
- const char kContentSettingsExceptionsLearnMoreURL[] =
-     "https://support.google.com/chrome/?p=settings_manage_exceptions";
+ inline constexpr char16_t kContentSettingsExceptionsLearnMoreURL[] =
+     u"https://support.google.com/chrome?p=settings_manage_exceptions";
 diff --git a/components/browser_ui/strings/android/browser_ui_strings.grd b/components/browser_ui/strings/android/browser_ui_strings.grd
 --- a/components/browser_ui/strings/android/browser_ui_strings.grd
 +++ b/components/browser_ui/strings/android/browser_ui_strings.grd
-@@ -978,7 +978,7 @@
+@@ -1009,7 +1009,7 @@
  
        <!-- Accessibility preferences -->
        <message name="IDS_PREFS_ACCESSIBILITY" desc="Title of Accessibility settings, which allows the user to change webpage font sizes. [CHAR_LIMIT=32]">

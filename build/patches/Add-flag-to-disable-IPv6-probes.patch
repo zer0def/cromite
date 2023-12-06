@@ -45,9 +45,9 @@ new file mode 100644
 diff --git a/net/BUILD.gn b/net/BUILD.gn
 --- a/net/BUILD.gn
 +++ b/net/BUILD.gn
-@@ -1094,6 +1094,7 @@ component("net") {
+@@ -1096,6 +1096,7 @@ component("net") {
      "//build:chromeos_buildflags",
-     "//net/data/ssl/chrome_root_store:gen_root_store_inc",
+     "//components/miracle_parameter/common",
      "//net/http:transport_security_state_generated_files",
 +    "//components/network_session_configurator/common"
    ]
@@ -56,7 +56,7 @@ diff --git a/net/BUILD.gn b/net/BUILD.gn
 diff --git a/net/dns/host_resolver_manager.cc b/net/dns/host_resolver_manager.cc
 --- a/net/dns/host_resolver_manager.cc
 +++ b/net/dns/host_resolver_manager.cc
-@@ -110,6 +110,7 @@
+@@ -111,6 +111,7 @@
  #include "net/log/net_log_event_type.h"
  #include "net/log/net_log_source.h"
  #include "net/log/net_log_source_type.h"
@@ -64,7 +64,7 @@ diff --git a/net/dns/host_resolver_manager.cc b/net/dns/host_resolver_manager.cc
  #include "net/log/net_log_with_source.h"
  #include "net/socket/client_socket_factory.h"
  #include "net/url_request/url_request_context.h"
-@@ -685,6 +686,9 @@ class HostResolverManager::RequestImpl
+@@ -684,6 +685,9 @@ class HostResolverManager::RequestImpl
      // request source is LOCAL_ONLY. This is due to LOCAL_ONLY requiring a
      // synchronous response, so it cannot wait on an async probe result and
      // cannot make assumptions about reachability.

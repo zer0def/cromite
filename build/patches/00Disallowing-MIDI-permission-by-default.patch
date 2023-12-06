@@ -10,7 +10,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 diff --git a/components/permissions/features.cc b/components/permissions/features.cc
 --- a/components/permissions/features.cc
 +++ b/components/permissions/features.cc
-@@ -169,7 +169,7 @@ BASE_FEATURE(kWindowPlacementPermissionAlias,
+@@ -157,7 +157,7 @@ BASE_FEATURE(kShowRelatedWebsiteSetsPermissionGrants,
  // Enables disallowing MIDI permission by default.
  BASE_FEATURE(kBlockMidiByDefault,
               "BlockMidiByDefault",

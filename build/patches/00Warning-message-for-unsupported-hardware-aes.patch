@@ -51,7 +51,7 @@ diff --git a/base/base_switches.h b/base/base_switches.h
 diff --git a/chrome/BUILD.gn b/chrome/BUILD.gn
 --- a/chrome/BUILD.gn
 +++ b/chrome/BUILD.gn
-@@ -447,6 +447,7 @@ if (is_win) {
+@@ -449,6 +449,7 @@ if (is_win) {
        "//components/policy:generated",
        "//content/public/app",
        "//crypto",
@@ -59,7 +59,7 @@ diff --git a/chrome/BUILD.gn b/chrome/BUILD.gn
        "//headless:headless_non_renderer",
        "//headless:headless_shell_browser_lib",
        "//net:net_resources",
-@@ -1705,6 +1706,8 @@ if (is_android) {
+@@ -1714,6 +1715,8 @@ if (is_android) {
        "//chrome/common/profiler",
        "//chrome/gpu",
        "//chrome/renderer",
@@ -71,7 +71,7 @@ diff --git a/chrome/BUILD.gn b/chrome/BUILD.gn
 diff --git a/chrome/app/chrome_main_delegate.cc b/chrome/app/chrome_main_delegate.cc
 --- a/chrome/app/chrome_main_delegate.cc
 +++ b/chrome/app/chrome_main_delegate.cc
-@@ -105,6 +105,9 @@
+@@ -100,6 +100,9 @@
  #include "ui/base/resource/resource_bundle.h"
  #include "ui/base/resource/scoped_startup_resource_bundle.h"
  #include "ui/base/ui_base_switches.h"
@@ -81,7 +81,7 @@ diff --git a/chrome/app/chrome_main_delegate.cc b/chrome/app/chrome_main_delegat
  
  #if BUILDFLAG(IS_WIN)
  #include <malloc.h>
-@@ -1133,6 +1136,13 @@ absl::optional<int> ChromeMainDelegate::BasicStartupComplete() {
+@@ -1165,6 +1168,13 @@ absl::optional<int> ChromeMainDelegate::BasicStartupComplete() {
      return chrome::RESULT_CODE_INVALID_SANDBOX_STATE;
  #endif
  
@@ -98,7 +98,7 @@ diff --git a/chrome/app/chrome_main_delegate.cc b/chrome/app/chrome_main_delegat
 diff --git a/chrome/app/generated_resources.grd b/chrome/app/generated_resources.grd
 --- a/chrome/app/generated_resources.grd
 +++ b/chrome/app/generated_resources.grd
-@@ -7051,6 +7051,10 @@ Keep your key file in a safe place. You will need it to create new versions of y
+@@ -7122,6 +7122,10 @@ Keep your key file in a safe place. You will need it to create new versions of y
          You are using an unsupported feature flag: <ph name="BAD_FLAG">$1<ex>SignedHTTPExchange</ex></ph>. Stability and security will suffer.
        </message>
  
@@ -131,7 +131,7 @@ diff --git a/chrome/browser/ui/startup/bad_flags_prompt.cc b/chrome/browser/ui/s
 diff --git a/content/browser/renderer_host/render_process_host_impl.cc b/content/browser/renderer_host/render_process_host_impl.cc
 --- a/content/browser/renderer_host/render_process_host_impl.cc
 +++ b/content/browser/renderer_host/render_process_host_impl.cc
-@@ -3489,6 +3489,7 @@ void RenderProcessHostImpl::PropagateBrowserCommandLineToRenderer(
+@@ -3563,6 +3563,7 @@ void RenderProcessHostImpl::PropagateBrowserCommandLineToRenderer(
      switches::kLacrosUseChromeosProtectedAv1,
  #endif
      switches::kDesktopModeViewportMetaEnabled,

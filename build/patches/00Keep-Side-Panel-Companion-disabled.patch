@@ -48,7 +48,7 @@ diff --git a/chrome/browser/ui/side_search/side_search_prefs.cc b/chrome/browser
 diff --git a/chrome/browser/ui/ui_features.cc b/chrome/browser/ui/ui_features.cc
 --- a/chrome/browser/ui/ui_features.cc
 +++ b/chrome/browser/ui/ui_features.cc
-@@ -122,7 +122,7 @@ BASE_FEATURE(kResponsiveToolbar,
+@@ -106,7 +106,7 @@ BASE_FEATURE(kResponsiveToolbar,
  
  // Enables the side search feature for Google Search. Presents recent Google
  // search results in a browser side panel.
@@ -60,7 +60,7 @@ diff --git a/chrome/browser/ui/ui_features.cc b/chrome/browser/ui/ui_features.cc
 diff --git a/components/search_engines/template_url.cc b/components/search_engines/template_url.cc
 --- a/components/search_engines/template_url.cc
 +++ b/components/search_engines/template_url.cc
-@@ -1829,7 +1829,7 @@ GURL TemplateURL::GenerateSuggestionURL(
+@@ -1830,7 +1830,7 @@ GURL TemplateURL::GenerateSuggestionURL(
  }
  
  bool TemplateURL::IsSideSearchSupported() const {

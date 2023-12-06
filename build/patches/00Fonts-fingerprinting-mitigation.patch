@@ -115,7 +115,7 @@ diff --git a/skia/ext/skia_utils_win.h b/skia/ext/skia_utils_win.h
 diff --git a/third_party/blink/public/common/features.h b/third_party/blink/public/common/features.h
 --- a/third_party/blink/public/common/features.h
 +++ b/third_party/blink/public/common/features.h
-@@ -247,6 +247,9 @@ BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE(kCompressParkableStrings);
+@@ -252,6 +252,9 @@ BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE(kCompressParkableStrings);
  BLINK_COMMON_EXPORT extern const base::FeatureParam<int>
      kMaxDiskDataAllocatorCapacityMB;
  
@@ -128,7 +128,7 @@ diff --git a/third_party/blink/public/common/features.h b/third_party/blink/publ
 diff --git a/third_party/blink/renderer/platform/BUILD.gn b/third_party/blink/renderer/platform/BUILD.gn
 --- a/third_party/blink/renderer/platform/BUILD.gn
 +++ b/third_party/blink/renderer/platform/BUILD.gn
-@@ -755,6 +755,7 @@ component("platform") {
+@@ -762,6 +762,7 @@ component("platform") {
      "fonts/simple_font_data.cc",
      "fonts/simple_font_data.h",
      "fonts/skia/font_cache_skia.cc",

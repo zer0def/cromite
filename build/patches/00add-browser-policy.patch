@@ -171,7 +171,7 @@ diff --git a/chrome/browser/metrics/chrome_feature_list_creator.cc b/chrome/brow
  
  #if BUILDFLAG(IS_CHROMEOS_ASH)
  #include "chrome/browser/ash/policy/core/browser_policy_connector_ash.h"
-@@ -222,6 +224,16 @@ void ChromeFeatureListCreator::CreatePrefService() {
+@@ -219,6 +221,16 @@ void ChromeFeatureListCreator::CreatePrefService() {
    // ManagementService's cache.
    if (local_state_pref_store->ReadPrefs() ==
        JsonPrefStore::PREF_READ_ERROR_NONE) {
@@ -191,7 +191,7 @@ diff --git a/chrome/browser/metrics/chrome_feature_list_creator.cc b/chrome/brow
 diff --git a/chrome/browser/policy/chrome_browser_policy_connector.cc b/chrome/browser/policy/chrome_browser_policy_connector.cc
 --- a/chrome/browser/policy/chrome_browser_policy_connector.cc
 +++ b/chrome/browser/policy/chrome_browser_policy_connector.cc
-@@ -159,8 +159,6 @@ bool ChromeBrowserPolicyConnector::HasMachineLevelPolicies() {
+@@ -149,8 +149,6 @@ bool ChromeBrowserPolicyConnector::HasMachineLevelPolicies() {
    if (ProviderHasPolicies(machine_level_user_cloud_policy_manager()))
      return true;
  #endif  // !BUILDFLAG(IS_CHROMEOS_ASH)
@@ -203,7 +203,7 @@ diff --git a/chrome/browser/policy/chrome_browser_policy_connector.cc b/chrome/b
 diff --git a/chrome/browser/policy/configuration_policy_handler_list_factory.cc b/chrome/browser/policy/configuration_policy_handler_list_factory.cc
 --- a/chrome/browser/policy/configuration_policy_handler_list_factory.cc
 +++ b/chrome/browser/policy/configuration_policy_handler_list_factory.cc
-@@ -2046,9 +2046,9 @@ bool AreFuturePoliciesEnabledByDefault() {
+@@ -2088,9 +2088,9 @@ bool AreFuturePoliciesEnabledByDefault() {
    if (base::CommandLine::ForCurrentProcess()->HasSwitch(switches::kTestType)) {
      return true;
    }
@@ -219,7 +219,7 @@ diff --git a/chrome/browser/policy/configuration_policy_handler_list_factory.cc 
 diff --git a/chrome/browser/signin/account_consistency_mode_manager.cc b/chrome/browser/signin/account_consistency_mode_manager.cc
 --- a/chrome/browser/signin/account_consistency_mode_manager.cc
 +++ b/chrome/browser/signin/account_consistency_mode_manager.cc
-@@ -160,7 +160,7 @@ void AccountConsistencyModeManager::SetIgnoreMissingOAuthClientForTesting() {
+@@ -164,7 +164,7 @@ void AccountConsistencyModeManager::SetIgnoreMissingOAuthClientForTesting() {
  // static
  bool AccountConsistencyModeManager::ShouldBuildServiceForProfile(
      Profile* profile) {
@@ -228,7 +228,7 @@ diff --git a/chrome/browser/signin/account_consistency_mode_manager.cc b/chrome/
  }
  
  AccountConsistencyMethod
-@@ -198,7 +198,8 @@ AccountConsistencyModeManager::ComputeAccountConsistencyMethod(
+@@ -202,7 +202,8 @@ AccountConsistencyModeManager::ComputeAccountConsistencyMethod(
  #endif
  
  #if BUILDFLAG(ENABLE_MIRROR)
@@ -238,7 +238,7 @@ diff --git a/chrome/browser/signin/account_consistency_mode_manager.cc b/chrome/
  #endif
  
  #if BUILDFLAG(ENABLE_DICE_SUPPORT)
-@@ -208,7 +209,7 @@ AccountConsistencyModeManager::ComputeAccountConsistencyMethod(
+@@ -212,7 +213,7 @@ AccountConsistencyModeManager::ComputeAccountConsistencyMethod(
      return AccountConsistencyMethod::kDisabled;
    }
  
@@ -260,7 +260,7 @@ diff --git a/chrome/browser/signin/account_consistency_mode_manager_factory.cc b
 diff --git a/chrome/browser/signin/chrome_signin_client.cc b/chrome/browser/signin/chrome_signin_client.cc
 --- a/chrome/browser/signin/chrome_signin_client.cc
 +++ b/chrome/browser/signin/chrome_signin_client.cc
-@@ -130,7 +130,9 @@ void ChromeSigninClient::DoFinalInit() {
+@@ -214,7 +214,9 @@ void ChromeSigninClient::DoFinalInit() {
  bool ChromeSigninClient::ProfileAllowsSigninCookies(Profile* profile) {
    scoped_refptr<content_settings::CookieSettings> cookie_settings =
        CookieSettingsFactory::GetForProfile(profile);
@@ -270,8 +270,8 @@ diff --git a/chrome/browser/signin/chrome_signin_client.cc b/chrome/browser/sign
 +  return cookiesAllowed && profile->GetPrefs()->GetBoolean(prefs::kSigninAllowed);
  }
  
- PrefService* ChromeSigninClient::GetPrefs() { return profile_->GetPrefs(); }
-@@ -242,6 +244,9 @@ bool ChromeSigninClient::AreNetworkCallsDelayed() {
+ PrefService* ChromeSigninClient::GetPrefs() {
+@@ -328,6 +330,9 @@ bool ChromeSigninClient::AreNetworkCallsDelayed() {
  }
  
  void ChromeSigninClient::DelayNetworkCall(base::OnceClosure callback) {
@@ -300,7 +300,7 @@ diff --git a/chrome/browser/ui/webui/policy/policy_ui_handler.cc b/chrome/browse
  #include "components/policy/core/common/policy_scheduler.h"
  #include "components/policy/core/common/policy_types.h"
  #include "components/policy/core/common/remote_commands/remote_commands_service.h"
-@@ -177,6 +179,10 @@ void PolicyUIHandler::RegisterMessages() {
+@@ -175,6 +177,10 @@ void PolicyUIHandler::RegisterMessages() {
        "exportPoliciesJSON",
        base::BindRepeating(&PolicyUIHandler::HandleExportPoliciesJson,
                            base::Unretained(this)));
@@ -311,7 +311,7 @@ diff --git a/chrome/browser/ui/webui/policy/policy_ui_handler.cc b/chrome/browse
    web_ui()->RegisterMessageCallback(
        "listenPoliciesUpdates",
        base::BindRepeating(&PolicyUIHandler::HandleListenPoliciesUpdates,
-@@ -424,8 +430,102 @@ void PolicyUIHandler::SendPolicies() {
+@@ -386,8 +392,102 @@ void PolicyUIHandler::SendPolicies() {
        "policies-updated",
        base::Value(
            policy_value_and_status_aggregator_->GetAggregatedPolicyNames()),
@@ -419,7 +419,7 @@ diff --git a/chrome/browser/ui/webui/policy/policy_ui_handler.cc b/chrome/browse
 diff --git a/chrome/browser/ui/webui/policy/policy_ui_handler.h b/chrome/browser/ui/webui/policy/policy_ui_handler.h
 --- a/chrome/browser/ui/webui/policy/policy_ui_handler.h
 +++ b/chrome/browser/ui/webui/policy/policy_ui_handler.h
-@@ -58,6 +58,8 @@ class PolicyUIHandler : public content::WebUIMessageHandler,
+@@ -50,6 +50,8 @@ class PolicyUIHandler
  
   private:
    void HandleExportPoliciesJson(const base::Value::List& args);
@@ -431,9 +431,9 @@ diff --git a/chrome/browser/ui/webui/policy/policy_ui_handler.h b/chrome/browser
 diff --git a/components/commerce/core/commerce_feature_list.cc b/components/commerce/core/commerce_feature_list.cc
 --- a/components/commerce/core/commerce_feature_list.cc
 +++ b/components/commerce/core/commerce_feature_list.cc
-@@ -293,6 +293,13 @@ BASE_FEATURE(kParcelTrackingRegionLaunched,
-              "ParcelTrackingRegionLaunched",
-              base::FEATURE_DISABLED_BY_DEFAULT);
+@@ -301,6 +301,13 @@ const char kParcelTrackingTestDataParamDelivered[] = "Delivered";
+ const char kParcelTrackingTestDataParamInProgress[] = "InProgress";
+ const char kParcelTrackingTestDataParamOutForDelivery[] = "OutForDelivery";
  
 +SET_CROMITE_FEATURE_DISABLED(kCommercePriceTrackingRegionLaunched);
 +SET_CROMITE_FEATURE_DISABLED(kShoppingListRegionLaunched);
@@ -634,7 +634,7 @@ diff --git a/components/policy/core/common/policy_loader_command_line.cc b/compo
 diff --git a/components/policy/core/common/policy_pref_names.cc b/components/policy/core/common/policy_pref_names.cc
 --- a/components/policy/core/common/policy_pref_names.cc
 +++ b/components/policy/core/common/policy_pref_names.cc
-@@ -93,6 +93,9 @@ const char kReadAloudEnabled[] = "policy.read_aloud_enabled";
+@@ -97,6 +97,9 @@ const char kReadAloudEnabled[] = "policy.read_aloud_enabled";
  const char kUserAgentClientHintsGREASEUpdateEnabled[] =
      "policy.user_agent_client_hints_grease_update_enabled";
  
@@ -647,7 +647,7 @@ diff --git a/components/policy/core/common/policy_pref_names.cc b/components/pol
 diff --git a/components/policy/core/common/policy_pref_names.h b/components/policy/core/common/policy_pref_names.h
 --- a/components/policy/core/common/policy_pref_names.h
 +++ b/components/policy/core/common/policy_pref_names.h
-@@ -50,6 +50,7 @@ extern const char kUrlAllowlist[];
+@@ -51,6 +51,7 @@ extern const char kUrlAllowlist[];
  extern const char kUserPolicyRefreshRate[];
  extern const char kIntensiveWakeUpThrottlingEnabled[];
  extern const char kUserAgentClientHintsGREASEUpdateEnabled[];
@@ -781,7 +781,7 @@ diff --git a/components/policy_strings.grdp b/components/policy_strings.grdp
 diff --git a/components/signin/internal/identity_manager/gaia_cookie_manager_service.cc b/components/signin/internal/identity_manager/gaia_cookie_manager_service.cc
 --- a/components/signin/internal/identity_manager/gaia_cookie_manager_service.cc
 +++ b/components/signin/internal/identity_manager/gaia_cookie_manager_service.cc
-@@ -469,6 +469,8 @@ void GaiaCookieManagerService::RegisterPrefs(PrefRegistrySimple* registry) {
+@@ -468,6 +468,8 @@ void GaiaCookieManagerService::RegisterPrefs(PrefRegistrySimple* registry) {
  }
  
  void GaiaCookieManagerService::InitCookieListener() {
@@ -790,7 +790,7 @@ diff --git a/components/signin/internal/identity_manager/gaia_cookie_manager_ser
    DCHECK(!cookie_listener_receiver_.is_bound());
  
    network::mojom::CookieManager* cookie_manager =
-@@ -891,6 +893,8 @@ void GaiaCookieManagerService::OnSetAccountsFinished(
+@@ -890,6 +892,8 @@ void GaiaCookieManagerService::OnSetAccountsFinished(
  }
  
  void GaiaCookieManagerService::HandleNextRequest() {

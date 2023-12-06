@@ -22,7 +22,7 @@ diff --git a/services/device/geolocation/BUILD.gn b/services/device/geolocation/
 diff --git a/services/device/geolocation/android/java/src/org/chromium/device/geolocation/LocationProviderFactory.java b/services/device/geolocation/android/java/src/org/chromium/device/geolocation/LocationProviderFactory.java
 --- a/services/device/geolocation/android/java/src/org/chromium/device/geolocation/LocationProviderFactory.java
 +++ b/services/device/geolocation/android/java/src/org/chromium/device/geolocation/LocationProviderFactory.java
-@@ -27,19 +27,13 @@ public class LocationProviderFactory {
+@@ -28,19 +28,13 @@ public class LocationProviderFactory {
  
      @CalledByNative
      public static void useGmsCoreLocationProvider() {
