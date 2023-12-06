@@ -10,9 +10,10 @@ samesite=none first-party cookies are sent in third-party contexts.
 License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
  .../browser/net/profile_network_context_service.cc   |  8 ++++----
+ .../content_settings/core/browser/cookie_settings.cc |  1 +
  .../core/common/cookie_settings_base.cc              |  2 +-
- .../Partitioning-all-cookies-by-top-frame-domain.inc |  1 +
- .../Partitioning-all-cookies-by-top-frame-domain.inc |  1 +
+ .../Partitioning-all-cookies-by-top-frame-domain.inc |  3 +++
+ .../Partitioning-all-cookies-by-top-frame-domain.inc |  2 ++
  .../Partitioning-all-cookies-by-top-frame-domain.inc |  1 +
  .../Partitioning-all-cookies-by-top-frame-domain.inc |  5 +++++
  net/cookies/canonical_cookie.cc                      | 12 +-----------
@@ -25,7 +26,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../renderer/modules/cookie_store/cookie_store.cc    | 12 ++++++++++++
  .../cookie_store/cookie_store_delete_options.idl     |  2 +-
  ui/webui/webui_allowlist.cc                          |  1 +
- 16 files changed, 54 insertions(+), 21 deletions(-)
+ 17 files changed, 58 insertions(+), 21 deletions(-)
  create mode 100644 cromite_flags/components/content_settings/core/common/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
  create mode 100644 cromite_flags/components/permissions/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
  create mode 100644 cromite_flags/content/public/common/content_features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
@@ -53,6 +54,17 @@ diff --git a/chrome/browser/net/profile_network_context_service.cc b/chrome/brow
  #endif
  
    HostContentSettingsMap* host_content_settings_map =
+diff --git a/components/content_settings/core/browser/cookie_settings.cc b/components/content_settings/core/browser/cookie_settings.cc
+--- a/components/content_settings/core/browser/cookie_settings.cc
++++ b/components/content_settings/core/browser/cookie_settings.cc
+@@ -123,6 +123,7 @@ void CookieSettings::SetTemporaryCookieGrantForHeuristic(
+     const GURL& first_party_url,
+     base::TimeDelta ttl,
+     bool use_schemeless_patterns) {
++  if ((true)) return;
+   // If the new grant has an earlier TTL than the existing setting, keep the
+   // existing TTL.
+   SettingInfo info;
 diff --git a/components/content_settings/core/common/cookie_settings_base.cc b/components/content_settings/core/common/cookie_settings_base.cc
 --- a/components/content_settings/core/common/cookie_settings_base.cc
 +++ b/components/content_settings/core/common/cookie_settings_base.cc
@@ -69,14 +81,17 @@ diff --git a/cromite_flags/components/content_settings/core/common/features_cc/P
 new file mode 100644
 --- /dev/null
 +++ b/cromite_flags/components/content_settings/core/common/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
-@@ -0,0 +1 @@
+@@ -0,0 +1,3 @@
 +SET_CROMITE_FEATURE_DISABLED(kTrackingProtection3pcd);
++SET_CROMITE_FEATURE_DISABLED(kUserBypassUI);
++SET_CROMITE_FEATURE_DISABLED(kTpcdHeuristicsGrants);
 diff --git a/cromite_flags/components/permissions/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc b/cromite_flags/components/permissions/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
 new file mode 100644
 --- /dev/null
 +++ b/cromite_flags/components/permissions/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
-@@ -0,0 +1 @@
+@@ -0,0 +1,2 @@
 +SET_CROMITE_FEATURE_DISABLED(kPermissionStorageAccessAPI);
++SET_CROMITE_FEATURE_ENABLED(kShowRelatedWebsiteSetsPermissionGrants);
 diff --git a/cromite_flags/content/public/common/content_features_cc/Partitioning-all-cookies-by-top-frame-domain.inc b/cromite_flags/content/public/common/content_features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
 new file mode 100644
 --- /dev/null
