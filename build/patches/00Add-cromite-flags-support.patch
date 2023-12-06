@@ -36,6 +36,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../core/offline_page_feature.cc              |   1 +
  .../offline_pages/core/offline_page_feature.h |   1 +
  components/permissions/features.cc            |   1 +
+ .../version_ui/version_handler_helper.cc      |   2 +-
  content/common/features.cc                    |   1 +
  content/public/common/content_features.cc     |   1 +
  content/public/common/content_features.h      |   1 +
@@ -70,7 +71,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  services/network/public/cpp/features.h        |   1 +
  third_party/blink/common/features.cc          |   1 +
  third_party/blink/public/common/features.h    |   1 +
- 56 files changed, 488 insertions(+), 13 deletions(-)
+ 57 files changed, 489 insertions(+), 14 deletions(-)
  create mode 100755 cromite_flags/BUILD.gn
  create mode 100755 cromite_flags/chrome/browser/about_flags_cc/placeholder.txt
  create mode 100755 cromite_flags/chrome/browser/browser_features_cc/placeholder.txt
@@ -343,7 +344,7 @@ diff --git a/build/android/gyp/java_cpp_features.py b/build/android/gyp/java_cpp
 diff --git a/chrome/android/java/res/values/values.xml b/chrome/android/java/res/values/values.xml
 --- a/chrome/android/java/res/values/values.xml
 +++ b/chrome/android/java/res/values/values.xml
-@@ -42,6 +42,9 @@ found in the LICENSE file.
+@@ -44,6 +44,9 @@ found in the LICENSE file.
      <!-- Contextual Search -->
      <item name="contextual_search_sheet_full_height_fraction" format="float" type="dimen">0.95</item>
  
@@ -795,6 +796,18 @@ diff --git a/components/permissions/features.cc b/components/permissions/feature
  }  // namespace features
  namespace feature_params {
  
+diff --git a/components/version_ui/version_handler_helper.cc b/components/version_ui/version_handler_helper.cc
+--- a/components/version_ui/version_handler_helper.cc
++++ b/components/version_ui/version_handler_helper.cc
+@@ -37,7 +37,7 @@ base::Value::List GetVariationsList() {
+   // displayed locally (and is useful for diagnostics purposes).
+   base::FieldTrialListIncludingLowAnonymity::GetActiveFieldTrialGroups(
+       &active_groups);
+-#if !defined(NDEBUG)
++#if true
+   const unsigned char kNonBreakingHyphenUTF8[] = {0xE2, 0x80, 0x91, '\0'};
+   const std::string kNonBreakingHyphenUTF8String(
+       reinterpret_cast<const char*>(kNonBreakingHyphenUTF8));
 diff --git a/content/common/features.cc b/content/common/features.cc
 --- a/content/common/features.cc
 +++ b/content/common/features.cc
