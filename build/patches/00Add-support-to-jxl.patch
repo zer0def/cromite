@@ -2661,7 +2661,7 @@ diff --git a/tools/metrics/histograms/enums.xml b/tools/metrics/histograms/enums
  </enum>
  
  <enum name="DecodeSwapChainNotUsedReason">
-@@ -66332,6 +66332,7 @@ from previous Chrome versions.
+@@ -66334,6 +66334,7 @@ from previous Chrome versions.
    <int value="188610022" label="NewMessageListView:enabled"/>
    <int value="189728101" label="FasterLocationReload:disabled"/>
    <int value="189777537" label="DisableInitialMostVisitedFadeIn:enabled"/>

@@ -1187,7 +1187,7 @@ diff --git a/services/network/public/cpp/features.h b/services/network/public/cp
 diff --git a/third_party/blink/common/features.cc b/third_party/blink/common/features.cc
 --- a/third_party/blink/common/features.cc
 +++ b/third_party/blink/common/features.cc
-@@ -2218,5 +2218,6 @@ bool IsKeepAliveURLLoaderServiceEnabled() {
+@@ -2222,5 +2222,6 @@ bool IsKeepAliveURLLoaderServiceEnabled() {
           base::FeatureList::IsEnabled(kFetchLaterAPI);
  }
  
@@ -1197,7 +1197,7 @@ diff --git a/third_party/blink/common/features.cc b/third_party/blink/common/fea
 diff --git a/third_party/blink/public/common/features.h b/third_party/blink/public/common/features.h
 --- a/third_party/blink/public/common/features.h
 +++ b/third_party/blink/public/common/features.h
-@@ -1424,6 +1424,7 @@ BLINK_COMMON_EXPORT bool IsKeepAliveURLLoaderServiceEnabled();
+@@ -1427,6 +1427,7 @@ BLINK_COMMON_EXPORT bool IsKeepAliveURLLoaderServiceEnabled();
  BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE(
      kRemoveAuthroizationOnCrossOriginRedirect);
  
