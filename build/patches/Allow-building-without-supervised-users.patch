@@ -14,10 +14,11 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  chrome/browser/ui/webui/managed_ui_handler.cc             | 2 ++
  .../browser/ui/webui/management/management_ui_handler.cc  | 2 ++
  components/supervised_user/buildflags.gni                 | 6 +-----
+ components/supervised_user/core/common/features.cc        | 1 +
  components/supervised_user/core/common/pref_names.h       | 4 ++++
  .../core/common/supervised_user_constants.cc              | 2 ++
  .../supervised_user/core/common/supervised_user_utils.cc  | 8 ++++++++
- 13 files changed, 30 insertions(+), 17 deletions(-)
+ 14 files changed, 31 insertions(+), 17 deletions(-)
 
 diff --git a/chrome/android/BUILD.gn b/chrome/android/BUILD.gn
 --- a/chrome/android/BUILD.gn
@@ -206,6 +207,15 @@ diff --git a/components/supervised_user/buildflags.gni b/components/supervised_u
 -      is_ios || is_linux || is_mac || is_win
 +  enable_supervised_users = false
  }
+diff --git a/components/supervised_user/core/common/features.cc b/components/supervised_user/core/common/features.cc
+--- a/components/supervised_user/core/common/features.cc
++++ b/components/supervised_user/core/common/features.cc
+@@ -171,4 +171,5 @@ bool IsShadowKidsApiWithSafeSitesEnabled() {
+   return base::FeatureList::IsEnabled(kShadowKidsApiWithSafeSites);
+ }
+ 
++SET_CROMITE_FEATURE_DISABLED(kForceGoogleSafeSearchForSupervisedUsers);
+ }  // namespace supervised_user
 diff --git a/components/supervised_user/core/common/pref_names.h b/components/supervised_user/core/common/pref_names.h
 --- a/components/supervised_user/core/common/pref_names.h
 +++ b/components/supervised_user/core/common/pref_names.h
