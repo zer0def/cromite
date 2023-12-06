@@ -5,6 +5,7 @@ Subject: Add option to force tablet UI
 License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 ---
  .../ChromeAccessibilitySettingsDelegate.java  | 19 +++++++++++++++++++
+ .../browser/tasks/ReturnToChromeUtil.java     |  4 +++-
  .../chrome/browser/ui/RootUiCoordinator.java  |  5 ++++-
  .../preferences/ChromePreferenceKeys.java     |  1 +
  .../LegacyChromePreferenceKeys.java           |  1 +
@@ -17,7 +18,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../AccessibilitySettingsDelegate.java        |  2 ++
  ui/android/BUILD.gn                           |  2 ++
  .../chromium/ui/base/DeviceFormFactor.java    |  5 +++++
- 13 files changed, 62 insertions(+), 8 deletions(-)
+ 14 files changed, 65 insertions(+), 9 deletions(-)
 
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/ChromeAccessibilitySettingsDelegate.java b/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/ChromeAccessibilitySettingsDelegate.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/ChromeAccessibilitySettingsDelegate.java
@@ -48,6 +49,20 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/accessibility/s
      @Override
      public void addExtraPreferences(PreferenceFragmentCompat fragment) {
          if (ImageDescriptionsController.getInstance().shouldShowImageDescriptionsMenuItem()) {
+diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tasks/ReturnToChromeUtil.java b/chrome/android/java/src/org/chromium/chrome/browser/tasks/ReturnToChromeUtil.java
+--- a/chrome/android/java/src/org/chromium/chrome/browser/tasks/ReturnToChromeUtil.java
++++ b/chrome/android/java/src/org/chromium/chrome/browser/tasks/ReturnToChromeUtil.java
+@@ -948,7 +948,9 @@ public final class ReturnToChromeUtil {
+ 
+     public static boolean isScrollableMvtEnabled(Context context) {
+         boolean isSurfacePolishEnabled = ChromeFeatureList.sSurfacePolish.isEnabled();
+-        if (!DeviceFormFactor.isNonMultiDisplayContextOnTablet(context)) {
++        if (!DeviceFormFactor.isNonMultiDisplayContextOnTablet(context) ||
++             ChromeSharedPreferences.getInstance().readBoolean(
++                      ChromePreferenceKeys.FLAGS_FORCE_TABLET_UI_ENABLED, false)) {
+             // On phones, parameter SURFACE_POLISH_SCROLLABLE_MVT is checked when feature flag
+             // surface polish is enabled; otherwise, feature flag
+             // SHOW_SCROLLABLE_MVT_ON_NTP_PHONE_ANDROID
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ui/RootUiCoordinator.java b/chrome/android/java/src/org/chromium/chrome/browser/ui/RootUiCoordinator.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/ui/RootUiCoordinator.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/ui/RootUiCoordinator.java
