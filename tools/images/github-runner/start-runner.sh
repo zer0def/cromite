@@ -32,6 +32,7 @@ docker run --rm -d --runtime=sysbox-runc \
 while true
 do
   #sudo chown -R $SYSBOX_UID:$SYSBOX_UID $GHRUNNERHOME/docker-inner
+  test -f $GHRUNNERHOME/var/run/docker.pid && sudo rm $GHRUNNERHOME/var/run/docker.pid
 
   docker run --runtime=sysbox-runc --name=gh-runner -ti --rm \
     --env-file=.env \
