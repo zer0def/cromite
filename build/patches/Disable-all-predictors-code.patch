@@ -28,8 +28,8 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../Disable-all-predictors-code.inc           |  7 +++++
  .../Disable-all-predictors-code.inc           |  4 +++
  .../Disable-all-predictors-code.inc           |  2 ++
- .../platform/runtime_enabled_features.json5   |  2 +-
- 24 files changed, 76 insertions(+), 41 deletions(-)
+ .../platform/runtime_enabled_features.json5   |  6 ++--
+ 24 files changed, 78 insertions(+), 43 deletions(-)
  create mode 100644 cromite_flags/chrome/browser/browser_features_cc/Disable-all-predictors-code.inc
  create mode 100644 cromite_flags/chrome/common/chrome_features_cc/Disable-all-predictors-code.inc
  create mode 100644 cromite_flags/components/permissions/features_cc/Disable-all-predictors-code.inc
@@ -493,5 +493,17 @@ diff --git a/third_party/blink/renderer/platform/runtime_enabled_features.json5 
      },
      {
        name: "Presentation",
+@@ -3698,9 +3698,9 @@
+       origin_trial_allows_third_party: true,
+     },
+     {
+-      name: "SpeculationRulesPrefetchProxy",
++      name: "SpeculationRulesPrefetchProxy",  // disabled
++      status: "test",                         // by default
+       origin_trial_feature_name: "SpeculationRulesPrefetch",
+-      status: "stable",
+       copied_from_base_feature_if: "overridden",
+       implied_by: ["SpeculationRulesPrefetchFuture", "NoVarySearchPrefetch"],
+     },
 --
 2.25.1
