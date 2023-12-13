@@ -54,7 +54,6 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../BrowserControlsMarginSupplier.java        |  5 ++
  .../BrowserControlsStateProvider.java         |  6 ++
  .../flags/android/chrome_feature_list.cc      |  2 +
- .../chrome/browser/flags/CachedFlag.java      |  6 ++
  .../browser/flags/ChromeFeatureList.java      |  5 ++
  chrome/browser/prefs/browser_prefs.cc         |  2 +-
  .../chrome/browser/ui/appmenu/AppMenu.java    | 40 ++++++++--
@@ -84,7 +83,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../AccessibilitySettingsDelegate.java        |  6 ++
  .../render_widget_host_view_android.cc        |  3 +
  .../Move-navigation-bar-to-bottom.inc         | 12 +++
- 71 files changed, 854 insertions(+), 73 deletions(-)
+ 70 files changed, 848 insertions(+), 73 deletions(-)
  create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Move-navigation-bar-to-bottom.inc
 
 diff --git a/cc/base/features.cc b/cc/base/features.cc
@@ -1706,22 +1705,6 @@ diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browse
      &kNotificationPermissionVariant,
      &kNotificationPermissionBottomSheet,
      &kOfflineIndicatorV2,
-diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/CachedFlag.java b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/CachedFlag.java
---- a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/CachedFlag.java
-+++ b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/CachedFlag.java
-@@ -132,6 +132,12 @@ public class CachedFlag extends Flag {
-         }
-     }
- 
-+    public void setValueReturnedOverride(@Nullable Boolean value) {
-+        synchronized (ValuesReturned.sBoolValues) {
-+            ValuesReturned.sBoolValues.put(getSharedPreferenceKey(), value);
-+        }
-+    }
-+
-     /**
-      * Caches the value of the feature from {@link ChromeFeatureList} to SharedPrefs.
-      */
 diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 --- a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 +++ b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
