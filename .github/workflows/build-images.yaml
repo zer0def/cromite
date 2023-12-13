@@ -21,8 +21,8 @@ on:
         description: 'runner?'
         required: false
         default: 'ubuntu-latest'
-#  schedule:
-#   - cron: '0 1 * * *'
+  schedule:
+   - cron: '0 1 * * *'
 
 env:
   CHR_VERSION: ${{ github.event.inputs.version }}
@@ -73,7 +73,12 @@ jobs:
         shell: bash
         run: |
           if [ -z $CHR_VERSION ]; then
-            CHR_VERSION=$(curl -s https://omahaproxy.appspot.com/all.json | jq '.[] | select(.os | contains("win64")) | .versions[] | select(.channel | contains("stable")) | .current_version' | xargs)
+            LATEST_WIN=$(curl -s 'https://versionhistory.googleapis.com/v1/chrome/platforms/win64/channels/stable/versions/all/releases'  | jq -rc '.releases[].version' | sort -t. -k 1,1n -k 2,2n -k 3,3n -k 4,4n | tail -n 1)
+            LATEST_ANDROID=$(curl -s 'https://versionhistory.googleapis.com/v1/chrome/platforms/android/channels/stable/versions/all/releases'  | jq -rc '.releases[].version' | sort -t. -k 1,1n -k 2,2n -k 3,3n -k 4,4n | tail -n 1)
+            CHR_VERSION=$(echo -e "$LATEST_ANDROID\n$LATEST_WIN" | sort -t. -k 1,1n -k 2,2n -k 3,3n -k 4,4n | tail -n 1)
+
+            echo "LATEST_WIN=$LATEST_WIN" >> $GITHUB_ENV
+            echo "LATEST_ANDROID=$LATEST_ANDROID" >> $GITHUB_ENV
             echo "CHR_VERSION=$CHR_VERSION" >> $GITHUB_ENV
           fi
 
@@ -124,4 +129,16 @@ jobs:
 
           cd cromite/tools
           echo ${{ secrets.GITHUB_TOKEN }} | $GH auth login --with-token
-          $GH issue create -t "$CHR_VERSION: new chromium version" -b ""
+
+          if [[ "$LATEST_WIN" == "$CHR_VERSION" ]]; then
+             echo Using Windows Release >>body.txt
+             curl -s 'https://chromiumdash.appspot.com/fetch_releases?channel=Stable&platform=Windows&num=10&offset=0' | \
+                 jq --arg LATEST "$LATEST_WIN" '.[] | select( .version == $LATEST )' >>body.txt
+          fi
+
+          if [[ "$LATEST_ANDROID" == "$CHR_VERSION" ]]; then
+             echo Using Android Release >>body.txt
+             curl -s 'https://chromiumdash.appspot.com/fetch_releases?channel=Stable&platform=Android&num=10&offset=0' | \
+                 jq --arg LATEST "$LATEST_ANDROID" '.[] | select( .version == $LATEST )' >>body.txt
+          fi
+          $GH issue create -t "$CHR_VERSION: new chromium version" -F body.txt
