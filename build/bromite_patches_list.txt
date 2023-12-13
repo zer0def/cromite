@@ -276,6 +276,7 @@ Timezone-customization.patch
 00Always-allow-inspect-fallback.patch
 00Add-cromite-flags-support.patch
 00Add-PartialLowEndModeOnMidRangeDevices-flag.patch
+00Use-list-mode-for-tab-switcher.patch
 
 00Temp-PerformanceNavigationTiming-privacy-fix.patch
 00Temp-disable-predictive-back-gesture.patch
