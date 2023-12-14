@@ -9,6 +9,8 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 ---
  android_webview/common/aw_features.cc         |  4 +--
  android_webview/nonembedded/BUILD.gn          |  2 --
+ ...eddedFastVariationsSeedSafeModeAction.java |  2 --
+ ...SafeModeVariationsSeedContentProvider.java |  2 --
  .../services/VariationsSeedServer.java        |  2 --
  .../metrics/chrome_browser_sampling_trials.cc |  4 +++
  .../net/system_network_context_manager.cc     |  1 -
@@ -25,7 +27,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../variations_render_thread_observer.cc      |  9 ------
  .../Disable-fetching-of-all-field-trials.inc  |  1 +
  .../renderer/core/loader/document_loader.cc   |  7 ----
- 18 files changed, 28 insertions(+), 80 deletions(-)
+ 20 files changed, 28 insertions(+), 84 deletions(-)
  create mode 100644 cromite_flags/content/public/common/content_features_cc/Disable-fetching-of-all-field-trials.inc
 
 diff --git a/android_webview/common/aw_features.cc b/android_webview/common/aw_features.cc
@@ -61,6 +63,35 @@ diff --git a/android_webview/nonembedded/BUILD.gn b/android_webview/nonembedded/
      "java/src/org/chromium/android_webview/services/VariationsSeedServer.java",
    ]
    deps = [
+diff --git a/android_webview/nonembedded/java/src/org/chromium/android_webview/services/NonEmbeddedFastVariationsSeedSafeModeAction.java b/android_webview/nonembedded/java/src/org/chromium/android_webview/services/NonEmbeddedFastVariationsSeedSafeModeAction.java
+--- a/android_webview/nonembedded/java/src/org/chromium/android_webview/services/NonEmbeddedFastVariationsSeedSafeModeAction.java
++++ b/android_webview/nonembedded/java/src/org/chromium/android_webview/services/NonEmbeddedFastVariationsSeedSafeModeAction.java
+@@ -27,13 +27,11 @@ public class NonEmbeddedFastVariationsSeedSafeModeAction implements NonEmbeddedS
+ 
+     @Override
+     public boolean onActivate() {
+-        AwVariationsSeedFetcher.scheduleIfNeeded(/*requireFastMode=*/true);
+         return true;
+     }
+ 
+     @Override
+     public boolean onDeactivate() {
+-        AwVariationsSeedFetcher.cancelSafeModeSeedFetchSchedulerJob();
+         return true;
+     }
+ }
+diff --git a/android_webview/nonembedded/java/src/org/chromium/android_webview/services/SafeModeVariationsSeedContentProvider.java b/android_webview/nonembedded/java/src/org/chromium/android_webview/services/SafeModeVariationsSeedContentProvider.java
+--- a/android_webview/nonembedded/java/src/org/chromium/android_webview/services/SafeModeVariationsSeedContentProvider.java
++++ b/android_webview/nonembedded/java/src/org/chromium/android_webview/services/SafeModeVariationsSeedContentProvider.java
+@@ -83,8 +83,6 @@ public class SafeModeVariationsSeedContentProvider extends ContentProvider {
+ 
+     private Boolean awaitSeedResults() {
+         CountDownLatch countDownLatch = new CountDownLatch(1);
+-        VariationsSeedHolder.getInstance().hasSeedUpdateCompletedAsync(
+-                () -> { countDownLatch.countDown(); });
+         try {
+             return countDownLatch.await(TIMEOUT_IN_MILLIS, TimeUnit.MILLISECONDS);
+         } catch (InterruptedException e) {
 diff --git a/android_webview/nonembedded/java/src/org/chromium/android_webview/services/VariationsSeedServer.java b/android_webview/nonembedded/java/src/org/chromium/android_webview/services/VariationsSeedServer.java
 --- a/android_webview/nonembedded/java/src/org/chromium/android_webview/services/VariationsSeedServer.java
 +++ b/android_webview/nonembedded/java/src/org/chromium/android_webview/services/VariationsSeedServer.java

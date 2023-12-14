@@ -15,7 +15,7 @@ See also: https://github.com/bromite/bromite/issues/547
 Original License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 ---
- android_webview/browser/aw_contents.cc        |  3 +-
+ android_webview/browser/aw_autofill_client.cc |  3 +-
  chrome/android/BUILD.gn                       |  1 +
  .../settings/PasswordSettings.java            | 81 ++++++++++++++++++-
  .../chromium/chrome/browser/tab/TabImpl.java  | 51 ++++++++++++
@@ -38,19 +38,19 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../chromium/ui/base/ViewAndroidDelegate.java |  8 ++
  21 files changed, 326 insertions(+), 9 deletions(-)
 
-diff --git a/android_webview/browser/aw_contents.cc b/android_webview/browser/aw_contents.cc
---- a/android_webview/browser/aw_contents.cc
-+++ b/android_webview/browser/aw_contents.cc
-@@ -216,7 +216,8 @@ AwBrowserPermissionRequestDelegate* AwBrowserPermissionRequestDelegate::FromID(
- AwSafeBrowsingUIManager::UIManagerClient*
- AwSafeBrowsingUIManager::UIManagerClient::FromWebContents(
-     WebContents* web_contents) {
--  return AwContents::FromWebContents(web_contents);
-+  return AwContents::FromWebContents(web_contents,
-+            /*enable_secondary_autofill_manager*/ false);
- }
- 
- // static
+diff --git a/android_webview/browser/aw_autofill_client.cc b/android_webview/browser/aw_autofill_client.cc
+--- a/android_webview/browser/aw_autofill_client.cc
++++ b/android_webview/browser/aw_autofill_client.cc
+@@ -369,7 +369,8 @@ AwAutofillClient::AwAutofillClient(WebContents* contents,
+               ? base::BindRepeating(&autofill::AndroidDriverInitHook, this)
+               : base::BindRepeating(&autofill::BrowserDriverInitHook,
+                                     this,
+-                                    base::android::GetDefaultLocaleString()))
++                                    base::android::GetDefaultLocaleString(),
++                                    /*enable_secondary_autofill_manager*/ false))
+ #if DCHECK_IS_ON()
+       ,
+       use_android_autofill_manager_(use_android_autofill_manager)
 diff --git a/chrome/android/BUILD.gn b/chrome/android/BUILD.gn
 --- a/chrome/android/BUILD.gn
 +++ b/chrome/android/BUILD.gn
