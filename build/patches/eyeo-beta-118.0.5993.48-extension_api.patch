@@ -4120,7 +4120,7 @@ diff --git a/chrome/common/extensions/permissions/permission_set_unittest.cc b/c
 diff --git a/chrome/test/BUILD.gn b/chrome/test/BUILD.gn
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -3716,6 +3716,12 @@ if (!is_android) {
+@@ -3718,6 +3718,12 @@ if (!is_android) {
          ]
        }
  

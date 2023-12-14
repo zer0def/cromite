@@ -474,7 +474,7 @@ diff --git a/chrome/browser/resources/settings/clear_browsing_data_dialog/clear_
 diff --git a/chrome/browser/resources/settings/clear_browsing_data_dialog/clear_browsing_data_dialog.ts b/chrome/browser/resources/settings/clear_browsing_data_dialog/clear_browsing_data_dialog.ts
 --- a/chrome/browser/resources/settings/clear_browsing_data_dialog/clear_browsing_data_dialog.ts
 +++ b/chrome/browser/resources/settings/clear_browsing_data_dialog/clear_browsing_data_dialog.ts
-@@ -222,6 +222,7 @@ export class SettingsClearBrowsingDataDialogElement extends
+@@ -247,6 +247,7 @@ export class SettingsClearBrowsingDataDialogElement extends
          value: () =>
              [loadTimeData.getString('basicPageTitle'),
               loadTimeData.getString('advancedPageTitle'),
@@ -482,7 +482,7 @@ diff --git a/chrome/browser/resources/settings/clear_browsing_data_dialog/clear_
      ],
        },
  
-@@ -332,6 +333,7 @@ export class SettingsClearBrowsingDataDialogElement extends
+@@ -366,6 +367,7 @@ export class SettingsClearBrowsingDataDialogElement extends
      }
      this.clearButtonDisabled_ =
          this.getSelectedDataTypes_(tab as HTMLElement).length === 0;
