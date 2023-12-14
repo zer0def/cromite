@@ -159,10 +159,10 @@ diff --git a/chrome/android/java/res_chromium_base/drawable/themed_app_icon.xml 
 +<vector
 +    xmlns:android="http://schemas.android.com/apk/res/android"
 +    android:name="vector"
-+    android:width="900dp"
-+    android:height="900dp"
-+    android:viewportWidth="900"
-+    android:viewportHeight="900">
++    android:width="90dp"
++    android:height="90dp"
++    android:viewportWidth="90"
++    android:viewportHeight="90">
 +    <group android:name="group_1">
          <path
 -            android:pathData="M35.7727,42.5589C36.3164,40.5268 37.5153,38.7308 39.1836,37.4494C40.8519,36.168 42.8963,35.4727 44.9999,35.4714H60.2305C58.6975,33.0202 56.5955,30.9753 54.1031,29.5104C51.6106,28.0454 48.8014,27.2038 45.9141,27.0569C43.0267,26.91 40.1466,27.4623 37.5184,28.6667C34.8901,29.8711 32.5914,31.6922 30.8176,33.9752L35.7727,42.5589Z"
