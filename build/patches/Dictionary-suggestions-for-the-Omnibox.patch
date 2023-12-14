@@ -59,14 +59,14 @@ diff --git a/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/brow
  import android.text.Editable;
  import android.text.InputType;
 @@ -104,6 +105,7 @@ public abstract class UrlBar extends AutocompleteEditText {
+     private boolean mFocused;
      private boolean mAllowFocus = true;
  
-     private boolean mPendingScroll;
 +    private boolean mPendingSelectAll;
-     private int mPreviousWidth;
+     private boolean mPendingScroll;
  
-     @ScrollType private int mPreviousScrollType;
-@@ -301,6 +303,27 @@ public abstract class UrlBar extends AutocompleteEditText {
+     // Captures the current intended text scroll type.
+@@ -304,6 +306,27 @@ public abstract class UrlBar extends AutocompleteEditText {
              mPendingScroll = false;
          }
          fixupTextDirection();
