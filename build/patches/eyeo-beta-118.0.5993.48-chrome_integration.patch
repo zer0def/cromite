@@ -7150,7 +7150,7 @@ diff --git a/chrome/browser/preferences/BUILD.gn b/chrome/browser/preferences/BU
  
  import("//build/config/android/rules.gni")
  import("//third_party/jni_zero/jni_zero.gni")
-@@ -37,6 +41,7 @@ android_library("java") {
+@@ -38,6 +42,7 @@ android_library("java") {
  java_cpp_strings("java_pref_names_srcjar") {
    sources = [
      "//chrome/common/pref_names.h",
