@@ -3,23 +3,23 @@ Date: Fri, 9 Jun 2023 15:11:46 +0000
 Subject: bromite build utils
 
 ---
- build/android/gyp/java_cpp_enum.py            | 36 +++++--
- build/android/gyp/util/build_utils.py         | 25 ++++-
- build/bromite/bromite_utils.gni               | 69 ++++++++++++++
- build/bromite/gyp/cpp_bromite_include.py      | 35 +++++++
- build/bromite/gyp/cpp_bromite_include.pydeps  |  9 ++
- build/bromite/gyp/java_bromite_impl.py        | 94 +++++++++++++++++++
- build/bromite/gyp/java_bromite_impl.pydeps    |  9 ++
- build/config/BUILDCONFIG.gn                   |  1 +
- build/config/android/rules.gni                |  6 +-
- .../ChromeAccessibilitySettingsDelegate.java  |  5 +
- chrome/browser/flags/BUILD.gn                 | 10 +-
- .../flags/android/cromite_native_utils.cc     | 41 ++++++++
- .../flags/android/cromite_native_utils.h      | 14 +++
- .../browser/flags/CromiteNativeUtils.java     | 41 ++++++++
- tools/grit/grit/grd_reader.py                 | 27 +++++-
- tools/grit/preprocess_if_expr.py              | 32 ++++++-
- 16 files changed, 438 insertions(+), 16 deletions(-)
+ build/android/gyp/java_cpp_enum.py            |  36 +++++-
+ build/android/gyp/util/build_utils.py         |  25 +++-
+ build/bromite/bromite_utils.gni               |  79 +++++++++++++
+ build/bromite/gyp/cpp_bromite_include.py      |  35 ++++++
+ build/bromite/gyp/cpp_bromite_include.pydeps  |   9 ++
+ build/bromite/gyp/java_bromite_impl.py        | 108 ++++++++++++++++++
+ build/bromite/gyp/java_bromite_impl.pydeps    |   9 ++
+ build/config/BUILDCONFIG.gn                   |   1 +
+ build/config/android/rules.gni                |   6 +-
+ .../ChromeAccessibilitySettingsDelegate.java  |   5 +
+ chrome/browser/flags/BUILD.gn                 |  10 +-
+ .../flags/android/cromite_native_utils.cc     |  41 +++++++
+ .../flags/android/cromite_native_utils.h      |  14 +++
+ .../browser/flags/CromiteNativeUtils.java     |  46 ++++++++
+ tools/grit/grit/grd_reader.py                 |  27 ++++-
+ tools/grit/preprocess_if_expr.py              |  32 +++++-
+ 16 files changed, 467 insertions(+), 16 deletions(-)
  create mode 100644 build/bromite/bromite_utils.gni
  create mode 100644 build/bromite/gyp/cpp_bromite_include.py
  create mode 100644 build/bromite/gyp/cpp_bromite_include.pydeps
@@ -162,7 +162,7 @@ diff --git a/build/bromite/bromite_utils.gni b/build/bromite/bromite_utils.gni
 new file mode 100644
 --- /dev/null
 +++ b/build/bromite/bromite_utils.gni
-@@ -0,0 +1,69 @@
+@@ -0,0 +1,79 @@
 +import("//build/config/python.gni")
 +
 +# generates the file specified in ouput_file containing
@@ -215,18 +215,28 @@ new file mode 100644
 +                           TESTONLY_AND_VISIBILITY + [
 +                                 "deps",
 +                                 "inputs",
++                                 "namespace",
++                                 "static_classes",
 +                               ])
 +    script = "//build/bromite/gyp/java_bromite_impl.py"
++    namespace = ""
++    static_classes = false
 +
 +    _srcjar_path = "${target_gen_dir}/${target_name}.srcjar"
 +    _rebased_srcjar_path = rebase_path(_srcjar_path, root_build_dir)
 +    _rebased_directories = rebase_path(invoker.inputs, root_build_dir)
 +    _rebased_template = rebase_path(invoker.template, root_build_dir)
++    _namespace = invoker.namespace
++    _static_classes = invoker.static_classes
 +
 +    args = [
 +      "--srcjar=$_rebased_srcjar_path",
 +      "--template=$_rebased_template",
++      "--namespace=$_namespace",
 +    ]
++    if (_static_classes) {
++      args += [ "--static_classes", ]
++    }
 +    args += _rebased_directories
 +
 +    outputs = [ _srcjar_path ]
@@ -290,7 +300,7 @@ diff --git a/build/bromite/gyp/java_bromite_impl.py b/build/bromite/gyp/java_bro
 new file mode 100644
 --- /dev/null
 +++ b/build/bromite/gyp/java_bromite_impl.py
-@@ -0,0 +1,94 @@
+@@ -0,0 +1,108 @@
 +#!/usr/bin/env python3
 +
 +import argparse
@@ -307,7 +317,8 @@ new file mode 100644
 +import action_helpers  # build_utils adds //build to sys.path.
 +import zip_helpers
 +
-+def _GenerateOutput(template, source_paths, template_path, strings):
++def _GenerateOutput(template, source_paths, template_path, strings,
++                    namespace, static_classes):
 +  description_template = """
 +// This following string constants were inserted by
 +//     {SCRIPT_NAME}
@@ -325,8 +336,13 @@ new file mode 100644
 +  description = description_template.format(**values)
 +
 +  import_clause = '\n'.join(
-+      ['import org.chromium.components.browser_ui.site_settings.impl.' + f + ';' for f in strings])
-+  add_clause = '\n\t'.join(['\tadd(new ' + f + '());' for f in strings])
++      ['import ' + namespace + '.' + f + ';' for f in strings])
++  print(namespace)
++  print(static_classes)
++  if static_classes:
++    add_clause = '\n\t'.join(['\tadd(' + f + '.getInstance());' for f in strings])
++  else:
++    add_clause = '\n\t'.join(['\tadd(new ' + f + '());' for f in strings])
 +
 +  values = {
 +      'DESCRIPTION': description,
@@ -336,7 +352,7 @@ new file mode 100644
 +  return template.format(**values)
 +
 +
-+def _Generate(source_paths, template_path):
++def _Generate(source_paths, template_path, namespace, static_classes):
 +  with open(template_path) as f:
 +    lines = f.readlines()
 +
@@ -356,7 +372,8 @@ new file mode 100644
 +             if not f.endswith('include_all_directory.java') and
 +                not f.endswith('.java.tmpl') ]
 +
-+  output = _GenerateOutput(template, source_paths, template_path, strings)
++  output = _GenerateOutput(template, source_paths, template_path, strings,
++                           namespace, static_classes)
 +
 +  return output, output_path
 +
@@ -374,12 +391,19 @@ new file mode 100644
 +                      'class.')
 +
 +  parser.add_argument(
++      '--namespace', required=True, help='Output namespace')
++  parser.add_argument(
++      '--static_classes', action="store_true",
++      default=False,
++      help='True to use getInstance() method')
++  parser.add_argument(
 +      'inputs', nargs='+', help='Input folder(s)', metavar='INPUTFILE')
 +  args = parser.parse_args(argv)
 +
 +  with action_helpers.atomic_output(args.srcjar) as f:
 +    with zipfile.ZipFile(f, 'w', zipfile.ZIP_STORED) as srcjar:
-+      data, path = _Generate(args.inputs, args.template)
++      data, path = _Generate(args.inputs, args.template,
++                             args.namespace, args.static_classes)
 +      zip_helpers.add_to_zip_hermetic(srcjar, path, data=data)
 +
 +
@@ -551,7 +575,7 @@ diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/f
 new file mode 100755
 --- /dev/null
 +++ b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/CromiteNativeUtils.java
-@@ -0,0 +1,41 @@
+@@ -0,0 +1,46 @@
 +package org.chromium.chrome.browser.flags;
 +
 +import org.chromium.chrome.browser.flags.ChromeFeatureList;
@@ -570,17 +594,22 @@ new file mode 100755
 +     * @param flagName the flag name name from about_flags.cc.
 +     */
 +    public static void setFlagEnabled(String flagName, Boolean newValue) {
-+        CromiteNativeUtilsJni.get().setEnabled(flagName, newValue);
++        CachedFlag cachedFlag = ChromeFeatureList.sAllCachedFlags.get(flagName);
++        setFlagEnabled(cachedFlag == null
++                        ? ""
++                        : cachedFlag.getFeatureName(), flagName, newValue);
 +    }
 +
 +    public static void setFlagEnabled(String featureName, String flagName, Boolean newValue) {
-+        setFlagEnabled(flagName, newValue);
++        CromiteNativeUtilsJni.get().setEnabled(flagName, newValue);
 +
-+        CachedFlag cachedFlag = ChromeFeatureList.sAllCachedFlags.get(featureName);
-+        String preferenceName = cachedFlag.getSharedPreferenceKey();
++        if (!featureName.isEmpty()) {
++            CachedFlag cachedFlag = ChromeFeatureList.sAllCachedFlags.get(featureName);
++            String preferenceName = cachedFlag.getSharedPreferenceKey();
 +
-+        ChromeSharedPreferences.getInstance().writeBoolean(preferenceName, newValue);
-+        cachedFlag.setValueReturnedOverride(newValue);
++            ChromeSharedPreferences.getInstance().writeBoolean(preferenceName, newValue);
++            cachedFlag.setValueReturnedOverride(newValue);
++        }
 +    }
 +
 +    public static boolean isFlagEnabled(String featureName) {

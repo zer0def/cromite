@@ -25,9 +25,13 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../browser/settings/SettingsActivity.java    |  36 +++++
  chrome/browser/about_flags.cc                 |   7 +
  chrome/browser/browser_features.cc            |   1 +
+ chrome/browser/flags/BUILD.gn                 |  12 ++
  .../flags/android/chrome_feature_list.cc      |   1 +
  .../flags/android/chrome_feature_list.h       |   1 +
  .../chrome/browser/flags/CachedFlag.java      |   6 +
+ .../browser/flags/ChromeFeatureList.java      |  13 +-
+ .../flags/cromite/include_all_directory.java  |   1 +
+ .../java_template/CromiteCachedFlag.java.tmpl |  47 ++++++
  chrome/browser/settings/BUILD.gn              |   1 +
  .../settings/ChromeBaseSettingsFragment.java  |  47 ++++++
  .../strings/android_chrome_strings.grd        |   1 +
@@ -81,7 +85,9 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  services/network/public/cpp/features.h        |   1 +
  third_party/blink/common/features.cc          |   1 +
  third_party/blink/public/common/features.h    |   1 +
- 67 files changed, 659 insertions(+), 17 deletions(-)
+ 71 files changed, 731 insertions(+), 18 deletions(-)
+ create mode 100644 chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/cromite/include_all_directory.java
+ create mode 100644 chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/cromite/java_template/CromiteCachedFlag.java.tmpl
  create mode 100644 chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/placeholder.txt
  create mode 100755 cromite_flags/BUILD.gn
  create mode 100755 cromite_flags/chrome/browser/about_flags_cc/placeholder.txt
@@ -523,6 +529,42 @@ diff --git a/chrome/browser/browser_features.cc b/chrome/browser/browser_feature
  
 +#include "cromite_flags/chrome_browser_browser_features_cc.inc"
  }  // namespace features
+diff --git a/chrome/browser/flags/BUILD.gn b/chrome/browser/flags/BUILD.gn
+--- a/chrome/browser/flags/BUILD.gn
++++ b/chrome/browser/flags/BUILD.gn
+@@ -26,7 +26,11 @@ android_library("java") {
+     "android/java/src/org/chromium/chrome/browser/flags/ValuesReturned.java",
+     "android/java/src/org/chromium/chrome/browser/flags/AdBlockNativeGateway.java",
+   ]
++  sources += [
++    "android/java/src/org/chromium/chrome/browser/flags/cromite/include_all_directory.java",
++  ]
+   deps = [
++    ":java_cromite_cached_flags",
+     "//base:base_java",
+     "//build:chromeos_buildflags",
+     "//build/android:build_java",
+@@ -37,12 +41,20 @@ android_library("java") {
+     "//third_party/jni_zero:jni_zero_java",
+   ]
+   srcjar_deps = [
++    ":java_cromite_cached_flags",
+     ":chrome_android_java_switches_srcjar",
+     ":chrome_browser_flags_enums_srcjar",
+     ":jni_headers",
+   ]
+ }
+ 
++java_bromite_impl("java_cromite_cached_flags") {
++  inputs = [ "android/java/src/org/chromium/chrome/browser/flags/cromite/include_all_directory.java" ]
++  namespace = "org.chromium.chrome.browser.flags.cromite"
++  template = "android/java/src/org/chromium/chrome/browser/flags/cromite/java_template/CromiteCachedFlag.java.tmpl"
++  static_classes = true
++}
++
+ generate_jni("jni_headers") {
+   sources = [ "android/java/src/org/chromium/chrome/browser/flags/CromiteNativeUtils.java" ]
+   sources += [
 diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browser/flags/android/chrome_feature_list.cc
 --- a/chrome/browser/flags/android/chrome_feature_list.cc
 +++ b/chrome/browser/flags/android/chrome_feature_list.cc
@@ -560,6 +602,101 @@ diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/f
      /**
       * Create a Map of feature names -> {@link CachedFlag} from multiple lists of CachedFlags.
       */
+diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
+--- a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
++++ b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
+@@ -7,6 +7,10 @@ package org.chromium.chrome.browser.flags;
+ import org.chromium.base.FeatureMap;
+ import org.chromium.chrome.browser.preferences.ChromePreferenceKeys;
+ 
++import org.chromium.chrome.browser.flags.cromite.CromiteCachedFlagImplBase;
++import java.util.Arrays;
++import java.util.stream.Collectors;
++
+ import java.util.List;
+ import java.util.Map;
+ 
+@@ -673,7 +677,7 @@ public abstract class ChromeFeatureList {
+     public static final CachedFlag sUseLibunwindstackNativeUnwinderAndroid =
+             new CachedFlag(USE_LIBUNWINDSTACK_NATIVE_UNWINDER_ANDROID, true);
+ 
+-    public static final List<CachedFlag> sFlagsCachedFullBrowser =
++    public static final List<CachedFlag> sFlagsCachedFullBrowserChromium =
+             List.of(
+                     sAllowUserCertificates,
+                     sAndroidAppIntegration,
+@@ -757,6 +761,13 @@ public abstract class ChromeFeatureList {
+                     sShowAlwaysContextMenuOnLinks,
+                     sUseLibunwindstackNativeUnwinderAndroid);
+ 
++    private static <T> List<T> concatenateLists(List<T>... collections) {
++        return Arrays.stream(collections).flatMap(x -> x.stream()).collect(Collectors.toList());
++    }
++
++    public static final List<CachedFlag> sFlagsCachedFullBrowser =
++            concatenateLists(CromiteCachedFlagImplBase.getList(), sFlagsCachedFullBrowserChromium);
++
+     public static final List<CachedFlag> sFlagsCachedInMinimalBrowser =
+             List.of(sExperimentsForAgsa);
+ 
+diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/cromite/include_all_directory.java b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/cromite/include_all_directory.java
+new file mode 100644
+--- /dev/null
++++ b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/cromite/include_all_directory.java
+@@ -0,0 +1 @@
++this file is intentionally empty
+diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/cromite/java_template/CromiteCachedFlag.java.tmpl b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/cromite/java_template/CromiteCachedFlag.java.tmpl
+new file mode 100644
+--- /dev/null
++++ b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/cromite/java_template/CromiteCachedFlag.java.tmpl
+@@ -0,0 +1,47 @@
++/*
++    This file is part of Cromite.
++
++    Cromite is free software: you can redistribute it and/or modify
++    it under the terms of the GNU General Public License as published by
++    the Free Software Foundation, either version 3 of the License, or
++    (at your option) any later version.
++
++    Cromite is distributed in the hope that it will be useful,
++    but WITHOUT ANY WARRANTY; without even the implied warranty of
++    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++    GNU General Public License for more details.
++
++    You should have received a copy of the GNU General Public License
++    along with Cromite. If not, see <https://www.gnu.org/licenses/>.
++
++*/
++
++{DESCRIPTION}
++
++package org.chromium.chrome.browser.flags.cromite;
++
++import java.util.ArrayList;
++import java.util.List;
++
++import org.chromium.chrome.browser.flags.CachedFlag;
++
++{IMPORT_CLAUSE}
++
++public class CromiteCachedFlagImplBase {{
++
++    static protected final ArrayList<CachedFlag> mItemList;
++
++    private static void add(CachedFlag flag) {{
++        mItemList.add(flag);
++    }}
++
++    public static List<CachedFlag> getList() {{
++        return mItemList;
++    }}
++
++    static {{
++        mItemList = new ArrayList<CachedFlag>();
++{ADD_CLAUSE}
++    }}
++
++}}
 diff --git a/chrome/browser/settings/BUILD.gn b/chrome/browser/settings/BUILD.gn
 --- a/chrome/browser/settings/BUILD.gn
 +++ b/chrome/browser/settings/BUILD.gn
@@ -615,7 +752,7 @@ diff --git a/chrome/browser/settings/android/java/src/org/chromium/chrome/browse
 +            Preference pref = prefScreen.getPreference(i);
 +            if (pref instanceof ChromeSwitchPreference) {
 +                ChromeSwitchPreference switchPref = (ChromeSwitchPreference)pref;
-+                String featureName = switchPref.GetFeatureName();
++                String featureName = switchPref.getFeatureName();
 +                if (featureName == null)
 +                    continue;
 +
@@ -624,7 +761,7 @@ diff --git a/chrome/browser/settings/android/java/src/org/chromium/chrome/browse
 +
 +                switchPref.setOnPreferenceChangeListener((preference, newValue) -> {
 +                    CromiteNativeUtils.setFlagEnabled(featureName, (boolean)newValue);
-+                    if (switchPref.NeedRestart())
++                    if (switchPref.needRestart())
 +                        mRequireRestartDelegate.RequireRestart();
 +                    return true;
 +                });
@@ -719,11 +856,11 @@ diff --git a/components/browser_ui/settings/android/widget/java/src/org/chromium
 +        a.recycle();
 +    }
 +
-+    public String GetFeatureName() {
++    public String getFeatureName() {
 +        return mFeatureName;
 +    }
 +
-+    public boolean NeedRestart() {
++    public boolean needRestart() {
 +        return mNeedRestart;
      }
  
