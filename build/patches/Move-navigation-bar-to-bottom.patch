@@ -24,7 +24,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../tab_management/TabGroupUiToolbarView.java | 17 ++++
  .../tab_management/TabGroupUiViewBinder.java  |  3 +
  .../TabListContainerViewBinder.java           | 15 +++-
- .../tab_management/TabListCoordinator.java    | 87 ++++++++++++++++++-
+ .../tab_management/TabListCoordinator.java    | 88 ++++++++++++++++++-
  .../tab_management/TabListRecyclerView.java   | 19 +++-
  .../tab_management/TabSwitcherMediator.java   | 26 +++++-
  .../ChromeAccessibilitySettingsDelegate.java  | 50 +++++++++++
@@ -66,7 +66,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../suggestions/AutocompleteCoordinator.java  | 15 +++-
  .../suggestions/AutocompleteMediator.java     |  6 +-
  .../DropdownItemViewInfoListManager.java      | 18 ++--
- .../OmniboxSuggestionsDropdown.java           | 39 ++++++++-
+ .../OmniboxSuggestionsDropdown.java           | 39 +++++++-
  .../OmniboxSuggestionsDropdownEmbedder.java   |  8 ++
  .../strings/android_chrome_strings.grd        |  6 ++
  chrome/browser/ui/android/toolbar/BUILD.gn    |  1 +
@@ -86,7 +86,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../AccessibilitySettingsDelegate.java        |  6 ++
  .../render_widget_host_view_android.cc        |  3 +
  .../Move-navigation-bar-to-bottom.inc         | 12 +++
- 73 files changed, 878 insertions(+), 80 deletions(-)
+ 73 files changed, 879 insertions(+), 80 deletions(-)
  create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Move-navigation-bar-to-bottom.inc
 
 diff --git a/cc/base/features.cc b/cc/base/features.cc
@@ -537,7 +537,7 @@ diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser
                  mRecyclerView.setLayoutManager(gridLayoutManager);
                  mMediator.registerOrientationListener(gridLayoutManager);
                  mMediator.updateSpanCount(
-@@ -295,12 +372,15 @@ public class TabListCoordinator
+@@ -295,12 +372,16 @@ public class TabListCoordinator
                          .getDecorView()
                          .getWindowVisibleDisplayFrame(frame);
                  updateGridCardLayout(frame.width());
@@ -549,13 +549,14 @@ diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser
                                                    : LinearLayoutManager.HORIZONTAL,
                          false));
 +            } else if (mMode == TabListMode.LIST) {
-+                mRecyclerView.setLayoutManager(new LinearLayoutManager(context,
-+                        LinearLayoutManager.VERTICAL,
-+                        ChromeFeatureList.sMoveTopToolbarToBottom.isEnabled()));
++                LinearLayoutManager layout = new LinearLayoutManager(context,
++                        LinearLayoutManager.VERTICAL, false);
++                layout.setStackFromEnd(ChromeFeatureList.sMoveTopToolbarToBottom.isEnabled());
++                mRecyclerView.setLayoutManager(layout);
              }
              mMediator.setRecyclerViewItemAnimationToggle(mRecyclerView::setDisableItemAnimations);
          }
-@@ -578,6 +658,9 @@ public class TabListCoordinator
+@@ -578,6 +659,9 @@ public class TabListCoordinator
      void prepareTabSwitcherView() {
          registerLayoutChangeListener();
          mRecyclerView.prepareTabSwitcherView();
