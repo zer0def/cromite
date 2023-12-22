@@ -25,10 +25,11 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  chrome/browser/ui/prefs/pref_watcher.cc       |  2 +
  chrome/browser/ui/prefs/prefs_tab_helper.cc   |  2 +
  chrome/common/pref_names.h                    |  3 +
- .../renderer_host/navigation_request.cc       |  8 ++
+ .../content/internal/context_menu_download.cc | 10 +++
+ .../renderer_host/navigation_request.cc       |  9 ++
  .../network/public/cpp/resource_request.h     |  2 +-
  .../renderer_preferences.h                    |  1 +
- 17 files changed, 306 insertions(+), 1 deletion(-)
+ 18 files changed, 317 insertions(+), 1 deletion(-)
  create mode 100644 chrome/android/java/res/layout/radio_button_group_referer_policy_preference.xml
  create mode 100644 chrome/android/java/res/xml/referer_policy_preferences.xml
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/RadioButtonGroupRefererSettings.java
@@ -471,15 +472,43 @@ diff --git a/chrome/common/pref_names.h b/chrome/common/pref_names.h
  // Boolean that specifies whether to import the form data for autofill from the
  // default browser on first run.
  inline constexpr char kImportAutofillFormData[] = "import_autofill_form_data";
+diff --git a/components/download/content/internal/context_menu_download.cc b/components/download/content/internal/context_menu_download.cc
+--- a/components/download/content/internal/context_menu_download.cc
++++ b/components/download/content/internal/context_menu_download.cc
+@@ -12,6 +12,8 @@
+ #include "content/public/browser/web_contents.h"
+ #include "content/public/common/referrer.h"
+ #include "net/traffic_annotation/network_traffic_annotation.h"
++#include "net/base/registry_controlled_domains/registry_controlled_domain.h"
++#include "third_party/blink/public/common/renderer_preferences/renderer_preferences.h"
+ 
+ namespace download {
+ 
+@@ -31,6 +33,14 @@ void CreateContextMenuDownload(content::WebContents* web_contents,
+   content::Referrer referrer = content::Referrer::SanitizeForRequest(
+       url,
+       content::Referrer(referring_url.GetAsReferrer(), params.referrer_policy));
++  blink::RendererPreferences* render_prefs = web_contents->GetMutableRendererPrefs();
++  if (render_prefs->enable_referrers && render_prefs->referrers_policy == 2 &&
++        !net::registry_controlled_domains::SameDomainOrHost(
++          referring_url, url, net::registry_controlled_domains::INCLUDE_PRIVATE_REGISTRIES)) {
++    referrer = content::Referrer::SanitizeForRequest(
++      url,
++      content::Referrer(params.page_url.GetAsReferrer(), params.referrer_policy));
++  }
+   dl_params->set_referrer(referrer.url);
+   dl_params->set_referrer_policy(
+       content::Referrer::ReferrerPolicyForUrlRequest(referrer.policy));
 diff --git a/content/browser/renderer_host/navigation_request.cc b/content/browser/renderer_host/navigation_request.cc
 --- a/content/browser/renderer_host/navigation_request.cc
 +++ b/content/browser/renderer_host/navigation_request.cc
-@@ -394,6 +394,14 @@ void AddAdditionalRequestHeaders(
+@@ -394,6 +394,15 @@ void AddAdditionalRequestHeaders(
          blink::mojom::Referrer(GURL(), network::mojom::ReferrerPolicy::kNever);
    }
  
 +  if (render_prefs.enable_referrers && render_prefs.referrers_policy == 2 &&
-+        !url::IsSameOriginWith(referrer->url.GetAsReferrer(), url) &&
++        !net::registry_controlled_domains::SameDomainOrHost(
++          referrer->url, url, net::registry_controlled_domains::INCLUDE_PRIVATE_REGISTRIES) &&
 +        frame_tree_node->IsOutermostMainFrame()) {
 +    // remove referrer if the navigation is done on the top frame
 +    *referrer =
