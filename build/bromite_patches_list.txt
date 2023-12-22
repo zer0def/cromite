@@ -242,7 +242,6 @@ Add-webGL-site-setting.patch
 Add-webRTC-site-settings.patch
 Show-site-settings-for-cookies-javascript-and-ads.patch
 Viewport-Protection-flag.patch
-Viewport-Protection-Site-Setting.patch
 Timezone-customization.patch
 00Disable-speechSynthesis-getVoices-API.patch
 00Remove-support-for-device-memory-and-cpu-recovery.patch
