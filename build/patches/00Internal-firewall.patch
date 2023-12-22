@@ -128,7 +128,7 @@ diff --git a/chrome/browser/offline_pages/android/downloads/offline_page_downloa
 diff --git a/components/download/content/internal/context_menu_download.cc b/components/download/content/internal/context_menu_download.cc
 --- a/components/download/content/internal/context_menu_download.cc
 +++ b/components/download/content/internal/context_menu_download.cc
-@@ -15,6 +15,36 @@
+@@ -17,6 +17,36 @@
  
  namespace download {
  
@@ -165,7 +165,7 @@ diff --git a/components/download/content/internal/context_menu_download.cc b/com
  void CreateContextMenuDownload(content::WebContents* web_contents,
                                 const content::ContextMenuParams& params,
                                 const std::string& origin,
-@@ -27,7 +57,7 @@ void CreateContextMenuDownload(content::WebContents* web_contents,
+@@ -29,7 +59,7 @@ void CreateContextMenuDownload(content::WebContents* web_contents,
    std::unique_ptr<download::DownloadUrlParameters> dl_params(
        content::DownloadRequestUtils::CreateDownloadForWebContentsMainFrame(
            web_contents, url,
