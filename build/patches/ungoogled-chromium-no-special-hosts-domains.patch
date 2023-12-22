@@ -57,9 +57,9 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  components/url_matcher/url_util.cc            |  83 -----
  ...gled-chromium-no-special-hosts-domains.inc |   1 +
  ...gled-chromium-no-special-hosts-domains.inc |   1 +
- net/base/url_util.cc                          |  21 --
+ net/base/url_util.cc                          |  24 +-
  services/network/network_context.cc           |   2 +-
- 52 files changed, 57 insertions(+), 796 deletions(-)
+ 52 files changed, 58 insertions(+), 798 deletions(-)
  create mode 100644 cromite_flags/content/common/features_cc/ungoogled-chromium-no-special-hosts-domains.inc
  create mode 100644 cromite_flags/content/public/common/content_features_cc/ungoogled-chromium-no-special-hosts-domains.inc
 
@@ -1642,7 +1642,7 @@ new file mode 100644
 diff --git a/net/base/url_util.cc b/net/base/url_util.cc
 --- a/net/base/url_util.cc
 +++ b/net/base/url_util.cc
-@@ -489,27 +489,6 @@ bool HasGoogleHost(const GURL& url) {
+@@ -489,33 +489,11 @@ bool HasGoogleHost(const GURL& url) {
  }
  
  bool IsGoogleHost(base::StringPiece host) {
@@ -1670,6 +1670,13 @@ diff --git a/net/base/url_util.cc b/net/base/url_util.cc
    return false;
  }
  
+ bool IsGoogleHostWithAlpnH3(base::StringPiece host) {
+-  return base::EqualsCaseInsensitiveASCII(host, "google.com") ||
+-         base::EqualsCaseInsensitiveASCII(host, "www.google.com");
++  return false;
+ }
+ 
+ bool IsLocalHostname(base::StringPiece host) {
 diff --git a/services/network/network_context.cc b/services/network/network_context.cc
 --- a/services/network/network_context.cc
 +++ b/services/network/network_context.cc
