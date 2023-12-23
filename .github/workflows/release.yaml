@@ -15,7 +15,7 @@ on:
         default: 'ci'
 
 env:
-  BROMITE_SHA: ${{ github.event.inputs.sha }}
+  CROMITE_SHA: ${{ github.event.inputs.sha }}
   REMOVEDOCKERSUPPORT: true
   USELOCALIMAGE: true
 
@@ -39,7 +39,7 @@ jobs:
         run: |
           wget https://github.com/ericchiang/pup/releases/download/v0.4.0/pup_v0.4.0_linux_amd64.zip
           unzip pup_v0.4.0_linux_amd64.zip && rm pup_v0.4.0_linux_amd64.zip
-          BRANCH=$(curl https://github.com/uazo/cromite/branch_commits/$BROMITE_SHA | ./pup -p li.branch:last-child a text{} | xargs)
+          BRANCH=$(curl https://github.com/uazo/cromite/branch_commits/$CROMITE_SHA | ./pup -p li.branch:last-child a text{} | xargs)
           echo "BRANCH=$BRANCH" >> $GITHUB_ENV
 
           wget https://github.com/cli/cli/releases/download/v2.18.1/gh_2.18.1_linux_amd64.tar.gz
@@ -70,14 +70,14 @@ jobs:
           # echo "you can try it at your own risk." >>note
           echo "\`\`\`" >>note
 
-          $GH release create $VERSION-$BROMITE_SHA --notes-file note -d
+          $GH release create $VERSION-$CROMITE_SHA --notes-file note -d
 
           # android arm
           echo "::group::-------- android arm"
           sudo cp ${{ env.OUTPUTFILE_ARM }}/apks/ChromePublic.apk arm_ChromePublic.apk
           sudo chown runner arm_ChromePublic.apk
           echo Uploading arm_ChromePublic
-          $GH release upload $VERSION-$BROMITE_SHA arm_ChromePublic.apk
+          $GH release upload $VERSION-$CROMITE_SHA arm_ChromePublic.apk
           echo "::endgroup::"
 
           # android arm64
@@ -85,7 +85,7 @@ jobs:
           sudo cp ${{ env.OUTPUTFILE_ARM64 }}/apks/ChromePublic.apk arm64_ChromePublic.apk
           sudo chown runner arm64_ChromePublic.apk
           echo Uploading arm64_ChromePublic
-          $GH release upload $VERSION-$BROMITE_SHA arm64_ChromePublic.apk
+          $GH release upload $VERSION-$CROMITE_SHA arm64_ChromePublic.apk
           echo "::endgroup::"
 
           # android x64
@@ -93,25 +93,25 @@ jobs:
           sudo cp ${{ env.OUTPUTFILE_X64 }}/apks/ChromePublic.apk x64_ChromePublic.apk
           sudo chown runner x64_ChromePublic.apk
           echo Uploading x64_ChromePublic
-          $GH release upload $VERSION-$BROMITE_SHA x64_ChromePublic.apk
+          $GH release upload $VERSION-$CROMITE_SHA x64_ChromePublic.apk
           echo "::endgroup::"
 
           echo "::group::-------- chrome.size"
-          test $VERSION-$BROMITE_SHA $OUTPUTFILE_ARM64/chrome.size && \
-            $GH release upload $VERSION-$BROMITE_SHA $OUTPUTFILE_ARM64/chrome.size
+          test $VERSION-$CROMITE_SHA $OUTPUTFILE_ARM64/chrome.size && \
+            $GH release upload $VERSION-$CROMITE_SHA $OUTPUTFILE_ARM64/chrome.size
           echo "::endgroup::"
 
           echo "::group::-------- ChromePublic.apk.mapping"
           sudo cp ${{ env.OUTPUTFILE_ARM64 }}/apks/ChromePublic.apk.mapping arm64_ChromePublic.apk.mapping
-          $GH release upload $VERSION-$BROMITE_SHA arm64_ChromePublic.apk.mapping
+          $GH release upload $VERSION-$CROMITE_SHA arm64_ChromePublic.apk.mapping
           sudo cp ${{ env.OUTPUTFILE_X64 }}/apks/ChromePublic.apk.mapping x64_ChromePublic.apk.mapping
-          $GH release upload $VERSION-$BROMITE_SHA x64_ChromePublic.apk.mapping
+          $GH release upload $VERSION-$CROMITE_SHA x64_ChromePublic.apk.mapping
           echo "::endgroup::"
 
           echo "::group::-------- Uploading arm64_ninja_log_trace.html"
           test $OUTPUTFILE_ARM64/ninja_log_trace.html && \
             cp $OUTPUTFILE_ARM64/ninja_log_trace.html arm64_ninja_log_trace.html && \
-            $GH release upload $VERSION-$BROMITE_SHA arm64_ninja_log_trace.html
+            $GH release upload $VERSION-$CROMITE_SHA arm64_ninja_log_trace.html
           echo "::endgroup::"
 
           # windows x64
@@ -149,27 +149,27 @@ jobs:
           zip -r chrome-win.zip chrome-win/
 
           echo Uploading chrome-win.zip
-          $GH release upload $VERSION-$BROMITE_SHA chrome-win.zip
+          $GH release upload $VERSION-$CROMITE_SHA chrome-win.zip
           echo "::endgroup::"
 
           echo "::group::-------- arm64 symbols"
           zip arm64_symbols.zip ${{ env.OUTPUTFILE_ARM64 }}/dump_syms \
                                 ${{ env.OUTPUTFILE_ARM64 }}/minidump_stackwalk \
                                 ${{ env.OUTPUTFILE_ARM64 }}/libchrome.so
-          $GH release upload $VERSION-$BROMITE_SHA arm64_symbols.zip
+          $GH release upload $VERSION-$CROMITE_SHA arm64_symbols.zip
           echo "::endgroup::"
 
           # workaround for https://github.com/cli/cli/issues/6599
           sleep 30s
 
           TIMESTAMP=$(date +%s -r chrome-win.zip)
-          echo >updateurl.txt "browser=chromium;os=windows;architecture=64-bit;timestamp=$TIMESTAMP;editor=uazo;channel=stable;repository=https://github.com/uazo/cromite/releases;download=https://github.com/uazo/cromite/releases/latest/download/chrome-win.zip;version=$(cat $OUTPUTFILE_WIN/RELEASE);revision=1;commit=$BROMITE_SHA"
-          $GH release upload $VERSION-$BROMITE_SHA updateurl.txt
+          echo >updateurl.txt "browser=chromium;os=windows;architecture=64-bit;timestamp=$TIMESTAMP;editor=uazo;channel=stable;repository=https://github.com/uazo/cromite/releases;download=https://github.com/uazo/cromite/releases/latest/download/chrome-win.zip;version=$(cat $OUTPUTFILE_WIN/RELEASE);revision=1;commit=$CROMITE_SHA"
+          $GH release upload $VERSION-$CROMITE_SHA updateurl.txt
 
-          $GH release edit $VERSION-$BROMITE_SHA -t $VERSION-$BROMITE_SHA
-          $GH release edit $VERSION-$BROMITE_SHA --draft=false
+          $GH release edit $VERSION-$CROMITE_SHA -t $VERSION-$CROMITE_SHA
+          $GH release edit $VERSION-$CROMITE_SHA --draft=false
 
           VERSION=$(cat ${{ env.OUTPUTFILE_ARM64 }}/RELEASE)
-          docker push uazo/cromite:$VERSION-$BROMITE_SHA
-          docker push uazo/cromite-build:$VERSION-$BROMITE_SHA
+          docker push uazo/cromite:$VERSION-$CROMITE_SHA
+          docker push uazo/cromite-build:$VERSION-$CROMITE_SHA
 

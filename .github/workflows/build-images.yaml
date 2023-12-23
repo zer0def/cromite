@@ -132,8 +132,10 @@ jobs:
 
           if [[ "$LATEST_WIN" == "$CHR_VERSION" ]]; then
              echo Using Windows Release >>body.txt
+             echo "\`\`\`" >>body.txt
              curl -s 'https://chromiumdash.appspot.com/fetch_releases?channel=Stable&platform=Windows&num=10&offset=0' | \
                  jq --arg LATEST "$LATEST_WIN" '.[] | select( .version == $LATEST )' >>body.txt
+             echo "\`\`\`" >>body.txt
           fi
 
           if [[ "$LATEST_ANDROID" == "$CHR_VERSION" ]]; then

@@ -32,7 +32,7 @@ is_official_build=true
 proprietary_codecs=true
 rtc_build_examples=false
 symbol_level=1
-system_webview_package_name="org.bromite.webview"
+system_webview_package_name="org.cromite.webview"
 target_os="android"
 treat_warnings_as_errors=true
 use_debug_fission=true
@@ -56,3 +56,57 @@ use_relr_relocations=false
 # disabled the use of the context snapshot
 # see https://github.com/uazo/cromite/pull/317 for context
 use_v8_context_snapshot = false
+
+declare_args() {
+  _is_debug_build = ""
+}
+
+not_needed(["_target_build", "_is_debug_build"])
+
+if (getenv("TARGET_CPU") != "") {
+  target_cpu = getenv("TARGET_CPU")
+}
+
+if (target_os == "android") {
+  target_os = "android" # fix traffic annotation auditor
+  #enable_kythe_annotations = true
+  chrome_public_manifest_package = "org.cromite.cromite"
+
+  if (getenv("USE_KEYSTORE") != "") {
+    android_keystore_path = "/home/lg/working_dir/cromite.keystore"
+    android_keystore_name = "cromite"
+    android_keystore_password = getenv("KEYSTORE_PASSWORD")
+  }
+
+  cromite_pref_hash_seed_bin = getenv("CROMITE_PREF_HASH_SEED_BIN")
+
+  _is_debug_build = getenv("TARGET_ISDEBUG")
+  if(_is_debug_build == "true") {
+    # print("Debug build on")
+    is_debug = true
+    is_official_build = false
+    dcheck_always_on = true
+    symbol_level = 1
+    strip_debug_info = false
+    generate_linker_map = false
+  } else {
+    generate_linker_map = true
+  }
+}
+
+if (target_os == "win") {
+  target_os = "win" # fix traffic annotation auditor
+  target_cpu = "x64"
+  symbol_level = 0
+  use_large_pdbs = true
+
+  enable_pdf = true
+  pdf_is_complete_lib = true
+  enable_plugins = true
+  enable_ppapi = false
+
+  chrome_pgo_phase = 2 # enable pgo
+
+  is_cfi = false # disable it
+  use_cfi_cast = false # disable it
+}

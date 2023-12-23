@@ -8,7 +8,7 @@ PATH=$WORKSPACE/chromium/src/third_party/llvm-build/Release+Asserts/bin:$WORKSPA
 
 sudo apt-get install -y lsof libgoogle-glog-dev libprotobuf17 libgrpc++1 parallel golang-go nano
 
-echo -e ${RED} -------- download mtool ${NC}
+echo -e ${RED} -------- download bromite mtool ${NC}
 git clone https://github.com/bromite/mtool
 cd mtool
 make
@@ -58,7 +58,7 @@ echo -e ${RED} -------- build modified ninja ${NC}
 cd $WORKSPACE/
 git clone https://github.com/ninja-build/ninja.git -b v1.8.2
 cd ninja
-git apply $WORKSPACE/bromite/tools/ninja-one-target-for-compdb.patch
+git apply $WORKSPACE/cromite/tools/ninja-one-target-for-compdb.patch
 CXX=clang++ ./configure.py --bootstrap
 
 echo -e ${RED} -------- download clang indexer ${NC}

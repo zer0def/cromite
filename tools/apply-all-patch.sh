@@ -5,8 +5,8 @@ git am --abort
 PATCH_OLD_PATH=~/cromite/build/patches
 PATCH_NEW_PATH=~/cromite/build/patches-new
 
-DESTINATION=~/cromite/build/bromite_patches_list_ok.txt
-DESTINATION_FAILED=~/cromite/build/bromite_patches_list_failed.txt
+DESTINATION=~/cromite/build/cromite_patches_list_ok.txt
+DESTINATION_FAILED=~/cromite/build/cromite_patches_list_failed.txt
 
 rm $DESTINATION
 rm $DESTINATION_FAILED
@@ -14,9 +14,9 @@ mkdir $PATCH_NEW_PATH
 
 IFS=$'\n'
 
-PATCH_LIST=~/cromite/build/bromite_patches_list_new.txt
+PATCH_LIST=~/cromite/build/cromite_patches_list_new.txt
 if [ ! -f $PATCH_LIST ]; then
-        cp ~/cromite/build/bromite_patches_list.txt $PATCH_LIST
+        cp ~/cromite/build/cromite_patches_list.txt $PATCH_LIST
 fi
 
 echo "Phase 1: check clean"

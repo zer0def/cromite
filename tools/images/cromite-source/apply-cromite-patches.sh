@@ -17,11 +17,11 @@ git add -f v8 >/dev/null
 git commit -m ":NOEXPORT: v8 repo" >/dev/null
 
 echo -e ${RED} ------- patches ${NC}
-cat ../../bromite/build/bromite_patches_list.txt
+cat ../../cromite/build/cromite_patches_list.txt
 echo
 
 echo -e ${RED} ------- apply patches ${NC}
-for file in $(cat ../../bromite/build/bromite_patches_list.txt) ; do
+for file in $(cat ../../cromite/build/cromite_patches_list.txt) ; do
 
    if [[ "$file" == *".patch" ]]; then
 	#if [[ "$file" == *"Automated-domain-substitution"* ]]; then
@@ -32,11 +32,11 @@ for file in $(cat ../../bromite/build/bromite_patches_list.txt) ; do
 	echo -e ${RED} " -> Apply $file" ${NC}
 
 	REPL="0,/^---/s//FILE:"$(basename $file)"\n---/"
-	cat ../../bromite/build/patches/$file | sed $REPL | git am
+	cat ../../cromite/build/patches/$file | sed $REPL | git am
 
 	if [ $? -ne 0 ]
 	then
-            echo -e "Error on ../../bromite/build/patches/${file}"
+            echo -e "Error on ../../cromite/build/patches/${file}"
             exit 1
 	fi
 
