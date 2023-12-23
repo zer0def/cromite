@@ -15,7 +15,6 @@ COPY pre-start.sh .
 COPY start-build.sh .
 COPY goma_auth.py .
 COPY casupload .
-COPY build_args.gni .
 
 COPY generic_android31.textpb .
 
