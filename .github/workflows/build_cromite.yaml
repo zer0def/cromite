@@ -69,7 +69,6 @@ jobs:
         shell: bash
         run: |
           export VERSION=$( cat ./cromite/build/RELEASE )
-          rm -rf cromite
 
           echo Current version is $VERSION
           echo "VERSION=$VERSION" >> $GITHUB_ENV
