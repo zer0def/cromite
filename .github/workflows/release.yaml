@@ -27,6 +27,7 @@ jobs:
       OUTPUTFILE_ARM64: /storage/images/${{ github.event.inputs.sha }}/android/false/arm64/
       OUTPUTFILE_X64: /storage/images/${{ github.event.inputs.sha }}/android/false/x64/
       OUTPUTFILE_WIN: /storage/images/${{ github.event.inputs.sha }}/win/x64/
+      OUTPUTFILE_LIN: /storage/images/${{ github.event.inputs.sha }}/win/lin64/
 
     steps:
       - name: Login to Docker Hub
@@ -150,6 +151,33 @@ jobs:
 
           echo Uploading chrome-win.zip
           $GH release upload $VERSION-$CROMITE_SHA chrome-win.zip
+          echo "::endgroup::"
+
+          ## linux
+          echo "::group::-------- linux x64"
+          mkdir chrome-lin/
+          cp $OUTPUTFILE_LIN/chrome chrome-lin/
+          cp $OUTPUTFILE_LIN/chrome_100_percent.pak chrome-lin/
+          cp $OUTPUTFILE_LIN/chrome_200_percent.pak chrome-lin/
+          cp $OUTPUTFILE_LIN/chrome_crashpad_handler chrome-lin/
+          cp $OUTPUTFILE_LIN/chrome-wrapper chrome-lin/
+          cp $OUTPUTFILE_LIN/icudtl.dat chrome-lin/
+          cp $OUTPUTFILE_LIN/libEGL.so chrome-lin/
+          cp $OUTPUTFILE_LIN/libGLESv2.so chrome-lin/
+          cp $OUTPUTFILE_LIN/libqt5_shim.so chrome-lin/
+          cp $OUTPUTFILE_LIN/libqt6_shim.so chrome-lin/
+          cp $OUTPUTFILE_LIN/libvk_swiftshader.so chrome-lin/
+          cp -r $OUTPUTFILE_LIN/locales/ chrome-lin/locales
+          cp $OUTPUTFILE_LIN/product_logo_48.png chrome-lin/
+          cp $OUTPUTFILE_LIN/resources.pak chrome-lin/
+          cp $OUTPUTFILE_LIN/snapshot_blob.bin chrome-lin/
+          cp $OUTPUTFILE_LIN/xdg-mime chrome-lin/
+          cp $OUTPUTFILE_LIN/xdg-settings chrome-lin/
+
+          tar -czvf chrome-lin64.tar.gz chrome-lin/
+
+          echo Uploading chrome-lin64.tar.gz
+          $GH release upload $VERSION-$CROMITE_SHA chrome-lin64.tar.gz
           echo "::endgroup::"
 
           echo "::group::-------- arm64 symbols"
