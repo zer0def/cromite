@@ -248,7 +248,7 @@ jobs:
           cd $WORKSPACE/chromium/src
 
           echo "::group::-------- gn gen"
-          gn gen --args="$(cat /home/lg/working_dir/cromite/build/cromite.gn_args) target_cpu = \"x64\" " out/x64
+          gn gen --args="target_os = \"android\" $(cat /home/lg/working_dir/cromite/build/cromite.gn_args) target_cpu = \"x64\" " out/x64
           echo "::endgroup::"
 
           echo "::group::-------- gn args"
@@ -305,7 +305,7 @@ jobs:
           cd $WORKSPACE/chromium/src
 
           echo "::group::-------- gn gen"
-          gn gen --args="$(cat /home/lg/working_dir/cromite/build/cromite.gn_args) target_cpu = \"arm64\" " out/arm64
+          gn gen --args="target_os = \"android\" $(cat /home/lg/working_dir/cromite/build/cromite.gn_args) target_cpu = \"arm64\" " out/arm64
           echo "::endgroup::"
 
           echo "::group::-------- gn args"
@@ -360,7 +360,7 @@ jobs:
           cd $WORKSPACE/chromium/src
 
           echo "::group::-------- gn gen"
-          gn gen --args="$(cat /home/lg/working_dir/cromite/build/cromite.gn_args) target_cpu = \"arm\" " out/arm
+          gn gen --args="target_os = \"android\" $(cat /home/lg/working_dir/cromite/build/cromite.gn_args) target_cpu = \"arm\" " out/arm
           echo "::endgroup::"
 
           echo "::group::-------- gn args"
@@ -389,7 +389,7 @@ jobs:
           cd $WORKSPACE/chromium/src
 
           echo "::group::-------- gn gen"
-          gn gen --args="target_os = \"linux\" $(cat /home/lg/working_dir/cromite/build/cromite.gn_args) target_cpu = \"x64\" use_sysroot = true " out/lin64
+          gn gen --args="target_os = \"linux\" $(cat /home/lg/working_dir/cromite/build/cromite.gn_args) target_cpu = \"x64\" " out/lin64
           echo "::endgroup::"
 
           echo "::group::-------- gn args"

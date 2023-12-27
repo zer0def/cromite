@@ -7,7 +7,6 @@ dcheck_always_on=false
 debuggable_apks=false
 dfmify_dev_ui=false
 disable_android_lint=true
-disable_autofill_assistant_dfm=true
 disable_fieldtrial_testing_config=true
 disable_tab_ui_dfm=true
 enable_av1_decoder=true
@@ -32,8 +31,6 @@ is_official_build=true
 proprietary_codecs=true
 rtc_build_examples=false
 symbol_level=1
-system_webview_package_name="org.cromite.webview"
-target_os="android"
 treat_warnings_as_errors=true
 use_debug_fission=true
 use_errorprone_java_compiler=false
@@ -70,7 +67,9 @@ if (getenv("TARGET_CPU") != "") {
 if (target_os == "android") {
   target_os = "android" # fix traffic annotation auditor
   #enable_kythe_annotations = true
+
   chrome_public_manifest_package = "org.cromite.cromite"
+  system_webview_package_name="org.cromite.webview"
 
   if (getenv("USE_KEYSTORE") != "") {
     android_keystore_path = "/home/lg/working_dir/cromite.keystore"
@@ -109,4 +108,18 @@ if (target_os == "win") {
 
   is_cfi = false # disable it
   use_cfi_cast = false # disable it
+}
+
+if (target_os == "linux") {
+  target_os = "linux" # fix traffic annotation auditor
+  target_cpu = "x64"
+  symbol_level = 0
+
+  enable_pdf = true
+  pdf_is_complete_lib = true
+  enable_plugins = true
+  enable_ppapi = false
+
+  use_sysroot = true
+  chrome_pgo_phase = 2 # enable pgo
 }
