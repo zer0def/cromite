@@ -59,8 +59,8 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../android/offline_page_model_factory.cc     |  20 ++-
  .../android/request_coordinator_factory.cc    |  34 +++-
  .../offline_page_model_factory.h              |   1 +
- .../offline_pages/recent_tab_helper.cc        |  19 ++-
- .../browser/offline_pages/recent_tab_helper.h |   3 +
+ .../offline_pages/recent_tab_helper.cc        |  31 +++-
+ .../browser/offline_pages/recent_tab_helper.h |   5 +
  .../request_coordinator_factory.h             |   4 +-
  chrome/browser/prefs/browser_prefs.cc         |   5 +
  chrome/browser/profiles/profile_selections.cc |  10 ++
@@ -84,7 +84,8 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../add-an-always-incognito-mode.inc          |   1 +
  .../add-an-always-incognito-mode.inc          |   3 +
  .../add-an-always-incognito-mode.inc          |   1 +
- 65 files changed, 762 insertions(+), 92 deletions(-)
+ net/base/file_stream_context.cc               |   2 +-
+ 66 files changed, 774 insertions(+), 96 deletions(-)
  create mode 100644 chrome/android/java/res/xml/incognito_preferences.xml
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/AlwaysIncognitoLinkInterceptor.java
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/IncognitoSettings.java
@@ -1619,7 +1620,7 @@ diff --git a/chrome/browser/offline_pages/recent_tab_helper.cc b/chrome/browser/
 +  if (!tab_id_.empty() && web_contents()->GetBrowserContext()->IsOffTheRecord()) {
 +    if (Profile::FromBrowserContext(web_contents()->GetBrowserContext())
 +          ->GetOriginalProfile()
-+          ->GetPrefs()->GetBoolean(prefs::kIncognitoTabHistoryEnabled) == true) {
++          ->GetPrefs()->GetBoolean(prefs::kIncognitoTabHistoryEnabled)) {
 +      snapshots_enabled_ = true;
 +      incognito_tab_history_enabled_ = true;
 +    }
@@ -1627,23 +1628,76 @@ diff --git a/chrome/browser/offline_pages/recent_tab_helper.cc b/chrome/browser/
  
    if (snapshots_enabled_) {
      page_model_ = OfflinePageModelFactory::GetForBrowserContext(
-@@ -456,7 +469,11 @@ void RecentTabHelper::ContinueSnapshotWithIdsToPurge(
+@@ -339,7 +352,8 @@ void RecentTabHelper::WebContentsWasHidden() {
+       GetRecentPagesClientId(),
+       base::BindOnce(&RecentTabHelper::ContinueSnapshotWithIdsToPurge,
+                      weak_ptr_factory_.GetWeakPtr(),
+-                     last_n_ongoing_snapshot_info_.get()));
++                     last_n_ongoing_snapshot_info_.get(),
++                     /*user_requested*/ false));
+ 
+   IsSavingSamePageEnum saving_same_page_value = IsSavingSamePageEnum::kNewPage;
+   if (last_n_latest_saved_snapshot_info_) {
+@@ -420,11 +434,12 @@ void RecentTabHelper::SaveSnapshotForDownloads(bool replace_latest) {
+         downloads_latest_saved_snapshot_info_->request_id,
+         downloads_latest_saved_snapshot_info_->origin);
+     std::vector<int64_t> ids{downloads_latest_saved_snapshot_info_->request_id};
+-    ContinueSnapshotWithIdsToPurge(downloads_ongoing_snapshot_info_.get(), ids);
++    ContinueSnapshotWithIdsToPurge(downloads_ongoing_snapshot_info_.get(), /*user_requested*/ true, ids);
+   } else {
+     // Otherwise go straight to saving the page.
+     DCHECK(downloads_ongoing_snapshot_info_);
+     ContinueSnapshotAfterPurge(downloads_ongoing_snapshot_info_.get(),
++                               /*user_requested*/ true,
+                                OfflinePageModel::DeletePageResult::SUCCESS);
+   }
+ }
+@@ -441,6 +456,7 @@ void RecentTabHelper::SaveSnapshotForDownloads(bool replace_latest) {
+ // for early termination in case of errors.
+ void RecentTabHelper::ContinueSnapshotWithIdsToPurge(
+     SnapshotProgressInfo* snapshot_info,
++    bool user_requested,
+     const std::vector<int64_t>& page_ids) {
+   DCHECK(snapshot_info);
+ 
+@@ -450,13 +466,20 @@ void RecentTabHelper::ContinueSnapshotWithIdsToPurge(
+   criteria.offline_ids = page_ids;
+   page_model_->DeletePagesWithCriteria(
+       criteria, base::BindOnce(&RecentTabHelper::ContinueSnapshotAfterPurge,
+-                               weak_ptr_factory_.GetWeakPtr(), snapshot_info));
++                               weak_ptr_factory_.GetWeakPtr(), snapshot_info,
++                               user_requested));
+ }
+ 
  void RecentTabHelper::ContinueSnapshotAfterPurge(
      SnapshotProgressInfo* snapshot_info,
++    bool user_requested,
      OfflinePageModel::DeletePageResult result) {
 -  if (result != OfflinePageModel::DeletePageResult::SUCCESS) {
 +  // remove snapshot save of recent tab if always incognito mode is active
 +  // so recents tab list is empty at every startup
 +  // the user can choose to disable the feature
-+  if (incognito_tab_history_enabled_ || !base::FeatureList::IsEnabled(offline_pages::kOfflinePagesAutoSaveFeature)
-+      || result != OfflinePageModel::DeletePageResult::SUCCESS) {
++  if ((incognito_tab_history_enabled_ || !base::FeatureList::IsEnabled(offline_pages::kOfflinePagesAutoSaveFeature)
++         || result != OfflinePageModel::DeletePageResult::SUCCESS)
++       && !user_requested) {
      ReportSnapshotCompleted(snapshot_info, false);
      return;
    }
 diff --git a/chrome/browser/offline_pages/recent_tab_helper.h b/chrome/browser/offline_pages/recent_tab_helper.h
 --- a/chrome/browser/offline_pages/recent_tab_helper.h
 +++ b/chrome/browser/offline_pages/recent_tab_helper.h
-@@ -146,6 +146,9 @@ class RecentTabHelper
+@@ -123,8 +123,10 @@ class RecentTabHelper
+ 
+   bool EnsureInitialized();
+   void ContinueSnapshotWithIdsToPurge(SnapshotProgressInfo* snapshot_info,
++                                      bool user_requested,
+                                       const std::vector<int64_t>& page_ids);
+   void ContinueSnapshotAfterPurge(SnapshotProgressInfo* snapshot_info,
++                                  bool user_requested,
+                                   OfflinePageModel::DeletePageResult result);
+   void SavePageCallback(SnapshotProgressInfo* snapshot_info,
+                         OfflinePageModel::SavePageResult result,
+@@ -146,6 +148,9 @@ class RecentTabHelper
    // Not page-specific.
    bool snapshots_enabled_ = false;
  
@@ -2128,5 +2182,17 @@ new file mode 100644
 +++ b/cromite_flags/components/offline_pages/core/offline_page_feature_h/add-an-always-incognito-mode.inc
 @@ -0,0 +1 @@
 +BASE_DECLARE_FEATURE(kOfflinePagesAutoSaveFeature);
+diff --git a/net/base/file_stream_context.cc b/net/base/file_stream_context.cc
+--- a/net/base/file_stream_context.cc
++++ b/net/base/file_stream_context.cc
+@@ -167,7 +167,7 @@ FileStream::Context::OpenResult FileStream::Context::OpenFileImpl(
+ #if BUILDFLAG(IS_ANDROID)
+   if (path.IsContentUri()) {
+     // Check that only Read flags are set.
+-    DCHECK_EQ(open_flags & ~base::File::FLAG_ASYNC,
++    DCHECK_EQ(open_flags & ~base::File::FLAG_ASYNC & ~base::File::FLAG_WIN_EXCLUSIVE_READ,
+               base::File::FLAG_OPEN | base::File::FLAG_READ);
+     file = base::OpenContentUriForRead(path);
+   } else {
 --
 2.25.1
