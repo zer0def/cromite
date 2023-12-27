@@ -35,6 +35,7 @@ vpython3 -vpython-spec .vpython3 -vpython-root $VPYTHON_VIRTUALENV_ROOT -vpython
 
 echo -e ${RED} -------- download pgo profiles ${NC}
 python3 tools/update_pgo_profiles.py --target=win64 update --gs-url-base=chromium-optimization-profiles/pgo_profiles
+python3 tools/update_pgo_profiles.py --target=linux update --gs-url-base=chromium-optimization-profiles/pgo_profiles
 
 echo -e ${RED} -------- download x86_64 android image ${NC}
 #echo -e "\$ParanoidMode CheckIntegrity\n\nchromium/third_party/android_sdk/public/avds/android-31/google_apis/x86_64 Ur_zl6_BRKRkf_9X3SMZ3eH2auoOyJ2kLslpTZZwi3gC" | .cipd_client ensure -ensure-file - -root $WORKSPACE/chromium/src/.android
