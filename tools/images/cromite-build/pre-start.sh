@@ -8,7 +8,7 @@ PATH=$WORKSPACE/chromium/src/third_party/llvm-build/Release+Asserts/bin:$WORKSPA
 
 sudo apt-get install -y lsof libgoogle-glog-dev libprotobuf17 libgrpc++1 parallel golang-go nano
 
-echo -e ${RED} -------- download mtool ${NC}
+echo -e ${RED} -------- download bromite mtool ${NC}
 git clone https://github.com/bromite/mtool
 cd mtool
 make
@@ -35,6 +35,7 @@ vpython3 -vpython-spec .vpython3 -vpython-root $VPYTHON_VIRTUALENV_ROOT -vpython
 
 echo -e ${RED} -------- download pgo profiles ${NC}
 python3 tools/update_pgo_profiles.py --target=win64 update --gs-url-base=chromium-optimization-profiles/pgo_profiles
+python3 tools/update_pgo_profiles.py --target=linux update --gs-url-base=chromium-optimization-profiles/pgo_profiles
 
 echo -e ${RED} -------- download x86_64 android image ${NC}
 #echo -e "\$ParanoidMode CheckIntegrity\n\nchromium/third_party/android_sdk/public/avds/android-31/google_apis/x86_64 Ur_zl6_BRKRkf_9X3SMZ3eH2auoOyJ2kLslpTZZwi3gC" | .cipd_client ensure -ensure-file - -root $WORKSPACE/chromium/src/.android
@@ -58,7 +59,7 @@ echo -e ${RED} -------- build modified ninja ${NC}
 cd $WORKSPACE/
 git clone https://github.com/ninja-build/ninja.git -b v1.8.2
 cd ninja
-git apply $WORKSPACE/bromite/tools/ninja-one-target-for-compdb.patch
+git apply $WORKSPACE/cromite/tools/ninja-one-target-for-compdb.patch
 CXX=clang++ ./configure.py --bootstrap
 
 echo -e ${RED} -------- download clang indexer ${NC}

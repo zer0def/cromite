@@ -108,7 +108,7 @@ jobs:
           bash ~/cromite/tools/apply-all-patch.sh || exit 1
 
           rm -rf ~/cromite/build/patches-new/
-          rm ~/cromite/build/bromite_patches_list_new.txt
+          rm ~/cromite/build/cromite_patches_list_new.txt
 
       - name: Export patches
         run: |

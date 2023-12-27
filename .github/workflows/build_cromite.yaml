@@ -40,7 +40,7 @@ on:
         default: 'false'
 
 env:
-  BROMITE_SHA: ${{ github.event.inputs.sha }}
+  CROMITE_SHA: ${{ github.event.inputs.sha }}
   REMOVEDOCKERSUPPORT: true
   USELOCALIMAGE: true
 
@@ -69,7 +69,6 @@ jobs:
         shell: bash
         run: |
           export VERSION=$( cat ./cromite/build/RELEASE )
-          rm -rf bromite
 
           echo Current version is $VERSION
           echo "VERSION=$VERSION" >> $GITHUB_ENV
@@ -107,43 +106,43 @@ jobs:
             fi
           fi
 
-      - name: Building cromite container ${{ env.VERSION }}-${{ env.BROMITE_SHA }}
+      - name: Building cromite container ${{ env.VERSION }}-${{ env.CROMITE_SHA }}
         shell: bash
         run: |
-          IS_PRESENT=$(docker inspect --type=image uazo/cromite:$VERSION-$BROMITE_SHA > /dev/null ; echo $?)
+          IS_PRESENT=$(docker inspect --type=image uazo/cromite:$VERSION-$CROMITE_SHA > /dev/null ; echo $?)
           if [ $IS_PRESENT -ne "0" ]; then
-            IS_PRESENT=$(docker manifest inspect uazo/cromite:$VERSION-$BROMITE_SHA > /dev/null ; echo $?)
+            IS_PRESENT=$(docker manifest inspect uazo/cromite:$VERSION-$CROMITE_SHA > /dev/null ; echo $?)
             if [ $IS_PRESENT -ne "0" ]; then
-              DOCKER_BUILDKIT=1 docker build -t uazo/cromite:$VERSION-$BROMITE_SHA --progress plain \
-                --build-arg BROMITE_SHA=$BROMITE_SHA \
+              DOCKER_BUILDKIT=1 docker build -t uazo/cromite:$VERSION-$CROMITE_SHA --progress plain \
+                --build-arg CROMITE_SHA=$CROMITE_SHA \
                 --build-arg VERSION=$VERSION \
                 --build-arg HTTP_PROXY="$PROXY_ADDR" \
-                cromite/tools/images/bromite-source/.
+                cromite/tools/images/cromite-source/.
             fi
           fi
 
-      - name: Building cromite-build container ${{ env.VERSION }}-${{ env.BROMITE_SHA }}
+      - name: Building cromite-build container ${{ env.VERSION }}-${{ env.CROMITE_SHA }}
         shell: bash
         run: |
-          IS_PRESENT=$(docker inspect --type=image uazo/cromite-build:$VERSION-$BROMITE_SHA > /dev/null ; echo $?)
+          IS_PRESENT=$(docker inspect --type=image uazo/cromite-build:$VERSION-$CROMITE_SHA > /dev/null ; echo $?)
           if [ $IS_PRESENT -ne "0" ]; then
-            IS_PRESENT=$(docker manifest inspect uazo/cromite-build:$VERSION-$BROMITE_SHA > /dev/null ; echo $?)
+            IS_PRESENT=$(docker manifest inspect uazo/cromite-build:$VERSION-$CROMITE_SHA > /dev/null ; echo $?)
             if [ $IS_PRESENT -ne "0" ]; then
-              DOCKER_BUILDKIT=1 docker build -t uazo/cromite-build:$VERSION-$BROMITE_SHA --progress plain \
-                --build-arg BROMITE_SHA=$BROMITE_SHA \
+              DOCKER_BUILDKIT=1 docker build -t uazo/cromite-build:$VERSION-$CROMITE_SHA --progress plain \
+                --build-arg CROMITE_SHA=$CROMITE_SHA \
                 --build-arg VERSION=$VERSION \
                 --build-arg HTTP_PROXY="$PROXY_ADDR" \
                 --no-cache \
-                cromite/tools/images/bromite-build/.
+                cromite/tools/images/cromite-build/.
             fi
           fi
 
       - name: Get uazo/cromite-build from docker hub if present
         shell: bash
         run: |
-          IS_PRESENT=$(docker manifest inspect uazo/cromite-build:$VERSION-$BROMITE_SHA > /dev/null ; echo $?)
+          IS_PRESENT=$(docker manifest inspect uazo/cromite-build:$VERSION-$CROMITE_SHA > /dev/null ; echo $?)
           if [ $IS_PRESENT -eq "0" ]; then
-            docker pull uazo/cromite-build:$VERSION-$BROMITE_SHA
+            docker pull uazo/cromite-build:$VERSION-$CROMITE_SHA
           fi
 
       - name: Mark image to build
@@ -153,7 +152,7 @@ jobs:
           if [ $IS_PRESENT -eq "0" ]; then
             docker rmi uazo/cromite-build:build
           fi
-          docker tag uazo/cromite-build:$VERSION-$BROMITE_SHA uazo/cromite-build:build
+          docker tag uazo/cromite-build:$VERSION-$CROMITE_SHA uazo/cromite-build:build
 
   build:
     runs-on: ${{ github.event.inputs.type }}
@@ -249,7 +248,7 @@ jobs:
           cd $WORKSPACE/chromium/src
 
           echo "::group::-------- gn gen"
-          gn gen --args="import(\"/home/lg/working_dir/bromite/build/bromite.gn_args\") $(cat ../../build_args.gni) target_cpu = \"x64\" " out/x64
+          gn gen --args="target_os = \"android\" $(cat /home/lg/working_dir/cromite/build/cromite.gn_args) target_cpu = \"x64\" " out/x64
           echo "::endgroup::"
 
           echo "::group::-------- gn args"
@@ -260,7 +259,7 @@ jobs:
           ninja -C out/x64 chrome_public_bundle
           ninja -C out/x64 chrome_public_apk
 
-          cp ../../bromite/build/RELEASE out/x64
+          cp ../../cromite/build/RELEASE out/x64
 
       - name: Get ninja logs Android x64
         if: ${{ (github.event.inputs.target_os == 'android' || github.event.inputs.target_os == 'all') && (github.event.inputs.build == 'x64' || github.event.inputs.build == 'all') }}
@@ -278,7 +277,7 @@ jobs:
           cd $WORKSPACE/chromium/src
 
           echo "::group::-------- gn gen"
-          gn gen --args="import(\"/home/lg/working_dir/bromite/build/bromite.gn_args\") target_os = \"win\" $(cat ../../build_args.gni) target_cpu = \"x64\" " out/win64
+          gn gen --args="target_os = \"win\" $(cat /home/lg/working_dir/cromite/build/cromite.gn_args) target_cpu = \"x64\" " out/win64
           echo "::endgroup::"
 
           echo "::group::-------- gn args"
@@ -288,7 +287,7 @@ jobs:
 
           ninja -C out/win64 chrome
 
-          cp ../../bromite/build/RELEASE out/win64
+          cp ../../cromite/build/RELEASE out/win64
 
       - name: Get ninja logs Windows x64
         if: ${{ github.event.inputs.target_os == 'win' || github.event.inputs.target_os == 'all' }}
@@ -306,7 +305,7 @@ jobs:
           cd $WORKSPACE/chromium/src
 
           echo "::group::-------- gn gen"
-          gn gen --args="import(\"/home/lg/working_dir/bromite/build/bromite.gn_args\") $(cat ../../build_args.gni) target_cpu = \"arm64\" " out/arm64
+          gn gen --args="target_os = \"android\" $(cat /home/lg/working_dir/cromite/build/cromite.gn_args) target_cpu = \"arm64\" " out/arm64
           echo "::endgroup::"
 
           echo "::group::-------- gn args"
@@ -317,7 +316,7 @@ jobs:
           ninja -C out/arm64 chrome_public_bundle
           ninja -C out/arm64 chrome_public_apk
 
-          cp ../../bromite/build/RELEASE out/arm64
+          cp ../../cromite/build/RELEASE out/arm64
 
       - name: Get ninja logs Android arm64
         if: ${{ (github.event.inputs.target_os == 'android' || github.event.inputs.target_os == 'all') && (github.event.inputs.build == 'arm64' || github.event.inputs.build == 'all') }}
@@ -361,7 +360,7 @@ jobs:
           cd $WORKSPACE/chromium/src
 
           echo "::group::-------- gn gen"
-          gn gen --args="import(\"/home/lg/working_dir/bromite/build/bromite.gn_args\") $(cat ../../build_args.gni) target_cpu = \"arm\" " out/arm
+          gn gen --args="target_os = \"android\" $(cat /home/lg/working_dir/cromite/build/cromite.gn_args) target_cpu = \"arm\" " out/arm
           echo "::endgroup::"
 
           echo "::group::-------- gn args"
@@ -372,7 +371,7 @@ jobs:
           ninja -C out/arm chrome_public_bundle
           ninja -C out/arm chrome_public_apk
 
-          cp ../../bromite/build/RELEASE out/arm
+          cp ../../cromite/build/RELEASE out/arm
 
       - name: Get ninja logs Android arm
         if: ${{ (github.event.inputs.target_os == 'android' || github.event.inputs.target_os == 'all') && (github.event.inputs.build == 'arm' || github.event.inputs.build == 'all') }}
@@ -390,7 +389,7 @@ jobs:
           cd $WORKSPACE/chromium/src
 
           echo "::group::-------- gn gen"
-          gn gen --args="import(\"/home/lg/working_dir/bromite/build/bromite.gn_args\") target_os = \"linux\" $(cat ../../build_args.gni) target_cpu = \"x64\" use_sysroot = true " out/lin64
+          gn gen --args="target_os = \"linux\" $(cat /home/lg/working_dir/cromite/build/cromite.gn_args) target_cpu = \"x64\" " out/lin64
           echo "::endgroup::"
 
           echo "::group::-------- gn args"
@@ -400,7 +399,7 @@ jobs:
 
           ninja -C out/lin64 chrome
 
-          cp ../../bromite/build/RELEASE out/lin64
+          cp ../../cromite/build/RELEASE out/lin64
 
       - name: Get ninja logs Linux 64
         if: ${{ (github.event.inputs.target_os == 'linux' || github.event.inputs.target_os == 'all') }}
@@ -417,10 +416,10 @@ jobs:
           PATH=$WORKSPACE/chromium/src/third_party/llvm-build/Release+Asserts/bin:$WORKSPACE/depot_tools/:/usr/local/go/bin:$WORKSPACE/mtool/bin:$PATH
           cd $WORKSPACE/chromium/src
 
-          test -f out/arm64/bromite.idx || \
+          test -f out/arm64/cromite.idx || \
             cp -r out/arm64 out/clangd && \
-            gn gen --args="import(\"/home/lg/working_dir/bromite/build/bromite.gn_args\") $(cat ../../build_args.gni) skip_clangd_unsupported_options = true" out/clangd && \
+            gn gen --args="import(\"/home/lg/working_dir/cromite/build/cromite.gn_args\") $(cat ../../build_args.gni) skip_clangd_unsupported_options = true" out/clangd && \
             $WORKSPACE/ninja/ninja -C $WORKSPACE/chromium/src/out/clangd -a chrome_public_apk \
               -t compdb cc cxx objc objcxx >$WORKSPACE/chromium/src/out/clangd/compile_commands.json && \
-            /home/lg/working_dir/clangd_snapshot_20211205/bin/clangd-indexer --executor=all-TUs out/clangd/compile_commands.json >out/arm64/bromite.idx && \
+            /home/lg/working_dir/clangd_snapshot_20211205/bin/clangd-indexer --executor=all-TUs out/clangd/compile_commands.json >out/arm64/cromite.idx && \
             rm -rf out/clangd

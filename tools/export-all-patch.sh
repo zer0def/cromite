@@ -29,7 +29,7 @@ for patch in $ALLPATCHS_E; do
 
 done
 
-PATCH_LIST=~/cromite/build/bromite_patches_list.txt
+PATCH_LIST=~/cromite/build/cromite_patches_list.txt
 mkdir ~/cromite/build/patches-new/changed
 mkdir ~/cromite/build/patches-new/contrib
 for current_file in $(cat $PATCH_LIST); do

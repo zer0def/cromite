@@ -1,0 +1,125 @@
+android_channel="stable"
+blink_symbol_level=1
+build_contextual_search=false
+build_with_tflite_lib=false
+chrome_pgo_phase=0
+dcheck_always_on=false
+debuggable_apks=false
+dfmify_dev_ui=false
+disable_android_lint=true
+disable_fieldtrial_testing_config=true
+disable_tab_ui_dfm=true
+enable_av1_decoder=true
+enable_dav1d_decoder=true
+enable_gvr_services=false
+enable_hangout_services_extension=false
+enable_iterator_debugging=false
+enable_mdns=false
+enable_mse_mpeg2ts_stream_parser=true
+enable_nacl=false
+enable_platform_dolby_vision=true
+enable_platform_hevc=true
+enable_remoting=false
+enable_reporting=false
+enable_vr=false
+exclude_unwind_tables=false
+ffmpeg_branding="Chrome"
+icu_use_data_file=true
+is_component_build=false
+is_debug=false
+is_official_build=true
+proprietary_codecs=true
+rtc_build_examples=false
+symbol_level=1
+treat_warnings_as_errors=true
+use_debug_fission=true
+use_errorprone_java_compiler=false
+use_gnome_keyring=false
+use_official_google_api_keys=false
+use_rtti=false
+use_sysroot=false
+webview_includes_weblayer=false
+enable_arcore=false
+enable_openxr=false
+enable_gvr_services=false
+enable_feed_v2=false
+enable_cardboard=false
+is_high_end_android=true
+
+# Do not compile libmonochrome.so with RELR relocations
+# since supported only on API 28+
+use_relr_relocations=false
+
+# disabled the use of the context snapshot
+# see https://github.com/uazo/cromite/pull/317 for context
+use_v8_context_snapshot = false
+
+declare_args() {
+  _is_debug_build = ""
+}
+
+not_needed(["_target_build", "_is_debug_build"])
+
+if (getenv("TARGET_CPU") != "") {
+  target_cpu = getenv("TARGET_CPU")
+}
+
+if (target_os == "android") {
+  target_os = "android" # fix traffic annotation auditor
+  #enable_kythe_annotations = true
+
+  chrome_public_manifest_package = "org.cromite.cromite"
+  system_webview_package_name="org.cromite.webview"
+
+  if (getenv("USE_KEYSTORE") != "") {
+    android_keystore_path = "/home/lg/working_dir/cromite.keystore"
+    android_keystore_name = "cromite"
+    android_keystore_password = getenv("KEYSTORE_PASSWORD")
+  }
+
+  cromite_pref_hash_seed_bin = getenv("CROMITE_PREF_HASH_SEED_BIN")
+
+  _is_debug_build = getenv("TARGET_ISDEBUG")
+  if(_is_debug_build == "true") {
+    # print("Debug build on")
+    is_debug = true
+    is_official_build = false
+    dcheck_always_on = true
+    symbol_level = 1
+    strip_debug_info = false
+    generate_linker_map = false
+  } else {
+    generate_linker_map = true
+  }
+}
+
+if (target_os == "win") {
+  target_os = "win" # fix traffic annotation auditor
+  target_cpu = "x64"
+  symbol_level = 0
+  use_large_pdbs = true
+
+  enable_pdf = true
+  pdf_is_complete_lib = true
+  enable_plugins = true
+  enable_ppapi = false
+
+  chrome_pgo_phase = 2 # enable pgo
+
+  is_cfi = false # disable it
+  use_cfi_cast = false # disable it
+}
+
+if (target_os == "linux") {
+  target_os = "linux" # fix traffic annotation auditor
+  target_cpu = "x64"
+  symbol_level = 0
+
+  enable_pdf = true
+  pdf_is_complete_lib = true
+  enable_plugins = true
+  enable_ppapi = false
+
+  use_sysroot = true
+  chrome_pgo_phase = 2 # enable pgo
+}

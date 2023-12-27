@@ -2,8 +2,8 @@ ARG VERSION
 
 FROM uazo/chromium:$VERSION
 
-ARG BROMITE_SHA
-ENV BROMITE_SHA=$BROMITE_SHA
+ARG CROMITE_SHA
+ENV CROMITE_SHA=$CROMITE_SHA
 
 ARG HTTP_PROXY
 ENV HTTP_PROXY=$HTTP_PROXY
@@ -17,16 +17,16 @@ RUN sudo chown lg /etc/apt/apt.conf.d/proxy.conf
 RUN sudo echo "Acquire::http::Proxy \"$HTTP_PROXY\";" >/etc/apt/apt.conf.d/proxy.conf
 RUN sudo apt-get update
 
-COPY apply-bromite-patches.sh .
+COPY apply-cromite-patches.sh .
 
-RUN sudo chmod +x ./apply-bromite-patches.sh && \
-    mkdir bromite && \
-    cd bromite && \
+RUN sudo chmod +x ./apply-cromite-patches.sh && \
+    mkdir cromite && \
+    cd cromite && \
     git init && \
     git remote add origin https://github.com/uazo/cromite && \
-    git fetch origin $BROMITE_SHA && \
+    git fetch origin $CROMITE_SHA && \
     git reset --hard FETCH_HEAD && \
     cd ..
 
-RUN ./apply-bromite-patches.sh
+RUN ./apply-cromite-patches.sh
 
