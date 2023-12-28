@@ -23,7 +23,6 @@ Battery-API-return-nothing.patch
 updater-disable-updater-pings.patch
 Disable-omission-of-URL-elements-in-Omnibox.patch
 Modify-default-preferences.patch
-Do-not-hide-component-extensions.patch
 Do-not-store-passwords-by-default.patch
 Disable-NTP-remote-suggestions-by-default.patch
 Disable-references-to-fonts.googleapis.com.patch
@@ -69,7 +68,6 @@ profile-resetter-disable-send-settings.patch
 Do-not-build-API-keys-infobar.patch
 autofill-miscellaneous.patch
 Enable-native-Android-autofill.patch
-first_run-deactivate-autoupdate-globally.patch
 translate-disable-fetching-of-languages-from-server.patch
 Offer-builtin-autocomplete-for-chrome-flags.patch
 Use-4-tile-rows-never-show-logo.patch
@@ -189,7 +187,6 @@ Add-kill-switch-for-unsupported-clangd-flags.patch
 00WIN-enable-file-system-access-blocklist.patch
 00WIN-Disable-TabHoverCard-images.patch
 00WIN-Fix-log-to-file.patch
-00WIN-minimum-data-to-enable-install-extensions.patch
 00WIN-Disable-updater.patch
 00WIN-Disable-first-run.patch
 00WIN-Add-some-prefs-to-secure-preferences.patch
@@ -276,13 +273,13 @@ Timezone-customization.patch
 00Add-cromite-flags-support.patch
 00Add-PartialLowEndModeOnMidRangeDevices-flag.patch
 00Use-list-mode-for-tab-switcher.patch
+00Chrome-web-store-protection.patch
 
 00Temp-PerformanceNavigationTiming-privacy-fix.patch
 00Temp-disable-predictive-back-gesture.patch
 00TEMP-Add-a-log-to-track-strange-behavior.patch
 00Temp-guard-FileSystemAccessPersistentPermissions.patch
 00Fix-chromium-build-bugs.patch
-
 eyeo-beta-118.0.5993.48-base.patch
 eyeo-beta-118.0.5993.48-chrome_integration.patch
 eyeo-beta-118.0.5993.48-android_api.patch
