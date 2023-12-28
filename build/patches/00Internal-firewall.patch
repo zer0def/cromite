@@ -17,9 +17,9 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../about_flags_cc/Internal-firewall.inc      |   8 +
  net/BUILD.gn                                  |   1 +
  .../network_traffic_annotation.h              |   4 -
- net/url_request/url_request_http_job.cc       |  17 +
+ net/url_request/url_request_http_job.cc       |  15 +
  net/url_request/url_request_http_job.h        |   3 +
- services/firewall/public/BUILD.gn             |  74 +++
+ services/firewall/public/BUILD.gn             |  70 +++
  services/firewall/public/firewall_features.cc |  28 ++
  services/firewall/public/firewall_features.h  |  31 ++
  services/firewall/public/firewall_service.cc  |  46 ++
@@ -30,9 +30,8 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  services/firewall/tools/codegen.py            |  82 +++
  services/firewall/tools/decode_template.py    |  85 ++++
  services/firewall/tools/gen_builders.py       |  65 +++
- services/firewall/tools/rules.xml             |  83 ++++
+ services/firewall/tools/rules.xml             |  87 ++++
  services/firewall/tools/rules_model.py        |  35 ++
- services/network/BUILD.gn                     |   1 +
  services/network/network_context.cc           |  73 +++
  .../network/public/cpp/simple_url_loader.cc   |  18 +
  .../network/public/cpp/simple_url_loader.h    |   3 +
@@ -40,7 +39,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../loader/fetch/url_loader/url_loader.cc     |   4 +-
  .../scripts/auditor/auditor.py                |   1 +
  .../scripts/auditor/util.py                   |   1 +
- 31 files changed, 1576 insertions(+), 20 deletions(-)
+ 30 files changed, 1573 insertions(+), 20 deletions(-)
  create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Internal-firewall.inc
  create mode 100644 services/firewall/public/BUILD.gn
  create mode 100644 services/firewall/public/firewall_features.cc
@@ -63,7 +62,7 @@ diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
      "//third_party/ungoogled:switches",
      "//services/device/public/mojom",
      "//services/device/public/mojom:usb",
-+    "//services/firewall/public:firewall_cpp",
++    "//services/firewall/public:firewall_builders",
      "//services/image_annotation:service",
      "//services/media_session/public/mojom",
      "//services/metrics/public/cpp:ukm_builders",
@@ -244,7 +243,7 @@ diff --git a/net/BUILD.gn b/net/BUILD.gn
      "//build:chromeos_buildflags",
      "//components/miracle_parameter/common",
      "//net/http:transport_security_state_generated_files",
-+    "//services/firewall/public:firewall_cpp",
++    "//services/firewall/public:firewall_builders",
      "//components/network_session_configurator/common"
    ]
  
@@ -265,16 +264,7 @@ diff --git a/net/traffic_annotation/network_traffic_annotation.h b/net/traffic_a
 diff --git a/net/url_request/url_request_http_job.cc b/net/url_request/url_request_http_job.cc
 --- a/net/url_request/url_request_http_job.cc
 +++ b/net/url_request/url_request_http_job.cc
-@@ -95,6 +95,8 @@
- #include "net/url_request/url_request_redirect_job.h"
- #include "net/url_request/url_request_throttler_manager.h"
- #include "net/url_request/websocket_handshake_userdata_key.h"
-+#include "services/firewall/public/firewall_features.h"
-+#include "services/firewall/public/firewall_service.h"
- #include "third_party/abseil-cpp/absl/types/optional.h"
- #include "url/gurl.h"
- #include "url/origin.h"
-@@ -322,6 +324,9 @@ URLRequestHttpJob::URLRequestHttpJob(
+@@ -322,6 +322,9 @@ URLRequestHttpJob::URLRequestHttpJob(
      throttling_entry_ = manager->RegisterRequestUrl(request->url());
  
    ResetTimer();
@@ -284,7 +274,7 @@ diff --git a/net/url_request/url_request_http_job.cc b/net/url_request/url_reque
  }
  
  URLRequestHttpJob::~URLRequestHttpJob() {
-@@ -616,6 +621,18 @@ void URLRequestHttpJob::MaybeStartTransactionInternal(int result) {
+@@ -616,6 +619,18 @@ void URLRequestHttpJob::MaybeStartTransactionInternal(int result) {
  void URLRequestHttpJob::StartTransactionInternal() {
    DCHECK(!override_response_headers_);
  
@@ -327,7 +317,7 @@ diff --git a/services/firewall/public/BUILD.gn b/services/firewall/public/BUILD.
 new file mode 100644
 --- /dev/null
 +++ b/services/firewall/public/BUILD.gn
-@@ -0,0 +1,74 @@
+@@ -0,0 +1,70 @@
 +# This file is part of Bromite.
 +# Bromite is free software: you can redistribute it and/or modify
 +# it under the terms of the GNU General Public License as published by
@@ -339,6 +329,22 @@ new file mode 100644
 +# GNU General Public License for more details.
 +# You should have received a copy of the GNU General Public License
 +# along with Bromite. If not, see <https://www.gnu.org/licenses/>.
++
++component("firewall_cpp") {
++  sources = [
++    "firewall_service.h",
++    "firewall_service.cc",
++    "firewall_features.h",
++    "firewall_features.cc",
++  ]
++
++  defines = [ "FIREWALL_IMPLEMENTATION" ]
++
++  public_deps = [
++    "//base",
++    "//third_party/abseil-cpp:absl"
++  ]
++}
 +
 +action("gen_firewall_builders") {
 +  script = "//services/firewall/tools/gen_builders.py"
@@ -373,35 +379,15 @@ new file mode 100644
 +  ]
 +}
 +
-+static_library("firewall_cpp") {
-+  sources = [
-+    "firewall_service.h",
-+    "firewall_service.cc",
-+    "firewall_features.h",
-+    "firewall_features.cc",
-+  ]
-+
-+  sources += get_target_outputs(":gen_firewall_builders")
-+
-+  defines = [ "FIREWALL_IMPLEMENTATION" ]
-+
-+  public_deps = [
-+    "//base",
-+    "//third_party/abseil-cpp:absl"
-+  ]
++static_library("firewall_builders") {
++  sources = get_target_outputs(":gen_firewall_builders")
 +
 +  deps = [
 +    ":gen_firewall_builders",
-+    "//components/prefs",
-+  ]
-+
-+  visibility = [
-+    "//net",
-+    "//services/network:network_service",
-+    "//chrome/browser:browser",
++    ":firewall_cpp",
++    "//base",
 +  ]
 +}
-+
 diff --git a/services/firewall/public/firewall_features.cc b/services/firewall/public/firewall_features.cc
 new file mode 100644
 --- /dev/null
@@ -1437,7 +1423,7 @@ diff --git a/services/firewall/tools/rules.xml b/services/firewall/tools/rules.x
 new file mode 100644
 --- /dev/null
 +++ b/services/firewall/tools/rules.xml
-@@ -0,0 +1,83 @@
+@@ -0,0 +1,87 @@
 +<?xml version="1.0"?>
 +<!--
 +    This file is part of Bromite.
@@ -1511,7 +1497,11 @@ new file mode 100644
 + <item id="omnibox_suggest" allowed="1"/>
 + <item id="dns_transaction" allowed="1"/>
 + <item id="dns_over_https" allowed="1"/>
++
++ <!-- Extensions support -->
 + <item id="webstore_installer" allowed="1"/>
++ <item id="extension_manifest_fetcher" allowed="1"/>
++ <item id="extension_crx_fetcher" allowed="1"/>
 +
 + <!-- For proxy -->
 + <item id="proxy_config_settings" allowed="1"/>
@@ -1561,17 +1551,6 @@ new file mode 100644
 +    ])
 +
 +RULES_XML_TYPE = models.DocumentType(_RULES_CONFIGURATION_TYPE)
-diff --git a/services/network/BUILD.gn b/services/network/BUILD.gn
---- a/services/network/BUILD.gn
-+++ b/services/network/BUILD.gn
-@@ -340,6 +340,7 @@ component("network_service") {
-     "//services/service_manager/public/cpp",
-     "//services/service_manager/public/mojom",
-     "//url",
-+    "//services/firewall/public:firewall_cpp",
-   ]
- 
-   if (is_linux || is_chromeos) {
 diff --git a/services/network/network_context.cc b/services/network/network_context.cc
 --- a/services/network/network_context.cc
 +++ b/services/network/network_context.cc
