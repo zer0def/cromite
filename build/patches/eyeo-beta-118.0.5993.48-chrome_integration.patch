@@ -7349,7 +7349,7 @@ diff --git a/chrome/browser/resources/BUILD.gn b/chrome/browser/resources/BUILD.
  
  import("//build/config/chromebox_for_meetings/buildflags.gni")
  import("//build/config/chromeos/ui_mode.gni")
-@@ -227,6 +230,7 @@ if (!is_android) {
+@@ -233,6 +236,7 @@ if (!is_android) {
  group("dev_ui_resources") {
    public_deps = [
      "accessibility:resources",
@@ -7357,7 +7357,7 @@ diff --git a/chrome/browser/resources/BUILD.gn b/chrome/browser/resources/BUILD.
      "bluetooth_internals:resources",
      "browsing_topics:resources",
      "components:resources",
-@@ -282,6 +286,7 @@ repack("dev_ui_paks") {
+@@ -288,6 +292,7 @@ repack("dev_ui_paks") {
  
    sources = [
      "$root_gen_dir/chrome/accessibility_resources.pak",
@@ -8036,7 +8036,7 @@ diff --git a/chrome/browser/ui/webui/chrome_web_ui_controller_factory.cc b/chrom
  #include "chrome/browser/ui/webui/autofill_and_password_manager_internals/autofill_internals_ui.h"
  #include "chrome/browser/ui/webui/autofill_and_password_manager_internals/password_manager_internals_ui.h"
  #include "chrome/browser/ui/webui/browsing_topics/browsing_topics_internals_ui.h"
-@@ -437,8 +442,12 @@ WebUIFactoryFunction GetWebUIFactoryFunction(WebUI* web_ui,
+@@ -439,8 +444,12 @@ WebUIFactoryFunction GetWebUIFactoryFunction(WebUI* web_ui,
    // after the host name.
    if (url.host_piece() == chrome::kChromeUIAccessibilityHost)
      return &NewWebUI<AccessibilityUI>;

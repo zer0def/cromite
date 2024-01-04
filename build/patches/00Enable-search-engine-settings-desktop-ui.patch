@@ -404,7 +404,7 @@ new file mode 100644
 diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -3736,6 +3736,9 @@ static_library("browser") {
+@@ -3695,6 +3695,9 @@ static_library("browser") {
          "//components/user_scripts/android",
        ]
      }
@@ -417,7 +417,7 @@ diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 diff --git a/chrome/browser/resources/BUILD.gn b/chrome/browser/resources/BUILD.gn
 --- a/chrome/browser/resources/BUILD.gn
 +++ b/chrome/browser/resources/BUILD.gn
-@@ -22,6 +22,12 @@ assert(!is_ios, "Chromium/iOS shouldn't use anything in //chrome")
+@@ -19,6 +19,12 @@ assert(!is_ios, "Chromium/iOS shouldn't use anything in //chrome")
  group("resources") {
    public_deps = [ "segmentation_internals:resources" ]
  
@@ -445,7 +445,7 @@ diff --git a/chrome/browser/resources/settings/BUILD.gn b/chrome/browser/resourc
 diff --git a/chrome/browser/resources/settings/page_visibility.ts b/chrome/browser/resources/settings/page_visibility.ts
 --- a/chrome/browser/resources/settings/page_visibility.ts
 +++ b/chrome/browser/resources/settings/page_visibility.ts
-@@ -47,7 +47,35 @@ export interface PrivacyPageVisibility {
+@@ -46,7 +46,35 @@ export interface PrivacyPageVisibility {
   */
  export let pageVisibility: PageVisibility;
  
@@ -782,7 +782,7 @@ diff --git a/chrome/browser/search_engines/android/java/src/org/chromium/chrome/
 diff --git a/chrome/browser/ui/BUILD.gn b/chrome/browser/ui/BUILD.gn
 --- a/chrome/browser/ui/BUILD.gn
 +++ b/chrome/browser/ui/BUILD.gn
-@@ -1019,6 +1019,18 @@ static_library("ui") {
+@@ -1009,6 +1009,18 @@ static_library("ui") {
        "//ui/android",
        "//url",
      ]
@@ -984,7 +984,7 @@ diff --git a/chrome/browser/ui/search_engines/template_url_table_model.h b/chrom
 diff --git a/chrome/browser/ui/webui/chrome_web_ui_controller_factory.cc b/chrome/browser/ui/webui/chrome_web_ui_controller_factory.cc
 --- a/chrome/browser/ui/webui/chrome_web_ui_controller_factory.cc
 +++ b/chrome/browser/ui/webui/chrome_web_ui_controller_factory.cc
-@@ -138,6 +138,8 @@
+@@ -133,6 +133,8 @@
  #include "chrome/browser/ui/webui/webapks/webapks_ui.h"
  #include "components/feed/buildflags.h"
  #include "components/feed/feed_feature_list.h"
@@ -993,7 +993,7 @@ diff --git a/chrome/browser/ui/webui/chrome_web_ui_controller_factory.cc b/chrom
  #else  // BUILDFLAG(IS_ANDROID)
  #include "chrome/browser/media/router/discovery/access_code/access_code_cast_feature.h"
  #include "chrome/browser/media/router/media_router_feature.h"
-@@ -673,6 +675,10 @@ WebUIFactoryFunction GetWebUIFactoryFunction(WebUI* web_ui,
+@@ -664,6 +666,10 @@ WebUIFactoryFunction GetWebUIFactoryFunction(WebUI* web_ui,
      return &NewWebUI<WebAppInternalsUI>;
    }
  #endif  // !BUILDFLAG(IS_ANDROID)

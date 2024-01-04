@@ -80,7 +80,7 @@ diff --git a/components/history/core/browser/history_backend.cc b/components/his
 diff --git a/components/privacy_sandbox/privacy_sandbox_attestations/privacy_sandbox_attestations.cc b/components/privacy_sandbox/privacy_sandbox_attestations/privacy_sandbox_attestations.cc
 --- a/components/privacy_sandbox/privacy_sandbox_attestations/privacy_sandbox_attestations.cc
 +++ b/components/privacy_sandbox/privacy_sandbox_attestations/privacy_sandbox_attestations.cc
-@@ -387,8 +387,6 @@ void PrivacySandboxAttestations::OnAttestationsParsed(
+@@ -389,8 +389,6 @@ void PrivacySandboxAttestations::OnAttestationsParsed(
    if (attestations_map.has_value() &&
        (!file_version_.IsValid() || file_version_.CompareTo(version) < 0)) {
      // Parsing succeeded and the attestations file has newer version.
