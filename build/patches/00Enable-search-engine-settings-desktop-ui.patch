@@ -2169,7 +2169,7 @@ diff --git a/ui/webui/resources/js/load_time_data.ts b/ui/webui/resources/js/loa
    set data(value: LoadTimeDataRaw) {
      assert(!this.data_, 'Re-setting data.');
      this.data_ = value;
-+    if (this.getValue("chromeAndroid") != "")
++    if (this.data_["chromeAndroid"] !== undefined && this.getValue("chromeAndroid") != "")
 +      this.is_android_ = true;
    }
  
