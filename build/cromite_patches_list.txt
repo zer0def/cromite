@@ -274,6 +274,7 @@ Timezone-customization.patch
 00Add-PartialLowEndModeOnMidRangeDevices-flag.patch
 00Use-list-mode-for-tab-switcher.patch
 00Chrome-web-store-protection.patch
+00Enable-search-engine-settings-desktop-ui.patch
 
 00Temp-PerformanceNavigationTiming-privacy-fix.patch
 00Temp-disable-predictive-back-gesture.patch

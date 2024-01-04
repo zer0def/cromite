@@ -789,7 +789,7 @@ new file mode 100644
 +      this.subscriptions = []
 +      this.customSubscriptions = [];
 +
-+      chrome.adblockPrivate.getBuiltInSubscriptions(list => {
++      chrome.adblockPrivate?.getBuiltInSubscriptions(list => {
 +         chrome.adblockPrivate.getInstalledSubscriptions(activelist => {
 +            let new_subscriptions: Subscription[] = [];
 +            let custom_subscriptions: Subscription[] = [];
@@ -842,7 +842,7 @@ new file mode 100644
 +      this.additionalMessageIcon = "";
 +      this.countEnabled = 0;
 +
-+      chrome.adblockPrivate.isEnabled(enabled => {
++      chrome.adblockPrivate?.isEnabled(enabled => {
 +         if (!enabled) return;
 +
 +         let c = 0;
@@ -858,13 +858,13 @@ new file mode 100644
 +         }
 +      });
 +
-+      chrome.adblockPrivate.isPrivilegedFiltersEnabled(enabled => {
++      chrome.adblockPrivate?.isPrivilegedFiltersEnabled(enabled => {
 +         this.isEnablePrivilegedFiltersToggle_ = enabled;
 +      });
 +   }
 +
 +   private syncCustomFilters() {
-+      chrome.adblockPrivate.getCustomFilters(domain => {
++      chrome.adblockPrivate?.getCustomFilters(domain => {
 +         this.customFilters = [];
 +         domain.forEach(value => {
 +            this.customFilters.push(value);
@@ -875,7 +875,7 @@ new file mode 100644
 +
 +   private syncAllowedDomains() {
 +      this.allowedDomainsCount = 0;
-+      chrome.adblockPrivate.getAllowedDomains(domain => {
++      chrome.adblockPrivate?.getAllowedDomains(domain => {
 +         this.allowedDomains = [];
 +         domain.forEach(value => {
 +            this.allowedDomains.push(value);
