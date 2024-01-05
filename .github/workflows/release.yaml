@@ -27,7 +27,7 @@ jobs:
       OUTPUTFILE_ARM64: /storage/images/${{ github.event.inputs.sha }}/android/false/arm64/
       OUTPUTFILE_X64: /storage/images/${{ github.event.inputs.sha }}/android/false/x64/
       OUTPUTFILE_WIN: /storage/images/${{ github.event.inputs.sha }}/win/x64/
-      OUTPUTFILE_LIN: /storage/images/${{ github.event.inputs.sha }}/win/lin64/
+      OUTPUTFILE_LIN: /storage/images/${{ github.event.inputs.sha }}/lin64/
 
     steps:
       - name: Login to Docker Hub
