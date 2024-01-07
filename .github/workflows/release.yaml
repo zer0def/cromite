@@ -164,6 +164,7 @@ jobs:
           cp $OUTPUTFILE_LIN/icudtl.dat chrome-lin/
           cp $OUTPUTFILE_LIN/libEGL.so chrome-lin/
           cp $OUTPUTFILE_LIN/libGLESv2.so chrome-lin/
+          cp $OUTPUTFILE_LIN/libvulkan.so.1 chrome-lin/
           cp $OUTPUTFILE_LIN/libqt5_shim.so chrome-lin/
           cp $OUTPUTFILE_LIN/libqt6_shim.so chrome-lin/
           cp $OUTPUTFILE_LIN/libvk_swiftshader.so chrome-lin/
