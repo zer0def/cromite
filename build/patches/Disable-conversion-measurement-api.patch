@@ -12,7 +12,7 @@ Original License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.
 License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 ---
  .../browser/aw_content_browser_client.cc      |   1 +
- chrome/android/java/AndroidManifest.xml       |   1 -
+ chrome/android/java/AndroidManifest.xml       |   4 -
  components/attribution_reporting/features.cc  |   1 +
  .../origin_trials/features.cc                 |   2 +
  .../render_view_context_menu_base.cc          |   3 -
@@ -35,7 +35,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../network/public/cpp/attribution_utils.cc   |   2 +
  third_party/blink/renderer/core/page/page.cc  |   2 +-
  ui/events/android/motion_event_android.cc     |   6 +-
- 24 files changed, 63 insertions(+), 253 deletions(-)
+ 24 files changed, 63 insertions(+), 256 deletions(-)
  create mode 100644 cromite_flags/content/public/common/content_features_cc/Disable-conversion-measurement-api.inc
  create mode 100644 cromite_flags/services/network/public/cpp/features_cc/Disable-conversion-measurement-api.inc
  create mode 100644 cromite_flags/third_party/blink/common/features_cc/Disable-conversion-measurement-api.inc
@@ -62,6 +62,16 @@ diff --git a/chrome/android/java/AndroidManifest.xml b/chrome/android/java/Andro
      <uses-permission-sdk-23 android:name="android.permission.BLUETOOTH_ADMIN" android:maxSdkVersion="30"/>
      <uses-permission-sdk-23 android:name="android.permission.BLUETOOTH_CONNECT"/>
      <!--
+@@ -1162,9 +1161,6 @@ by a child template that "extends" this file.
+             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|mcc|mnc|screenLayout|smallestScreenSize" >
+         </activity>
+ 
+-        <property android:name="android.adservices.AD_SERVICES_CONFIG"
+-            android:resource="@xml/ad_services_config" />
+-
+         {% set enable_openxr = enable_openxr|default(0) %}
+         {% if enable_openxr == "true" %}
+           <!-- launchMode is set to singleTask because there should never be multiple copies of the app running. -->
 diff --git a/components/attribution_reporting/features.cc b/components/attribution_reporting/features.cc
 --- a/components/attribution_reporting/features.cc
 +++ b/components/attribution_reporting/features.cc
