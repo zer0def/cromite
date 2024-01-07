@@ -54,6 +54,9 @@ use_relr_relocations=false
 # see https://github.com/uazo/cromite/pull/317 for context
 use_v8_context_snapshot = false
 
+# enable libjxl support by default
+enable_jxl_decoder = true
+
 declare_args() {
   _is_debug_build = ""
 }
