@@ -275,6 +275,8 @@ Timezone-customization.patch
 00Use-list-mode-for-tab-switcher.patch
 00Chrome-web-store-protection.patch
 00Enable-search-engine-settings-desktop-ui.patch
+00Disable-Android-AppRestrictions.patch
+00Customize-selection-popup.patch
 
 00Temp-PerformanceNavigationTiming-privacy-fix.patch
 00Temp-disable-predictive-back-gesture.patch
