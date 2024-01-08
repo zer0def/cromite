@@ -33,8 +33,12 @@ jobs:
           cd cves
 
           CY=$(date +%Y)
-          docker run --rm --name tapir stratosphereips/tapir:latest \
-             bash -c "python3 tapir.py -y 2020-$CY libjxl -s" >libjxl.ansi
+          for i in $(seq 2020 $CY)
+          do
+            echo Asking for $i year
+            docker run --rm --name tapir stratosphereips/tapir:latest \
+               bash -c "python3 tapir.py -y $i libjxl -s" >>libjxl.ansi
+          done
 
           sed -e 's/\x1b\[[0-9;]*m//g' <libjxl.ansi >libjxl.txt
           rm libjxl.ansi
