@@ -14,13 +14,13 @@ Auto-update is disabled by default: it is possible to activate it with chrome://
 License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
  chrome/app/extensions_strings.grdp            |  6 +++
- .../developer_private_api.cc                  | 36 ++++++++++++-
+ .../developer_private_api.cc                  | 37 ++++++++++++-
  .../developer_private/developer_private_api.h |  3 ++
  .../webstore_private/webstore_private_api.cc  | 12 ++++-
- .../extensions/extension_system_impl.cc       |  6 +++
+ .../extensions/extension_system_impl.cc       |  2 +
  .../chrome_extension_downloader_factory.cc    |  1 -
- .../extensions/updater/extension_updater.cc   | 33 ++++++------
- .../extensions/updater/extension_updater.h    |  2 +
+ .../extensions/updater/extension_updater.cc   | 40 ++++++++------
+ .../extensions/updater/extension_updater.h    |  4 ++
  .../extensions/webstore_install_helper.cc     |  2 +-
  .../browser/extensions/webstore_installer.cc  |  2 +-
  .../browser/resources/extensions/manager.html |  1 +
@@ -42,7 +42,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  extensions/common/extension_features.cc       | 15 ++++++
  extensions/common/extension_features.h        |  4 ++
  .../definitions/developer_private.d.ts        |  4 +-
- 29 files changed, 243 insertions(+), 92 deletions(-)
+ 29 files changed, 249 insertions(+), 92 deletions(-)
  create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Webstore-protection.inc
 
 diff --git a/chrome/app/extensions_strings.grdp b/chrome/app/extensions_strings.grdp
@@ -110,7 +110,15 @@ diff --git a/chrome/browser/extensions/api/developer_private/developer_private_a
  template <>
  void BrowserContextKeyedAPIFactory<
      DeveloperPrivateAPI>::DeclareFactoryDependencies() {
-@@ -1089,7 +1118,7 @@ DeveloperPrivateUpdateProfileConfigurationFunction::Run() {
+@@ -950,6 +979,7 @@ ExtensionFunction::ResponseAction DeveloperPrivateAutoUpdateFunction::Run() {
+     ExtensionUpdater::CheckParams params;
+     params.fetch_priority = DownloadFetchPriority::kForeground;
+     params.install_immediately = true;
++    params.user_initiated = true;
+     params.callback =
+         base::BindOnce(&DeveloperPrivateAutoUpdateFunction::OnComplete, this);
+     updater->CheckNow(std::move(params));
+@@ -1089,7 +1119,7 @@ DeveloperPrivateUpdateProfileConfigurationFunction::Run() {
  
    const developer::ProfileConfigurationUpdate& update = params->update;
  
@@ -119,7 +127,7 @@ diff --git a/chrome/browser/extensions/api/developer_private/developer_private_a
      Profile* profile = Profile::FromBrowserContext(browser_context());
  
  #if BUILDFLAG(ENABLE_SUPERVISED_USERS)
-@@ -1103,6 +1132,11 @@ DeveloperPrivateUpdateProfileConfigurationFunction::Run() {
+@@ -1103,6 +1133,11 @@ DeveloperPrivateUpdateProfileConfigurationFunction::Run() {
      util::SetDeveloperModeForProfile(profile, *update.in_developer_mode);
    }
  
@@ -219,17 +227,6 @@ diff --git a/chrome/browser/extensions/extension_system_impl.cc b/chrome/browser
    ExtensionManagement* extension_management =
        ExtensionManagementFactory::GetForBrowserContext(profile);
    if (extension && (extension->from_webstore() ||
-@@ -201,6 +203,10 @@ void ExtensionSystemImpl::Shared::Init(bool extensions_enabled) {
- 
-   bool autoupdate_enabled =
-       !profile_->IsGuestSession() && !profile_->IsSystemProfile();
-+  if (!base::FeatureList::IsEnabled(extensions_features::kEnableExtensionAutoupdate)) {
-+    autoupdate_enabled = false;
-+    LOG(INFO) << "Extensions autoupdate is disabled.";
-+  }
- #if BUILDFLAG(IS_CHROMEOS_ASH)
-   if (!extensions_enabled ||
-       ash::ProfileHelper::IsLockScreenAppProfile(profile_)) {
 diff --git a/chrome/browser/extensions/updater/chrome_extension_downloader_factory.cc b/chrome/browser/extensions/updater/chrome_extension_downloader_factory.cc
 --- a/chrome/browser/extensions/updater/chrome_extension_downloader_factory.cc
 +++ b/chrome/browser/extensions/updater/chrome_extension_downloader_factory.cc
@@ -244,7 +241,15 @@ diff --git a/chrome/browser/extensions/updater/chrome_extension_downloader_facto
 diff --git a/chrome/browser/extensions/updater/extension_updater.cc b/chrome/browser/extensions/updater/extension_updater.cc
 --- a/chrome/browser/extensions/updater/extension_updater.cc
 +++ b/chrome/browser/extensions/updater/extension_updater.cc
-@@ -197,6 +197,10 @@ void ExtensionUpdater::Start() {
+@@ -43,6 +43,7 @@
+ #include "extensions/browser/updater/extension_update_data.h"
+ #include "extensions/common/constants.h"
+ #include "extensions/common/extension.h"
++#include "extensions/common/extension_features.h"
+ #include "extensions/common/extension_set.h"
+ #include "extensions/common/extension_updater_uma.h"
+ #include "extensions/common/extension_urls.h"
+@@ -197,6 +198,10 @@ void ExtensionUpdater::Start() {
    DCHECK(!weak_ptr_factory_.HasWeakPtrs());
    DCHECK(registry_);
    alive_ = true;
@@ -255,7 +260,7 @@ diff --git a/chrome/browser/extensions/updater/extension_updater.cc b/chrome/bro
    // Check soon, and set up the first delayed check.
    if (!g_skip_scheduled_checks_for_tests) {
      if (g_should_immediately_update)
-@@ -329,7 +333,8 @@ void ExtensionUpdater::AddToDownloader(
+@@ -329,7 +334,8 @@ void ExtensionUpdater::AddToDownloader(
      const Extension& extension = **extension_iter;
      const ExtensionId& extension_id = extension.id();
      if (!Manifest::IsAutoUpdateableLocation(extension.location())) {
@@ -265,7 +270,7 @@ diff --git a/chrome/browser/extensions/updater/extension_updater.cc b/chrome/bro
        continue;
      }
      // An extension might be overwritten by policy, and have its update url
-@@ -343,7 +348,7 @@ void ExtensionUpdater::AddToDownloader(
+@@ -343,7 +349,7 @@ void ExtensionUpdater::AddToDownloader(
        continue;
      }
  
@@ -274,7 +279,20 @@ diff --git a/chrome/browser/extensions/updater/extension_updater.cc b/chrome/bro
        update_check_params->update_info[extension_id] = ExtensionUpdateData();
      } else if (AddExtensionToDownloader(extension, request_id,
                                          fetch_priority)) {
-@@ -389,7 +394,7 @@ void ExtensionUpdater::CheckNow(CheckParams params) {
+@@ -381,6 +387,12 @@ bool ExtensionUpdater::AddExtensionToDownloader(
+ }
+ 
+ void ExtensionUpdater::CheckNow(CheckParams params) {
++  if (!params.user_initiated &&
++      !base::FeatureList::IsEnabled(
++            extensions_features::kEnableExtensionAutoupdate)) {
++    LOG(INFO) << "Extensions autoupdate is disabled.";
++    return;
++  }
+   if (params.ids.empty()) {
+     // Checking all extensions. Cancel pending DoCheckSoon() call if there's
+     // one, as it would be redundant.
+@@ -389,7 +401,7 @@ void ExtensionUpdater::CheckNow(CheckParams params) {
  
    int request_id = next_request_id_++;
  
@@ -283,7 +301,7 @@ diff --git a/chrome/browser/extensions/updater/extension_updater.cc b/chrome/bro
    if (params.ids.empty())
      NotifyStarted();
  
-@@ -461,7 +466,7 @@ void ExtensionUpdater::CheckNow(CheckParams params) {
+@@ -461,7 +473,7 @@ void ExtensionUpdater::CheckNow(CheckParams params) {
                                       << " is not a corrupt reinstall";
          update_check_params.update_info[pending_id] = ExtensionUpdateData();
        } else if (!Manifest::IsAutoUpdateableLocation(info->install_source())) {
@@ -292,7 +310,7 @@ diff --git a/chrome/browser/extensions/updater/extension_updater.cc b/chrome/bro
          continue;
        }
        // We have to mark high-priority extensions (such as policy-forced
-@@ -471,7 +476,7 @@ void ExtensionUpdater::CheckNow(CheckParams params) {
+@@ -471,7 +483,7 @@ void ExtensionUpdater::CheckNow(CheckParams params) {
        // See https://crbug.com/904600 and https://crbug.com/965686.
        const bool is_high_priority_extension_pending =
            pending_extension_manager->HasHighPriorityPendingExtension();
@@ -301,7 +319,7 @@ diff --git a/chrome/browser/extensions/updater/extension_updater.cc b/chrome/bro
          update_check_params.update_info[pending_id].is_corrupt_reinstall =
              is_corrupt_reinstall;
          if (is_corrupt_reinstall) {
-@@ -492,6 +497,8 @@ void ExtensionUpdater::CheckNow(CheckParams params) {
+@@ -492,6 +504,8 @@ void ExtensionUpdater::CheckNow(CheckParams params) {
            LOG(WARNING) << "Corrupt extension with id " << pending_id
                         << " will be reinstalled with ExtensionDownloader.";
          }
@@ -310,7 +328,7 @@ diff --git a/chrome/browser/extensions/updater/extension_updater.cc b/chrome/bro
        } else {
          InstallStageTracker::Get(profile_)->ReportFailure(
              pending_id,
-@@ -504,13 +511,6 @@ void ExtensionUpdater::CheckNow(CheckParams params) {
+@@ -504,13 +518,6 @@ void ExtensionUpdater::CheckNow(CheckParams params) {
      AddToDownloader(&registry_->disabled_extensions(), pending_ids, request_id,
                      params.fetch_priority, &update_check_params);
      ExtensionSet remotely_disabled_extensions;
@@ -324,7 +342,7 @@ diff --git a/chrome/browser/extensions/updater/extension_updater.cc b/chrome/bro
      AddToDownloader(&remotely_disabled_extensions, pending_ids, request_id,
                      params.fetch_priority, &update_check_params);
    } else {
-@@ -518,7 +518,7 @@ void ExtensionUpdater::CheckNow(CheckParams params) {
+@@ -518,7 +525,7 @@ void ExtensionUpdater::CheckNow(CheckParams params) {
        const Extension* extension = registry_->GetExtensionById(
            id, extensions::ExtensionRegistry::EVERYTHING);
        if (extension) {
@@ -333,7 +351,7 @@ diff --git a/chrome/browser/extensions/updater/extension_updater.cc b/chrome/bro
            update_check_params.update_info[id] = ExtensionUpdateData();
          } else if (AddExtensionToDownloader(*extension, request_id,
                                              params.fetch_priority)) {
-@@ -659,7 +659,7 @@ void ExtensionUpdater::OnExtensionDownloadFinished(
+@@ -659,7 +666,7 @@ void ExtensionUpdater::OnExtensionDownloadFinished(
        file.extension_id, InstallStageTracker::Stage::INSTALLING);
    UpdatePingData(file.extension_id, ping);
  
@@ -342,7 +360,7 @@ diff --git a/chrome/browser/extensions/updater/extension_updater.cc b/chrome/bro
  
    FetchedCRXFile fetched(file, file_ownership_passed, request_ids,
                           std::move(callback));
-@@ -670,6 +670,7 @@ void ExtensionUpdater::OnExtensionDownloadFinished(
+@@ -670,6 +677,7 @@ void ExtensionUpdater::OnExtensionDownloadFinished(
  
  bool ExtensionUpdater::GetPingDataForExtension(const ExtensionId& id,
                                                 DownloadPingData* ping_data) {
@@ -350,7 +368,7 @@ diff --git a/chrome/browser/extensions/updater/extension_updater.cc b/chrome/bro
    DCHECK(alive_);
    ping_data->rollcall_days =
        CalculatePingDaysForExtension(extension_prefs_->LastPingDay(id));
-@@ -768,7 +769,7 @@ bool ExtensionUpdater::CanUseUpdateService(
+@@ -768,7 +776,7 @@ bool ExtensionUpdater::CanUseUpdateService(
  void ExtensionUpdater::InstallCRXFile(FetchedCRXFile crx_file) {
    std::set<int> request_ids;
  
@@ -359,7 +377,7 @@ diff --git a/chrome/browser/extensions/updater/extension_updater.cc b/chrome/bro
            << crx_file.info.path.value();
  
    // The ExtensionService is now responsible for cleaning up the temp file
-@@ -877,7 +878,7 @@ void ExtensionUpdater::NotifyIfFinished(int request_id) {
+@@ -877,7 +885,7 @@ void ExtensionUpdater::NotifyIfFinished(int request_id) {
    InProgressCheck& request = requests_in_progress_[request_id];
    if (!request.in_progress_ids.empty() || request.awaiting_update_service)
      return;  // This request is not done yet.
@@ -371,7 +389,16 @@ diff --git a/chrome/browser/extensions/updater/extension_updater.cc b/chrome/bro
 diff --git a/chrome/browser/extensions/updater/extension_updater.h b/chrome/browser/extensions/updater/extension_updater.h
 --- a/chrome/browser/extensions/updater/extension_updater.h
 +++ b/chrome/browser/extensions/updater/extension_updater.h
-@@ -327,6 +327,8 @@ class ExtensionUpdater : public ExtensionDownloaderDelegate {
+@@ -80,6 +80,8 @@ class ExtensionUpdater : public ExtensionDownloaderDelegate {
+     // right away.
+     bool install_immediately = false;
+ 
++    bool user_initiated = false;
++
+     // An extension update check can be originated by a user or by a scheduled
+     // task. When the value of |fetch_priority| is FOREGROUND, the update
+     // request was initiated by a user.
+@@ -327,6 +329,8 @@ class ExtensionUpdater : public ExtensionDownloaderDelegate {
    base::TimeDelta frequency_;
    bool will_check_soon_ = false;
  
