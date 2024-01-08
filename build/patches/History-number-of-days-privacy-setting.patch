@@ -12,13 +12,18 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 ---
  .../java/res/xml/privacy_preferences.xml      |  6 ++
  .../privacy/settings/PrivacySettings.java     | 63 +++++++++++++++++++
+ .../api/settings_private/prefs_util.cc        |  4 ++
  .../history/history_service_factory.cc        |  2 +
  chrome/browser/profiles/profile_impl.cc       |  1 +
+ .../settings/privacy_page/privacy_page.html   |  9 +++
+ .../settings/privacy_page/privacy_page.ts     | 17 +++++
  .../strings/android_chrome_strings.grd        | 12 ++++
+ .../settings_localized_strings_provider.cc    |  5 ++
  .../preference_spinner_single_line.xml        | 26 ++++++--
  .../java/res/layout/preference_spinner.xml    |  7 +++
  .../layout/preference_spinner_single_line.xml |  7 +++
  .../settings/SpinnerPreference.java           |  7 +++
+ ...istory-number-of-days-privacy-setting.grdp | 18 ++++++
  .../core/browser/expire_history_backend.cc    | 13 +++-
  .../core/browser/expire_history_backend.h     |  2 +
  .../history/core/browser/history_backend.cc   | 15 ++++-
@@ -27,7 +32,8 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../history/core/browser/history_service.h    |  8 +++
  components/history/core/common/pref_names.cc  |  4 ++
  components/history/core/common/pref_names.h   |  1 +
- 17 files changed, 201 insertions(+), 8 deletions(-)
+ 22 files changed, 254 insertions(+), 8 deletions(-)
+ create mode 100644 components/cromite_components_strings_grd/History-number-of-days-privacy-setting.grdp
 
 diff --git a/chrome/android/java/res/xml/privacy_preferences.xml b/chrome/android/java/res/xml/privacy_preferences.xml
 --- a/chrome/android/java/res/xml/privacy_preferences.xml
@@ -146,6 +152,27 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/privacy/setting
      @Override
      public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
          menu.clear();
+diff --git a/chrome/browser/extensions/api/settings_private/prefs_util.cc b/chrome/browser/extensions/api/settings_private/prefs_util.cc
+--- a/chrome/browser/extensions/api/settings_private/prefs_util.cc
++++ b/chrome/browser/extensions/api/settings_private/prefs_util.cc
+@@ -35,6 +35,7 @@
+ #include "components/content_settings/core/common/pref_names.h"
+ #include "components/dom_distiller/core/pref_names.h"
+ #include "components/drive/drive_pref_names.h"
++#include "components/history/core/common/pref_names.h"
+ #include "components/embedder_support/pref_names.h"
+ #include "components/language/core/browser/pref_names.h"
+ #include "components/live_caption/pref_names.h"
+@@ -202,6 +203,9 @@ const PrefsUtil::TypedPrefMap& PrefsUtil::GetAllowlistedKeys() {
+   (*s_allowlist)[::prefs::kShowHomeButton] =
+       settings_api::PrefType::PREF_TYPE_BOOLEAN;
+ 
++  (*s_allowlist)[::prefs::kExpireDaysThreshold] =
++      settings_api::PrefType::PREF_TYPE_NUMBER;
++
+   // Appearance settings.
+   (*s_allowlist)[::prefs::kCurrentThemeID] =
+       settings_api::PrefType::PREF_TYPE_STRING;
 diff --git a/chrome/browser/history/history_service_factory.cc b/chrome/browser/history/history_service_factory.cc
 --- a/chrome/browser/history/history_service_factory.cc
 +++ b/chrome/browser/history/history_service_factory.cc
@@ -169,6 +196,52 @@ diff --git a/chrome/browser/profiles/profile_impl.cc b/chrome/browser/profiles/p
    registry->RegisterBooleanPref(prefs::kAllowDeletingBrowserHistory, true);
    registry->RegisterBooleanPref(policy::policy_prefs::kForceGoogleSafeSearch,
                                  false);
+diff --git a/chrome/browser/resources/settings/privacy_page/privacy_page.html b/chrome/browser/resources/settings/privacy_page/privacy_page.html
+--- a/chrome/browser/resources/settings/privacy_page/privacy_page.html
++++ b/chrome/browser/resources/settings/privacy_page/privacy_page.html
+@@ -124,6 +124,15 @@
+               target="_blank" tabindex="-1" aria-disabled="true"
+               role="none"></a>
+         </template>
++        <div class="cr-row">
++          <div class="flex cr-padded-text" aria-hidden="true">
++            $i18n{expireHistory}
++          </div>
++          <settings-dropdown-menu id="expireDaysThreshold" label="$i18n{expireHistory}"
++              pref="{{prefs.history.expire_days_threshold}}"
++              menu-options="[[historyExpireDaysThresholdOptions_]]">
++          </settings-dropdown-menu>
++        </div>
+       </div>
+ 
+ <if expr="use_nss_certs">
+diff --git a/chrome/browser/resources/settings/privacy_page/privacy_page.ts b/chrome/browser/resources/settings/privacy_page/privacy_page.ts
+--- a/chrome/browser/resources/settings/privacy_page/privacy_page.ts
++++ b/chrome/browser/resources/settings/privacy_page/privacy_page.ts
+@@ -77,6 +77,23 @@ export class SettingsPrivacyPageElement extends SettingsPrivacyPageElementBase {
+ 
+   static get properties() {
+     return {
++      historyExpireDaysThresholdOptions_: {
++        readOnly: true,
++        type: Array,
++        value() {
++          return [
++            {value: 0, name: loadTimeData.getString('noHistory')},
++            {value: 1, name: "1 " + loadTimeData.getString('dayHistory')},
++            {value: 7, name: "7 " + loadTimeData.getString('daysHistory')},
++            {value: 15, name: "15 " + loadTimeData.getString('daysHistory')},
++            {value: 30, name: "30 " + loadTimeData.getString('daysHistory')},
++            {value: 60, name: "60 " + loadTimeData.getString('daysHistory')},
++            {value: 90, name: "90 " + loadTimeData.getString('daysHistory')},
++            {value: 0xFFFF, name: loadTimeData.getString('foreverHistory')},
++          ];
++        },
++      },
++
+       /**
+        * Preferences state.
+        */
 diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chrome/browser/ui/android/strings/android_chrome_strings.grd
 --- a/chrome/browser/ui/android/strings/android_chrome_strings.grd
 +++ b/chrome/browser/ui/android/strings/android_chrome_strings.grd
@@ -191,6 +264,21 @@ diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chro
        <message name="IDS_CLEAR_COOKIES_AND_SITE_DATA_TITLE" desc="Title for Clear Cookies and site data in Clear Browsing Data dialog">
          Cookies and site data
        </message>
+diff --git a/chrome/browser/ui/webui/settings/settings_localized_strings_provider.cc b/chrome/browser/ui/webui/settings/settings_localized_strings_provider.cc
+--- a/chrome/browser/ui/webui/settings/settings_localized_strings_provider.cc
++++ b/chrome/browser/ui/webui/settings/settings_localized_strings_provider.cc
+@@ -1647,6 +1647,11 @@ void AddPrivacyStrings(content::WebUIDataSource* html_source,
+     {"safeBrowsingStandardDesc", IDS_SETTINGS_SAFEBROWSING_STANDARD_DESC},
+     {"safeBrowsingStandardDescUpdated",
+      IDS_SETTINGS_SAFEBROWSING_STANDARD_DESC_UPDATED},
++    {"expireHistory", IDS_SETTINGS_EXPIRE_HISTORY},
++    {"noHistory", IDS_SETTINGS_NO_HISTORY},
++    {"dayHistory", IDS_SETTINGS_DAY_HISTORY_DESCRIPTION},
++    {"daysHistory", IDS_SETTINGS_DAYS_HISTORY_DESCRIPTION},
++    {"foreverHistory", IDS_SETTINGS_FOREVER_HISTORY_DESCRIPTION},
+ #if BUILDFLAG(GOOGLE_CHROME_BRANDING)
+     {"safeBrowsingStandardDescUpdatedProxy",
+      IDS_SETTINGS_SAFEBROWSING_STANDARD_DESC_UPDATED_PROXY},
 diff --git a/components/browser_ui/settings/android/java/res/layout-sw360dp/preference_spinner_single_line.xml b/components/browser_ui/settings/android/java/res/layout-sw360dp/preference_spinner_single_line.xml
 --- a/components/browser_ui/settings/android/java/res/layout-sw360dp/preference_spinner_single_line.xml
 +++ b/components/browser_ui/settings/android/java/res/layout-sw360dp/preference_spinner_single_line.xml
@@ -292,6 +380,29 @@ diff --git a/components/browser_ui/settings/android/widget/java/src/org/chromium
          mSpinner = (Spinner) holder.findViewById(R.id.spinner);
          mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
              @Override
+diff --git a/components/cromite_components_strings_grd/History-number-of-days-privacy-setting.grdp b/components/cromite_components_strings_grd/History-number-of-days-privacy-setting.grdp
+new file mode 100644
+--- /dev/null
++++ b/components/cromite_components_strings_grd/History-number-of-days-privacy-setting.grdp
+@@ -0,0 +1,18 @@
++<?xml version="1.0" encoding="utf-8"?>
++<grit-part>
++    <message name="IDS_SETTINGS_EXPIRE_HISTORY" desc="">
++        Expire history days threshold
++    </message>
++    <message name="IDS_SETTINGS_NO_HISTORY" desc="">
++        No history
++    </message>
++    <message name="IDS_SETTINGS_DAY_HISTORY_DESCRIPTION" desc="">
++        Day
++    </message>
++    <message name="IDS_SETTINGS_DAYS_HISTORY_DESCRIPTION" desc="">
++        Days
++    </message>
++    <message name="IDS_SETTINGS_FOREVER_HISTORY_DESCRIPTION" desc="">
++        Forever
++    </message>
++</grit-part>
 diff --git a/components/history/core/browser/expire_history_backend.cc b/components/history/core/browser/expire_history_backend.cc
 --- a/components/history/core/browser/expire_history_backend.cc
 +++ b/components/history/core/browser/expire_history_backend.cc
