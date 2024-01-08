@@ -16,7 +16,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../api/settings_private/prefs_util.cc        | 17 +++++
  .../browser/profiles/ProfileManagerUtils.java |  5 ++
  .../profiles/android/profile_manager_utils.cc |  5 ++
- chrome/browser/profiles/profile_manager.cc    | 13 ++++
+ chrome/browser/profiles/profile_manager.cc    | 15 +++-
  chrome/browser/profiles/profile_manager.h     |  2 +
  .../clear_browsing_data_dialog.html           | 44 +++++++++++
  .../clear_browsing_data_dialog.ts             |  2 +
@@ -29,7 +29,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  components/browsing_data/core/pref_names.cc   | 27 +++++++
  components/browsing_data/core/pref_names.h    |  9 +++
  content/browser/storage_partition_impl.cc     |  1 +
- 25 files changed, 320 insertions(+), 16 deletions(-)
+ 25 files changed, 321 insertions(+), 17 deletions(-)
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/browsing_data/ClearBrowsingDataFragmentAtStart.java
 
 diff --git a/chrome/android/chrome_java_sources.gni b/chrome/android/chrome_java_sources.gni
@@ -328,7 +328,7 @@ diff --git a/chrome/browser/browsing_data/chrome_browsing_data_remover_delegate.
 diff --git a/chrome/browser/extensions/api/settings_private/prefs_util.cc b/chrome/browser/extensions/api/settings_private/prefs_util.cc
 --- a/chrome/browser/extensions/api/settings_private/prefs_util.cc
 +++ b/chrome/browser/extensions/api/settings_private/prefs_util.cc
-@@ -504,6 +504,23 @@ const PrefsUtil::TypedPrefMap& PrefsUtil::GetAllowlistedKeys() {
+@@ -508,6 +508,23 @@ const PrefsUtil::TypedPrefMap& PrefsUtil::GetAllowlistedKeys() {
    (*s_allowlist)[browsing_data::prefs::kLastClearBrowsingDataTab] =
        settings_api::PrefType::PREF_TYPE_NUMBER;
  
@@ -405,6 +405,15 @@ diff --git a/chrome/browser/profiles/profile_manager.cc b/chrome/browser/profile
  void ProfileManager::DoFinalInitForServices(Profile* profile,
                                              bool go_off_the_record) {
    if (!do_final_services_init_ ||
+@@ -2154,7 +2167,7 @@ void ProfileManager::OnBrowserClosed(Browser* browser) {
+   Profile* original_profile = profile->GetOriginalProfile();
+   // Do nothing if the closed window is not the last window of the same profile.
+   for (auto* browser_iter : *BrowserList::GetInstance()) {
+-    if (browser_iter->profile()->GetOriginalProfile() == original_profile)
++    if (browser_iter->profile() == profile)
+       return;
+   }
+ 
 diff --git a/chrome/browser/profiles/profile_manager.h b/chrome/browser/profiles/profile_manager.h
 --- a/chrome/browser/profiles/profile_manager.h
 +++ b/chrome/browser/profiles/profile_manager.h
