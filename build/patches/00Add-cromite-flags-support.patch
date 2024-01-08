@@ -40,7 +40,9 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  chrome/common/chrome_features.cc              |   1 +
  .../android/java/res/values/attrs.xml         |   4 +
  .../settings/ChromeSwitchPreference.java      |  20 +++
+ components/components_strings.grd             |   1 +
  .../content_settings/core/common/features.cc  |   1 +
+ .../placeholder.txt                           |   1 +
  components/flags_ui/flags_state.cc            |  56 ++++++-
  components/flags_ui/resources/app.html        |  42 ++++-
  components/flags_ui/resources/app.ts          |  41 ++++-
@@ -85,10 +87,11 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  services/network/public/cpp/features.h        |   1 +
  third_party/blink/common/features.cc          |   1 +
  third_party/blink/public/common/features.h    |   1 +
- 71 files changed, 731 insertions(+), 18 deletions(-)
+ 73 files changed, 733 insertions(+), 18 deletions(-)
  create mode 100644 chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/cromite/include_all_directory.java
  create mode 100644 chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/cromite/java_template/CromiteCachedFlag.java.tmpl
  create mode 100644 chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/placeholder.txt
+ create mode 100644 components/cromite_components_strings_grd/placeholder.txt
  create mode 100755 cromite_flags/BUILD.gn
  create mode 100755 cromite_flags/chrome/browser/about_flags_cc/placeholder.txt
  create mode 100755 cromite_flags/chrome/browser/browser_features_cc/placeholder.txt
@@ -865,6 +868,17 @@ diff --git a/components/browser_ui/settings/android/widget/java/src/org/chromium
      }
  
      /**
+diff --git a/components/components_strings.grd b/components/components_strings.grd
+--- a/components/components_strings.grd
++++ b/components/components_strings.grd
+@@ -338,6 +338,7 @@
+       <part file="version_ui_strings.grdp" />
+       <part file="webapps_strings.grdp" />
+       <part file="user_scripts/strings/userscripts_strings.grdp" />
++      <part file="cromite_components_strings_grd/placeholder.txt"/>
+ 
+       <if expr="use_blink">
+         <part file="history_clusters_strings.grdp" />
 diff --git a/components/content_settings/core/common/features.cc b/components/content_settings/core/common/features.cc
 --- a/components/content_settings/core/common/features.cc
 +++ b/components/content_settings/core/common/features.cc
@@ -875,6 +889,12 @@ diff --git a/components/content_settings/core/common/features.cc b/components/co
 +#include "cromite_flags/components_content_settings_core_common_features_cc.inc"
  }  // namespace features
  }  // namespace content_settings
+diff --git a/components/cromite_components_strings_grd/placeholder.txt b/components/cromite_components_strings_grd/placeholder.txt
+new file mode 100644
+--- /dev/null
++++ b/components/cromite_components_strings_grd/placeholder.txt
+@@ -0,0 +1 @@
++this file is intentionally empty
 diff --git a/components/flags_ui/flags_state.cc b/components/flags_ui/flags_state.cc
 --- a/components/flags_ui/flags_state.cc
 +++ b/components/flags_ui/flags_state.cc
