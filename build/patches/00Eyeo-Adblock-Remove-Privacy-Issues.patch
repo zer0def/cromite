@@ -540,7 +540,7 @@ new file mode 100644
 +                The functionality is ONLY allowed for the list
 +                <a href="https://easylist-downloads.adblockplus.org/abp-filters-anti-cv.txt">abp-filters-anti-cv.txt</a>
 +                which is activated by this setting.
-+                <br><a href="https://github.com/abp-filters/abp-filters-anti-cv">Open ABP anti-circumvention filter list repo</a>
++                <br><a href="https://gitlab.com/eyeo/anti-cv/abp-filters-anti-cv">Open ABP anti-circumvention filter list repo</a>
 +                <br><a href="https://developers.eyeo.com/snippets/snippets-overview">Open ABP Snippets Overview</a>
 +            </div>
 +        </div>
@@ -586,7 +586,7 @@ new file mode 100644
 +                                <div><b>URL:</b> [[item.url]]</div>
 +                                <div><b>Version:</b> [[item.current_version]]</div>
 +                                <div><b>Status:</b> [[item.installation_state]] ([[item.last_installation_time]])</div>
-+                                <div><b>Download errors:</b> [[item.download_error_count]]/[[item.download_success_count]]</div>
++                                <div><b>Download:</b> [[item.download_success_count]] <b>Errors:</b> [[item.download_error_count]]</div>
 +                            </div>
 +                        </div>
 +                    </div>
@@ -648,7 +648,7 @@ new file mode 100644
 +                                <div style="margin-left: 20px; margin-top: 5px;">
 +                                    <div><b>Version:</b> [[item.current_version]]</div>
 +                                    <div><b>Status:</b> [[item.installation_state]] ([[item.last_installation_time]])</div>
-+                                    <div><b>Download errors:</b> [[item.download_error_count]]/[[item.download_success_count]]</div>
++                                    <div><b>Download:</b> [[item.download_success_count]] <b>Errors:</b> [[item.download_error_count]]</div>
 +                                </div>
 +                            </div>
 +                        </div>
@@ -827,7 +827,7 @@ new file mode 100644
 +               found.download_error_count = obj.download_error_count;
 +               found.download_success_count = obj.download_success_count;
 +               found.installation_state = obj.installation_state;
-+               found.last_installation_time = new Date(obj.last_installation_time).toLocaleString();
++               found.last_installation_time = obj.last_installation_time;
 +            })
 +
 +            this.subscriptions = new_subscriptions;
@@ -1395,10 +1395,10 @@ diff --git a/components/adblock/android/adblock_strings.grd b/components/adblock
 +        Open ABP anti-circumvention filter list repo
 +      </message>
 +      <message name="IDS_ADBLOCK_SETTINGS_OPEN_REPO_URL_SUMMARY" desc="">
-+        Open https://github.com/abp-filters/abp-filters-anti-cv in the browser
++        Open https://gitlab.com/eyeo/anti-cv/abp-filters-anti-cv in the browser
 +      </message>
 +      <message name="IDS_ADBLOCK_SETTINGS_OPEN_REPO_URL" desc="" translateable="false">
-+        https://github.com/abp-filters/abp-filters-anti-cv
++        https://gitlab.com/eyeo/anti-cv/abp-filters-anti-cv
 +      </message>
 +      <message name="IDS_ADBLOCK_SETTINGS_OPEN_SNIPPETS_URL_TEXT" desc="">
 +        Open ABP Snippets Overview
