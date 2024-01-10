@@ -23,7 +23,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../java/res/xml/privacy_preferences.xml      |   4 +
  .../privacy/settings/PrivacySettings.java     |   2 +-
  .../browser/settings/SettingsActivity.java    |  36 +++++
- chrome/browser/about_flags.cc                 |   7 +
+ chrome/browser/about_flags.cc                 |  11 ++
  chrome/browser/browser_features.cc            |   1 +
  chrome/browser/flags/BUILD.gn                 |  12 ++
  .../flags/android/chrome_feature_list.cc      |   1 +
@@ -87,7 +87,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  services/network/public/cpp/features.h        |   1 +
  third_party/blink/common/features.cc          |   1 +
  third_party/blink/public/common/features.h    |   1 +
- 73 files changed, 733 insertions(+), 18 deletions(-)
+ 73 files changed, 737 insertions(+), 18 deletions(-)
  create mode 100644 chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/cromite/include_all_directory.java
  create mode 100644 chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/cromite/java_template/CromiteCachedFlag.java.tmpl
  create mode 100644 chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/placeholder.txt
@@ -502,7 +502,18 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/settings/Settin
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -4033,6 +4033,10 @@ const flags_ui::FeatureEntry::FeatureVariation
+@@ -370,6 +370,10 @@ using flags_ui::kOsLinux;
+ using flags_ui::kOsMac;
+ using flags_ui::kOsWin;
+ 
++#define ABOUT_FLAG_INCLUDE_SECTION
++#include "cromite_flags/chrome_browser_about_flags_cc.inc"
++#undef ABOUT_FLAG_INCLUDE_SECTION
++
+ namespace about_flags {
+ 
+ namespace {
+@@ -4033,6 +4037,10 @@ const flags_ui::FeatureEntry::FeatureVariation
           std::size(kParcelTrackingTestDataOutForDelivery), nullptr},
  };
  
@@ -513,7 +524,7 @@ diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
  // RECORDING USER METRICS FOR FLAGS:
  // -----------------------------------------------------------------------------
  // The first line of the entry is the internal name.
-@@ -4059,6 +4063,9 @@ const flags_ui::FeatureEntry::FeatureVariation
+@@ -4059,6 +4067,9 @@ const flags_ui::FeatureEntry::FeatureVariation
  const FeatureEntry kFeatureEntries[] = {
  // Include generated flags for flag unexpiry; see //docs/flag_expiry.md and
  // //tools/flags/generate_unexpire_flags.py.
