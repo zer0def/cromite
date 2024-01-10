@@ -16,6 +16,16 @@ mv v8bis v8
 git add -f v8 >/dev/null
 git commit -m ":NOEXPORT: v8 repo" >/dev/null
 
+echo -e ${RED} ------- remove third_party/devtools-frontend subrepo ${NC}
+rm -rf third_party/devtools-frontend/src/.git 
+cp -r third_party/devtools-frontend third_party/devtools-frontend-bis
+git rm -rf third_party/devtools-frontend || true
+git submodule deinit -f third_party/devtools-frontend || true
+rm -rf third_party/devtools-frontend
+mv third_party/devtools-frontend-bis third_party/devtools-frontend
+git add -f third_party/devtools-frontend >/dev/null
+git commit -m ":NOEXPORT: third_party/devtools-frontend repo" >/dev/null
+
 echo -e ${RED} ------- patches ${NC}
 cat ../../cromite/build/cromite_patches_list.txt
 echo
