@@ -19,21 +19,27 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../privacy/settings/PrivacySettings.java     |  6 ++
  .../RadioButtonGroupRefererSettings.java      | 89 +++++++++++++++++++
  .../settings/RefererSettingsFragment.java     | 79 ++++++++++++++++
+ .../api/settings_private/prefs_util.cc        |  5 ++
  .../net/system_network_context_manager.cc     |  4 +
  chrome/browser/renderer_preferences_util.cc   |  1 +
+ .../settings/privacy_page/privacy_page.html   | 10 +++
+ .../settings/privacy_page/privacy_page.ts     | 17 ++++
  .../strings/android_chrome_strings.grd        | 24 +++++
  chrome/browser/ui/prefs/pref_watcher.cc       |  2 +
  chrome/browser/ui/prefs/prefs_tab_helper.cc   |  2 +
+ .../settings_localized_strings_provider.cc    |  4 +
  chrome/common/pref_names.h                    |  3 +
+ ...-referrals-in-cross-origin-navigation.grdp | 18 ++++
  .../content/internal/context_menu_download.cc | 10 +++
  .../renderer_host/navigation_request.cc       |  9 ++
  .../network/public/cpp/resource_request.h     |  2 +-
  .../renderer_preferences.h                    |  1 +
- 18 files changed, 317 insertions(+), 1 deletion(-)
+ 23 files changed, 371 insertions(+), 1 deletion(-)
  create mode 100644 chrome/android/java/res/layout/radio_button_group_referer_policy_preference.xml
  create mode 100644 chrome/android/java/res/xml/referer_policy_preferences.xml
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/RadioButtonGroupRefererSettings.java
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/RefererSettingsFragment.java
+ create mode 100644 components/cromite_components_strings_grd/Remove-HTTP-referrals-in-cross-origin-navigation.grdp
 
 diff --git a/chrome/android/chrome_java_resources.gni b/chrome/android/chrome_java_resources.gni
 --- a/chrome/android/chrome_java_resources.gni
@@ -369,6 +375,21 @@ new file mode 100644
 +        return true;
 +    }
 +}
+diff --git a/chrome/browser/extensions/api/settings_private/prefs_util.cc b/chrome/browser/extensions/api/settings_private/prefs_util.cc
+--- a/chrome/browser/extensions/api/settings_private/prefs_util.cc
++++ b/chrome/browser/extensions/api/settings_private/prefs_util.cc
+@@ -206,6 +206,11 @@ const PrefsUtil::TypedPrefMap& PrefsUtil::GetAllowlistedKeys() {
+   (*s_allowlist)[::prefs::kExpireDaysThreshold] =
+       settings_api::PrefType::PREF_TYPE_NUMBER;
+ 
++  (*s_allowlist)[::prefs::kEnableReferrers] =
++      settings_api::PrefType::PREF_TYPE_BOOLEAN;
++  (*s_allowlist)[::prefs::kReferrersPolicy] =
++      settings_api::PrefType::PREF_TYPE_NUMBER;
++
+   // Appearance settings.
+   (*s_allowlist)[::prefs::kCurrentThemeID] =
+       settings_api::PrefType::PREF_TYPE_STRING;
 diff --git a/chrome/browser/net/system_network_context_manager.cc b/chrome/browser/net/system_network_context_manager.cc
 --- a/chrome/browser/net/system_network_context_manager.cc
 +++ b/chrome/browser/net/system_network_context_manager.cc
@@ -401,6 +422,60 @@ diff --git a/chrome/browser/renderer_preferences_util.cc b/chrome/browser/render
    prefs->enable_do_not_track =
        TrackingProtectionSettingsFactory::GetForProfile(profile)
            ->IsDoNotTrackEnabled();
+diff --git a/chrome/browser/resources/settings/privacy_page/privacy_page.html b/chrome/browser/resources/settings/privacy_page/privacy_page.html
+--- a/chrome/browser/resources/settings/privacy_page/privacy_page.html
++++ b/chrome/browser/resources/settings/privacy_page/privacy_page.html
+@@ -133,6 +133,16 @@
+               menu-options="[[historyExpireDaysThresholdOptions_]]">
+           </settings-dropdown-menu>
+         </div>
++        <div class="cr-row">
++          <div class="flex cr-padded-text" aria-hidden="true">
++            $i18n{referersPolicyTitle}
++          </div>
++          <settings-dropdown-menu id="referersPolicy" label="$i18n{referersPolicyTitle}"
++              pref="{{prefs.referrers_policy}}"
++              menu-options="[[referersPolicyOptions_]]"
++              on-settings-control-change="onReferersPolicyChanged_">
++          </settings-dropdown-menu>
++        </div>
+       </div>
+ 
+ <if expr="use_nss_certs">
+diff --git a/chrome/browser/resources/settings/privacy_page/privacy_page.ts b/chrome/browser/resources/settings/privacy_page/privacy_page.ts
+--- a/chrome/browser/resources/settings/privacy_page/privacy_page.ts
++++ b/chrome/browser/resources/settings/privacy_page/privacy_page.ts
+@@ -94,6 +94,17 @@ export class SettingsPrivacyPageElement extends SettingsPrivacyPageElementBase {
+         },
+       },
+ 
++      referersPolicyOptions_: {
++        readOnly: true,
++        type: Array,
++        value() {
++          return [
++            {value: 2, name: loadTimeData.getString('noCrossOriginTopFramePolicy')},
++            {value: 1, name: loadTimeData.getString('standardRefererPolicy')},
++            {value: 0, name: loadTimeData.getString('disableRefererPolicy')},
++          ];
++        },
++      },
+       /**
+        * Preferences state.
+        */
+@@ -467,6 +478,12 @@ export class SettingsPrivacyPageElement extends SettingsPrivacyPageElementBase {
+     Router.getInstance().navigateTo(routes.TRACKING_PROTECTION);
+   }
+ 
++  private onReferersPolicyChanged_(): void {
++    const policy =
++        this.getPref('referrers_policy').value;
++    this.setPrefValue('enable_referrers', policy != 0);
++  }
++
+   private onCbdDialogClosed_() {
+     Router.getInstance().navigateTo(routes.CLEAR_BROWSER_DATA.parent!);
+     setTimeout(() => {
 diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chrome/browser/ui/android/strings/android_chrome_strings.grd
 --- a/chrome/browser/ui/android/strings/android_chrome_strings.grd
 +++ b/chrome/browser/ui/android/strings/android_chrome_strings.grd
@@ -459,6 +534,20 @@ diff --git a/chrome/browser/ui/prefs/prefs_tab_helper.cc b/chrome/browser/ui/pre
    registry->RegisterBooleanPref(prefs::kEnableEncryptedMedia, true);
    registry->RegisterBooleanPref(prefs::kScrollToTextFragmentEnabled, false);
  #if BUILDFLAG(IS_ANDROID)
+diff --git a/chrome/browser/ui/webui/settings/settings_localized_strings_provider.cc b/chrome/browser/ui/webui/settings/settings_localized_strings_provider.cc
+--- a/chrome/browser/ui/webui/settings/settings_localized_strings_provider.cc
++++ b/chrome/browser/ui/webui/settings/settings_localized_strings_provider.cc
+@@ -1652,6 +1652,10 @@ void AddPrivacyStrings(content::WebUIDataSource* html_source,
+     {"dayHistory", IDS_SETTINGS_DAY_HISTORY_DESCRIPTION},
+     {"daysHistory", IDS_SETTINGS_DAYS_HISTORY_DESCRIPTION},
+     {"foreverHistory", IDS_SETTINGS_FOREVER_HISTORY_DESCRIPTION},
++    {"referersPolicyTitle", IDS_REFERERS_POLICY_TITLE},
++    {"standardRefererPolicy", IDS_STANDARD_REFERER_POLICY_TITLE},
++    {"noCrossOriginTopFramePolicy", IDS_NO_CROSS_ORIGIN_TOP_FRAME_POLICY_TITLE},
++    {"disableRefererPolicy", IDS_DISABLE_REFERER_POLICY_TITLE},
+ #if BUILDFLAG(GOOGLE_CHROME_BRANDING)
+     {"safeBrowsingStandardDescUpdatedProxy",
+      IDS_SETTINGS_SAFEBROWSING_STANDARD_DESC_UPDATED_PROXY},
 diff --git a/chrome/common/pref_names.h b/chrome/common/pref_names.h
 --- a/chrome/common/pref_names.h
 +++ b/chrome/common/pref_names.h
@@ -472,6 +561,29 @@ diff --git a/chrome/common/pref_names.h b/chrome/common/pref_names.h
  // Boolean that specifies whether to import the form data for autofill from the
  // default browser on first run.
  inline constexpr char kImportAutofillFormData[] = "import_autofill_form_data";
+diff --git a/components/cromite_components_strings_grd/Remove-HTTP-referrals-in-cross-origin-navigation.grdp b/components/cromite_components_strings_grd/Remove-HTTP-referrals-in-cross-origin-navigation.grdp
+new file mode 100644
+--- /dev/null
++++ b/components/cromite_components_strings_grd/Remove-HTTP-referrals-in-cross-origin-navigation.grdp
+@@ -0,0 +1,18 @@
++<?xml version="1.0" encoding="utf-8"?>
++<grit-part>
++  <message name="IDS_REFERERS_POLICY_TITLE" desc="Title for 'Enable referers' preference">
++    HTTP Referer header policy
++  </message>
++  <message name="IDS_REFERERS_POLICY_SUMMARY" desc="Summary for a section in Settings that controls referer policy.">
++    Allow to change default HTTP Referer header policy
++  </message>
++  <message name="IDS_STANDARD_REFERER_POLICY_TITLE" desc="Title for 'standard referer' preference">
++    Standard HTTP Referrer header policy
++  </message>
++  <message name="IDS_NO_CROSS_ORIGIN_TOP_FRAME_POLICY_TITLE" desc="Title for 'standard referer' preference">
++    Disable if cross-origin and user begins navigation (default)
++  </message>
++  <message name="IDS_DISABLE_REFERER_POLICY_TITLE" desc="Title for 'disable referer' preference">
++    Disable all referrers
++  </message>
++</grit-part>
 diff --git a/components/download/content/internal/context_menu_download.cc b/components/download/content/internal/context_menu_download.cc
 --- a/components/download/content/internal/context_menu_download.cc
 +++ b/components/download/content/internal/context_menu_download.cc
