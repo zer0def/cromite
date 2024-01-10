@@ -4,8 +4,8 @@ Subject: Always allow inspect fallback
 
 Always enable 'inspect fallback' in 'chrome://inspect/#devices'
 ---
- chrome/browser/resources/inspect/inspect.js | 1 +
- 1 file changed, 1 insertion(+)
+ chrome/browser/resources/inspect/inspect.js | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/chrome/browser/resources/inspect/inspect.js b/chrome/browser/resources/inspect/inspect.js
 --- a/chrome/browser/resources/inspect/inspect.js
@@ -18,5 +18,14 @@ diff --git a/chrome/browser/resources/inspect/inspect.js b/chrome/browser/resour
    if (!HOST_CHROME_VERSION) {
      return false;
    }
+@@ -561,7 +562,7 @@ function formatValue(data, property) {
+ function addFavicon(row, data) {
+   const favicon = document.createElement('img');
+   if (data['faviconUrl']) {
+-    favicon.src = data['faviconUrl'];
++    //favicon.src = data['faviconUrl'];
+   }
+   const propertiesBox = row.querySelector('.properties-box');
+   propertiesBox.insertBefore(favicon, propertiesBox.firstChild);
 --
 2.25.1
