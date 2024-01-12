@@ -4,6 +4,8 @@ Subject: Enable search engine settings desktop ui
 
 Activates the ability to use the desktop ui for search engine management.
 The desktop ui is accessible via a button in the android ui.
+
+License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
  .../settings/SettingsLauncherImpl.java        |  10 +
  chrome/app/generated_resources.grd            |   7 +-
@@ -1215,7 +1217,7 @@ diff --git a/chrome/browser/ui/webui/settings/search_engines_handler.cc b/chrome
    else if (field_name.compare(kQueryUrlField) == 0)
      is_valid = edit_controller_->IsURLValid(field_value);
 +  else if (field_name.compare(kSuggestionUrlField) == 0)
-+    is_valid = edit_controller_->IsURLValid(field_value);
++    is_valid = field_value.empty() || edit_controller_->IsURLValid(field_value);
    else
      NOTREACHED();
  
