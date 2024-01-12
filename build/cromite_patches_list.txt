@@ -278,6 +278,7 @@ Timezone-customization.patch
 00Disable-Android-AppRestrictions.patch
 00Customize-selection-popup.patch
 00Enables-deactivation-of-the-js-debugger-statement.patch
+00Enable-gwp-asan-on-Android.patch
 
 00Temp-PerformanceNavigationTiming-privacy-fix.patch
 00Temp-disable-predictive-back-gesture.patch
