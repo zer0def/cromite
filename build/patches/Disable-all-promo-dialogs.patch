@@ -8,9 +8,10 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  chrome/browser/ui/browser_ui_prefs.cc                           | 2 +-
  .../ui/views/user_education/browser_feature_promo_controller.cc | 1 +
  .../chrome/browser/user_education/UserEducationHelper.java      | 1 +
+ components/user_education/common/feature_promo_controller.cc    | 1 +
  components/user_education/common/feature_promo_registry.cc      | 1 +
  .../browser/ui/ui_features_cc/Disable-all-promo-dialogs.inc     | 1 +
- 6 files changed, 6 insertions(+), 1 deletion(-)
+ 7 files changed, 7 insertions(+), 1 deletion(-)
  create mode 100755 cromite_flags/chrome/browser/ui/ui_features_cc/Disable-all-promo-dialogs.inc
 
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tabbed_mode/TabbedRootUiCoordinator.java b/chrome/android/java/src/org/chromium/chrome/browser/tabbed_mode/TabbedRootUiCoordinator.java
@@ -58,6 +59,17 @@ diff --git a/chrome/browser/user_education/java/src/org/chromium/chrome/browser/
          // Activity was destroyed; don't show IPH.
          View anchorView = iphCommand.anchorView;
          if (mActivity == null || mActivity.isFinishing() || mActivity.isDestroyed()
+diff --git a/components/user_education/common/feature_promo_controller.cc b/components/user_education/common/feature_promo_controller.cc
+--- a/components/user_education/common/feature_promo_controller.cc
++++ b/components/user_education/common/feature_promo_controller.cc
+@@ -388,6 +388,7 @@ FeaturePromoResult FeaturePromoControllerCommon::CanShowPromoCommon(
+     const FeaturePromoSpecification** spec_out,
+     std::unique_ptr<FeaturePromoLifecycle>* lifecycle_out,
+     ui::TrackedElement** anchor_element_out) const {
++  if ((true)) return FeaturePromoResult::kBlockedByContext;
+   // Ensure that this promo isn't already queued for startup.
+   //
+   // Note that this check is bypassed if this is for an explicit demo, but not
 diff --git a/components/user_education/common/feature_promo_registry.cc b/components/user_education/common/feature_promo_registry.cc
 --- a/components/user_education/common/feature_promo_registry.cc
 +++ b/components/user_education/common/feature_promo_registry.cc
