@@ -13,7 +13,11 @@ on:
         description: 'runner? [dev/ci]'
         required: true
         default: 'ci'
-
+      draft:
+        description: 'draft? [true/false]'
+        required: true
+        default: 'false'
+        
 env:
   CROMITE_SHA: ${{ github.event.inputs.sha }}
   REMOVEDOCKERSUPPORT: true
@@ -23,6 +27,7 @@ jobs:
   release:
     runs-on: ${{ github.event.inputs.type }}
     env:
+      IS_DRAFT: ${{ github.event.inputs.draft }}
       OUTPUTFILE_ARM: /storage/images/${{ github.event.inputs.sha }}/android/false/arm/
       OUTPUTFILE_ARM64: /storage/images/${{ github.event.inputs.sha }}/android/false/arm64/
       OUTPUTFILE_X64: /storage/images/${{ github.event.inputs.sha }}/android/false/x64/
@@ -196,7 +201,10 @@ jobs:
           $GH release upload $VERSION-$CROMITE_SHA updateurl.txt
 
           $GH release edit $VERSION-$CROMITE_SHA -t $VERSION-$CROMITE_SHA
-          $GH release edit $VERSION-$CROMITE_SHA --draft=false
+
+          if [ $IS_DRAFT == "false" ]; then
+            $GH release edit $VERSION-$CROMITE_SHA --draft=false
+          fi
 
           VERSION=$(cat ${{ env.OUTPUTFILE_ARM64 }}/RELEASE)
           docker push uazo/cromite:$VERSION-$CROMITE_SHA
