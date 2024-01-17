@@ -3,6 +3,8 @@ ARG VERSION
 
 ARG HTTP_PROXY
 
+ENV DEBIAN_FRONTEND=noninteractive
+
 ENV HTTP_PROXY=$HTTP_PROXY
 ENV http_proxy=$HTTP_PROXY
 
@@ -14,8 +16,7 @@ RUN touch /etc/apt/apt.conf.d/proxy.conf && \
 
 RUN dpkg --add-architecture i386
 
-RUN apt-get update &&\
-    DEBIAN_FRONTEND=noninteractive \
+RUN apt-get update && \
     apt-get -f -y install sudo lsb-release cl-base64 bash wget apt-utils python sed tzdata build-essential lib32gcc-9-dev g++-multilib dos2unix wiggle
 
 ENV user lg
