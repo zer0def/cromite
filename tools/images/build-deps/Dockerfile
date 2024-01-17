@@ -38,8 +38,8 @@ RUN wget https://raw.githubusercontent.com/chromium/chromium/$VERSION/build/inst
     sed -i 's/snapcraft/wget/' install-build-deps.sh && \
     chmod +x ./install-build-deps.sh && \
     chmod +x ./install-build-deps.py && \
-    sudo ./install-build-deps.sh --no-prompt --lib32 --no-chromeos-fonts && \
-    sudo ./install-build-deps.sh --android --no-prompt --no-chromeos-fonts && \
+    DEBIAN_FRONTEND=noninteractive sudo ./install-build-deps.sh --no-prompt --lib32 --no-chromeos-fonts && \
+    DEBIAN_FRONTEND=noninteractive sudo ./install-build-deps.sh --android --no-prompt --no-chromeos-fonts && \
     sudo mkdir -p /github/home/.vscode-server && \
     sudo chown lg /github/home/.vscode-server
 
