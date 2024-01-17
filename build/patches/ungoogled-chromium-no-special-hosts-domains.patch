@@ -93,7 +93,7 @@ diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
      "//chrome/browser/headless",
      "//chrome/browser/profiles",
      "//chrome/common",
-@@ -7792,8 +7786,6 @@ static_library("browser") {
+@@ -7790,8 +7784,6 @@ static_library("browser") {
        "supervised_user/kids_chrome_management/kids_chrome_management_client_factory.h",
        "supervised_user/supervised_user_browser_utils.cc",
        "supervised_user/supervised_user_browser_utils.h",
@@ -173,7 +173,7 @@ diff --git a/chrome/browser/browser_process_impl.cc b/chrome/browser/browser_pro
 diff --git a/chrome/browser/chrome_browser_main.cc b/chrome/browser/chrome_browser_main.cc
 --- a/chrome/browser/chrome_browser_main.cc
 +++ b/chrome/browser/chrome_browser_main.cc
-@@ -511,11 +511,6 @@ void ProcessSingletonNotificationCallbackImpl(
+@@ -509,11 +509,6 @@ void ProcessSingletonNotificationCallbackImpl(
  
    StartupBrowserCreator::ProcessCommandLineAlreadyRunning(
        command_line, current_directory, startup_profile_path_info);
@@ -185,7 +185,7 @@ diff --git a/chrome/browser/chrome_browser_main.cc b/chrome/browser/chrome_brows
  }
  #endif  // BUILDFLAG(ENABLE_PROCESS_SINGLETON)
  
-@@ -1737,11 +1732,6 @@ int ChromeBrowserMainParts::PreMainMessageLoopRunImpl() {
+@@ -1735,11 +1730,6 @@ int ChromeBrowserMainParts::PreMainMessageLoopRunImpl() {
      upgrade_util::SaveLastModifiedTimeOfExe();
  #endif  // BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS_LACROS)
  

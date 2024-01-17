@@ -4,10 +4,9 @@ Subject: WIN Disable updater
 
 ---
  chrome/browser/active_use_util.h              |  2 +-
- .../browser_process_platform_part_win.cc      |  1 +
  chrome/browser/updater/BUILD.gn               |  9 -----
  .../browser/updater/browser_updater_client.cc | 33 +------------------
- 4 files changed, 3 insertions(+), 42 deletions(-)
+ 3 files changed, 2 insertions(+), 42 deletions(-)
 
 diff --git a/chrome/browser/active_use_util.h b/chrome/browser/active_use_util.h
 --- a/chrome/browser/active_use_util.h
@@ -20,17 +19,6 @@ diff --git a/chrome/browser/active_use_util.h b/chrome/browser/active_use_util.h
 +    false;
  
  #endif  // CHROME_BROWSER_ACTIVE_USE_UTIL_H_
-diff --git a/chrome/browser/browser_process_platform_part_win.cc b/chrome/browser/browser_process_platform_part_win.cc
---- a/chrome/browser/browser_process_platform_part_win.cc
-+++ b/chrome/browser/browser_process_platform_part_win.cc
-@@ -5,6 +5,7 @@
- #include "chrome/browser/browser_process_platform_part_win.h"
- 
- #include "chrome/browser/active_use_util.h"
-+#include "chrome/install_static/buildflags.h"
- 
- BrowserProcessPlatformPart::BrowserProcessPlatformPart() = default;
- BrowserProcessPlatformPart::~BrowserProcessPlatformPart() = default;
 diff --git a/chrome/browser/updater/BUILD.gn b/chrome/browser/updater/BUILD.gn
 --- a/chrome/browser/updater/BUILD.gn
 +++ b/chrome/browser/updater/BUILD.gn
