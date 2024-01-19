@@ -14,9 +14,9 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 diff --git a/components/installedapp/android/java/src/org/chromium/components/installedapp/InstalledAppProviderImpl.java b/components/installedapp/android/java/src/org/chromium/components/installedapp/InstalledAppProviderImpl.java
 --- a/components/installedapp/android/java/src/org/chromium/components/installedapp/InstalledAppProviderImpl.java
 +++ b/components/installedapp/android/java/src/org/chromium/components/installedapp/InstalledAppProviderImpl.java
-@@ -155,6 +155,7 @@ public class InstalledAppProviderImpl implements InstalledAppProvider {
-     @UiThread
-     public void filterInstalledApps(final RelatedApplication[] relatedApps, final Url manifestUrl,
+@@ -153,6 +153,7 @@ public class InstalledAppProviderImpl implements InstalledAppProvider {
+             final RelatedApplication[] relatedApps,
+             final Url manifestUrl,
              final FilterInstalledApps_Response callback) {
 +        assert false;
          GURL url = mRenderFrameHost.getLastCommittedURL();
@@ -43,7 +43,7 @@ new file mode 100644
 diff --git a/third_party/blink/renderer/platform/runtime_enabled_features.json5 b/third_party/blink/renderer/platform/runtime_enabled_features.json5
 --- a/third_party/blink/renderer/platform/runtime_enabled_features.json5
 +++ b/third_party/blink/renderer/platform/runtime_enabled_features.json5
-@@ -2221,9 +2221,9 @@
+@@ -2133,9 +2133,9 @@
        status: {"Android": "test", "default": "stable"},
      },
      {

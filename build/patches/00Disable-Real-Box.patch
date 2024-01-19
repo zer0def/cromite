@@ -26,7 +26,7 @@ diff --git a/chrome/browser/resources/new_tab_page/app.html b/chrome/browser/res
 diff --git a/components/search/ntp_features.cc b/components/search/ntp_features.cc
 --- a/components/search/ntp_features.cc
 +++ b/components/search/ntp_features.cc
-@@ -135,7 +135,7 @@ BASE_FEATURE(kNtpHandleMostVisitedNavigationExplicitly,
+@@ -166,7 +166,7 @@ BASE_FEATURE(kNtpHandleMostVisitedNavigationExplicitly,
               base::FEATURE_ENABLED_BY_DEFAULT);
  
  // If enabled, logo will be shown.
@@ -35,7 +35,7 @@ diff --git a/components/search/ntp_features.cc b/components/search/ntp_features.
  
  // If enabled, logo will fill up less vertical space.
  BASE_FEATURE(kNtpReducedLogoSpace,
-@@ -212,8 +212,8 @@ BASE_FEATURE(kNtpMostVisitedReflowOnOverflow,
+@@ -243,8 +243,8 @@ BASE_FEATURE(kNtpMostVisitedReflowOnOverflow,
  
  // If enabled, OneGoogleBar will be shown.
  BASE_FEATURE(kNtpOneGoogleBar,
@@ -46,7 +46,7 @@ diff --git a/components/search/ntp_features.cc b/components/search/ntp_features.
  
  // If enabled, Google Photos module will be shown.
  BASE_FEATURE(kNtpPhotosModule,
-@@ -248,8 +248,8 @@ BASE_FEATURE(kNtpFeedModule,
+@@ -279,8 +279,8 @@ BASE_FEATURE(kNtpFeedModule,
  
  // If enabled, Google Lens image search will be shown in the NTP Realbox.
  BASE_FEATURE(kNtpRealboxLensSearch,

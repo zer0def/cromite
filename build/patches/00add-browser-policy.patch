@@ -35,7 +35,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 diff --git a/base/win/win_util.cc b/base/win/win_util.cc
 --- a/base/win/win_util.cc
 +++ b/base/win/win_util.cc
-@@ -126,76 +126,19 @@ bool EnablePerMonitorV2() {
+@@ -127,76 +127,19 @@ bool EnablePerMonitorV2() {
  }
  
  bool* GetDomainEnrollmentStateStorage() {
@@ -162,7 +162,7 @@ diff --git a/chrome/browser/android/preferences/privacy_preferences_manager_impl
 diff --git a/chrome/browser/metrics/chrome_feature_list_creator.cc b/chrome/browser/metrics/chrome_feature_list_creator.cc
 --- a/chrome/browser/metrics/chrome_feature_list_creator.cc
 +++ b/chrome/browser/metrics/chrome_feature_list_creator.cc
-@@ -57,6 +57,8 @@
+@@ -58,6 +58,8 @@
  #include "content/public/common/content_switches.h"
  #include "services/network/public/cpp/network_switches.h"
  #include "ui/base/resource/resource_bundle.h"
@@ -171,7 +171,7 @@ diff --git a/chrome/browser/metrics/chrome_feature_list_creator.cc b/chrome/brow
  
  #if BUILDFLAG(IS_CHROMEOS_ASH)
  #include "chrome/browser/ash/policy/core/browser_policy_connector_ash.h"
-@@ -219,6 +221,16 @@ void ChromeFeatureListCreator::CreatePrefService() {
+@@ -221,6 +223,16 @@ void ChromeFeatureListCreator::CreatePrefService() {
    // ManagementService's cache.
    if (local_state_pref_store->ReadPrefs() ==
        JsonPrefStore::PREF_READ_ERROR_NONE) {
@@ -191,7 +191,7 @@ diff --git a/chrome/browser/metrics/chrome_feature_list_creator.cc b/chrome/brow
 diff --git a/chrome/browser/policy/chrome_browser_policy_connector.cc b/chrome/browser/policy/chrome_browser_policy_connector.cc
 --- a/chrome/browser/policy/chrome_browser_policy_connector.cc
 +++ b/chrome/browser/policy/chrome_browser_policy_connector.cc
-@@ -149,8 +149,6 @@ bool ChromeBrowserPolicyConnector::HasMachineLevelPolicies() {
+@@ -154,8 +154,6 @@ bool ChromeBrowserPolicyConnector::HasMachineLevelPolicies() {
    if (ProviderHasPolicies(machine_level_user_cloud_policy_manager()))
      return true;
  #endif  // !BUILDFLAG(IS_CHROMEOS_ASH)
@@ -203,7 +203,7 @@ diff --git a/chrome/browser/policy/chrome_browser_policy_connector.cc b/chrome/b
 diff --git a/chrome/browser/policy/configuration_policy_handler_list_factory.cc b/chrome/browser/policy/configuration_policy_handler_list_factory.cc
 --- a/chrome/browser/policy/configuration_policy_handler_list_factory.cc
 +++ b/chrome/browser/policy/configuration_policy_handler_list_factory.cc
-@@ -2088,9 +2088,9 @@ bool AreFuturePoliciesEnabledByDefault() {
+@@ -2099,9 +2099,9 @@ bool AreFuturePoliciesEnabledByDefault() {
    if (base::CommandLine::ForCurrentProcess()->HasSwitch(switches::kTestType)) {
      return true;
    }
@@ -260,7 +260,7 @@ diff --git a/chrome/browser/signin/account_consistency_mode_manager_factory.cc b
 diff --git a/chrome/browser/signin/chrome_signin_client.cc b/chrome/browser/signin/chrome_signin_client.cc
 --- a/chrome/browser/signin/chrome_signin_client.cc
 +++ b/chrome/browser/signin/chrome_signin_client.cc
-@@ -214,7 +214,9 @@ void ChromeSigninClient::DoFinalInit() {
+@@ -227,7 +227,9 @@ void ChromeSigninClient::DoFinalInit() {
  bool ChromeSigninClient::ProfileAllowsSigninCookies(Profile* profile) {
    scoped_refptr<content_settings::CookieSettings> cookie_settings =
        CookieSettingsFactory::GetForProfile(profile);
@@ -271,7 +271,7 @@ diff --git a/chrome/browser/signin/chrome_signin_client.cc b/chrome/browser/sign
  }
  
  PrefService* ChromeSigninClient::GetPrefs() {
-@@ -328,6 +330,9 @@ bool ChromeSigninClient::AreNetworkCallsDelayed() {
+@@ -346,6 +348,9 @@ bool ChromeSigninClient::AreNetworkCallsDelayed() {
  }
  
  void ChromeSigninClient::DelayNetworkCall(base::OnceClosure callback) {
@@ -311,7 +311,7 @@ diff --git a/chrome/browser/ui/webui/policy/policy_ui_handler.cc b/chrome/browse
    web_ui()->RegisterMessageCallback(
        "listenPoliciesUpdates",
        base::BindRepeating(&PolicyUIHandler::HandleListenPoliciesUpdates,
-@@ -386,8 +392,102 @@ void PolicyUIHandler::SendPolicies() {
+@@ -406,8 +412,102 @@ void PolicyUIHandler::SendPolicies() {
        "policies-updated",
        base::Value(
            policy_value_and_status_aggregator_->GetAggregatedPolicyNames()),
@@ -431,7 +431,7 @@ diff --git a/chrome/browser/ui/webui/policy/policy_ui_handler.h b/chrome/browser
 diff --git a/components/commerce/core/commerce_feature_list.cc b/components/commerce/core/commerce_feature_list.cc
 --- a/components/commerce/core/commerce_feature_list.cc
 +++ b/components/commerce/core/commerce_feature_list.cc
-@@ -301,6 +301,13 @@ const char kParcelTrackingTestDataParamDelivered[] = "Delivered";
+@@ -325,6 +325,13 @@ const char kParcelTrackingTestDataParamDelivered[] = "Delivered";
  const char kParcelTrackingTestDataParamInProgress[] = "InProgress";
  const char kParcelTrackingTestDataParamOutForDelivery[] = "OutForDelivery";
  
@@ -767,7 +767,7 @@ diff --git a/components/policy/resources/webui/policy_row.ts b/components/policy
 diff --git a/components/policy_strings.grdp b/components/policy_strings.grdp
 --- a/components/policy_strings.grdp
 +++ b/components/policy_strings.grdp
-@@ -588,8 +588,8 @@ Additional details:
+@@ -624,8 +624,8 @@ Additional details:
    <message name="IDS_POLICY_SOURCE_DEFAULT" desc="Indicates that a policy is set by default and can be overridden.">
      Default
    </message>
@@ -802,7 +802,7 @@ diff --git a/components/signin/internal/identity_manager/gaia_cookie_manager_ser
 diff --git a/google_apis/gaia/gaia_auth_fetcher.cc b/google_apis/gaia/gaia_auth_fetcher.cc
 --- a/google_apis/gaia/gaia_auth_fetcher.cc
 +++ b/google_apis/gaia/gaia_auth_fetcher.cc
-@@ -482,6 +482,7 @@ void GaiaAuthFetcher::StartListAccounts() {
+@@ -486,6 +486,7 @@ void GaiaAuthFetcher::StartListAccounts() {
              }
            }
          })");

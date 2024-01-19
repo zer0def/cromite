@@ -83,7 +83,7 @@ Enabled by default
 diff --git a/DEPS b/DEPS
 --- a/DEPS
 +++ b/DEPS
-@@ -504,6 +504,10 @@ vars = {
+@@ -485,6 +485,10 @@ vars = {
    # Three lines of non-changing comments so that
    # the commit queue can handle CLs rolling feed
    # and whatever else without interference from each other.
@@ -94,7 +94,7 @@ diff --git a/DEPS b/DEPS
    'highway_revision': '8f20644eca693cfb74aa795b0006b6779c370e7a',
    # Three lines of non-changing comments so that
    # the commit queue can handle CLs rolling ffmpeg
-@@ -1134,6 +1138,9 @@ deps = {
+@@ -1103,6 +1107,9 @@ deps = {
    'src/third_party/dawn':
      Var('dawn_git') + '/dawn.git' + '@' +  Var('dawn_revision'),
  
@@ -328,7 +328,7 @@ diff --git a/media/media_options.gni b/media/media_options.gni
 diff --git a/net/base/mime_util.cc b/net/base/mime_util.cc
 --- a/net/base/mime_util.cc
 +++ b/net/base/mime_util.cc
-@@ -163,6 +163,7 @@ static const MimeInfo kPrimaryMappings[] = {
+@@ -164,6 +164,7 @@ static const MimeInfo kPrimaryMappings[] = {
      {"image/avif", "avif"},
      {"image/gif", "gif"},
      {"image/jpeg", "jpeg,jpg"},
@@ -336,7 +336,7 @@ diff --git a/net/base/mime_util.cc b/net/base/mime_util.cc
      {"image/png", "png"},
      {"image/apng", "png,apng"},
      {"image/svg+xml", "svg,svgz"},
-@@ -666,6 +667,7 @@ static const char* const kStandardImageTypes[] = {"image/avif",
+@@ -667,6 +668,7 @@ static const char* const kStandardImageTypes[] = {"image/avif",
                                                    "image/gif",
                                                    "image/ief",
                                                    "image/jpeg",
@@ -466,7 +466,7 @@ diff --git a/third_party/blink/common/mime_util/mime_util_unittest.cc b/third_pa
 diff --git a/third_party/blink/public/devtools_protocol/browser_protocol.pdl b/third_party/blink/public/devtools_protocol/browser_protocol.pdl
 --- a/third_party/blink/public/devtools_protocol/browser_protocol.pdl
 +++ b/third_party/blink/public/devtools_protocol/browser_protocol.pdl
-@@ -4218,6 +4218,7 @@ domain Emulation
+@@ -4246,6 +4246,7 @@ domain Emulation
    experimental type DisabledImageType extends string
      enum
        avif
@@ -491,7 +491,7 @@ diff --git a/third_party/blink/renderer/core/inspector/inspector_emulation_agent
      header.Replace(String(type + ","), "");
    }
    return AtomicString(header);
-@@ -842,6 +842,7 @@ protocol::Response InspectorEmulationAgent::setDisabledImageTypes(
+@@ -843,6 +843,7 @@ protocol::Response InspectorEmulationAgent::setDisabledImageTypes(
    namespace DisabledImageTypeEnum = protocol::Emulation::DisabledImageTypeEnum;
    for (protocol::Emulation::DisabledImageType type : *disabled_types) {
      if (DisabledImageTypeEnum::Avif == type ||
@@ -607,7 +607,7 @@ diff --git a/third_party/blink/renderer/modules/webcodecs/image_decoder_fuzzer.c
 diff --git a/third_party/blink/renderer/platform/BUILD.gn b/third_party/blink/renderer/platform/BUILD.gn
 --- a/third_party/blink/renderer/platform/BUILD.gn
 +++ b/third_party/blink/renderer/platform/BUILD.gn
-@@ -2256,6 +2256,10 @@ source_set("blink_platform_unittests_sources") {
+@@ -2263,6 +2263,10 @@ source_set("blink_platform_unittests_sources") {
      sources += [ "text/locale_icu_test.cc" ]
    }
  
@@ -618,7 +618,7 @@ diff --git a/third_party/blink/renderer/platform/BUILD.gn b/third_party/blink/re
    sources += [ "testing/run_all_tests.cc" ]
  
    configs += [
-@@ -2299,6 +2303,7 @@ source_set("blink_platform_unittests_sources") {
+@@ -2306,6 +2310,7 @@ source_set("blink_platform_unittests_sources") {
      "//third_party/blink/renderer/platform/scheduler:unit_tests",
      "//third_party/blink/renderer/platform/wtf",
      "//third_party/libavif:libavif",
@@ -672,7 +672,7 @@ diff --git a/third_party/blink/renderer/platform/graphics/bitmap_image_metrics.h
 +    kMaxValue = kJXL,
    };
  
-   // Categories for the JPEG color space histogram. Synced with 'JpegColorSpace'
+   // |type| is the return value of ImageDecoder::FilenameExtension().
 diff --git a/third_party/blink/renderer/platform/image-decoders/BUILD.gn b/third_party/blink/renderer/platform/image-decoders/BUILD.gn
 --- a/third_party/blink/renderer/platform/image-decoders/BUILD.gn
 +++ b/third_party/blink/renderer/platform/image-decoders/BUILD.gn
@@ -2221,7 +2221,7 @@ diff --git a/third_party/blink/tools/commit_stats/git-dirs.txt b/third_party/bli
 diff --git a/third_party/blink/web_tests/TestExpectations b/third_party/blink/web_tests/TestExpectations
 --- a/third_party/blink/web_tests/TestExpectations
 +++ b/third_party/blink/web_tests/TestExpectations
-@@ -4822,6 +4822,12 @@ crbug.com/1199522 http/tests/devtools/layers/layers-3d-view-hit-testing.js [ Fai
+@@ -4852,6 +4852,12 @@ crbug.com/1199522 http/tests/devtools/layers/layers-3d-view-hit-testing.js [ Fai
  # Started failing after rolling new version of check-layout-th.js
  css3/flexbox/perpendicular-writing-modes-inside-flex-item.html [ Failure ]
  
@@ -2231,13 +2231,13 @@ diff --git a/third_party/blink/web_tests/TestExpectations b/third_party/blink/we
 +crbug.com/1210658 virtual/jxl-enabled/images/jxl/jxl-images.html [ Crash Failure Pass Timeout ]
 +crbug.com/1358616 virtual/jxl-enabled/images/jxl/progressive.html [ Crash Failure Pass Timeout ]
 +
- # Temporarily disabled to unblock https://crrev.com/c/3099011
- crbug.com/1199701 http/tests/devtools/console/console-big-array.js [ Crash Failure Pass Timeout ]
+ # Sheriff 2021-11-15
+ crbug.com/1270362 http/tests/devtools/sources/debugger-ui/debugger-inline-values.js [ Failure Pass Timeout ]
  
 diff --git a/third_party/blink/web_tests/VirtualTestSuites b/third_party/blink/web_tests/VirtualTestSuites
 --- a/third_party/blink/web_tests/VirtualTestSuites
 +++ b/third_party/blink/web_tests/VirtualTestSuites
-@@ -429,6 +429,15 @@
+@@ -441,6 +441,15 @@
               "--disable-threaded-compositing", "--disable-threaded-animation"],
      "expires": "Jul 1, 2023"
    },
@@ -2652,7 +2652,7 @@ new file mode 100644
 diff --git a/tools/metrics/histograms/enums.xml b/tools/metrics/histograms/enums.xml
 --- a/tools/metrics/histograms/enums.xml
 +++ b/tools/metrics/histograms/enums.xml
-@@ -26859,7 +26859,7 @@ Called by update_debug_scenarios.py.-->
+@@ -11344,7 +11344,7 @@ to ensure that the crash string is shown properly on the user-facing crash UI.
    <int value="5" label="kImageICO"/>
    <int value="6" label="kImageBMP"/>
    <int value="7" label="kImageAVIF"/>
@@ -2660,8 +2660,8 @@ diff --git a/tools/metrics/histograms/enums.xml b/tools/metrics/histograms/enums
 +  <int value="8" label="kImageJXL"/>
  </enum>
  
- <enum name="DecodeSwapChainNotUsedReason">
-@@ -66334,6 +66334,7 @@ from previous Chrome versions.
+ <enum name="DefaultAppName">
+@@ -34310,6 +34310,7 @@ from previous Chrome versions.
    <int value="188610022" label="NewMessageListView:enabled"/>
    <int value="189728101" label="FasterLocationReload:disabled"/>
    <int value="189777537" label="DisableInitialMostVisitedFadeIn:enabled"/>

@@ -19,7 +19,7 @@ diff --git a/third_party/blink/renderer/core/timing/performance_navigation_timin
    if (loader) {
      switch (loader->GetTiming().SystemEntropyAtNavigationStart()) {
        case mojom::blink::SystemEntropy::kHigh:
-@@ -215,6 +216,7 @@ AtomicString PerformanceNavigationTiming::type() const {
+@@ -216,6 +217,7 @@ AtomicString PerformanceNavigationTiming::type() const {
  }
  
  AtomicString PerformanceNavigationTiming::deliveryType() const {

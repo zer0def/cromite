@@ -4,20 +4,15 @@ Subject: Disallowing MIDI permission by default
 
 License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
- components/permissions/features.cc | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../Disallowing-MIDI-permission-by-default.inc                   | 1 +
+ 1 file changed, 1 insertion(+)
+ create mode 100644 cromite_flags/content/public/common/content_features_cc/Disallowing-MIDI-permission-by-default.inc
 
-diff --git a/components/permissions/features.cc b/components/permissions/features.cc
---- a/components/permissions/features.cc
-+++ b/components/permissions/features.cc
-@@ -157,7 +157,7 @@ BASE_FEATURE(kShowRelatedWebsiteSetsPermissionGrants,
- // Enables disallowing MIDI permission by default.
- BASE_FEATURE(kBlockMidiByDefault,
-              "BlockMidiByDefault",
--             base::FEATURE_DISABLED_BY_DEFAULT);
-+             base::FEATURE_ENABLED_BY_DEFAULT);
- 
- }  // namespace features
- namespace feature_params {
+diff --git a/cromite_flags/content/public/common/content_features_cc/Disallowing-MIDI-permission-by-default.inc b/cromite_flags/content/public/common/content_features_cc/Disallowing-MIDI-permission-by-default.inc
+new file mode 100644
+--- /dev/null
++++ b/cromite_flags/content/public/common/content_features_cc/Disallowing-MIDI-permission-by-default.inc
+@@ -0,0 +1 @@
++SET_CROMITE_FEATURE_ENABLED(kBlockMidiByDefault);
 --
 2.25.1

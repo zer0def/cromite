@@ -5,10 +5,10 @@ Subject: Enable ImprovedBookmarks by default
 License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
  chrome/android/java/res/layout/bookmark_search_box_row.xml    | 4 ++--
- .../chromium/chrome/browser/bookmarks/BookmarkFeatures.java   | 2 +-
  .../browser/bookmarks/BookmarkSearchBoxRowViewBinder.java     | 2 ++
  .../chromium/chrome/browser/bookmarks/BookmarkUiPrefs.java    | 2 +-
  .../org/chromium/chrome/browser/bookmarks/BookmarkUtils.java  | 3 ++-
+ .../org/chromium/chrome/browser/flags/ChromeFeatureList.java  | 2 +-
  components/bookmarks/browser/bookmark_client.cc               | 3 +--
  .../Enable-ImprovedBookmarks-by-default.inc                   | 1 +
  7 files changed, 10 insertions(+), 7 deletions(-)
@@ -28,18 +28,6 @@ diff --git a/chrome/android/java/res/layout/bookmark_search_box_row.xml b/chrome
      android:orientation="horizontal">
  
      <org.chromium.components.browser_ui.widget.chips.ChipView
-diff --git a/chrome/android/java/src/org/chromium/chrome/browser/bookmarks/BookmarkFeatures.java b/chrome/android/java/src/org/chromium/chrome/browser/bookmarks/BookmarkFeatures.java
---- a/chrome/android/java/src/org/chromium/chrome/browser/bookmarks/BookmarkFeatures.java
-+++ b/chrome/android/java/src/org/chromium/chrome/browser/bookmarks/BookmarkFeatures.java
-@@ -12,7 +12,7 @@ import org.chromium.chrome.browser.flags.MutableFlagWithSafeDefault;
- /** Self-documenting feature class for bookmarks. */
- public class BookmarkFeatures {
-     private static final MutableFlagWithSafeDefault sAndroidImprovedBookmarksFlag =
--            new MutableFlagWithSafeDefault(ChromeFeatureList.ANDROID_IMPROVED_BOOKMARKS, false);
-+            new MutableFlagWithSafeDefault(ChromeFeatureList.ANDROID_IMPROVED_BOOKMARKS, true);
- 
-     /** Returns whether an additional "add bookmark" item should be in the overflow menu. */
-     public static boolean isBookmarkMenuItemAsDedicatedRowEnabled() {
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/bookmarks/BookmarkSearchBoxRowViewBinder.java b/chrome/android/java/src/org/chromium/chrome/browser/bookmarks/BookmarkSearchBoxRowViewBinder.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/bookmarks/BookmarkSearchBoxRowViewBinder.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/bookmarks/BookmarkSearchBoxRowViewBinder.java
@@ -82,7 +70,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/bookmarks/Bookm
  import org.chromium.chrome.browser.bookmarks.BookmarkUiPrefs.BookmarkRowDisplayPref;
  import org.chromium.chrome.browser.commerce.ShoppingServiceFactory;
  import org.chromium.chrome.browser.document.ChromeLauncherActivity;
-@@ -486,7 +487,7 @@ public class BookmarkUtils {
+@@ -491,7 +492,7 @@ public class BookmarkUtils {
              RecordUserAction.record("MobileBookmarkManagerReopenBookmarksInSameSession");
          }
  
@@ -91,6 +79,18 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/bookmarks/Bookm
              showBookmarkManagerOnTablet(
                      context,
                      activity == null ? null : activity.getComponentName(),
+diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
+--- a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
++++ b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
+@@ -773,7 +773,7 @@ public abstract class ChromeFeatureList {
+     public static final MutableFlagWithSafeDefault sAdvancedPeripheralsSupportTabStrip =
+             newMutableFlagWithSafeDefault(ADVANCED_PERIPHERALS_SUPPORT_TAB_STRIP, false);
+     public static final MutableFlagWithSafeDefault sAndroidImprovedBookmarks =
+-            newMutableFlagWithSafeDefault(ANDROID_IMPROVED_BOOKMARKS, false);
++            newMutableFlagWithSafeDefault(ANDROID_IMPROVED_BOOKMARKS, true);
+     public static final MutableFlagWithSafeDefault sAvoidRelayoutDuringFocusAnimation =
+             newMutableFlagWithSafeDefault(AVOID_RELAYOUT_DURING_FOCUS_ANIMATION, true);
+     public static final MutableFlagWithSafeDefault sCctRealTimeEngagementSignals =
 diff --git a/components/bookmarks/browser/bookmark_client.cc b/components/bookmarks/browser/bookmark_client.cc
 --- a/components/bookmarks/browser/bookmark_client.cc
 +++ b/components/bookmarks/browser/bookmark_client.cc

@@ -35,11 +35,11 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  services/network/network_context.cc           |  73 +++
  .../network/public/cpp/simple_url_loader.cc   |  18 +
  .../network/public/cpp/simple_url_loader.h    |   3 +
- .../platform/loader/fetch/fetch_utils.cc      | 191 ++++++-
+ .../platform/loader/fetch/fetch_utils.cc      | 193 +++++++-
  .../loader/fetch/url_loader/url_loader.cc     |   4 +-
  .../scripts/auditor/auditor.py                |   1 +
  .../scripts/auditor/util.py                   |   1 +
- 30 files changed, 1573 insertions(+), 20 deletions(-)
+ 30 files changed, 1574 insertions(+), 21 deletions(-)
  create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Internal-firewall.inc
  create mode 100644 services/firewall/public/BUILD.gn
  create mode 100644 services/firewall/public/firewall_features.cc
@@ -58,7 +58,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -2556,6 +2556,7 @@ static_library("browser") {
+@@ -2527,6 +2527,7 @@ static_library("browser") {
      "//third_party/ungoogled:switches",
      "//services/device/public/mojom",
      "//services/device/public/mojom:usb",
@@ -239,7 +239,7 @@ new file mode 100644
 diff --git a/net/BUILD.gn b/net/BUILD.gn
 --- a/net/BUILD.gn
 +++ b/net/BUILD.gn
-@@ -1098,6 +1098,7 @@ component("net") {
+@@ -1035,6 +1035,7 @@ component("net") {
      "//build:chromeos_buildflags",
      "//components/miracle_parameter/common",
      "//net/http:transport_security_state_generated_files",
@@ -274,7 +274,7 @@ diff --git a/net/url_request/url_request_http_job.cc b/net/url_request/url_reque
  }
  
  URLRequestHttpJob::~URLRequestHttpJob() {
-@@ -616,6 +619,18 @@ void URLRequestHttpJob::MaybeStartTransactionInternal(int result) {
+@@ -611,6 +614,18 @@ void URLRequestHttpJob::MaybeStartTransactionInternal(int result) {
  void URLRequestHttpJob::StartTransactionInternal() {
    DCHECK(!override_response_headers_);
  
@@ -296,7 +296,7 @@ diff --git a/net/url_request/url_request_http_job.cc b/net/url_request/url_reque
 diff --git a/net/url_request/url_request_http_job.h b/net/url_request/url_request_http_job.h
 --- a/net/url_request/url_request_http_job.h
 +++ b/net/url_request/url_request_http_job.h
-@@ -31,6 +31,7 @@
+@@ -30,6 +30,7 @@
  #include "net/url_request/url_request_job.h"
  #include "net/url_request/url_request_throttler_entry_interface.h"
  #include "third_party/abseil-cpp/absl/types/optional.h"
@@ -304,7 +304,7 @@ diff --git a/net/url_request/url_request_http_job.h b/net/url_request/url_reques
  
  namespace net {
  
-@@ -81,6 +82,8 @@ class NET_EXPORT_PRIVATE URLRequestHttpJob : public URLRequestJob {
+@@ -80,6 +81,8 @@ class NET_EXPORT_PRIVATE URLRequestHttpJob : public URLRequestJob {
      return priority_;
    }
  
@@ -1554,7 +1554,7 @@ new file mode 100644
 diff --git a/services/network/network_context.cc b/services/network/network_context.cc
 --- a/services/network/network_context.cc
 +++ b/services/network/network_context.cc
-@@ -88,6 +88,7 @@
+@@ -89,6 +89,7 @@
  #include "net/url_request/url_request.h"
  #include "net/url_request/url_request_context.h"
  #include "net/url_request/url_request_context_builder.h"
@@ -1562,7 +1562,7 @@ diff --git a/services/network/network_context.cc b/services/network/network_cont
  #include "services/network/brokered_client_socket_factory.h"
  #include "services/network/cookie_manager.h"
  #include "services/network/cors/cors_url_loader_factory.h"
-@@ -1626,6 +1627,9 @@ void NetworkContext::OnNewSCTAuditingReportSent() {
+@@ -1603,6 +1604,9 @@ void NetworkContext::OnNewSCTAuditingReportSent() {
  void NetworkContext::CreateUDPSocket(
      mojo::PendingReceiver<mojom::UDPSocket> receiver,
      mojo::PendingRemote<mojom::UDPSocketListener> listener) {
@@ -1572,7 +1572,7 @@ diff --git a/services/network/network_context.cc b/services/network/network_cont
    socket_factory_->CreateUDPSocket(std::move(receiver), std::move(listener));
  }
  
-@@ -1638,6 +1642,17 @@ void NetworkContext::CreateRestrictedUDPSocket(
+@@ -1615,6 +1619,17 @@ void NetworkContext::CreateRestrictedUDPSocket(
      mojo::PendingRemote<mojom::UDPSocketListener> listener,
      CreateRestrictedUDPSocketCallback callback) {
    // SimpleHostResolver is transitively owned by |this|.
@@ -1590,7 +1590,7 @@ diff --git a/services/network/network_context.cc b/services/network/network_cont
    socket_factory_->CreateRestrictedUDPSocket(
        addr, mode, traffic_annotation, std::move(params), std::move(receiver),
        std::move(listener), SimpleHostResolver::Create(this),
-@@ -1650,6 +1665,17 @@ void NetworkContext::CreateTCPServerSocket(
+@@ -1627,6 +1642,17 @@ void NetworkContext::CreateTCPServerSocket(
      const net::MutableNetworkTrafficAnnotationTag& traffic_annotation,
      mojo::PendingReceiver<mojom::TCPServerSocket> receiver,
      CreateTCPServerSocketCallback callback) {
@@ -1608,7 +1608,7 @@ diff --git a/services/network/network_context.cc b/services/network/network_cont
    socket_factory_->CreateTCPServerSocket(
        local_addr, std::move(options),
        static_cast<net::NetworkTrafficAnnotationTag>(traffic_annotation),
-@@ -1664,6 +1690,21 @@ void NetworkContext::CreateTCPConnectedSocket(
+@@ -1641,6 +1667,21 @@ void NetworkContext::CreateTCPConnectedSocket(
      mojo::PendingReceiver<mojom::TCPConnectedSocket> receiver,
      mojo::PendingRemote<mojom::SocketObserver> observer,
      CreateTCPConnectedSocketCallback callback) {
@@ -1630,7 +1630,7 @@ diff --git a/services/network/network_context.cc b/services/network/network_cont
    socket_factory_->CreateTCPConnectedSocket(
        local_addr, remote_addr_list, std::move(tcp_connected_socket_options),
        static_cast<net::NetworkTrafficAnnotationTag>(traffic_annotation),
-@@ -1675,6 +1716,20 @@ void NetworkContext::CreateTCPBoundSocket(
+@@ -1652,6 +1693,20 @@ void NetworkContext::CreateTCPBoundSocket(
      const net::MutableNetworkTrafficAnnotationTag& traffic_annotation,
      mojo::PendingReceiver<mojom::TCPBoundSocket> receiver,
      CreateTCPBoundSocketCallback callback) {
@@ -1651,7 +1651,7 @@ diff --git a/services/network/network_context.cc b/services/network/network_cont
    socket_factory_->CreateTCPBoundSocket(
        local_addr,
        static_cast<net::NetworkTrafficAnnotationTag>(traffic_annotation),
-@@ -1741,6 +1796,24 @@ void NetworkContext::CreateWebSocket(
+@@ -1718,6 +1773,24 @@ void NetworkContext::CreateWebSocket(
      mojo::PendingRemote<mojom::WebSocketAuthenticationHandler> auth_handler,
      mojo::PendingRemote<mojom::TrustedHeaderClient> header_client,
      const absl::optional<base::UnguessableToken>& throttling_profile_id) {
@@ -1679,7 +1679,7 @@ diff --git a/services/network/network_context.cc b/services/network/network_cont
 diff --git a/services/network/public/cpp/simple_url_loader.cc b/services/network/public/cpp/simple_url_loader.cc
 --- a/services/network/public/cpp/simple_url_loader.cc
 +++ b/services/network/public/cpp/simple_url_loader.cc
-@@ -1240,6 +1240,8 @@ SimpleURLLoaderImpl::SimpleURLLoaderImpl(
+@@ -1258,6 +1258,8 @@ SimpleURLLoaderImpl::SimpleURLLoaderImpl(
        timeout_timer_(timeout_tick_clock_) {
    // Allow creation and use on different threads.
    DETACH_FROM_SEQUENCE(sequence_checker_);
@@ -1688,7 +1688,7 @@ diff --git a/services/network/public/cpp/simple_url_loader.cc b/services/network
  #if DCHECK_IS_ON()
    if (resource_request_->request_body) {
      for (const DataElement& element :
-@@ -1659,6 +1661,22 @@ void SimpleURLLoaderImpl::StartRequest(
+@@ -1695,6 +1697,22 @@ void SimpleURLLoaderImpl::StartRequest(
      resource_request_->request_body->AppendDataPipe(
          string_upload_data_pipe_getter_->GetRemoteForNewUpload());
    }
@@ -1722,7 +1722,7 @@ diff --git a/services/network/public/cpp/simple_url_loader.h b/services/network/
  
  class GURL;
  
-@@ -395,6 +396,8 @@ class COMPONENT_EXPORT(NETWORK_CPP) SimpleURLLoader {
+@@ -404,6 +405,8 @@ class COMPONENT_EXPORT(NETWORK_CPP) SimpleURLLoader {
  
   protected:
    SimpleURLLoader();
@@ -1734,7 +1734,7 @@ diff --git a/services/network/public/cpp/simple_url_loader.h b/services/network/
 diff --git a/third_party/blink/renderer/platform/loader/fetch/fetch_utils.cc b/third_party/blink/renderer/platform/loader/fetch/fetch_utils.cc
 --- a/third_party/blink/renderer/platform/loader/fetch/fetch_utils.cc
 +++ b/third_party/blink/renderer/platform/loader/fetch/fetch_utils.cc
-@@ -97,29 +97,198 @@ net::NetworkTrafficAnnotationTag FetchUtils::GetTrafficAnnotationTag(
+@@ -97,30 +97,199 @@ net::NetworkTrafficAnnotationTag FetchUtils::GetTrafficAnnotationTag(
      case network::mojom::RequestDestination::kIframe:
      case network::mojom::RequestDestination::kFrame:
      case network::mojom::RequestDestination::kFencedframe:
@@ -1882,6 +1882,7 @@ diff --git a/third_party/blink/renderer/platform/loader/fetch/fetch_utils.cc b/t
      case network::mojom::RequestDestination::kAudio:
 -    case network::mojom::RequestDestination::kAudioWorklet:
      case network::mojom::RequestDestination::kFont:
++    case network::mojom::RequestDestination::kSpeculationRules:
      case network::mojom::RequestDestination::kImage:
 -    case network::mojom::RequestDestination::kManifest:
 -    case network::mojom::RequestDestination::kPaintWorklet:
@@ -1889,6 +1890,7 @@ diff --git a/third_party/blink/renderer/platform/loader/fetch/fetch_utils.cc b/t
      case network::mojom::RequestDestination::kScript:
 -    case network::mojom::RequestDestination::kServiceWorker:
 -    case network::mojom::RequestDestination::kSharedWorker:
+-    case network::mojom::RequestDestination::kSpeculationRules:
      case network::mojom::RequestDestination::kStyle:
      case network::mojom::RequestDestination::kTrack:
      case network::mojom::RequestDestination::kVideo:
@@ -1943,7 +1945,7 @@ diff --git a/third_party/blink/renderer/platform/loader/fetch/fetch_utils.cc b/t
        semantics {
          sender: "Blink Resource Loader"
          description:
-@@ -143,7 +312,7 @@ net::NetworkTrafficAnnotationTag FetchUtils::GetTrafficAnnotationTag(
+@@ -144,7 +313,7 @@ net::NetworkTrafficAnnotationTag FetchUtils::GetTrafficAnnotationTag(
      case network::mojom::RequestDestination::kEmbed:
      case network::mojom::RequestDestination::kObject:
        return net::DefineNetworkTrafficAnnotation(
@@ -1955,7 +1957,7 @@ diff --git a/third_party/blink/renderer/platform/loader/fetch/fetch_utils.cc b/t
 diff --git a/third_party/blink/renderer/platform/loader/fetch/url_loader/url_loader.cc b/third_party/blink/renderer/platform/loader/fetch/url_loader/url_loader.cc
 --- a/third_party/blink/renderer/platform/loader/fetch/url_loader/url_loader.cc
 +++ b/third_party/blink/renderer/platform/loader/fetch/url_loader/url_loader.cc
-@@ -276,7 +276,7 @@ void URLLoader::Context::Start(
+@@ -275,7 +275,7 @@ void URLLoader::Context::Start(
            download_to_blob_registry.InitWithNewPipeAndPassReceiver());
      }
      net::NetworkTrafficAnnotationTag tag =
@@ -1964,7 +1966,7 @@ diff --git a/third_party/blink/renderer/platform/loader/fetch/url_loader/url_loa
      resource_request_sender_->SendSync(
          std::move(request), tag, loader_options, sync_load_response,
          url_loader_factory_, std::move(throttles), timeout_interval,
-@@ -289,7 +289,7 @@ void URLLoader::Context::Start(
+@@ -288,7 +288,7 @@ void URLLoader::Context::Start(
    TRACE_EVENT_WITH_FLOW0("loading", "URLLoader::Context::Start", this,
                           TRACE_EVENT_FLAG_FLOW_OUT);
    net::NetworkTrafficAnnotationTag tag =

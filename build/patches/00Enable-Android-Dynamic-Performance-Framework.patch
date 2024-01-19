@@ -23,7 +23,7 @@ diff --git a/chrome/version.gni b/chrome/version.gni
 diff --git a/components/viz/common/features.cc b/components/viz/common/features.cc
 --- a/components/viz/common/features.cc
 +++ b/components/viz/common/features.cc
-@@ -306,9 +306,10 @@ const base::FeatureParam<double> kADPFMidFrameBoostDurationMultiplier{
+@@ -303,9 +303,10 @@ BASE_FEATURE(kDelegateTransforms,
  
  // If enabled, Chrome includes the Renderer Main thread(s) into the
  // ADPF(Android Dynamic Performance Framework) hint session.

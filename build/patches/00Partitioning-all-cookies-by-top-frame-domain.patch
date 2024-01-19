@@ -9,7 +9,7 @@ samesite=none first-party cookies are sent in third-party contexts.
 
 License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
- .../browser/net/profile_network_context_service.cc   |  8 ++++----
+ .../browser/net/profile_network_context_service.cc   | 12 ++++++------
  .../content_settings/core/browser/cookie_settings.cc |  1 +
  .../core/common/cookie_settings_base.cc              |  2 +-
  .../Partitioning-all-cookies-by-top-frame-domain.inc |  3 +++
@@ -26,7 +26,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../renderer/modules/cookie_store/cookie_store.cc    | 12 ++++++++++++
  .../cookie_store/cookie_store_delete_options.idl     |  2 +-
  ui/webui/webui_allowlist.cc                          |  1 +
- 17 files changed, 58 insertions(+), 21 deletions(-)
+ 17 files changed, 60 insertions(+), 23 deletions(-)
  create mode 100644 cromite_flags/components/content_settings/core/common/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
  create mode 100644 cromite_flags/components/permissions/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
  create mode 100644 cromite_flags/content/public/common/content_features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
@@ -35,7 +35,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 diff --git a/chrome/browser/net/profile_network_context_service.cc b/chrome/browser/net/profile_network_context_service.cc
 --- a/chrome/browser/net/profile_network_context_service.cc
 +++ b/chrome/browser/net/profile_network_context_service.cc
-@@ -578,14 +578,14 @@ ProfileNetworkContextService::CreateCookieManagerParams(
+@@ -560,16 +560,16 @@ ProfileNetworkContextService::CreateCookieManagerParams(
    // UI to interact with SameSite cookies on accounts.google.com, which is used
    // for displaying a list of available accounts on the NTP
    // (chrome://new-tab-page), etc.
@@ -49,15 +49,19 @@ diff --git a/chrome/browser/net/profile_network_context_service.cc b/chrome/brow
    // matching_scheme_cookies_allowed_schemes.
 -  out->third_party_cookies_allowed_schemes.push_back(
 -      extensions::kExtensionScheme);
+-  out->third_party_cookies_allowed_schemes.push_back(
+-      content::kChromeDevToolsScheme);
 +  // out->third_party_cookies_allowed_schemes.push_back(
 +  //     extensions::kExtensionScheme);
++  // out->third_party_cookies_allowed_schemes.push_back(
++  //     content::kChromeDevToolsScheme);
  #endif
  
    HostContentSettingsMap* host_content_settings_map =
 diff --git a/components/content_settings/core/browser/cookie_settings.cc b/components/content_settings/core/browser/cookie_settings.cc
 --- a/components/content_settings/core/browser/cookie_settings.cc
 +++ b/components/content_settings/core/browser/cookie_settings.cc
-@@ -123,6 +123,7 @@ void CookieSettings::SetTemporaryCookieGrantForHeuristic(
+@@ -137,6 +137,7 @@ void CookieSettings::SetTemporaryCookieGrantForHeuristic(
      const GURL& first_party_url,
      base::TimeDelta ttl,
      bool use_schemeless_patterns) {
@@ -111,7 +115,7 @@ new file mode 100644
 diff --git a/net/cookies/canonical_cookie.cc b/net/cookies/canonical_cookie.cc
 --- a/net/cookies/canonical_cookie.cc
 +++ b/net/cookies/canonical_cookie.cc
-@@ -1488,8 +1488,6 @@ bool CanonicalCookie::IsCanonicalForFromStorage() const {
+@@ -1493,8 +1493,6 @@ bool CanonicalCookie::IsCanonicalForFromStorage() const {
    if (IsPartitioned()) {
      if (CookiePartitionKey::HasNonce(partition_key_))
        return true;
@@ -120,7 +124,7 @@ diff --git a/net/cookies/canonical_cookie.cc b/net/cookies/canonical_cookie.cc
    }
  
    return true;
-@@ -1746,15 +1744,7 @@ bool CanonicalCookie::IsCookiePartitionedValid(const GURL& url,
+@@ -1751,15 +1749,7 @@ bool CanonicalCookie::IsCookiePartitionedValid(const GURL& url,
                                                 bool secure,
                                                 bool is_partitioned,
                                                 bool partition_has_nonce) {
@@ -161,10 +165,10 @@ diff --git a/net/cookies/parsed_cookie.h b/net/cookies/parsed_cookie.h
  #include "net/base/net_export.h"
  #include "net/cookies/cookie_constants.h"
  
-@@ -86,7 +87,11 @@ class NET_EXPORT ParsedCookie {
+@@ -85,7 +86,11 @@ class NET_EXPORT ParsedCookie {
+   CookieSameSite SameSite(
        CookieSameSiteString* samesite_string = nullptr) const;
    CookiePriority Priority() const;
-   bool IsSameParty() const { return same_party_index_ != 0; }
 -  bool IsPartitioned() const { return partitioned_index_ != 0; }
 +  bool IsPartitioned() const {
 +    if (base::FeatureList::IsEnabled(net::features::kPartitionedCookies))
@@ -177,7 +181,7 @@ diff --git a/net/cookies/parsed_cookie.h b/net/cookies/parsed_cookie.h
 diff --git a/net/extras/sqlite/sqlite_persistent_cookie_store.cc b/net/extras/sqlite/sqlite_persistent_cookie_store.cc
 --- a/net/extras/sqlite/sqlite_persistent_cookie_store.cc
 +++ b/net/extras/sqlite/sqlite_persistent_cookie_store.cc
-@@ -741,6 +741,16 @@ bool SQLitePersistentCookieStore::Backend::DoInitializeDatabase() {
+@@ -824,6 +824,16 @@ bool SQLitePersistentCookieStore::Backend::DoInitializeDatabase() {
    if (!restore_old_session_cookies_)
      DeleteSessionCookiesOnStartup();
  
@@ -197,7 +201,7 @@ diff --git a/net/extras/sqlite/sqlite_persistent_cookie_store.cc b/net/extras/sq
 diff --git a/net/url_request/url_request_http_job.cc b/net/url_request/url_request_http_job.cc
 --- a/net/url_request/url_request_http_job.cc
 +++ b/net/url_request/url_request_http_job.cc
-@@ -788,7 +788,7 @@ void URLRequestHttpJob::SetCookieHeaderAndStart(
+@@ -784,7 +784,7 @@ void URLRequestHttpJob::SetCookieHeaderAndStart(
  
      size_t n_partitioned_cookies = 0;
      bool may_set_sec_cookie_deprecation_header =
@@ -209,7 +213,7 @@ diff --git a/net/url_request/url_request_http_job.cc b/net/url_request/url_reque
 diff --git a/services/network/restricted_cookie_manager.cc b/services/network/restricted_cookie_manager.cc
 --- a/services/network/restricted_cookie_manager.cc
 +++ b/services/network/restricted_cookie_manager.cc
-@@ -933,6 +933,12 @@ void RestrictedCookieManager::SetCookieFromString(
+@@ -935,6 +935,12 @@ void RestrictedCookieManager::SetCookieFromString(
  
    std::move(callback).Run();
  

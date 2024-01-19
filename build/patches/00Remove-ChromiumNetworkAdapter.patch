@@ -7,26 +7,27 @@ without asking the native code
 
 License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
- .../browser/download/OMADownloadHandler.java  | 38 -------------
- .../browser/feedback/ConnectivityChecker.java | 37 +------------
- .../ConnectivityDetector.java                 | 54 -------------------
+ .../browser/download/OMADownloadHandler.java  | 39 ------------
+ .../browser/feedback/ConnectivityChecker.java | 36 +----------
+ .../ConnectivityDetector.java                 | 63 -------------------
  .../chrome/browser/omaha/OmahaBase.java       |  3 +-
  .../util/HttpURLConnectionFactoryImpl.java    |  7 +--
- .../firstrun/VariationsSeedFetcher.java       | 26 +--------
- .../chromium/net/ChromiumNetworkAdapter.java  | 12 -----
- 7 files changed, 4 insertions(+), 173 deletions(-)
+ .../firstrun/VariationsSeedFetcher.java       | 26 +-------
+ .../chromium/net/ChromiumNetworkAdapter.java  | 13 ----
+ 7 files changed, 4 insertions(+), 183 deletions(-)
 
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/download/OMADownloadHandler.java b/chrome/android/java/src/org/chromium/chrome/browser/download/OMADownloadHandler.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/download/OMADownloadHandler.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/download/OMADownloadHandler.java
-@@ -969,44 +969,6 @@ public class OMADownloadHandler extends BroadcastReceiver {
+@@ -1012,45 +1012,6 @@ public class OMADownloadHandler extends BroadcastReceiver {
          protected Boolean doInBackground() {
              HttpURLConnection urlConnection = null;
              boolean success = false;
 -            try {
 -                URL url = new URL(mOMAInfo.getValue(OMA_INSTALL_NOTIFY_URI));
--                urlConnection = (HttpURLConnection) ChromiumNetworkAdapter.openConnection(
--                        url, TRAFFIC_ANNOTATION);
+-                urlConnection =
+-                        (HttpURLConnection)
+-                                ChromiumNetworkAdapter.openConnection(url, TRAFFIC_ANNOTATION);
 -                urlConnection.setDoOutput(true);
 -                urlConnection.setUseCaches(false);
 -                urlConnection.setRequestMethod("POST");
@@ -67,7 +68,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/download/OMADow
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/feedback/ConnectivityChecker.java b/chrome/android/java/src/org/chromium/chrome/browser/feedback/ConnectivityChecker.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/feedback/ConnectivityChecker.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/feedback/ConnectivityChecker.java
-@@ -137,42 +137,7 @@ public final class ConnectivityChecker {
+@@ -134,41 +134,7 @@ public final class ConnectivityChecker {
              postResult(callback, ConnectivityCheckResult.ERROR);
              return;
          }
@@ -76,8 +77,8 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/feedback/Connec
 -            protected Integer doInBackground() {
 -                try {
 -                    HttpURLConnection conn =
--                            (HttpURLConnection) ChromiumNetworkAdapter.openConnection(
--                                    url, TRAFFIC_ANNOTATION);
+-                            (HttpURLConnection)
+-                                    ChromiumNetworkAdapter.openConnection(url, TRAFFIC_ANNOTATION);
 -                    conn.setInstanceFollowRedirects(false);
 -                    conn.setRequestMethod("GET");
 -                    conn.setDoInput(false);
@@ -105,8 +106,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/feedback/Connec
 -            protected void onPostExecute(Integer result) {
 -                callback.onResult(result);
 -            }
--        }
--                .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+-        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 +        postResult(callback, ConnectivityCheckResult.ERROR);
      }
  
@@ -114,7 +114,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/feedback/Connec
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/net/connectivitydetector/ConnectivityDetector.java b/chrome/android/java/src/org/chromium/chrome/browser/net/connectivitydetector/ConnectivityDetector.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/net/connectivitydetector/ConnectivityDetector.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/net/connectivitydetector/ConnectivityDetector.java
-@@ -390,60 +390,6 @@ public class ConnectivityDetector implements NetworkChangeNotifier.ConnectionTyp
+@@ -406,69 +406,6 @@ public class ConnectivityDetector implements NetworkChangeNotifier.ConnectionTyp
          new AsyncTask<Integer>() {
              @Override
              protected Integer doInBackground() {
@@ -125,8 +125,11 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/net/connectivit
 -                    Log.i(TAG, "Sending HTTP Probe now to url:" + urlString);
 -
 -                    URL url = new URL(urlString);
--                    urlConnection = (HttpURLConnection) ChromiumNetworkAdapter.openConnection(
--                            url, NetworkTrafficAnnotationTag.MISSING_TRAFFIC_ANNOTATION);
+-                    urlConnection =
+-                            (HttpURLConnection)
+-                                    ChromiumNetworkAdapter.openConnection(
+-                                            url,
+-                                            NetworkTrafficAnnotationTag.MISSING_TRAFFIC_ANNOTATION);
 -                    urlConnection.setInstanceFollowRedirects(false);
 -                    urlConnection.setRequestMethod(sProbeMethod);
 -                    urlConnection.setConnectTimeout(timeoutMs);
@@ -139,10 +142,16 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/net/connectivit
 -                    long responseTimestamp = SystemClock.elapsedRealtime();
 -                    int responseCode = urlConnection.getResponseCode();
 -
--                    Log.i(TAG,
--                            "Probe " + urlString + " time=" + (responseTimestamp - requestTimestamp)
--                                    + "ms ret=" + responseCode
--                                    + " headers=" + urlConnection.getHeaderFields());
+-                    Log.i(
+-                            TAG,
+-                            "Probe "
+-                                    + urlString
+-                                    + " time="
+-                                    + (responseTimestamp - requestTimestamp)
+-                                    + "ms ret="
+-                                    + responseCode
+-                                    + " headers="
+-                                    + urlConnection.getHeaderFields());
 -
 -                    if (responseCode == HttpURLConnection.HTTP_NO_CONTENT) {
 -                        return ProbeResult.VALIDATED_WITH_NO_CONTENT;
@@ -178,7 +187,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/net/connectivit
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/omaha/OmahaBase.java b/chrome/android/java/src/org/chromium/chrome/browser/omaha/OmahaBase.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/omaha/OmahaBase.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/omaha/OmahaBase.java
-@@ -463,8 +463,7 @@ public class OmahaBase {
+@@ -483,8 +483,7 @@ public class OmahaBase {
                  }""");
          try {
              URL url = new URL(getRequestGenerator().getServerUrl());
@@ -191,13 +200,13 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/omaha/OmahaBase
 diff --git a/components/minidump_uploader/android/java/src/org/chromium/components/minidump_uploader/util/HttpURLConnectionFactoryImpl.java b/components/minidump_uploader/android/java/src/org/chromium/components/minidump_uploader/util/HttpURLConnectionFactoryImpl.java
 --- a/components/minidump_uploader/android/java/src/org/chromium/components/minidump_uploader/util/HttpURLConnectionFactoryImpl.java
 +++ b/components/minidump_uploader/android/java/src/org/chromium/components/minidump_uploader/util/HttpURLConnectionFactoryImpl.java
-@@ -37,11 +37,6 @@ public class HttpURLConnectionFactoryImpl implements HttpURLConnectionFactory {
+@@ -36,11 +36,6 @@ public class HttpURLConnectionFactoryImpl implements HttpURLConnectionFactory {
  
      @Override
      public HttpURLConnection createHttpURLConnection(String url) {
 -        try {
--            return (HttpURLConnection) ChromiumNetworkAdapter.openConnection(
--                    new URL(url), TRAFFIC_ANNOTATION);
+-            return (HttpURLConnection)
+-                    ChromiumNetworkAdapter.openConnection(new URL(url), TRAFFIC_ANNOTATION);
 -        } catch (IOException e) {
 -            return null;
 -        }
@@ -207,7 +216,7 @@ diff --git a/components/minidump_uploader/android/java/src/org/chromium/componen
 diff --git a/components/variations/android/java/src/org/chromium/components/variations/firstrun/VariationsSeedFetcher.java b/components/variations/android/java/src/org/chromium/components/variations/firstrun/VariationsSeedFetcher.java
 --- a/components/variations/android/java/src/org/chromium/components/variations/firstrun/VariationsSeedFetcher.java
 +++ b/components/variations/android/java/src/org/chromium/components/variations/firstrun/VariationsSeedFetcher.java
-@@ -186,14 +186,6 @@ public class VariationsSeedFetcher {
+@@ -187,14 +187,6 @@ public class VariationsSeedFetcher {
          ResettersForTesting.register(() -> sInstance = oldValue);
      }
  
@@ -222,7 +231,7 @@ diff --git a/components/variations/android/java/src/org/chromium/components/vari
      @VisibleForTesting
      protected List<String> getAvailableInstanceManipulations() {
          List<String> compressions = new ArrayList<String>();
-@@ -508,24 +500,8 @@ public class VariationsSeedFetcher {
+@@ -531,24 +523,8 @@ public class VariationsSeedFetcher {
          HttpURLConnection connection = null;
          try {
              long startTimeMillis = SystemClock.elapsedRealtime();
@@ -251,7 +260,7 @@ diff --git a/components/variations/android/java/src/org/chromium/components/vari
 diff --git a/net/android/java/src/org/chromium/net/ChromiumNetworkAdapter.java b/net/android/java/src/org/chromium/net/ChromiumNetworkAdapter.java
 --- a/net/android/java/src/org/chromium/net/ChromiumNetworkAdapter.java
 +++ b/net/android/java/src/org/chromium/net/ChromiumNetworkAdapter.java
-@@ -25,10 +25,6 @@ public final class ChromiumNetworkAdapter {
+@@ -23,10 +23,6 @@ public final class ChromiumNetworkAdapter {
       *     what data gets sent, what triggers it, etc.
       * @return a URLConnection linking to the URL.
       */
@@ -262,18 +271,19 @@ diff --git a/net/android/java/src/org/chromium/net/ChromiumNetworkAdapter.java b
  
      /**
       * Wrapper around URL#openConnection(Proxy), with an extra argument for static analysis/privacy
-@@ -40,10 +36,6 @@ public final class ChromiumNetworkAdapter {
+@@ -38,11 +34,6 @@ public final class ChromiumNetworkAdapter {
       *     what data gets sent, what triggers it, etc.
       * @return a URLConnection linking to the URL.
       */
--    public static URLConnection openConnection(URL url, Proxy proxy,
--            NetworkTrafficAnnotationTag trafficAnnotation) throws IOException {
+-    public static URLConnection openConnection(
+-            URL url, Proxy proxy, NetworkTrafficAnnotationTag trafficAnnotation)
+-            throws IOException {
 -        return url.openConnection(proxy);
 -    }
  
      /**
       * Wrapper around URL#openStream(), with an extra argument for static analysis/privacy
-@@ -54,8 +46,4 @@ public final class ChromiumNetworkAdapter {
+@@ -53,8 +44,4 @@ public final class ChromiumNetworkAdapter {
       *     what data gets sent, what triggers it, etc.
       * @return an InputStream linking to the URL.
       */

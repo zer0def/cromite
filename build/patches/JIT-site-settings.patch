@@ -273,13 +273,13 @@ new file mode 100644
 diff --git a/components/content_settings/core/browser/content_settings_registry.cc b/components/content_settings/core/browser/content_settings_registry.cc
 --- a/components/content_settings/core/browser/content_settings_registry.cc
 +++ b/components/content_settings/core/browser/content_settings_registry.cc
-@@ -548,7 +548,7 @@ void ContentSettingsRegistry::Init() {
+@@ -562,7 +562,7 @@ void ContentSettingsRegistry::Init() {
             ContentSettingsInfo::EXCEPTIONS_ON_SECURE_ORIGINS_ONLY);
  
    Register(ContentSettingsType::JAVASCRIPT_JIT, "javascript-jit",
 -           CONTENT_SETTING_ALLOW, WebsiteSettingsInfo::UNSYNCABLE,
 +           CONTENT_SETTING_BLOCK, WebsiteSettingsInfo::UNSYNCABLE,
-            /*allowlisted_schemes=*/{},
+            /*allowlisted_primary_schemes=*/{},
             /*valid_settings=*/{CONTENT_SETTING_ALLOW, CONTENT_SETTING_BLOCK},
             WebsiteSettingsInfo::TOP_ORIGIN_ONLY_SCOPE,
 --

@@ -4,8 +4,8 @@ Subject: Disable Feeback Collector
 
 License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
- .../browser/feedback/FeedbackCollector.java   | 27 +++----------------
- 1 file changed, 3 insertions(+), 24 deletions(-)
+ .../browser/feedback/FeedbackCollector.java   | 28 ++-----------------
+ 1 file changed, 3 insertions(+), 25 deletions(-)
 
 diff --git a/chrome/browser/feedback/android/java/src/org/chromium/chrome/browser/feedback/FeedbackCollector.java b/chrome/browser/feedback/android/java/src/org/chromium/chrome/browser/feedback/FeedbackCollector.java
 --- a/chrome/browser/feedback/android/java/src/org/chromium/chrome/browser/feedback/FeedbackCollector.java
@@ -18,9 +18,9 @@ diff --git a/chrome/browser/feedback/android/java/src/org/chromium/chrome/browse
  import java.util.List;
  import java.util.Map;
  
-@@ -64,30 +65,8 @@ public abstract class FeedbackCollector<T> implements Runnable {
-     // Subclasses must invoke init() at construction time.
-     protected void init(Activity activity, @Nullable ScreenshotSource screenshotTask, T initParams,
+@@ -69,31 +70,8 @@ public abstract class FeedbackCollector<T> implements Runnable {
+             @Nullable ScreenshotSource screenshotTask,
+             T initParams,
              Profile profile) {
 -        // 1. Build all synchronous and asynchronous sources and determine the currently signed in
 -        //    account.
@@ -29,8 +29,9 @@ diff --git a/chrome/browser/feedback/android/java/src/org/chromium/chrome/browse
 -        IdentityManager identityManager =
 -                IdentityServicesProvider.get().getIdentityManager(profile);
 -        if (identityManager != null) {
--            mAccountInUse = CoreAccountInfo.getEmailFrom(
--                    identityManager.getPrimaryAccountInfo(ConsentLevel.SIGNIN));
+-            mAccountInUse =
+-                    CoreAccountInfo.getEmailFrom(
+-                            identityManager.getPrimaryAccountInfo(ConsentLevel.SIGNIN));
 -        }
 -
 -        // Validation check in case a source is added to the wrong list.

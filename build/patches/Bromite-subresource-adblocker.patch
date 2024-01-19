@@ -68,7 +68,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 diff --git a/chrome/android/BUILD.gn b/chrome/android/BUILD.gn
 --- a/chrome/android/BUILD.gn
 +++ b/chrome/android/BUILD.gn
-@@ -297,6 +297,7 @@ if (current_toolchain == default_toolchain) {
+@@ -304,6 +304,7 @@ if (current_toolchain == default_toolchain) {
        "//chrome/android/modules/image_editor/provider:java",
        "//chrome/android/modules/stack_unwinder/provider:java",
        "//chrome/android/webapk/libs/client:client_java",
@@ -79,7 +79,7 @@ diff --git a/chrome/android/BUILD.gn b/chrome/android/BUILD.gn
 diff --git a/chrome/android/chrome_java_resources.gni b/chrome/android/chrome_java_resources.gni
 --- a/chrome/android/chrome_java_resources.gni
 +++ b/chrome/android/chrome_java_resources.gni
-@@ -450,6 +450,7 @@ chrome_java_resources = [
+@@ -434,6 +434,7 @@ chrome_java_resources = [
    "java/res/layout/account_chooser_dialog_title.xml",
    "java/res/layout/account_divider_preference.xml",
    "java/res/layout/account_management_account_row.xml",
@@ -87,7 +87,7 @@ diff --git a/chrome/android/chrome_java_resources.gni b/chrome/android/chrome_ja
    "java/res/layout/auto_sign_in_first_run_dialog.xml",
    "java/res/layout/autofill_billing_address_dropdown.xml",
    "java/res/layout/autofill_card_name_and_number.xml",
-@@ -655,6 +656,7 @@ chrome_java_resources = [
+@@ -638,6 +639,7 @@ chrome_java_resources = [
    "java/res/xml/about_chrome_preferences.xml",
    "java/res/xml/account_management_preferences.xml",
    "java/res/xml/ad_services_config.xml",
@@ -98,7 +98,7 @@ diff --git a/chrome/android/chrome_java_resources.gni b/chrome/android/chrome_ja
 diff --git a/chrome/android/chrome_java_sources.gni b/chrome/android/chrome_java_sources.gni
 --- a/chrome/android/chrome_java_sources.gni
 +++ b/chrome/android/chrome_java_sources.gni
-@@ -967,6 +967,8 @@ chrome_java_sources = [
+@@ -961,6 +961,8 @@ chrome_java_sources = [
    "java/src/org/chromium/chrome/browser/permissions/PermissionSettingsBridge.java",
    "java/src/org/chromium/chrome/browser/permissions/PermissionUpdateRequester.java",
    "java/src/org/chromium/chrome/browser/photo_picker/DecoderServiceImpl.java",
@@ -106,7 +106,7 @@ diff --git a/chrome/android/chrome_java_sources.gni b/chrome/android/chrome_java
 +  "java/src/org/chromium/chrome/browser/settings/AdBlockPreferences.java",
    "java/src/org/chromium/chrome/browser/policy/PolicyAuditor.java",
    "java/src/org/chromium/chrome/browser/policy/PolicyAuditorBridge.java",
-   "java/src/org/chromium/chrome/browser/printing/TabPrinter.java",
+   "java/src/org/chromium/chrome/browser/privacy/settings/DoNotTrackSettings.java",
 diff --git a/chrome/android/java/res/layout/adblock_editor.xml b/chrome/android/java/res/layout/adblock_editor.xml
 new file mode 100644
 --- /dev/null
@@ -210,7 +210,7 @@ diff --git a/chrome/android/java/res/values/styles.xml b/chrome/android/java/res
 diff --git a/chrome/android/java/res/values/values.xml b/chrome/android/java/res/values/values.xml
 --- a/chrome/android/java/res/values/values.xml
 +++ b/chrome/android/java/res/values/values.xml
-@@ -27,6 +27,10 @@ found in the LICENSE file.
+@@ -25,6 +25,10 @@ found in the LICENSE file.
      <!-- Compositor Tab Title Text -->
      <bool name="compositor_tab_title_fake_bold_text">true</bool>
  
@@ -428,7 +428,7 @@ new file mode 100644
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tabmodel/TabModelImpl.java b/chrome/android/java/src/org/chromium/chrome/browser/tabmodel/TabModelImpl.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/tabmodel/TabModelImpl.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/tabmodel/TabModelImpl.java
-@@ -781,7 +781,7 @@ public class TabModelImpl extends TabModelJniBridge {
+@@ -839,7 +839,7 @@ public class TabModelImpl extends TabModelJniBridge {
      protected boolean createTabWithWebContents(
              Tab parent, Profile profile, WebContents webContents) {
          return getTabCreator(profile.isOffTheRecord())
@@ -440,7 +440,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tabmodel/TabMod
 diff --git a/chrome/app/generated_resources.grd b/chrome/app/generated_resources.grd
 --- a/chrome/app/generated_resources.grd
 +++ b/chrome/app/generated_resources.grd
-@@ -14539,6 +14539,16 @@ Please help our engineers fix this problem. Tell us what happened right before y
+@@ -14908,6 +14908,16 @@ Please help our engineers fix this problem. Tell us what happened right before y
        Never show this again.
      </message>
  
@@ -511,7 +511,7 @@ diff --git a/chrome/browser/browser_process.h b/chrome/browser/browser_process.h
 diff --git a/chrome/browser/browser_process_impl.cc b/chrome/browser/browser_process_impl.cc
 --- a/chrome/browser/browser_process_impl.cc
 +++ b/chrome/browser/browser_process_impl.cc
-@@ -1134,6 +1134,27 @@ BrowserProcessImpl::component_updater() {
+@@ -1138,6 +1138,27 @@ BrowserProcessImpl::component_updater() {
    return component_updater_.get();
  }
  
@@ -542,7 +542,7 @@ diff --git a/chrome/browser/browser_process_impl.cc b/chrome/browser/browser_pro
 diff --git a/chrome/browser/browser_process_impl.h b/chrome/browser/browser_process_impl.h
 --- a/chrome/browser/browser_process_impl.h
 +++ b/chrome/browser/browser_process_impl.h
-@@ -208,6 +208,7 @@ class BrowserProcessImpl : public BrowserProcess,
+@@ -210,6 +210,7 @@ class BrowserProcessImpl : public BrowserProcess,
  #endif
  
    component_updater::ComponentUpdateService* component_updater() override;
@@ -550,7 +550,7 @@ diff --git a/chrome/browser/browser_process_impl.h b/chrome/browser/browser_proc
    MediaFileSystemRegistry* media_file_system_registry() override;
    WebRtcLogUploader* webrtc_log_uploader() override;
    network_time::NetworkTimeTracker* network_time_tracker() override;
-@@ -404,6 +405,7 @@ class BrowserProcessImpl : public BrowserProcess,
+@@ -406,6 +407,7 @@ class BrowserProcessImpl : public BrowserProcess,
    // to concerns over integrity of data shared between profiles,
    // but some users of component updater only install per-user.
    std::unique_ptr<component_updater::ComponentUpdateService> component_updater_;
@@ -561,7 +561,7 @@ diff --git a/chrome/browser/browser_process_impl.h b/chrome/browser/browser_proc
 diff --git a/chrome/browser/chrome_browser_main.cc b/chrome/browser/chrome_browser_main.cc
 --- a/chrome/browser/chrome_browser_main.cc
 +++ b/chrome/browser/chrome_browser_main.cc
-@@ -428,6 +428,9 @@ StartupProfileInfo CreateInitialProfile(
+@@ -448,6 +448,9 @@ StartupProfileInfo CreateInitialProfile(
    // missing code in the above test.
    CHECK(profile_info.profile) << "Cannot get default profile.";
  
@@ -574,7 +574,7 @@ diff --git a/chrome/browser/chrome_browser_main.cc b/chrome/browser/chrome_brows
 diff --git a/chrome/browser/flags/BUILD.gn b/chrome/browser/flags/BUILD.gn
 --- a/chrome/browser/flags/BUILD.gn
 +++ b/chrome/browser/flags/BUILD.gn
-@@ -24,6 +24,7 @@ android_library("java") {
+@@ -23,6 +23,7 @@ android_library("java") {
      "android/java/src/org/chromium/chrome/browser/flags/StringCachedFieldTrialParameter.java",
      "android/java/src/org/chromium/chrome/browser/flags/ValuesOverridden.java",
      "android/java/src/org/chromium/chrome/browser/flags/ValuesReturned.java",
@@ -582,7 +582,7 @@ diff --git a/chrome/browser/flags/BUILD.gn b/chrome/browser/flags/BUILD.gn
    ]
    deps = [
      "//base:base_java",
-@@ -45,6 +46,7 @@ android_library("java") {
+@@ -44,6 +45,7 @@ android_library("java") {
  generate_jni("jni_headers") {
    sources = [ "android/java/src/org/chromium/chrome/browser/flags/CromiteNativeUtils.java" ]
    sources += [
@@ -590,7 +590,7 @@ diff --git a/chrome/browser/flags/BUILD.gn b/chrome/browser/flags/BUILD.gn
      "android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureMap.java",
      "android/java/src/org/chromium/chrome/browser/flags/ChromeSessionState.java",
    ]
-@@ -59,6 +61,7 @@ static_library("flags_android") {
+@@ -58,6 +60,7 @@ static_library("flags_android") {
      "android/chrome_session_state.cc",
      "android/chrome_session_state.h",
    ]
@@ -672,7 +672,7 @@ new file mode 100755
 diff --git a/chrome/browser/net/system_network_context_manager.cc b/chrome/browser/net/system_network_context_manager.cc
 --- a/chrome/browser/net/system_network_context_manager.cc
 +++ b/chrome/browser/net/system_network_context_manager.cc
-@@ -609,6 +609,14 @@ SystemNetworkContextManager::~SystemNetworkContextManager() {
+@@ -602,6 +602,14 @@ SystemNetworkContextManager::~SystemNetworkContextManager() {
  void SystemNetworkContextManager::RegisterPrefs(PrefRegistrySimple* registry) {
    StubResolverConfigReader::RegisterPrefs(registry);
  
@@ -730,7 +730,7 @@ diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chro
 diff --git a/chrome/common/pref_names.h b/chrome/common/pref_names.h
 --- a/chrome/common/pref_names.h
 +++ b/chrome/common/pref_names.h
-@@ -2625,6 +2625,11 @@ inline constexpr char kAudioCaptureAllowed[] = "hardware.audio_capture_enabled";
+@@ -2657,6 +2657,11 @@ inline constexpr char kAudioCaptureAllowed[] = "hardware.audio_capture_enabled";
  inline constexpr char kAudioCaptureAllowedUrls[] =
      "hardware.audio_capture_allowed_urls";
  
@@ -1593,7 +1593,7 @@ diff --git a/components/subresource_filter/content/browser/content_subresource_f
 diff --git a/components/subresource_filter/content/browser/content_subresource_filter_throttle_manager.h b/components/subresource_filter/content/browser/content_subresource_filter_throttle_manager.h
 --- a/components/subresource_filter/content/browser/content_subresource_filter_throttle_manager.h
 +++ b/components/subresource_filter/content/browser/content_subresource_filter_throttle_manager.h
-@@ -412,6 +412,8 @@ class ContentSubresourceFilterThrottleManager
+@@ -413,6 +413,8 @@ class ContentSubresourceFilterThrottleManager
  
    std::unique_ptr<ProfileInteractionManager> profile_interaction_manager_;
  

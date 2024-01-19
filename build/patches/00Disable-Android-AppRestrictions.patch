@@ -19,7 +19,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 diff --git a/chrome/browser/flags/BUILD.gn b/chrome/browser/flags/BUILD.gn
 --- a/chrome/browser/flags/BUILD.gn
 +++ b/chrome/browser/flags/BUILD.gn
-@@ -35,6 +35,7 @@ android_library("java") {
+@@ -34,6 +34,7 @@ android_library("java") {
      "//build:chromeos_buildflags",
      "//build/android:build_java",
      "//chrome/browser/preferences:java",

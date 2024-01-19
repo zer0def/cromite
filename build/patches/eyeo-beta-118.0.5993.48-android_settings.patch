@@ -6,7 +6,7 @@ Based on Chromium 118.0.5993.48
 
 Pre-requisites: eyeo Browser Ad filtering Solution: Base Module and Android API Module
 ---
- chrome/android/BUILD.gn                       |   6 +
+ chrome/android/BUILD.gn                       |   7 +
  .../android/java/res/xml/main_preferences.xml |  14 +-
  chrome/browser/adblock/android/BUILD.gn       |  10 +
  .../adblock/AdblockFilterFragmentTest.java    |  63 +++++
@@ -124,7 +124,7 @@ Pre-requisites: eyeo Browser Ad filtering Solution: Base Module and Android API 
  .../translations/adblock_strings_zh-HK.xtb    |   4 +
  .../translations/adblock_strings_zh-TW.xtb    |  13 +
  .../translations/adblock_strings_zu.xtb       |   4 +
- 118 files changed, 2443 insertions(+), 3 deletions(-)
+ 118 files changed, 2444 insertions(+), 3 deletions(-)
  create mode 100644 chrome/browser/adblock/android/javatests/src/org/chromium/chrome/browser/adblock/AdblockFilterFragmentTest.java
  create mode 100644 chrome/browser/adblock/android/javatests/src/org/chromium/chrome/browser/adblock/AdblockPopupInfoBarTest.java
  create mode 100644 chrome/browser/adblock/android/javatests/src/org/chromium/chrome/browser/adblock/AdblockPopupMessageTest.java
@@ -243,17 +243,18 @@ Pre-requisites: eyeo Browser Ad filtering Solution: Base Module and Android API 
 diff --git a/chrome/android/BUILD.gn b/chrome/android/BUILD.gn
 --- a/chrome/android/BUILD.gn
 +++ b/chrome/android/BUILD.gn
-@@ -246,6 +246,9 @@ if (current_toolchain == default_toolchain) {
+@@ -248,6 +248,10 @@ if (current_toolchain == default_toolchain) {
        "//third_party/androidx:androidx_preference_preference_java",
      ]
  
 +    ### Android UI module start
 +    deps += [ "//components/adblock/android:java_ui_resources" ]
 +    ### Android UI module end
-   }
- 
-   android_library("app_hooks_java") {
-@@ -676,6 +679,9 @@ if (current_toolchain == default_toolchain) {
++
+     if (plus_addresses_use_internal_android_resources) {
+       deps += [ "//clank/components/plus_addresses:java_resources" ]
+     } else {
+@@ -681,6 +685,9 @@ if (current_toolchain == default_toolchain) {
        "//url/mojom:url_mojom_gurl_java",
      ]
  

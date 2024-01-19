@@ -13146,7 +13146,7 @@ e)fqMZZ`3a)Ds&5H<cfp<0000<MNUMnLSTYHt&Yn8
 diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -2083,6 +2083,7 @@ static_library("browser") {
+@@ -2051,6 +2051,7 @@ static_library("browser") {
      "//build:chromeos_buildflags",
      "//build/config/chromebox_for_meetings:buildflags",
      "//build/config/compiler:compiler_buildflags",
@@ -13180,7 +13180,7 @@ diff --git a/chrome/browser/prefs/chrome_pref_service_factory.cc b/chrome/browse
 diff --git a/chrome/browser/profiles/profile_shortcut_manager_win.cc b/chrome/browser/profiles/profile_shortcut_manager_win.cc
 --- a/chrome/browser/profiles/profile_shortcut_manager_win.cc
 +++ b/chrome/browser/profiles/profile_shortcut_manager_win.cc
-@@ -77,7 +77,7 @@ const int kMaxProfileShortcutFileNameLength = 64;
+@@ -78,7 +78,7 @@ const int kMaxProfileShortcutFileNameLength = 64;
  // Incrementing this number will cause profile icons to be regenerated on
  // profile startup (it should be incremented whenever the product/avatar icons
  // change, etc).
@@ -13208,7 +13208,7 @@ diff --git a/chrome/browser/resources/settings/settings_menu/settings_menu.html 
 diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chrome/browser/ui/android/strings/android_chrome_strings.grd
 --- a/chrome/browser/ui/android/strings/android_chrome_strings.grd
 +++ b/chrome/browser/ui/android/strings/android_chrome_strings.grd
-@@ -2183,7 +2183,7 @@ Your Google account may have other forms of browsing history like searches and a
+@@ -2086,7 +2086,7 @@ Your Google account may have other forms of browsing history like searches and a
          About Chrome
        </message>
        <message name="IDS_LEGAL_INFORMATION_SUMMARY" desc="Summary for legal information" meaning="Android">
@@ -13241,7 +13241,7 @@ diff --git a/chrome/common/url_constants.h b/chrome/common/url_constants.h
 diff --git a/components/browser_ui/strings/android/browser_ui_strings.grd b/components/browser_ui/strings/android/browser_ui_strings.grd
 --- a/components/browser_ui/strings/android/browser_ui_strings.grd
 +++ b/components/browser_ui/strings/android/browser_ui_strings.grd
-@@ -1009,7 +1009,7 @@
+@@ -1003,7 +1003,7 @@
  
        <!-- Accessibility preferences -->
        <message name="IDS_PREFS_ACCESSIBILITY" desc="Title of Accessibility settings, which allows the user to change webpage font sizes. [CHAR_LIMIT=32]">

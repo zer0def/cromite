@@ -101,7 +101,7 @@ diff --git a/third_party/devtools-frontend/src/front_end/core/sdk/sdk-meta.ts b/
 diff --git a/third_party/devtools-frontend/src/front_end/generated/InspectorBackendCommands.js b/third_party/devtools-frontend/src/front_end/generated/InspectorBackendCommands.js
 --- a/third_party/devtools-frontend/src/front_end/generated/InspectorBackendCommands.js
 +++ b/third_party/devtools-frontend/src/front_end/generated/InspectorBackendCommands.js
-@@ -1276,6 +1276,10 @@ inspectorBackend.registerCommand("Debugger.restartFrame", [{"name": "callFrameId
+@@ -1280,6 +1280,10 @@ inspectorBackend.registerCommand("Debugger.restartFrame", [{"name": "callFrameId
  inspectorBackend.registerCommand("Debugger.resume", [{"name": "terminateOnResume", "type": "boolean", "optional": true, "description": "Set to true to terminate execution upon resuming execution. In contrast to Runtime.terminateExecution, this will allows to execute further JavaScript (i.e. via evaluation) until execution of the paused code is actually resumed, at which point termination is triggered. If execution is currently not paused, this parameter has no effect.", "typeRef": null}], [], "Resumes JavaScript execution.");
  inspectorBackend.registerCommand("Debugger.searchInContent", [{"name": "scriptId", "type": "string", "optional": false, "description": "Id of the script to search in.", "typeRef": "Runtime.ScriptId"}, {"name": "query", "type": "string", "optional": false, "description": "String to search for.", "typeRef": null}, {"name": "caseSensitive", "type": "boolean", "optional": true, "description": "If true, search is case sensitive.", "typeRef": null}, {"name": "isRegex", "type": "boolean", "optional": true, "description": "If true, treats string parameter as regex.", "typeRef": null}], ["result"], "Searches for given string in script content.");
  inspectorBackend.registerCommand("Debugger.setAsyncCallStackDepth", [{"name": "maxDepth", "type": "number", "optional": false, "description": "Maximum depth of async call stacks. Setting to `0` will effectively disable collecting async call stacks (default).", "typeRef": null}], [], "Enables or disables async call stacks tracking.");
@@ -115,7 +115,7 @@ diff --git a/third_party/devtools-frontend/src/front_end/generated/InspectorBack
 diff --git a/third_party/devtools-frontend/src/front_end/generated/protocol-mapping.d.ts b/third_party/devtools-frontend/src/front_end/generated/protocol-mapping.d.ts
 --- a/third_party/devtools-frontend/src/front_end/generated/protocol-mapping.d.ts
 +++ b/third_party/devtools-frontend/src/front_end/generated/protocol-mapping.d.ts
-@@ -4417,6 +4417,10 @@ export namespace ProtocolMapping {
+@@ -4404,6 +4404,10 @@ export namespace ProtocolMapping {
        paramsType: [Protocol.Debugger.SetAsyncCallStackDepthRequest];
        returnType: void;
      };
@@ -129,7 +129,7 @@ diff --git a/third_party/devtools-frontend/src/front_end/generated/protocol-mapp
 diff --git a/third_party/devtools-frontend/src/front_end/generated/protocol-proxy-api.d.ts b/third_party/devtools-frontend/src/front_end/generated/protocol-proxy-api.d.ts
 --- a/third_party/devtools-frontend/src/front_end/generated/protocol-proxy-api.d.ts
 +++ b/third_party/devtools-frontend/src/front_end/generated/protocol-proxy-api.d.ts
-@@ -3908,6 +3908,8 @@ declare namespace ProtocolProxyApi {
+@@ -3897,6 +3897,8 @@ declare namespace ProtocolProxyApi {
       */
      invoke_setAsyncCallStackDepth(params: Protocol.Debugger.SetAsyncCallStackDepthRequest): Promise<Protocol.ProtocolResponseWithError>;
  
@@ -141,7 +141,7 @@ diff --git a/third_party/devtools-frontend/src/front_end/generated/protocol-prox
 diff --git a/third_party/devtools-frontend/src/front_end/generated/protocol.ts b/third_party/devtools-frontend/src/front_end/generated/protocol.ts
 --- a/third_party/devtools-frontend/src/front_end/generated/protocol.ts
 +++ b/third_party/devtools-frontend/src/front_end/generated/protocol.ts
-@@ -16837,6 +16837,10 @@ export namespace Debugger {
+@@ -16904,6 +16904,10 @@ export namespace Debugger {
      maxDepth: integer;
    }
  
@@ -155,7 +155,7 @@ diff --git a/third_party/devtools-frontend/src/front_end/generated/protocol.ts b
 diff --git a/third_party/devtools-frontend/src/third_party/blink/public/devtools_protocol/browser_protocol.json b/third_party/devtools-frontend/src/third_party/blink/public/devtools_protocol/browser_protocol.json
 --- a/third_party/devtools-frontend/src/third_party/blink/public/devtools_protocol/browser_protocol.json
 +++ b/third_party/devtools-frontend/src/third_party/blink/public/devtools_protocol/browser_protocol.json
-@@ -25238,8 +25238,17 @@
+@@ -25356,8 +25356,17 @@
                              "$ref": "WasmDisassemblyChunk"
                          }
                      ]
@@ -175,7 +175,7 @@ diff --git a/third_party/devtools-frontend/src/third_party/blink/public/devtools
                      "name": "nextWasmDisassemblyChunk",
                      "description": "Disassemble the next chunk of lines for the module corresponding to the\nstream. If disassembly is complete, this API will invalidate the streamId\nand return an empty chunk. Any subsequent calls for the now invalid stream\nwill return errors.",
                      "experimental": true,
-@@ -28367,4 +28376,4 @@
+@@ -28485,4 +28494,4 @@
              ]
          }
      ]
@@ -199,7 +199,7 @@ diff --git a/v8/include/js_protocol.pdl b/v8/include/js_protocol.pdl
 diff --git a/v8/src/common/message-template.h b/v8/src/common/message-template.h
 --- a/v8/src/common/message-template.h
 +++ b/v8/src/common/message-template.h
-@@ -729,6 +729,7 @@ namespace internal {
+@@ -733,6 +733,7 @@ namespace internal {
    /* AggregateError */                                                         \
    T(AllPromisesRejected, "All promises were rejected")                         \
    T(CannotDeepFreezeObject, "Cannot DeepFreeze object of type %")              \
@@ -210,7 +210,7 @@ diff --git a/v8/src/common/message-template.h b/v8/src/common/message-template.h
 diff --git a/v8/src/debug/debug-interface.cc b/v8/src/debug/debug-interface.cc
 --- a/v8/src/debug/debug-interface.cc
 +++ b/v8/src/debug/debug-interface.cc
-@@ -1013,6 +1013,11 @@ void SetAsyncEventDelegate(Isolate* v8_isolate, AsyncEventDelegate* delegate) {
+@@ -1015,6 +1015,11 @@ void SetAsyncEventDelegate(Isolate* v8_isolate, AsyncEventDelegate* delegate) {
    reinterpret_cast<i::Isolate*>(v8_isolate)->set_async_event_delegate(delegate);
  }
  
@@ -260,7 +260,7 @@ diff --git a/v8/src/debug/debug.h b/v8/src/debug/debug.h
 diff --git a/v8/src/execution/messages.cc b/v8/src/execution/messages.cc
 --- a/v8/src/execution/messages.cc
 +++ b/v8/src/execution/messages.cc
-@@ -497,6 +497,7 @@ MaybeHandle<String> MessageFormatter::TryFormat(
+@@ -500,6 +500,7 @@ MaybeHandle<String> MessageFormatter::TryFormat(
        MessageTemplate::kUndefinedOrNullToObject,
        MessageTemplate::kUnexpectedStrictReserved,
        MessageTemplate::kUnexpectedTokenIdentifier,

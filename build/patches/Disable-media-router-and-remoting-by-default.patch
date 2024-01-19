@@ -5,12 +5,12 @@ Subject: Disable media router and remoting by default
 Original License: MIT - https://spdx.org/licenses/MIT.html
 License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 ---
- chrome/browser/media/router/media_router_feature.cc         | 6 +++++-
- chrome/browser/profiles/profile_impl.cc                     | 2 +-
- content/child/runtime_features.cc                           | 2 ++
- .../renderer/modules/remoteplayback/remote_playback.cc      | 2 +-
- .../blink/renderer/platform/runtime_enabled_features.json5  | 4 ++--
- 5 files changed, 11 insertions(+), 5 deletions(-)
+ chrome/browser/media/router/media_router_feature.cc    |  6 +++++-
+ chrome/browser/profiles/profile_impl.cc                |  2 +-
+ content/child/runtime_features.cc                      |  2 ++
+ .../renderer/modules/remoteplayback/remote_playback.cc |  2 +-
+ .../renderer/platform/runtime_enabled_features.json5   | 10 +++-------
+ 5 files changed, 12 insertions(+), 10 deletions(-)
 
 diff --git a/chrome/browser/media/router/media_router_feature.cc b/chrome/browser/media/router/media_router_feature.cc
 --- a/chrome/browser/media/router/media_router_feature.cc
@@ -55,7 +55,7 @@ diff --git a/chrome/browser/profiles/profile_impl.cc b/chrome/browser/profiles/p
 diff --git a/content/child/runtime_features.cc b/content/child/runtime_features.cc
 --- a/content/child/runtime_features.cc
 +++ b/content/child/runtime_features.cc
-@@ -587,6 +587,8 @@ void SetCustomizedRuntimeFeaturesFromCombinedArgs(
+@@ -558,6 +558,8 @@ void SetCustomizedRuntimeFeaturesFromCombinedArgs(
    WebRuntimeFeatures::EnableBackForwardCache(
        content::IsBackForwardCacheEnabled());
  
@@ -67,7 +67,7 @@ diff --git a/content/child/runtime_features.cc b/content/child/runtime_features.
 diff --git a/third_party/blink/renderer/modules/remoteplayback/remote_playback.cc b/third_party/blink/renderer/modules/remoteplayback/remote_playback.cc
 --- a/third_party/blink/renderer/modules/remoteplayback/remote_playback.cc
 +++ b/third_party/blink/renderer/modules/remoteplayback/remote_playback.cc
-@@ -92,7 +92,7 @@ KURL GetAvailabilityUrl(const WebURL& source,
+@@ -99,7 +99,7 @@ KURL GetAvailabilityUrl(const WebURL& source,
  }
  
  bool IsBackgroundAvailabilityMonitoringDisabled() {
@@ -79,15 +79,20 @@ diff --git a/third_party/blink/renderer/modules/remoteplayback/remote_playback.c
 diff --git a/third_party/blink/renderer/platform/runtime_enabled_features.json5 b/third_party/blink/renderer/platform/runtime_enabled_features.json5
 --- a/third_party/blink/renderer/platform/runtime_enabled_features.json5
 +++ b/third_party/blink/renderer/platform/runtime_enabled_features.json5
-@@ -3218,10 +3218,10 @@
+@@ -3109,14 +3109,10 @@
        base_feature: "none",
      },
      {
 -      name: "RemotePlaybackBackend",
 +      name: "RemotePlaybackBackend", // disabled
        settable_from_internals: true,
-       // Tracking bug for the implementation: https://crbug.com/728609
--      status: {"Android": "stable", "default": "experimental"},
+-      status: {
+-        "Android": "stable",
+-        "Win": "stable",
+-        "Mac": "stable",
+-        "Linux": "stable",
+-        "default": "experimental"},
++      // Tracking bug for the implementation: https://crbug.com/728609
 +      status: "experimental",        // by default
      },
      {

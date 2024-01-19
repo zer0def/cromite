@@ -20,7 +20,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActivity.java b/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActivity.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActivity.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActivity.java
-@@ -229,6 +229,7 @@ import org.chromium.content_public.browser.ScreenOrientationProvider;
+@@ -228,6 +228,7 @@ import org.chromium.content_public.browser.ScreenOrientationProvider;
  import org.chromium.content_public.browser.SelectionPopupController;
  import org.chromium.content_public.browser.WebContents;
  import org.chromium.content_public.common.ContentSwitches;
@@ -28,7 +28,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActiv
  import org.chromium.printing.PrintManagerDelegateImpl;
  import org.chromium.printing.PrintingController;
  import org.chromium.printing.PrintingControllerImpl;
-@@ -988,6 +989,8 @@ public abstract class ChromeActivity<C extends ChromeActivityComponent>
+@@ -1097,6 +1098,8 @@ public abstract class ChromeActivity<C extends ChromeActivityComponent>
          super.onStartWithNative();
          ChromeActivitySessionTracker.getInstance().onStartWithNative();
          ChromeCachedFlags.getInstance().cacheNativeFlags();
@@ -40,7 +40,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActiv
 diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browser/flags/android/chrome_feature_list.cc
 --- a/chrome/browser/flags/android/chrome_feature_list.cc
 +++ b/chrome/browser/flags/android/chrome_feature_list.cc
-@@ -146,6 +146,7 @@ const base::Feature* const kFeaturesExposedToJava[] = {
+@@ -144,6 +144,7 @@ const base::Feature* const kFeaturesExposedToJava[] = {
      &feed::kFeedShowSignInCommand,
      &feed::kFeedSignedOutViewDemotion,
      &feed::kFeedUserInteractionReliabilityReport,
@@ -51,7 +51,7 @@ diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browse
 diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 --- a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 +++ b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
-@@ -98,6 +98,7 @@ public abstract class ChromeFeatureList {
+@@ -103,6 +103,7 @@ public abstract class ChromeFeatureList {
      }
  
      /* Alphabetical: */
@@ -59,7 +59,7 @@ diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/f
      public static final String ADAPTIVE_BUTTON_IN_TOP_TOOLBAR = "AdaptiveButtonInTopToolbar";
      public static final String ADAPTIVE_BUTTON_IN_TOP_TOOLBAR_TRANSLATE =
              "AdaptiveButtonInTopToolbarTranslate";
-@@ -517,6 +518,8 @@ public abstract class ChromeFeatureList {
+@@ -522,6 +523,8 @@ public abstract class ChromeFeatureList {
      public static final CachedFlag sAndroidAppIntegration =
              new CachedFlag(ANDROID_APP_INTEGRATION, false);
      public static final CachedFlag sAndroidHub = new CachedFlag(ANDROID_HUB, false);
@@ -67,7 +67,7 @@ diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/f
 +            new CachedFlag(ALLOW_USER_CERTIFICATES, false);
      public static final CachedFlag sAppMenuMobileSiteOption =
              new CachedFlag(APP_MENU_MOBILE_SITE_OPTION, false);
-     public static final CachedFlag sBackGestureActivityTabProvider =
+     public static final CachedFlag sArchiveTabService = new CachedFlag(ARCHIVE_TAB_SERVICE, false);
 @@ -662,6 +665,7 @@ public abstract class ChromeFeatureList {
  
      public static final List<CachedFlag> sFlagsCachedFullBrowser =
@@ -111,24 +111,24 @@ new file mode 100644
 diff --git a/net/android/java/src/org/chromium/net/X509Util.java b/net/android/java/src/org/chromium/net/X509Util.java
 --- a/net/android/java/src/org/chromium/net/X509Util.java
 +++ b/net/android/java/src/org/chromium/net/X509Util.java
-@@ -544,6 +544,8 @@ public class X509Util {
+@@ -525,6 +525,8 @@ public class X509Util {
          return userRootBytes.toArray(new byte[0][]);
      }
  
 +    public static boolean AllowUserCertificates = false;
 +
-     public static AndroidCertVerifyResult verifyServerCertificates(byte[][] certChain,
-                                                                    String authType,
-                                                                    String host)
-@@ -630,6 +632,9 @@ public class X509Util {
+     public static AndroidCertVerifyResult verifyServerCertificates(
+             byte[][] certChain, String authType, String host)
+             throws KeyStoreException, NoSuchAlgorithmException {
+@@ -613,6 +615,9 @@ public class X509Util {
                  isIssuedByKnownRoot = isKnownRoot(root);
              }
  
 +            if (AllowUserCertificates == false && isIssuedByKnownRoot == false)
 +                return new AndroidCertVerifyResult(CertVerifyStatusAndroid.NO_TRUSTED_ROOT);
 +
-             return new AndroidCertVerifyResult(CertVerifyStatusAndroid.OK,
-                                                isIssuedByKnownRoot, verifiedChain);
+             return new AndroidCertVerifyResult(
+                     CertVerifyStatusAndroid.OK, isIssuedByKnownRoot, verifiedChain);
          }
 --
 2.25.1
