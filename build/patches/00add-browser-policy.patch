@@ -12,6 +12,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  ...nfiguration_policy_handler_list_factory.cc |   6 +-
  .../account_consistency_mode_manager.cc       |   7 +-
  ...ccount_consistency_mode_manager_factory.cc |   2 +-
+ .../throttled_gaia_auth_fetcher.cc            |   5 +
  chrome/browser/signin/chrome_signin_client.cc |   7 +-
  .../ui/webui/policy/policy_ui_handler.cc      | 104 ++++++++++++-
  .../ui/webui/policy/policy_ui_handler.h       |   2 +
@@ -28,9 +29,10 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../policy/resources/webui/policy_row.html    |   1 +
  .../policy/resources/webui/policy_row.ts      |  12 ++
  components/policy_strings.grdp                |   4 +-
+ components/signin/features.gni                |   2 +-
  .../gaia_cookie_manager_service.cc            |   4 +
  google_apis/gaia/gaia_auth_fetcher.cc         |   1 +
- 26 files changed, 306 insertions(+), 95 deletions(-)
+ 28 files changed, 312 insertions(+), 96 deletions(-)
 
 diff --git a/base/win/win_util.cc b/base/win/win_util.cc
 --- a/base/win/win_util.cc
@@ -256,6 +258,47 @@ diff --git a/chrome/browser/signin/account_consistency_mode_manager_factory.cc b
      const {
 -  return true;
 +  return false;
+ }
+diff --git a/chrome/browser/signin/bound_session_credentials/throttled_gaia_auth_fetcher.cc b/chrome/browser/signin/bound_session_credentials/throttled_gaia_auth_fetcher.cc
+--- a/chrome/browser/signin/bound_session_credentials/throttled_gaia_auth_fetcher.cc
++++ b/chrome/browser/signin/bound_session_credentials/throttled_gaia_auth_fetcher.cc
+@@ -12,6 +12,7 @@
+ #include "net/cookies/cookie_util.h"
+ #include "services/network/public/cpp/shared_url_loader_factory.h"
+ #include "services/network/public/mojom/fetch_api.mojom-shared.h"
++#include "build/build_config.h"
+ 
+ ThrottledGaiaAuthFetcher::ThrottledGaiaAuthFetcher(
+     GaiaAuthConsumer* consumer,
+@@ -38,6 +39,7 @@ void ThrottledGaiaAuthFetcher::CreateAndStartGaiaFetcher(
+     const GURL& gaia_gurl,
+     network::mojom::CredentialsMode credentials_mode,
+     const net::NetworkTrafficAnnotationTag& traffic_annotation) {
++#if BUILDFLAG(ENABLE_BOUND_SESSION_CREDENTIALS)
+   if ((IsListAccountsUrl(gaia_gurl) || IsMultiloginUrl(gaia_gurl)) &&
+       credentials_mode == network::mojom::CredentialsMode::kInclude &&
+       GoogleURLLoaderThrottle::ShouldDeferRequestForBoundSession(
+@@ -53,6 +55,7 @@ void ThrottledGaiaAuthFetcher::CreateAndStartGaiaFetcher(
+   GaiaAuthFetcher::CreateAndStartGaiaFetcher(body, body_content_type, headers,
+                                              gaia_gurl, credentials_mode,
+                                              traffic_annotation);
++#endif
+ }
+ 
+ void ThrottledGaiaAuthFetcher::OnGaiaFetcherResumedOrCancelled(
+@@ -63,6 +66,7 @@ void ThrottledGaiaAuthFetcher::OnGaiaFetcherResumedOrCancelled(
+     network::mojom::CredentialsMode credentials_mode,
+     const net::NetworkTrafficAnnotationTag& traffic_annotation,
+     BoundSessionRequestThrottledHandler::UnblockAction unblock_action) {
++#if BUILDFLAG(ENABLE_BOUND_SESSION_CREDENTIALS)
+   switch (unblock_action) {
+     case BoundSessionRequestThrottledHandler::UnblockAction::kResume:
+       GaiaAuthFetcher::CreateAndStartGaiaFetcher(
+@@ -74,4 +78,5 @@ void ThrottledGaiaAuthFetcher::OnGaiaFetcherResumedOrCancelled(
+                              /*response_code=*/0);
+       break;
+   }
++#endif
  }
 diff --git a/chrome/browser/signin/chrome_signin_client.cc b/chrome/browser/signin/chrome_signin_client.cc
 --- a/chrome/browser/signin/chrome_signin_client.cc
@@ -778,6 +821,18 @@ diff --git a/components/policy_strings.grdp b/components/policy_strings.grdp
    </message>
    <message name="IDS_POLICY_SOURCE_CLOUD" desc="Indicates that the policy originates from the cloud.">
      Cloud
+diff --git a/components/signin/features.gni b/components/signin/features.gni
+--- a/components/signin/features.gni
++++ b/components/signin/features.gni
+@@ -7,7 +7,7 @@ import("//build/config/chromeos/ui_mode.gni")
+ 
+ declare_args() {
+   # Compile time flag for Bound Session Credentials.
+-  enable_bound_session_credentials = is_linux || is_mac || is_win
++  enable_bound_session_credentials = false
+ }
+ 
+ # Warning: The feature is still under development. See b/280753754.
 diff --git a/components/signin/internal/identity_manager/gaia_cookie_manager_service.cc b/components/signin/internal/identity_manager/gaia_cookie_manager_service.cc
 --- a/components/signin/internal/identity_manager/gaia_cookie_manager_service.cc
 +++ b/components/signin/internal/identity_manager/gaia_cookie_manager_service.cc
