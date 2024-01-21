@@ -13,18 +13,18 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  chrome/android/chrome_java_resources.gni      |   1 +
  chrome/android/chrome_java_sources.gni        |   1 +
  chrome/android/java/AndroidManifest.xml       |  24 +++-
- .../res/layout/sharing_intent_content.xml     |  87 +++++++++++++
+ .../res/layout/sharing_intent_content.xml     |  87 ++++++++++++
  .../chrome/browser/IntentHandler.java         |  16 ++-
  .../browser/LaunchIntentDispatcher.java       |   2 +-
  .../init/ProcessInitializationHandler.java    |   3 +
- .../SharedIntentShareActivity.java            | 119 ++++++++++++++++++
+ .../SharedIntentShareActivity.java            | 127 ++++++++++++++++++
  .../flags/android/chrome_feature_list.cc      |   1 +
  .../browser/flags/ChromeFeatureList.java      |   1 +
  .../strings/android_chrome_strings.grd        |  13 ++
  .../about_flags_cc/Enable-share-intent.inc    |  12 ++
  .../Enable-share-intent.inc                   |   3 +
  .../Enable-share-intent.inc                   |   1 +
- 14 files changed, 276 insertions(+), 8 deletions(-)
+ 14 files changed, 284 insertions(+), 8 deletions(-)
  create mode 100644 chrome/android/java/res/layout/sharing_intent_content.xml
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/sharing/shared_intent/SharedIntentShareActivity.java
  create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Enable-share-intent.inc
@@ -263,7 +263,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/sharing/shared_
 new file mode 100644
 --- /dev/null
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/sharing/shared_intent/SharedIntentShareActivity.java
-@@ -0,0 +1,119 @@
+@@ -0,0 +1,127 @@
 +// Copyright 2019 The Chromium Authors. All rights reserved.
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
@@ -286,12 +286,15 @@ new file mode 100644
 +import org.chromium.base.ThreadUtils;
 +import org.chromium.base.task.PostTask;
 +import org.chromium.base.task.TaskTraits;
++import org.chromium.base.supplier.OneshotSupplier;
 +import org.chromium.chrome.R;
 +import org.chromium.chrome.browser.AlwaysIncognitoLinkInterceptor;
 +import org.chromium.chrome.browser.flags.ChromeFeatureList;
++import org.chromium.chrome.browser.init.ActivityProfileProvider;
 +import org.chromium.chrome.browser.init.AsyncInitializationActivity;
 +import org.chromium.chrome.browser.LaunchIntentDispatcher;
 +import org.chromium.chrome.browser.IntentHandler;
++import org.chromium.chrome.browser.profiles.ProfileProvider;
 +import org.chromium.ui.widget.ButtonCompat;
 +
 +/**
@@ -299,6 +302,11 @@ new file mode 100644
 + */
 +public class SharedIntentShareActivity
 +        extends AsyncInitializationActivity {
++
++    @Override
++    protected OneshotSupplier<ProfileProvider> createProfileProvider() {
++        return new ActivityProfileProvider(getLifecycleDispatcher());
++    }
 +
 +    /**
 +     * Checks whether sending shared clipboard message is enabled for the user and enables/disables

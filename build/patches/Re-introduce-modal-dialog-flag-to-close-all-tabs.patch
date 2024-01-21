@@ -93,7 +93,7 @@ new file mode 100644
 +                "CloseAllTabsModalDialog",
 +                base::FEATURE_ENABLED_BY_DEFAULT);
 +
-+SET_CROMITE_FEATURE_ENABLED(kCloseTabSuggestions);
++SET_CROMITE_FEATURE_ENABLED(kArchiveTabService);
 +
 +#endif
 diff --git a/cromite_flags/chrome/browser/flags/android/chrome_feature_list_h/Re-introduce-modal-dialog-flag-to-close-all-tabs.inc b/cromite_flags/chrome/browser/flags/android/chrome_feature_list_h/Re-introduce-modal-dialog-flag-to-close-all-tabs.inc

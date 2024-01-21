@@ -10,15 +10,15 @@ Do not skip google.com domains for password generation (csagan5)
 
 License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 ---
- chrome/browser/prefs/browser_prefs.cc         |  6 +--
- .../ui/autofill/chrome_autofill_client.cc     |  7 +--
+ chrome/browser/prefs/browser_prefs.cc         |  6 +-
+ .../ui/autofill/chrome_autofill_client.cc     |  7 +-
  .../core/browser/browser_autofill_manager.h   |  4 +-
- .../autofill_crowdsourcing_manager.cc         | 43 +++----------------
+ .../autofill_crowdsourcing_manager.cc         | 66 ++-----------------
  .../autofill_crowdsourcing_manager.h          |  2 -
  .../autofill/core/common/autofill_features.cc |  1 +
- .../autofill/core/common/autofill_prefs.cc    | 10 ++---
+ .../autofill/core/common/autofill_prefs.cc    | 10 +--
  .../password_generation_frame_helper.cc       |  4 --
- 8 files changed, 19 insertions(+), 58 deletions(-)
+ 8 files changed, 17 insertions(+), 83 deletions(-)
 
 diff --git a/chrome/browser/prefs/browser_prefs.cc b/chrome/browser/prefs/browser_prefs.cc
 --- a/chrome/browser/prefs/browser_prefs.cc
@@ -124,19 +124,38 @@ diff --git a/components/autofill/core/browser/crowdsourcing/autofill_crowdsourci
  }
  
  }  // namespace
-@@ -732,6 +697,11 @@ size_t AutofillCrowdsourcingManager::GetPayloadLength(
+@@ -732,34 +697,13 @@ size_t AutofillCrowdsourcingManager::GetPayloadLength(
  
  std::tuple<GURL, std::string> AutofillCrowdsourcingManager::GetRequestURLAndMethod(
      const FormRequestData& request_data) const {
+-  // ID of the resource to add to the API request URL. Nothing will be added if
+-  // `resource_id` is empty.
+-  std::string resource_id;
+-  std::string method = "POST";
+-
+-  if (request_data.request_type == AutofillCrowdsourcingManager::REQUEST_QUERY) {
+-    if (GetPayloadLength(request_data.payload) <= kMaxQueryGetSize) {
+-      resource_id = request_data.payload;
+-      method = "GET";
+-      base::UmaHistogramBoolean(kUmaApiUrlIsTooLong, false);
+-    } else {
+-      base::UmaHistogramBoolean(kUmaApiUrlIsTooLong, true);
+-    }
+-    base::UmaHistogramBoolean(kUmaMethod, method != "GET");
+-  }
+-
+-  // Make the canonical URL to query the API, e.g.,
+-  // https://autofill.googleapis.com/v1/forms/1234?alt=proto.
+-  GURL url = autofill_server_url_.Resolve(
+-      GetAPIMethodUrl(request_data.request_type, resource_id, method));
+-
+-  // Add the query parameter to set the response format to a serialized proto.
+-  url = net::AppendQueryParameter(url, "alt", "proto");
+-
+-  return std::make_tuple(std::move(url), std::move(method));
 +  std::string method2("GET");
 +  GURL url2 = GURL("about:blank");
-+  if ((true))
-+    return std::make_tuple(std::move(url2), std::move(method2));
-+
-   // ID of the resource to add to the API request URL. Nothing will be added if
-   // `resource_id` is empty.
-   std::string resource_id;
-@@ -760,6 +730,7 @@ std::tuple<GURL, std::string> AutofillCrowdsourcingManager::GetRequestURLAndMeth
++  return std::make_tuple(std::move(url2), std::move(method2));
  }
  
  bool AutofillCrowdsourcingManager::StartRequest(FormRequestData request_data) {

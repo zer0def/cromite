@@ -380,12 +380,12 @@ diff --git a/chrome/browser/extensions/api/settings_private/prefs_util.cc b/chro
 +++ b/chrome/browser/extensions/api/settings_private/prefs_util.cc
 @@ -206,6 +206,11 @@ const PrefsUtil::TypedPrefMap& PrefsUtil::GetAllowlistedKeys() {
    (*s_allowlist)[::prefs::kExpireDaysThreshold] =
-       settings_api::PrefType::PREF_TYPE_NUMBER;
+       settings_api::PrefType::kNumber;
  
 +  (*s_allowlist)[::prefs::kEnableReferrers] =
-+      settings_api::PrefType::PREF_TYPE_BOOLEAN;
++      settings_api::PrefType::kBoolean;
 +  (*s_allowlist)[::prefs::kReferrersPolicy] =
-+      settings_api::PrefType::PREF_TYPE_NUMBER;
++      settings_api::PrefType::kNumber;
 +
    // Appearance settings.
    (*s_allowlist)[::prefs::kCurrentThemeID] = settings_api::PrefType::kString;

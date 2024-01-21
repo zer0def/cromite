@@ -118,7 +118,7 @@ diff --git a/components/browser_ui/site_settings/android/java/src/org/chromium/c
 +                                value,
 +                                "",
 +                                /* isEmbargoed= */ false);
-+                setContentSettingException(type, exception)
++                setContentSettingException(type, exception);
 +            }
 +        } else if (type == ContentSettingsType.COOKIES) {
 +            // It is possible to set the permission without having an existing exception

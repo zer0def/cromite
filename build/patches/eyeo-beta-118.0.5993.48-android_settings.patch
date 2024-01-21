@@ -12,7 +12,7 @@ Pre-requisites: eyeo Browser Ad filtering Solution: Base Module and Android API 
  .../adblock/AdblockFilterFragmentTest.java    |  63 +++++
  .../adblock/AdblockPopupInfoBarTest.java      | 118 +++++++++
  .../adblock/AdblockPopupMessageTest.java      | 103 ++++++++
- components/adblock/android/BUILD.gn           |  68 +++++
+ components/adblock/android/BUILD.gn           |  67 +++++
  components/adblock/android/README.md          |  13 +
  .../adblock/android/adblock_strings.grd       | 238 ++++++++++++++++++
  .../fragment_adblock_custom_item_add.png      | Bin 0 -> 490 bytes
@@ -124,7 +124,7 @@ Pre-requisites: eyeo Browser Ad filtering Solution: Base Module and Android API 
  .../translations/adblock_strings_zh-HK.xtb    |   4 +
  .../translations/adblock_strings_zh-TW.xtb    |  13 +
  .../translations/adblock_strings_zu.xtb       |   4 +
- 118 files changed, 2444 insertions(+), 3 deletions(-)
+ 118 files changed, 2443 insertions(+), 3 deletions(-)
  create mode 100644 chrome/browser/adblock/android/javatests/src/org/chromium/chrome/browser/adblock/AdblockFilterFragmentTest.java
  create mode 100644 chrome/browser/adblock/android/javatests/src/org/chromium/chrome/browser/adblock/AdblockPopupInfoBarTest.java
  create mode 100644 chrome/browser/adblock/android/javatests/src/org/chromium/chrome/browser/adblock/AdblockPopupMessageTest.java
@@ -637,7 +637,7 @@ new file mode 100644
 diff --git a/components/adblock/android/BUILD.gn b/components/adblock/android/BUILD.gn
 --- a/components/adblock/android/BUILD.gn
 +++ b/components/adblock/android/BUILD.gn
-@@ -66,6 +66,74 @@ android_library("adblock_controller_java") {
+@@ -66,6 +66,73 @@ android_library("adblock_controller_java") {
    resources_package = "org.chromium.components.adblock.controller"
  }
  
@@ -658,7 +658,6 @@ diff --git a/components/adblock/android/BUILD.gn b/components/adblock/android/BU
 +    ":adblock_controller_java",
 +    ":java_ui_resources",
 +    "//base:base_java",
-+    "//base:jni_java",
 +    "//build/android:build_java",
 +    "//chrome/browser/preferences:java",
 +    "//chrome/browser/profiles/android:java",

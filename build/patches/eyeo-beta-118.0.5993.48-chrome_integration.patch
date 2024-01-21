@@ -7462,7 +7462,7 @@ new file mode 100644
 +// You should have received a copy of the GNU General Public License
 +// along with eyeo Chromium SDK.  If not, see <http://www.gnu.org/licenses/>.
 +
-+import {getRequiredElement} from 'chrome://resources/js/util_ts.js';
++import {getRequiredElement} from 'chrome://resources/js/util.js';
 +import {AdblockInternalsPageHandler} from './adblock_internals.mojom-webui.js';
 +
 +async function debugInfo(): Promise<string> {

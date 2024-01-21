@@ -9,7 +9,7 @@ Requires patch: Content-settings-infrastructure.patch
 Original License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 ---
- .../impl/BromiteWebGLContentSetting.java      | 92 +++++++++++++++++++
+ .../impl/BromiteWebGLContentSetting.java      | 93 +++++++++++++++++++
  .../bromite_content_settings/webgl.grdp       | 27 ++++++
  .../bromite_content_settings/webgl.inc        | 22 +++++
  .../common/bromite_content_settings/WEBGL.inc |  1 +
@@ -17,7 +17,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../execution_context/execution_context.h     |  2 +
  .../webgl/webgl_rendering_context_base.cc     | 32 +++----
  .../webgl/webgl_rendering_context_base.h      |  2 +
- 8 files changed, 166 insertions(+), 19 deletions(-)
+ 8 files changed, 167 insertions(+), 19 deletions(-)
  create mode 100644 components/browser_ui/site_settings/android/java/src/org/chromium/components/browser_ui/site_settings/impl/BromiteWebGLContentSetting.java
  create mode 100644 components/browser_ui/strings/bromite_content_settings/webgl.grdp
  create mode 100644 components/content_settings/core/browser/bromite_content_settings/webgl.inc
@@ -27,7 +27,7 @@ diff --git a/components/browser_ui/site_settings/android/java/src/org/chromium/c
 new file mode 100644
 --- /dev/null
 +++ b/components/browser_ui/site_settings/android/java/src/org/chromium/components/browser_ui/site_settings/impl/BromiteWebGLContentSetting.java
-@@ -0,0 +1,92 @@
+@@ -0,0 +1,93 @@
 +/*
 +    This file is part of Bromite.
 +
@@ -80,7 +80,8 @@ new file mode 100644
 +            /*defaultEnabledValue*/ getDefaultEnabledValue(),
 +            /*defaultDisabledValue*/ getDefaultDisabledValue(),
 +            /*enabledSummary*/ R.string.website_settings_category_webgl_enabled,
-+            /*disabledSummary*/ R.string.website_settings_category_webgl_disabled);
++            /*disabledSummary*/ R.string.website_settings_category_webgl_disabled,
++            /*summaryOverrideForScreenReader*/ 0);
 +    }
 +
 +    @Override

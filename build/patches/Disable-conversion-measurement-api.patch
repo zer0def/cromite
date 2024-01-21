@@ -25,7 +25,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../attribution_storage_sql.cc                |   8 +-
  content/browser/storage_partition_impl.cc     |   9 -
  content/public/android/BUILD.gn               |   2 -
- .../browser/AttributionOsLevelManager.java    | 291 +-----------------
+ .../browser/AttributionOsLevelManager.java    | 296 +-----------------
  .../public/browser/content_browser_client.cc  |   7 +-
  .../public/browser/navigation_controller.cc   |   1 -
  .../Disable-conversion-measurement-api.inc    |   1 +
@@ -35,7 +35,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../network/public/cpp/attribution_utils.cc   |   2 +
  third_party/blink/renderer/core/page/page.cc  |   2 +-
  ui/events/android/motion_event_android.cc     |   6 +-
- 24 files changed, 66 insertions(+), 316 deletions(-)
+ 24 files changed, 64 insertions(+), 323 deletions(-)
  create mode 100644 cromite_flags/content/public/common/content_features_cc/Disable-conversion-measurement-api.inc
  create mode 100644 cromite_flags/services/network/public/cpp/features_cc/Disable-conversion-measurement-api.inc
  create mode 100644 cromite_flags/third_party/blink/common/features_cc/Disable-conversion-measurement-api.inc
@@ -296,14 +296,13 @@ diff --git a/content/public/android/java/src/org/chromium/content/browser/Attrib
      private static final String TAG = "AttributionManager";
      // TODO: replace with constant in android.Manifest.permission once it becomes available in U.
      private static final String PERMISSION_ACCESS_ADSERVICES_ATTRIBUTION =
-@@ -116,63 +107,14 @@ public class AttributionOsLevelManager {
+@@ -116,62 +107,11 @@ public class AttributionOsLevelManager {
      }
  
      private static boolean supportsAttribution() {
 -        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.R;
-+        return false;
-     }
- 
+-    }
+-
 -    private static @OperationResult int convertToOperationResult(Throwable thrown) {
 -        if (thrown instanceof IllegalArgumentException) {
 -            return OperationResult.ERROR_ILLEGAL_ARGUMENT;
@@ -327,12 +326,11 @@ diff --git a/content/public/android/java/src/org/chromium/content/browser/Attrib
 -        } else {
 -            return OperationResult.ERROR_UNKNOWN;
 -        }
-+    private MeasurementManagerFutures getManager() {
-+        return null;
++        return false;
      }
  
--    private static void recordOperationResult(
--            @OperationType int type, @OperationResult int result) {
+     private static void recordOperationResult(
+             @OperationType int type, @OperationResult int result) {
 -        String suffix = "";
 -        switch (type) {
 -            case OperationType.REGISTER_SOURCE:
@@ -354,16 +352,15 @@ diff --git a/content/public/android/java/src/org/chromium/content/browser/Attrib
 -                suffix = "DeleteRegistrations";
 -                break;
 -        }
- 
+-
 -        assert suffix.length() > 0;
 -
 -        RecordHistogram.recordEnumeratedHistogram(
 -                "Conversions.AndroidOperationResult." + suffix, result, OperationResult.COUNT);
--    }
+     }
  
      @CalledByNative
-     private AttributionOsLevelManager(long nativePtr) {
-@@ -180,22 +122,7 @@ public class AttributionOsLevelManager {
+@@ -180,22 +120,7 @@ public class AttributionOsLevelManager {
      }
  
      private MeasurementManagerFutures getManager() {
@@ -387,10 +384,15 @@ diff --git a/content/public/android/java/src/org/chromium/content/browser/Attrib
      }
  
      private void onRegistrationCompleted(
-@@ -214,21 +141,6 @@ public class AttributionOsLevelManager {
-         if (!supportsAttribution()) {
-             return;
+@@ -209,28 +134,6 @@ public class AttributionOsLevelManager {
          }
+     }
+ 
+-    private void addRegistrationFutureCallback(
+-            int requestId, @OperationType int type, ListenableFuture<?> future) {
+-        if (!supportsAttribution()) {
+-            return;
+-        }
 -        Futures.addCallback(
 -                future,
 -                new FutureCallback<Object>() {
@@ -406,10 +408,12 @@ diff --git a/content/public/android/java/src/org/chromium/content/browser/Attrib
 -                    }
 -                },
 -                ContextUtils.getApplicationContext().getMainExecutor());
-     }
- 
+-    }
+-
      /**
-@@ -249,25 +161,6 @@ public class AttributionOsLevelManager {
+      * Registers a web attribution source with native, see `registerWebSourceAsync()`:
+      * https://developer.android.com/reference/androidx/privacysandbox/ads/adservices/java/measurement/MeasurementManagerFutures.
+@@ -249,25 +152,6 @@ public class AttributionOsLevelManager {
                      OperationResult.ERROR_VERSION_UNSUPPORTED);
              return;
          }
@@ -435,7 +439,7 @@ diff --git a/content/public/android/java/src/org/chromium/content/browser/Attrib
      }
  
      /**
-@@ -283,15 +176,6 @@ public class AttributionOsLevelManager {
+@@ -283,15 +167,6 @@ public class AttributionOsLevelManager {
                      OperationResult.ERROR_VERSION_UNSUPPORTED);
              return;
          }
@@ -451,7 +455,7 @@ diff --git a/content/public/android/java/src/org/chromium/content/browser/Attrib
      }
  
      /**
-@@ -308,22 +192,6 @@ public class AttributionOsLevelManager {
+@@ -308,22 +183,6 @@ public class AttributionOsLevelManager {
                      OperationResult.ERROR_VERSION_UNSUPPORTED);
              return;
          }
@@ -474,7 +478,7 @@ diff --git a/content/public/android/java/src/org/chromium/content/browser/Attrib
      }
  
      /**
-@@ -339,15 +207,6 @@ public class AttributionOsLevelManager {
+@@ -339,15 +198,6 @@ public class AttributionOsLevelManager {
                      OperationResult.ERROR_VERSION_UNSUPPORTED);
              return;
          }
@@ -490,7 +494,7 @@ diff --git a/content/public/android/java/src/org/chromium/content/browser/Attrib
      }
  
      private void onDataDeletionCompleted(int requestId) {
-@@ -382,96 +241,7 @@ public class AttributionOsLevelManager {
+@@ -382,96 +232,7 @@ public class AttributionOsLevelManager {
              onDataDeletionCompleted(requestId);
              return;
          }
@@ -588,7 +592,7 @@ diff --git a/content/public/android/java/src/org/chromium/content/browser/Attrib
      }
  
      private static void onMeasurementStateReturned(int status, @OperationResult int result) {
-@@ -487,6 +257,10 @@ public class AttributionOsLevelManager {
+@@ -487,6 +248,10 @@ public class AttributionOsLevelManager {
      private static void getMeasurementApiStatus() {
          ThreadUtils.assertOnBackgroundThread();
  
@@ -599,7 +603,7 @@ diff --git a/content/public/android/java/src/org/chromium/content/browser/Attrib
          if (sManagerForTesting != null) {
              AttributionOsLevelManagerJni.get().onMeasurementStateReturned(1);
              return;
-@@ -506,49 +280,6 @@ public class AttributionOsLevelManager {
+@@ -506,49 +271,6 @@ public class AttributionOsLevelManager {
              onMeasurementStateReturned(/* status= */ 0, OperationResult.ERROR_PERMISSION_UNGRANTED);
              return;
          }

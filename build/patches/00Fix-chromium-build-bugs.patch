@@ -6,8 +6,10 @@ because of
 https://bugs.chromium.org/p/chromium/issues/detail?id=1491776#c10
 ---
  BUILD.gn                                           |  1 -
+ .../chrome_browsing_data_model_delegate.cc         |  1 +
  .../navigation_predictor_metrics_document_data.h   |  2 ++
  chrome/browser/safe_browsing/BUILD.gn              |  1 +
+ .../browser/metrics/shadow_prediction_metrics.cc   |  2 +-
  .../omnibox/browser/autocomplete_classifier.cc     |  4 ++--
  components/omnibox/browser/omnibox_field_trial.cc  |  4 ++--
  .../phishing_classifier/phishing_image_embedder.cc | 14 +++-----------
@@ -15,7 +17,7 @@ https://bugs.chromium.org/p/chromium/issues/detail?id=1491776#c10
  crypto/BUILD.gn                                    |  3 +++
  net/BUILD.gn                                       |  1 +
  third_party/libevent/BUILD.gn                      |  2 ++
- 10 files changed, 17 insertions(+), 16 deletions(-)
+ 12 files changed, 19 insertions(+), 17 deletions(-)
 
 diff --git a/BUILD.gn b/BUILD.gn
 --- a/BUILD.gn
@@ -28,6 +30,17 @@ diff --git a/BUILD.gn b/BUILD.gn
            "//android_webview/tools/sdk_sandbox",
            "//android_webview/tools/system_webview_shell",
            "//chrome/android:chrome_junit_tests",
+diff --git a/chrome/browser/browsing_data/chrome_browsing_data_model_delegate.cc b/chrome/browser/browsing_data/chrome_browsing_data_model_delegate.cc
+--- a/chrome/browser/browsing_data/chrome_browsing_data_model_delegate.cc
++++ b/chrome/browser/browsing_data/chrome_browsing_data_model_delegate.cc
+@@ -221,6 +221,7 @@ bool ChromeBrowsingDataModelDelegate::IsCookieDeletionDisabled(
+     auto* client = permissions::PermissionsClient::Get();
+     return client->IsCookieDeletionDisabled(profile_, url);
+   }
++  return false;
+ #else
+   return false;
+ #endif
 diff --git a/chrome/browser/navigation_predictor/navigation_predictor_metrics_document_data.h b/chrome/browser/navigation_predictor/navigation_predictor_metrics_document_data.h
 --- a/chrome/browser/navigation_predictor/navigation_predictor_metrics_document_data.h
 +++ b/chrome/browser/navigation_predictor/navigation_predictor_metrics_document_data.h
@@ -51,6 +64,18 @@ diff --git a/chrome/browser/safe_browsing/BUILD.gn b/chrome/browser/safe_browsin
      ]
      if (safe_browsing_mode == 1) {
        # "Safe Browsing Full" files in addition to the "basic" ones to use for
+diff --git a/components/autofill/core/browser/metrics/shadow_prediction_metrics.cc b/components/autofill/core/browser/metrics/shadow_prediction_metrics.cc
+--- a/components/autofill/core/browser/metrics/shadow_prediction_metrics.cc
++++ b/components/autofill/core/browser/metrics/shadow_prediction_metrics.cc
+@@ -61,7 +61,7 @@ int GetShadowPrediction(ServerFieldType current,
+ }
+ 
+ void LogShadowPredictionComparison(const AutofillField& field) {
+-  const auto& submitted_types = field.possible_types();
++  [[maybe_unused]] const auto& submitted_types = field.possible_types();
+ 
+ #if BUILDFLAG(USE_INTERNAL_AUTOFILL_PATTERNS)
+   base::UmaHistogramSparse(
 diff --git a/components/omnibox/browser/autocomplete_classifier.cc b/components/omnibox/browser/autocomplete_classifier.cc
 --- a/components/omnibox/browser/autocomplete_classifier.cc
 +++ b/components/omnibox/browser/autocomplete_classifier.cc

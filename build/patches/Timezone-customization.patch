@@ -15,7 +15,7 @@ Require: Content-settings-infrastructure.patch
  ...ezoneoverride_site_settings_preference.xml |  68 ++++++
  ...imezoneOverrideSiteSettingsPreference.java | 196 ++++++++++++++++++
  .../WebsitePreferenceBridge.java              |  10 +
- ...BromiteTimezoneOverrideContentSetting.java | 147 +++++++++++++
+ ...BromiteTimezoneOverrideContentSetting.java | 148 +++++++++++++
  .../android/website_preference_bridge.cc      |  16 ++
  .../bromite_content_settings/timezone.grdp    |  39 ++++
  .../timezone_override.inc                     |  23 ++
@@ -33,7 +33,7 @@ Require: Content-settings-infrastructure.patch
  .../content_settings/core/common/pref_names.h |   2 +
  .../renderer/content_settings_agent_impl.cc   |  80 +++++++
  .../renderer/content_settings_agent_impl.h    |  11 +
- 23 files changed, 681 insertions(+), 1 deletion(-)
+ 23 files changed, 682 insertions(+), 1 deletion(-)
  create mode 100755 components/browser_ui/site_settings/android/java/res/layout/time_zone_select_dialog.xml
  create mode 100755 components/browser_ui/site_settings/android/java/res/layout/timezoneoverride_site_settings_preference.xml
  create mode 100755 components/browser_ui/site_settings/android/java/src/org/chromium/components/browser_ui/site_settings/TimezoneOverrideSiteSettingsPreference.java
@@ -408,7 +408,7 @@ diff --git a/components/browser_ui/site_settings/android/java/src/org/chromium/c
 new file mode 100644
 --- /dev/null
 +++ b/components/browser_ui/site_settings/android/java/src/org/chromium/components/browser_ui/site_settings/impl/BromiteTimezoneOverrideContentSetting.java
-@@ -0,0 +1,147 @@
+@@ -0,0 +1,148 @@
 +/*
 +    This file is part of Bromite.
 +
@@ -467,7 +467,8 @@ new file mode 100644
 +            /*defaultEnabledValue*/ getDefaultEnabledValue(),
 +            /*defaultDisabledValue*/ getDefaultDisabledValue(),
 +            /*enabledSummary*/ R.string.website_settings_category_timezone_override_custom,
-+            /*disabledSummary*/ R.string.website_settings_category_timezone_override_random);
++            /*disabledSummary*/ R.string.website_settings_category_timezone_override_random,
++            /*summaryOverrideForScreenReader*/ 0);
 +    }
 +
 +    @Override

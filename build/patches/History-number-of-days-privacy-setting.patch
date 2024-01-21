@@ -168,7 +168,7 @@ diff --git a/chrome/browser/extensions/api/settings_private/prefs_util.cc b/chro
    (*s_allowlist)[::prefs::kShowHomeButton] = settings_api::PrefType::kBoolean;
  
 +  (*s_allowlist)[::prefs::kExpireDaysThreshold] =
-+      settings_api::PrefType::PREF_TYPE_NUMBER;
++      settings_api::PrefType::kNumber;
 +
    // Appearance settings.
    (*s_allowlist)[::prefs::kCurrentThemeID] = settings_api::PrefType::kString;

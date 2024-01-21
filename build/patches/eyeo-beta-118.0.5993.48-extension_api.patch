@@ -3507,17 +3507,17 @@ diff --git a/chrome/browser/extensions/api/settings_private/prefs_util.cc b/chro
  
 +  // Adblock settings
 +  (*s_allowlist)[adblock::common::prefs::kEnableAdblockLegacy] =
-+      settings_api::PrefType::PREF_TYPE_BOOLEAN;
++      settings_api::PrefType::kBoolean;
 +  (*s_allowlist)[adblock::common::prefs::kEnableAcceptableAdsLegacy] =
-+      settings_api::PrefType::PREF_TYPE_BOOLEAN;
++      settings_api::PrefType::kBoolean;
 +  (*s_allowlist)[adblock::common::prefs::kAdblockSubscriptionsLegacy] =
-+      settings_api::PrefType::PREF_TYPE_LIST;
++      settings_api::PrefType::kList;
 +  (*s_allowlist)[adblock::common::prefs::kAdblockCustomSubscriptionsLegacy] =
-+      settings_api::PrefType::PREF_TYPE_LIST;
++      settings_api::PrefType::kList;
 +  (*s_allowlist)[adblock::common::prefs::kAdblockAllowedDomainsLegacy] =
-+      settings_api::PrefType::PREF_TYPE_LIST;
++      settings_api::PrefType::kList;
 +  (*s_allowlist)[adblock::common::prefs::kAdblockCustomFiltersLegacy] =
-+      settings_api::PrefType::PREF_TYPE_LIST;
++      settings_api::PrefType::kList;
 +
    // Miscellaneous
    (*s_allowlist)[::embedder_support::kAlternateErrorPagesEnabled] =

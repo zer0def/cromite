@@ -14,9 +14,9 @@ in android there is a test function accessible in the developer settings.
  chrome/app/chrome_main_delegate.cc            |  2 +-
  chrome/browser/platform_util_android.cc       | 32 +++++++++++++++++++
  .../chrome/browser/util/PlatformUtil.java     | 10 ++++++
- components/gwp_asan/client/gwp_asan.cc        | 11 ++++---
+ components/gwp_asan/client/gwp_asan.cc        | 10 +++---
  components/memory_system/memory_system.cc     |  1 +
- 10 files changed, 77 insertions(+), 8 deletions(-)
+ 10 files changed, 76 insertions(+), 8 deletions(-)
 
 diff --git a/android_webview/lib/aw_main_delegate.cc b/android_webview/lib/aw_main_delegate.cc
 --- a/android_webview/lib/aw_main_delegate.cc
@@ -199,13 +199,12 @@ diff --git a/chrome/browser/util/android/java/src/org/chromium/chrome/browser/ut
 diff --git a/components/gwp_asan/client/gwp_asan.cc b/components/gwp_asan/client/gwp_asan.cc
 --- a/components/gwp_asan/client/gwp_asan.cc
 +++ b/components/gwp_asan/client/gwp_asan.cc
-@@ -76,21 +76,22 @@ constexpr int kDefaultMaxMetadata = 210;
+@@ -76,21 +76,21 @@ constexpr int kDefaultMaxMetadata = 210;
  constexpr int kDefaultTotalPages = kCpuIs64Bit ? 2048 : kDefaultMaxMetadata * 2;
  constexpr int kDefaultAllocationSamplingMultiplier = 1500;
  constexpr int kDefaultAllocationSamplingRange = 16;
 -constexpr double kDefaultProcessSamplingProbability = 0.01;
 +constexpr double kDefaultProcessSamplingProbability = 0.5;
-+constexpr int kDefaultProcessSamplingBoost2 = 10;
  #elif BUILDFLAG(IS_ANDROID)
  constexpr int kDefaultMaxAllocations = 70;
  constexpr int kDefaultMaxMetadata = 255;
@@ -225,7 +224,7 @@ diff --git a/components/gwp_asan/client/gwp_asan.cc b/components/gwp_asan/client
  #endif  // BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS) ||
          // BUILDFLAG(IS_FUCHSIA)
  constexpr int kDefaultProcessSamplingBoost2 = 10;
-@@ -415,7 +416,7 @@ void EnableForMalloc(bool boost_sampling, const char* process_type) {
+@@ -415,7 +415,7 @@ void EnableForMalloc(bool boost_sampling, const char* process_type) {
    std::ignore = init_once;
  #else
    std::ignore = internal::kGwpAsanMalloc;
@@ -234,7 +233,7 @@ diff --git a/components/gwp_asan/client/gwp_asan.cc b/components/gwp_asan/client
  #endif  // BUILDFLAG(USE_ALLOCATOR_SHIM)
  }
  
-@@ -435,7 +436,7 @@ void EnableForPartitionAlloc(bool boost_sampling, const char* process_type) {
+@@ -435,7 +435,7 @@ void EnableForPartitionAlloc(bool boost_sampling, const char* process_type) {
    std::ignore = init_once;
  #else
    std::ignore = internal::kGwpAsanPartitionAlloc;

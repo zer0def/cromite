@@ -66,7 +66,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../gcm_driver/GoogleCloudMessagingV2.java    |   2 +
  components/gcm_driver/gcm_client_impl.cc      |   4 +
  .../gcm_driver/instance_id/android/BUILD.gn   |   3 -
- .../instance_id/InstanceIDBridge.java         |  48 +-
+ .../instance_id/InstanceIDBridge.java         |  55 +-
  .../media_router/browser/android/BUILD.gn     |  11 -
  .../media_router/BrowserMediaRouter.java      |  21 +-
  .../components/media_router/MediaSink.java    |  44 +-
@@ -105,7 +105,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../preconditions/javatests/BUILD.gn          |   1 -
  .../gms/ChromiumPlayServicesAvailability.java |  10 +-
  third_party/cardboard/BUILD.gn                |   4 -
- 81 files changed, 98 insertions(+), 2206 deletions(-)
+ 81 files changed, 98 insertions(+), 2213 deletions(-)
 
 diff --git a/android_webview/expectations/system_webview_bundle.AndroidManifest.expected b/android_webview/expectations/system_webview_bundle.AndroidManifest.expected
 --- a/android_webview/expectations/system_webview_bundle.AndroidManifest.expected
@@ -187,7 +187,7 @@ diff --git a/chrome/android/BUILD.gn b/chrome/android/BUILD.gn
 +      "//third_party/androidx:androidx_recyclerview_recyclerview_java",
 +      "//third_party/androidx:androidx_vectordrawable_vectordrawable_java",
 +      "//base:base_java",
-+      "//base:jni_java",
++      "//third_party/jni_zero:jni_zero_java",
 +
        "//third_party/android_deps:chromium_play_services_availability_java",
 -      "//third_party/android_deps:com_google_code_findbugs_jsr305_java",
@@ -1592,7 +1592,20 @@ diff --git a/components/gcm_driver/instance_id/android/java/src/org/chromium/com
              }
  
              @Override
-@@ -240,11 +205,6 @@ public class InstanceIDBridge {
+@@ -227,24 +192,12 @@ public class InstanceIDBridge {
+         protected abstract void sendResultToNative(Result result);
+ 
+         public void execute() {
+-            if (sBlockOnAsyncTasksForTesting) {
+-                if (mInstanceID == null) {
+-                    mInstanceID = InstanceIDWithSubtype.getInstance(mSubtype);
+-                }
+-                sendResultToNative(doBackgroundWork());
+-                return;
+-            }
+             AsyncTask<Result> task =
+                     new AsyncTask<Result>() {
+                         @Override
                          @SuppressWarnings(
                                  "NoSynchronizedThisCheck") // Only used/accessible by native.
                          protected Result doInBackground() {

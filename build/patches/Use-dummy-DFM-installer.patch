@@ -8,12 +8,12 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../engine/SplitCompatEngine.java             | 77 +------------------
  .../engine/SplitCompatEngineFacade.java       | 29 ++-----
  .../module_installer/logger/Logger.java       | 16 +---
- .../logger/PlayCoreLogger.java                | 42 +---------
+ .../logger/PlayCoreLogger.java                | 50 ++----------
  .../logger/SplitAvailabilityLogger.java       | 40 ----------
  .../logger/SplitInstallStatusLogger.java      | 30 +-------
  .../module_installer/util/ModuleUtil.java     |  5 --
  .../util/SplitCompatInitializer.java          |  6 --
- 9 files changed, 15 insertions(+), 232 deletions(-)
+ 9 files changed, 19 insertions(+), 236 deletions(-)
 
 diff --git a/components/module_installer/android/BUILD.gn b/components/module_installer/android/BUILD.gn
 --- a/components/module_installer/android/BUILD.gn
@@ -280,7 +280,7 @@ diff --git a/components/module_installer/android/java/src/org/chromium/component
 diff --git a/components/module_installer/android/java/src/org/chromium/components/module_installer/logger/PlayCoreLogger.java b/components/module_installer/android/java/src/org/chromium/components/module_installer/logger/PlayCoreLogger.java
 --- a/components/module_installer/android/java/src/org/chromium/components/module_installer/logger/PlayCoreLogger.java
 +++ b/components/module_installer/android/java/src/org/chromium/components/module_installer/logger/PlayCoreLogger.java
-@@ -4,15 +4,8 @@
+@@ -4,74 +4,38 @@
  
  package org.chromium.components.module_installer.logger;
  
@@ -295,9 +295,17 @@ diff --git a/components/module_installer/android/java/src/org/chromium/component
 -
      public PlayCoreLogger() {
          this(
-                 new SplitInstallFailureLogger(),
-@@ -24,54 +17,25 @@ public class PlayCoreLogger implements Logger {
-             SplitInstallFailureLogger failureLogger,
+-                new SplitInstallFailureLogger(),
+-                new SplitInstallStatusLogger(),
+-                new SplitAvailabilityLogger());
++                null,
++                null,
++                null);
+     }
+ 
+     public PlayCoreLogger(
+-            SplitInstallFailureLogger failureLogger,
++            Object failureLogger,
              SplitInstallStatusLogger statusLogger,
              SplitAvailabilityLogger availabilityLogger) {
 -        mFailureLogger = failureLogger;

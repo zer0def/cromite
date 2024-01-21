@@ -14,7 +14,7 @@ diff --git a/content/browser/file_system_access/features.cc b/content/browser/fi
               "FileSystemAccessDirectoryIterationSymbolicLinkCheck",
               base::FEATURE_DISABLED_BY_DEFAULT);
  
-+CROMITE_SET_FEATURE_ENABLED(kFileSystemAccessDragAndDropCheckBlocklist);
++SET_CROMITE_FEATURE_ENABLED(kFileSystemAccessDragAndDropCheckBlocklist);
  }  // namespace content::features
 --
 2.25.1

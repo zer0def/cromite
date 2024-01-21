@@ -36,7 +36,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../overlays/strip/StripLayoutHelper.java     |  2 +-
  .../strip/StripLayoutHelperManager.java       | 33 ++++++-
  .../scene_layer/StaticTabSceneLayer.java      |  7 +-
- .../scene_layer/TabListSceneLayer.java        | 13 +++
+ .../scene_layer/TabListSceneLayer.java        |  8 ++
  .../scene_layer/TabStripSceneLayer.java       | 21 ++++-
  .../browser/findinpage/FindToolbarTablet.java | 10 ++-
  .../fullscreen/BrowserControlsManager.java    | 12 +++
@@ -49,9 +49,10 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../browser/settings/SettingsActivity.java    |  5 ++
  .../StatusIndicatorCoordinator.java           |  9 ++
  .../StatusIndicatorSceneLayer.java            |  6 +-
- .../browser/toolbar/ToolbarManager.java       | 44 ++++++++--
+ .../browser/toolbar/ToolbarManager.java       | 46 ++++++++--
  .../chrome/browser/ui/BottomContainer.java    | 18 ++++
  .../ui/system/StatusBarColorController.java   |  9 ++
+ .../android/compositor/layer/toolbar_layer.cc | 10 ++-
  .../scene_layer/tab_strip_scene_layer.cc      | 16 +++-
  .../BrowserControlsMarginSupplier.java        |  5 ++
  .../BrowserControlsStateProvider.java         |  6 ++
@@ -86,7 +87,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../AccessibilitySettingsDelegate.java        |  6 ++
  .../render_widget_host_view_android.cc        |  3 +
  .../Move-navigation-bar-to-bottom.inc         | 12 +++
- 73 files changed, 884 insertions(+), 80 deletions(-)
+ 74 files changed, 889 insertions(+), 82 deletions(-)
  create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Move-navigation-bar-to-bottom.inc
 
 diff --git a/cc/base/features.cc b/cc/base/features.cc
@@ -1143,18 +1144,6 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/compositor/scen
          // TODO(crbug.com/1070281): Use Supplier to get viewport and forward it to native, then
          // updateLayer can become obsolete.
          TabListSceneLayerJni.get()
-@@ -125,6 +133,11 @@ public class TabListSceneLayer extends SceneLayer {
-             boolean useIncognitoColors = t.isIncognito();
-             int defaultThemeColor = ChromeColors.getDefaultThemeColor(context, useIncognitoColors);
- 
-+            if (ChromeFeatureList.sMoveTopToolbarToBottom.isEnabled()) {
-+                toolbarYOffset = 0;
-+                contentOffset = 0;
-+            }
-+
-             // TODO(dtrainor, clholgat): remove "* dpToPx" once the native part fully supports dp.
-             TabListSceneLayerJni.get()
-                     .putTabLayer(
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/compositor/scene_layer/TabStripSceneLayer.java b/chrome/android/java/src/org/chromium/chrome/browser/compositor/scene_layer/TabStripSceneLayer.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/compositor/scene_layer/TabStripSceneLayer.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/compositor/scene_layer/TabStripSceneLayer.java
@@ -1636,7 +1625,16 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/toolbar/Toolbar
          mBottomControlsCoordinatorSupplier.set(bottomControlsCoordinator);
          if (mBackPressManager != null) {
              mBackPressManager.addHandler(
-@@ -2532,6 +2557,15 @@ public class ToolbarManager
+@@ -2133,6 +2158,8 @@ public class ToolbarManager
+     private int getToolbarExtraYOffset() {
+         int toolbarHairlineHeight =
+                 mControlContainer.findViewById(R.id.toolbar_hairline).getHeight();
++        if (ChromeFeatureList.sMoveTopToolbarToBottom.isEnabled())
++            toolbarHairlineHeight = 0;
+         int extraYOffset =
+                 mBrowserControlsSizer.getTopControlsHeight()
+                         - (mControlContainer.getHeight() - toolbarHairlineHeight);
+@@ -2532,6 +2559,15 @@ public class ToolbarManager
      private void setControlContainerTopMargin(int margin) {
          final ViewGroup.MarginLayoutParams layoutParams =
                  ((ViewGroup.MarginLayoutParams) mControlContainer.getLayoutParams());
@@ -1721,6 +1719,33 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ui/system/Statu
      }
  
      /**
+diff --git a/chrome/browser/android/compositor/layer/toolbar_layer.cc b/chrome/browser/android/compositor/layer/toolbar_layer.cc
+--- a/chrome/browser/android/compositor/layer/toolbar_layer.cc
++++ b/chrome/browser/android/compositor/layer/toolbar_layer.cc
+@@ -5,6 +5,7 @@
+ #include "chrome/browser/android/compositor/layer/toolbar_layer.h"
+ 
+ #include "base/feature_list.h"
++#include "cc/base/features.h"
+ #include "cc/resources/scoped_ui_resource.h"
+ #include "cc/slim/layer.h"
+ #include "cc/slim/nine_patch_layer.h"
+@@ -113,8 +114,13 @@ void ToolbarLayer::PushResource(int toolbar_resource_id,
+     debug_layer_->RemoveFromParent();
+ 
+   // Position the toolbar at the bottom of the space available for top controls.
+-  layer_->SetPosition(
+-      gfx::PointF(x_offset, content_offset - layer_->bounds().height()));
++  if (base::FeatureList::IsEnabled(::features::kMoveTopToolbarToBottom)) {
++    layer_->SetPosition(
++        gfx::PointF(x_offset, content_offset + layer_->bounds().height()));
++  } else {
++    layer_->SetPosition(
++        gfx::PointF(x_offset, content_offset - layer_->bounds().height()));
++  }
+ }
+ 
+ int ToolbarLayer::GetIndexOfLayer(scoped_refptr<cc::slim::Layer> layer) {
 diff --git a/chrome/browser/android/compositor/scene_layer/tab_strip_scene_layer.cc b/chrome/browser/android/compositor/scene_layer/tab_strip_scene_layer.cc
 --- a/chrome/browser/android/compositor/scene_layer/tab_strip_scene_layer.cc
 +++ b/chrome/browser/android/compositor/scene_layer/tab_strip_scene_layer.cc

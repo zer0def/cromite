@@ -447,7 +447,7 @@ diff --git a/chrome/browser/chrome_content_browser_client.h b/chrome/browser/chr
 diff --git a/components/adblock/content/browser/adblock_url_loader_factory.cc b/components/adblock/content/browser/adblock_url_loader_factory.cc
 --- a/components/adblock/content/browser/adblock_url_loader_factory.cc
 +++ b/components/adblock/content/browser/adblock_url_loader_factory.cc
-@@ -342,12 +342,6 @@ void AdblockURLLoaderFactory::InProgressRequest::OnRequestError(
+@@ -343,12 +343,6 @@ void AdblockURLLoaderFactory::InProgressRequest::OnRequestError(
  
  void AdblockURLLoaderFactory::InProgressRequest::CheckFilterMatch(
      CheckFilterMatchCallback callback) {
@@ -460,7 +460,7 @@ diff --git a/components/adblock/content/browser/adblock_url_loader_factory.cc b/
    auto subscription_service = factory_->config_.subscription_service;
    if (is_document_request_) {
      auto* host = content::RenderFrameHost::FromID(factory_->host_id_);
-@@ -386,7 +380,7 @@ void AdblockURLLoaderFactory::InProgressRequest::CheckFilterMatch(
+@@ -387,7 +381,7 @@ void AdblockURLLoaderFactory::InProgressRequest::CheckFilterMatch(
    } else {
      factory_->config_.resource_classifier->CheckRequestFilterMatch(
          subscription_service->GetCurrentSnapshot(), request_url_,
@@ -469,7 +469,7 @@ diff --git a/components/adblock/content/browser/adblock_url_loader_factory.cc b/
          base::BindOnce(
              &AdblockURLLoaderFactory::InProgressRequest::OnRequestUrlClassified,
              weak_factory_.GetWeakPtr(),
-@@ -675,12 +669,14 @@ void AdblockURLLoaderFactory::InProgressRequest::OnRequestFilterMatchResult(
+@@ -676,12 +670,14 @@ void AdblockURLLoaderFactory::InProgressRequest::OnRequestFilterMatchResult(
  
  AdblockURLLoaderFactory::AdblockURLLoaderFactory(
      AdblockURLLoaderFactoryConfig config,

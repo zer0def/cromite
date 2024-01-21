@@ -17,15 +17,19 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 ---
  chrome/android/BUILD.gn                       |  1 +
  .../settings/PasswordSettings.java            | 81 ++++++++++++++++++-
- .../chromium/chrome/browser/tab/TabImpl.java  | 52 ++++++++++++
+ .../chromium/chrome/browser/tab/TabImpl.java  | 55 +++++++++++++
  .../browser/tab/TabViewAndroidDelegate.java   | 14 ++++
  chrome/browser/BUILD.gn                       |  7 ++
  chrome/browser/android/tab_android.cc         | 15 ++++
  chrome/browser/android/tab_android.h          |  2 +
  .../strings/android_chrome_strings.grd        |  6 ++
  .../ui/autofill/chrome_autofill_client.cc     |  8 +-
+ components/android_autofill/browser/BUILD.gn  |  1 +
  .../browser/android_autofill_manager.cc       |  2 +-
  .../browser/android_autofill_manager.h        |  4 +-
+ .../autofill/AutofillManagerWrapper.java      |  5 +-
+ .../components/autofill/AutofillProvider.java |  7 ++
+ .../BrowserSelectionActionMenuDelegate.java   | 62 ++++++++++++++
  .../browser/content_autofill_driver.cc        | 53 ++++++++++++
  .../content/browser/content_autofill_driver.h |  9 ++-
  .../content_autofill_driver_factory.cc        | 11 ++-
@@ -34,8 +38,10 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../autofill/core/common/autofill_prefs.cc    |  6 ++
  .../autofill/core/common/autofill_prefs.h     |  2 +
  .../embedder_support/view/ContentView.java    | 46 +++++++++++
+ .../selection/FloatingPastePopupMenu.java     |  3 +-
  .../chromium/ui/base/ViewAndroidDelegate.java |  8 ++
- 20 files changed, 325 insertions(+), 8 deletions(-)
+ 25 files changed, 404 insertions(+), 10 deletions(-)
+ create mode 100644 components/android_autofill/browser/java/src/org/chromium/components/autofill/BrowserSelectionActionMenuDelegate.java
 
 diff --git a/chrome/android/BUILD.gn b/chrome/android/BUILD.gn
 --- a/chrome/android/BUILD.gn
@@ -177,7 +183,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/password_manage
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tab/TabImpl.java b/chrome/android/java/src/org/chromium/chrome/browser/tab/TabImpl.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/tab/TabImpl.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/tab/TabImpl.java
-@@ -74,6 +74,17 @@ import org.chromium.url.GURL;
+@@ -74,6 +74,18 @@ import org.chromium.url.GURL;
  
  import java.nio.ByteBuffer;
  
@@ -187,7 +193,8 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tab/TabImpl.jav
 +import android.view.ViewStructure;
 +import android.view.autofill.AutofillValue;
 +import org.chromium.components.autofill.AutofillProvider;
-+import org.chromium.components.autofill.AutofillSelectionMenuItemProvider;
++import org.chromium.components.autofill.AutofillSelectionMenuItemHelper;
++import org.chromium.components.autofill.BrowserSelectionActionMenuDelegate;
 +import org.chromium.content_public.browser.SelectionPopupController;
 +import org.chromium.chrome.browser.preferences.Pref;
 +import org.chromium.components.user_prefs.UserPrefs;
@@ -195,7 +202,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tab/TabImpl.jav
  /**
   * Implementation of the interface {@link Tab}. Contains and manages a {@link ContentView}. This
   * class is not intended to be extended.
-@@ -224,6 +235,8 @@ class TabImpl implements Tab {
+@@ -224,6 +236,8 @@ class TabImpl implements Tab {
       */
      private @Nullable @TabLaunchType Integer mTabLaunchTypeAtCreation;
  
@@ -204,7 +211,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tab/TabImpl.jav
      /**
       * Creates an instance of a {@link TabImpl}. Package-private. Use {@link TabBuilder} to create
       * an instance.
-@@ -844,6 +857,11 @@ class TabImpl implements Tab {
+@@ -844,6 +858,11 @@ class TabImpl implements Tab {
          for (TabObserver observer : mObservers) observer.onDestroyed(this);
          mObservers.clear();
  
@@ -216,7 +223,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tab/TabImpl.jav
          mUserDataHost.destroy();
          mTabViewManager.destroy();
          hideNativePage(false, null);
-@@ -1424,6 +1442,16 @@ class TabImpl implements Tab {
+@@ -1424,6 +1443,16 @@ class TabImpl implements Tab {
          return mWebContentsState == null ? -1 : mWebContentsState.version();
      }
  
@@ -233,7 +240,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tab/TabImpl.jav
      /**
       * Initializes the {@link WebContents}. Completes the browser content components initialization
       * around a native WebContents pointer.
-@@ -1491,6 +1519,28 @@ class TabImpl implements Tab {
+@@ -1491,6 +1520,30 @@ class TabImpl implements Tab {
                                      this));
  
              mWebContents.notifyRendererPreferenceUpdate();
@@ -254,15 +261,17 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tab/TabImpl.jav
 +                    TabImplJni.get().initializeAutofillIfNecessary(mNativeTabAndroid);
 +                    mAutofillProvider.setWebContents(webContents);
 +                    cv.setWebContents(webContents);
-+                    selectionController.setNonSelectionAdditionalMenuItemProvider(
-+                            new AutofillSelectionMenuItemProvider(
-+                                    getContext(), mAutofillProvider));
++                    BrowserSelectionActionMenuDelegate selectionActionMenuDelegate =
++                            new BrowserSelectionActionMenuDelegate();
++                    selectionActionMenuDelegate.setAutofillSelectionMenuItemHelper(
++                            new AutofillSelectionMenuItemHelper(getContext(), mAutofillProvider));
++                    selectionController.setSelectionActionMenuDelegate(selectionActionMenuDelegate);
 +                }
 +            }
              TabHelpers.initWebContentsHelpers(this);
              notifyContentChanged();
          } finally {
-@@ -1954,6 +2004,8 @@ class TabImpl implements Tab {
+@@ -1954,6 +2007,8 @@ class TabImpl implements Tab {
  
          boolean handleNonNavigationAboutURL(GURL url);
  
@@ -394,6 +403,17 @@ diff --git a/chrome/browser/ui/autofill/chrome_autofill_client.cc b/chrome/brows
        content::WebContentsObserver(web_contents),
        log_manager_(
            // TODO(crbug.com/928595): Replace the closure with a callback to the
+diff --git a/components/android_autofill/browser/BUILD.gn b/components/android_autofill/browser/BUILD.gn
+--- a/components/android_autofill/browser/BUILD.gn
++++ b/components/android_autofill/browser/BUILD.gn
+@@ -40,6 +40,7 @@ android_library("java") {
+     "java/src/org/chromium/components/autofill/AutofillProviderUMA.java",
+     "java/src/org/chromium/components/autofill/AutofillRequest.java",
+     "java/src/org/chromium/components/autofill/AutofillSelectionMenuItemHelper.java",
++    "java/src/org/chromium/components/autofill/BrowserSelectionActionMenuDelegate.java",
+     "java/src/org/chromium/components/autofill/FormData.java",
+     "java/src/org/chromium/components/autofill/FormFieldData.java",
+     "java/src/org/chromium/components/autofill/PrefillRequest.java",
 diff --git a/components/android_autofill/browser/android_autofill_manager.cc b/components/android_autofill/browser/android_autofill_manager.cc
 --- a/components/android_autofill/browser/android_autofill_manager.cc
 +++ b/components/android_autofill/browser/android_autofill_manager.cc
@@ -424,6 +444,140 @@ diff --git a/components/android_autofill/browser/android_autofill_manager.h b/co
    void OnFormSubmittedImpl(const FormData& form,
                             bool known_success,
                             mojom::SubmissionSource source) override;
+diff --git a/components/android_autofill/browser/java/src/org/chromium/components/autofill/AutofillManagerWrapper.java b/components/android_autofill/browser/java/src/org/chromium/components/autofill/AutofillManagerWrapper.java
+--- a/components/android_autofill/browser/java/src/org/chromium/components/autofill/AutofillManagerWrapper.java
++++ b/components/android_autofill/browser/java/src/org/chromium/components/autofill/AutofillManagerWrapper.java
+@@ -51,6 +51,7 @@ public class AutofillManagerWrapper {
+             AutofillManagerWrapper manager = mManager.get();
+             if (manager == null) return;
+             manager.mIsAutofillInputUIShowing = (event == EVENT_INPUT_SHOWN);
++            if (manager.isLoggable()) manager.log("onAutofillEvent isAutofillInputUIShowing: " + manager.mIsAutofillInputUIShowing);
+             if (event == EVENT_INPUT_SHOWN) manager.notifyInputUIChange();
+         }
+     }
+@@ -89,6 +90,7 @@ public class AutofillManagerWrapper {
+                 // Uses Exception to catch various cases. (refer to crbug.com/1186406)
+                 Log.e(TAG, "getAutofillServiceComponentName", e);
+             }
++            if (isLoggable()) log("componentName=" + componentName);
+             if (componentName != null) {
+                 mIsAwGCurrentAutofillService =
+                         AWG_COMPONENT_NAME.equals(componentName.flattenToString());
+@@ -247,7 +249,7 @@ public class AutofillManagerWrapper {
+     /** Always check isLoggable() before call this method. */
+     public static void log(String log) {
+         // Log.i() instead of Log.d() is used here because log.d() is stripped out in release build.
+-        Log.i(TAG, log);
++        Log.i(TAG, "---" + log);
+     }
+ 
+     public static boolean isLoggable() {
+@@ -260,6 +262,7 @@ public class AutofillManagerWrapper {
+         // NOTE: See the comment on TAG above for why this is still AwAutofillManager.
+         // Check the system setting directly.
+         sIsLoggable = android.util.Log.isLoggable(TAG, Log.DEBUG);
++        // sIsLoggable = true; // to force enable the log
+     }
+ 
+ }
+diff --git a/components/android_autofill/browser/java/src/org/chromium/components/autofill/AutofillProvider.java b/components/android_autofill/browser/java/src/org/chromium/components/autofill/AutofillProvider.java
+--- a/components/android_autofill/browser/java/src/org/chromium/components/autofill/AutofillProvider.java
++++ b/components/android_autofill/browser/java/src/org/chromium/components/autofill/AutofillProvider.java
+@@ -190,13 +190,19 @@ public class AutofillProvider {
+ 
+     /** @return whether query autofill suggestion. */
+     public boolean shouldQueryAutofillSuggestion() {
++        AutofillManagerWrapper.log("---shouldQueryAutofillSuggestion" +
++            "  mRequest != null=" + (mRequest != null) +
++            "  mRequest.getFocusField() != null=" + (mRequest != null && mRequest.getFocusField() != null) +
++            "  !mAutofillManager.isAutofillInputUIShowing()=" + ( !mAutofillManager.isAutofillInputUIShowing()));
+         return mRequest != null
+                 && mRequest.getFocusField() != null
+                 && !mAutofillManager.isAutofillInputUIShowing();
+     }
+ 
+     public void queryAutofillSuggestion() {
++        AutofillManagerWrapper.log("queryAutofillSuggestion start");
+         if (shouldQueryAutofillSuggestion()) {
++            AutofillManagerWrapper.log("calling requestAutofill");
+             FocusField focusField = mRequest.getFocusField();
+             mAutofillManager.requestAutofill(
+                     mContainerView,
+@@ -256,6 +262,7 @@ public class AutofillProvider {
+             float width,
+             float height,
+             boolean hasServerPrediction) {
++        AutofillManagerWrapper.log("startAutofillSession");
+         // Check focusField inside short value? Autofill Manager might have session that wasn't
+         // started by AutofillProvider, we just always cancel existing session here.
+         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
+diff --git a/components/android_autofill/browser/java/src/org/chromium/components/autofill/BrowserSelectionActionMenuDelegate.java b/components/android_autofill/browser/java/src/org/chromium/components/autofill/BrowserSelectionActionMenuDelegate.java
+new file mode 100644
+--- /dev/null
++++ b/components/android_autofill/browser/java/src/org/chromium/components/autofill/BrowserSelectionActionMenuDelegate.java
+@@ -0,0 +1,62 @@
++// Copyright 2023 The Chromium Authors
++// Use of this source code is governed by a BSD-style license that can be
++// found in the LICENSE file.
++
++package org.chromium.components.autofill;
++
++import android.content.pm.ResolveInfo;
++
++import androidx.annotation.IntDef;
++import androidx.annotation.NonNull;
++
++import org.chromium.base.metrics.RecordHistogram;
++import org.chromium.components.autofill.AutofillSelectionMenuItemHelper;
++import org.chromium.content_public.browser.SelectionMenuItem;
++import org.chromium.content_public.browser.SelectionPopupController;
++import org.chromium.content_public.browser.selection.SelectionActionMenuDelegate;
++
++import java.lang.annotation.Retention;
++import java.lang.annotation.RetentionPolicy;
++import java.util.ArrayList;
++import java.util.List;
++
++import org.chromium.base.Log;
++
++/** Interface for customizing text selection menu items in {@link SelectionPopupController} */
++public class BrowserSelectionActionMenuDelegate implements SelectionActionMenuDelegate {
++    private AutofillSelectionMenuItemHelper mAutofillSelectionMenuItemHelper;
++
++    public BrowserSelectionActionMenuDelegate() {
++    }
++
++    @Override
++    public void modifyDefaultMenuItems(
++            List<SelectionMenuItem.Builder> menuItemBuilders,
++            boolean isSelectionPassword,
++            @NonNull String selectedText) {
++    }
++
++    @Override
++    public List<ResolveInfo> filterTextProcessingActivities(List<ResolveInfo> activities) {
++        return activities;
++    }
++
++    @NonNull
++    @Override
++    public List<SelectionMenuItem> getAdditionalNonSelectionItems() {
++        if (mAutofillSelectionMenuItemHelper != null) {
++            return mAutofillSelectionMenuItemHelper.getAdditionalItems();
++        }
++        return new ArrayList<>();
++    }
++
++    @NonNull
++    @Override
++    public List<SelectionMenuItem> getAdditionalTextProcessingItems() {
++        return new ArrayList<>();
++    }
++
++    public void setAutofillSelectionMenuItemHelper(AutofillSelectionMenuItemHelper provider) {
++        mAutofillSelectionMenuItemHelper = provider;
++    }
++}
 diff --git a/components/autofill/content/browser/content_autofill_driver.cc b/components/autofill/content/browser/content_autofill_driver.cc
 --- a/components/autofill/content/browser/content_autofill_driver.cc
 +++ b/components/autofill/content/browser/content_autofill_driver.cc
@@ -775,6 +929,25 @@ diff --git a/components/embedder_support/android/java/src/org/chromium/component
 +        }
 +    }
  }
+diff --git a/content/public/android/java/src/org/chromium/content/browser/selection/FloatingPastePopupMenu.java b/content/public/android/java/src/org/chromium/content/browser/selection/FloatingPastePopupMenu.java
+--- a/content/public/android/java/src/org/chromium/content/browser/selection/FloatingPastePopupMenu.java
++++ b/content/public/android/java/src/org/chromium/content/browser/selection/FloatingPastePopupMenu.java
+@@ -133,13 +133,14 @@ public class FloatingPastePopupMenu implements PastePopupMenu {
+             SortedSet<SelectionMenuGroup> nonSelectionMenuItems =
+                     SelectActionMenuHelper.getNonSelectionMenuItems(
+                             mContext, actionMenuDelegate, mSelectionActionMenuDelegate);
++            mCustomMenuItemClickListeners.clear();
+             SelectionPopupControllerImpl.initializeActionMenu(
+                     mContext, nonSelectionMenuItems, menu, mCustomMenuItemClickListeners, null);
+         }
+ 
+         @Override
+         public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+-            mCustomMenuItemClickListeners.clear();
++            // fixed a bug, moved above
+             return false;
+         }
+ 
 diff --git a/ui/android/java/src/org/chromium/ui/base/ViewAndroidDelegate.java b/ui/android/java/src/org/chromium/ui/base/ViewAndroidDelegate.java
 --- a/ui/android/java/src/org/chromium/ui/base/ViewAndroidDelegate.java
 +++ b/ui/android/java/src/org/chromium/ui/base/ViewAndroidDelegate.java

@@ -9,7 +9,7 @@ The feature is controlled by a feature flag (default enabled)
 
 Require: Content-settings-infrastructure.patch
 ---
- .../impl/BromiteViewportContentSetting.java   | 93 +++++++++++++++++++
+ .../impl/BromiteViewportContentSetting.java   | 94 +++++++++++++++++++
  .../bromite_content_settings/viewport.grdp    | 27 ++++++
  .../bromite_content_settings/viewport.inc     | 22 +++++
  .../bromite_content_settings/VIEWPORT.inc     |  1 +
@@ -32,9 +32,9 @@ Require: Content-settings-infrastructure.patch
  .../core/frame/web_frame_widget_impl.cc       |  8 ++
  .../core/frame/web_remote_frame_impl.cc       |  3 +-
  .../blink/renderer/core/input/touch.cc        | 17 +++-
- third_party/blink/renderer/core/page/page.cc  | 93 +++++++++++++++++++
+ third_party/blink/renderer/core/page/page.cc  | 93 ++++++++++++++++++
  third_party/blink/renderer/core/page/page.h   |  9 ++
- 25 files changed, 434 insertions(+), 20 deletions(-)
+ 25 files changed, 435 insertions(+), 20 deletions(-)
  create mode 100644 components/browser_ui/site_settings/android/java/src/org/chromium/components/browser_ui/site_settings/impl/BromiteViewportContentSetting.java
  create mode 100644 components/browser_ui/strings/bromite_content_settings/viewport.grdp
  create mode 100644 components/content_settings/core/browser/bromite_content_settings/viewport.inc
@@ -47,7 +47,7 @@ diff --git a/components/browser_ui/site_settings/android/java/src/org/chromium/c
 new file mode 100644
 --- /dev/null
 +++ b/components/browser_ui/site_settings/android/java/src/org/chromium/components/browser_ui/site_settings/impl/BromiteViewportContentSetting.java
-@@ -0,0 +1,93 @@
+@@ -0,0 +1,94 @@
 +/*
 +    This file is part of Bromite.
 +
@@ -100,7 +100,8 @@ new file mode 100644
 +            /*defaultEnabledValue*/ getDefaultEnabledValue(),
 +            /*defaultDisabledValue*/ getDefaultDisabledValue(),
 +            /*enabledSummary*/ R.string.website_settings_category_viewport_enabled,
-+            /*disabledSummary*/ R.string.website_settings_category_viewport_disabled);
++            /*disabledSummary*/ R.string.website_settings_category_viewport_disabled,
++            /*summaryOverrideForScreenReader*/ 0);
 +    }
 +
 +    @Override

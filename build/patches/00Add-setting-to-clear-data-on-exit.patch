@@ -333,21 +333,21 @@ diff --git a/chrome/browser/extensions/api/settings_private/prefs_util.cc b/chro
        settings_api::PrefType::kNumber;
  
 +  (*s_allowlist)[browsing_data::prefs::kDeleteBrowsingHistoryAtStart] =
-+      settings_api::PrefType::PREF_TYPE_BOOLEAN;
++      settings_api::PrefType::kBoolean;
 +  (*s_allowlist)[browsing_data::prefs::kDeleteDownloadHistoryAtStart] =
-+      settings_api::PrefType::PREF_TYPE_BOOLEAN;
++      settings_api::PrefType::kBoolean;
 +  (*s_allowlist)[browsing_data::prefs::kDeleteCacheAtStart] =
-+      settings_api::PrefType::PREF_TYPE_BOOLEAN;
++      settings_api::PrefType::kBoolean;
 +  (*s_allowlist)[browsing_data::prefs::kDeleteCookiesAtStart] =
-+      settings_api::PrefType::PREF_TYPE_BOOLEAN;
++      settings_api::PrefType::kBoolean;
 +  (*s_allowlist)[browsing_data::prefs::kDeletePasswordsAtStart] =
-+      settings_api::PrefType::PREF_TYPE_BOOLEAN;
++      settings_api::PrefType::kBoolean;
 +  (*s_allowlist)[browsing_data::prefs::kDeleteFormDataAtStart] =
-+      settings_api::PrefType::PREF_TYPE_BOOLEAN;
++      settings_api::PrefType::kBoolean;
 +  (*s_allowlist)[browsing_data::prefs::kDeleteSiteSettingsAtStart] =
-+      settings_api::PrefType::PREF_TYPE_BOOLEAN;
++      settings_api::PrefType::kBoolean;
 +  (*s_allowlist)[browsing_data::prefs::kDeleteHostedAppsDataAtStart] =
-+      settings_api::PrefType::PREF_TYPE_BOOLEAN;
++      settings_api::PrefType::kBoolean;
 +
    // Accessibility.
    (*s_allowlist)[::prefs::kAccessibilityImageLabelsEnabled] =

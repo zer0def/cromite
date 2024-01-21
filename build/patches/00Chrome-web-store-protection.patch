@@ -185,7 +185,7 @@ diff --git a/chrome/browser/extensions/api/webstore_private/webstore_private_api
  api::webstore_private::ExtensionInstallStatus
  ConvertExtensionInstallStatusForAPI(ExtensionInstallStatus status) {
 +  if (!base::FeatureList::IsEnabled(extensions_features::kEnableExtensionManagementToChromeStore))
-+    return api::webstore_private::EXTENSION_INSTALL_STATUS_INSTALLABLE;
++    return api::webstore_private::ExtensionInstallStatus::kInstallable;
    switch (status) {
      case kCanRequest:
        return api::webstore_private::ExtensionInstallStatus::kCanRequest;

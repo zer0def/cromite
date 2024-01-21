@@ -16,7 +16,7 @@ diff --git a/build/config/compiler/BUILD.gn b/build/config/compiler/BUILD.gn
      }
  
 +    if (is_clang) {
-+      cflags += [ "-ftrivial-auto-var-init=zero", "-enable-trivial-auto-var-init-zero-knowing-it-will-be-removed-from-clang", "-Wno-unused-command-line-argument" ]
++      cflags += [ "-ftrivial-auto-var-init=zero", "-Wno-unused-command-line-argument" ]
 +    }
 +
      # Linker warnings.
