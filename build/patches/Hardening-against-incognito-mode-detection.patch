@@ -20,4 +20,3 @@ diff --git a/storage/browser/quota/quota_settings.cc b/storage/browser/quota/quo
          device_info_helper->AmountOfPhysicalMemory());
    }
 --
-2.25.1

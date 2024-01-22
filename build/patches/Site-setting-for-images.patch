@@ -275,4 +275,3 @@ diff --git a/components/content_settings/core/browser/content_settings_utils.cc 
    // it.
    rules->mixed_content_rules.push_back(ContentSettingPatternSource(
 --
-2.25.1

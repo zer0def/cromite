@@ -2392,4 +2392,3 @@ diff --git a/third_party/blink/renderer/core/execution_context/execution_context
  enum ReasonForCallingCanExecuteScripts {
    kAboutToExecuteScript,
 --
-2.25.1

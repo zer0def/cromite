@@ -72,4 +72,3 @@ diff --git a/components/feed/feed_feature_list.cc b/components/feed/feed_feature
 +SET_CROMITE_FEATURE_DISABLED(kWebFeed);
  }  // namespace feed
 --
-2.25.1

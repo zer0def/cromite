@@ -39,4 +39,3 @@ diff --git a/sandbox/policy/features.cc b/sandbox/policy/features.cc
 +#endif
  }  // namespace sandbox::policy::features
 --
-2.25.1

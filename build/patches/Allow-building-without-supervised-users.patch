@@ -291,4 +291,3 @@ diff --git a/components/supervised_user/core/common/supervised_user_utils.cc b/c
  
  bool EmitLogSegmentHistogram(const std::vector<AccountInfo>& primary_accounts) {
 --
-2.25.1

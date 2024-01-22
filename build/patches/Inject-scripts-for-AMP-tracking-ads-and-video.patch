@@ -189,4 +189,3 @@ diff --git a/third_party/blink/renderer/core/html/html_script_element.h b/third_
    void setAsync(bool);
    bool async() const;
 --
-2.25.1

@@ -144,4 +144,3 @@ diff --git a/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/brow
                  delegate.openSettingsPage(SettingsFragment.SITE);
                  break;
 --
-2.25.1

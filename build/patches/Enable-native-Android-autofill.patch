@@ -30,17 +30,18 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../autofill/AutofillManagerWrapper.java      |  5 +-
  .../components/autofill/AutofillProvider.java |  7 ++
  .../BrowserSelectionActionMenuDelegate.java   | 62 ++++++++++++++
- .../browser/content_autofill_driver.cc        | 53 ++++++++++++
+ .../browser/content_autofill_driver.cc        | 57 +++++++++++++
  .../content/browser/content_autofill_driver.h |  9 ++-
  .../content_autofill_driver_factory.cc        | 11 ++-
  .../browser/content_autofill_driver_factory.h |  1 +
  .../renderer/password_autofill_agent.cc       |  5 +-
+ .../autofill/core/browser/autofill_driver.h   |  2 +
  .../autofill/core/common/autofill_prefs.cc    |  6 ++
  .../autofill/core/common/autofill_prefs.h     |  2 +
  .../embedder_support/view/ContentView.java    | 46 +++++++++++
  .../selection/FloatingPastePopupMenu.java     |  3 +-
  .../chromium/ui/base/ViewAndroidDelegate.java |  8 ++
- 25 files changed, 404 insertions(+), 10 deletions(-)
+ 26 files changed, 410 insertions(+), 10 deletions(-)
  create mode 100644 components/android_autofill/browser/java/src/org/chromium/components/autofill/BrowserSelectionActionMenuDelegate.java
 
 diff --git a/chrome/android/BUILD.gn b/chrome/android/BUILD.gn
@@ -585,8 +586,8 @@ diff --git a/components/autofill/content/browser/content_autofill_driver.cc b/co
                          const std::vector<FormGlobalId>& removed_forms) {
                         target->GetAutofillManager().OnFormsSeen(
                             WithNewVersion(updated_forms), removed_forms);
-+                       if (target->secondary_autofill_manager_) {
-+                         target->secondary_autofill_manager_->OnFormsSeen(
++                       if (target->secondary_autofill_manager()) {
++                         target->secondary_autofill_manager()->OnFormsSeen(
 +                           WithNewVersion(updated_forms), removed_forms);
 +                       }
                       });
@@ -596,8 +597,8 @@ diff --git a/components/autofill/content/browser/content_autofill_driver.cc b/co
          }
          target->GetAutofillManager().OnFormSubmitted(
              WithNewVersion(form), known_success, submission_source);
-+        if (target->secondary_autofill_manager_) {
-+          target->secondary_autofill_manager_->OnFormSubmitted(
++        if (target->secondary_autofill_manager()) {
++          target->secondary_autofill_manager()->OnFormSubmitted(
 +            WithNewVersion(form), known_success, submission_source);
 +        }
        });
@@ -607,8 +608,8 @@ diff --git a/components/autofill/content/browser/content_autofill_driver.cc b/co
           base::TimeTicks timestamp) {
          target->GetAutofillManager().OnTextFieldDidChange(
              WithNewVersion(form), field, bounding_box, timestamp);
-+        if (target->secondary_autofill_manager_) {
-+          target->secondary_autofill_manager_->OnTextFieldDidChange(
++        if (target->secondary_autofill_manager()) {
++          target->secondary_autofill_manager()->OnTextFieldDidChange(
 +            WithNewVersion(form), field, bounding_box, timestamp);
 +        }
        });
@@ -618,8 +619,8 @@ diff --git a/components/autofill/content/browser/content_autofill_driver.cc b/co
           const FormFieldData& field, const gfx::RectF& bounding_box) {
          target->GetAutofillManager().OnTextFieldDidScroll(WithNewVersion(form),
                                                            field, bounding_box);
-+        if (target->secondary_autofill_manager_) {
-+          target->secondary_autofill_manager_->OnTextFieldDidScroll(
++        if (target->secondary_autofill_manager()) {
++          target->secondary_autofill_manager()->OnTextFieldDidScroll(
 +              WithNewVersion(form), field, bounding_box);
 +        }
        });
@@ -629,8 +630,8 @@ diff --git a/components/autofill/content/browser/content_autofill_driver.cc b/co
           const FormFieldData& field, const gfx::RectF& bounding_box) {
          target->GetAutofillManager().OnSelectControlDidChange(
              WithNewVersion(form), field, bounding_box);
-+        if (target->secondary_autofill_manager_) {
-+          target->secondary_autofill_manager_->OnSelectControlDidChange(
++        if (target->secondary_autofill_manager()) {
++          target->secondary_autofill_manager()->OnSelectControlDidChange(
 +            WithNewVersion(form), field, bounding_box);
 +        }
        });
@@ -640,8 +641,8 @@ diff --git a/components/autofill/content/browser/content_autofill_driver.cc b/co
           AutofillSuggestionTriggerSource trigger_source) {
          target->GetAutofillManager().OnAskForValuesToFill(
              WithNewVersion(form), field, bounding_box, trigger_source);
-+        if (target->secondary_autofill_manager_) {
-+          target->secondary_autofill_manager_->OnAskForValuesToFill(
++        if (target->secondary_autofill_manager()) {
++          target->secondary_autofill_manager()->OnAskForValuesToFill(
 +              WithNewVersion(form), field, bounding_box, trigger_source);
 +        }
        });
@@ -651,8 +652,8 @@ diff --git a/components/autofill/content/browser/content_autofill_driver.cc b/co
      DCHECK(!target->IsPrerendering())
          << "We should never affect UI while prerendering";
      target->GetAutofillManager().OnHidePopup();
-+    if (target->secondary_autofill_manager_)
-+      target->secondary_autofill_manager_->OnHidePopup();
++    if (target->secondary_autofill_manager())
++      target->secondary_autofill_manager()->OnHidePopup();
    });
  }
  
@@ -660,8 +661,8 @@ diff --git a/components/autofill/content/browser/content_autofill_driver.cc b/co
        this, had_interacted_form,
        [](autofill::AutofillDriver* target, bool had_interacted_form) {
          target->GetAutofillManager().OnFocusNoLongerOnForm(had_interacted_form);
-+        if (target->secondary_autofill_manager_)
-+          target->secondary_autofill_manager_->OnFocusNoLongerOnForm(had_interacted_form);
++        if (target->secondary_autofill_manager())
++          target->secondary_autofill_manager()->OnFocusNoLongerOnForm(had_interacted_form);
        });
  }
  
@@ -669,15 +670,15 @@ diff --git a/components/autofill/content/browser/content_autofill_driver.cc b/co
           const FormFieldData& field, const gfx::RectF& bounding_box) {
          target->GetAutofillManager().OnFocusOnFormField(WithNewVersion(form),
                                                          field, bounding_box);
-+        if (target->secondary_autofill_manager_) {
-+          target->secondary_autofill_manager_->OnFocusOnFormField(
++        if (target->secondary_autofill_manager()) {
++          target->secondary_autofill_manager()->OnFocusOnFormField(
 +            WithNewVersion(form), field, bounding_box);
 +        }
        },
        [](autofill::AutofillDriver* target) {
          target->GetAutofillManager().OnFocusNoLongerOnForm(true);
-+        if (target->secondary_autofill_manager_) {
-+          target->secondary_autofill_manager_->OnFocusNoLongerOnForm(true);
++        if (target->secondary_autofill_manager()) {
++          target->secondary_autofill_manager()->OnFocusNoLongerOnForm(true);
 +        }
        });
  }
@@ -686,8 +687,8 @@ diff --git a/components/autofill/content/browser/content_autofill_driver.cc b/co
           base::TimeTicks timestamp) {
          target->GetAutofillManager().OnDidFillAutofillFormData(
              WithNewVersion(form), timestamp);
-+        if (target->secondary_autofill_manager_) {
-+          target->secondary_autofill_manager_->OnDidFillAutofillFormData(
++        if (target->secondary_autofill_manager()) {
++          target->secondary_autofill_manager()->OnDidFillAutofillFormData(
 +            WithNewVersion(form), timestamp);
 +        }
        });
@@ -697,8 +698,8 @@ diff --git a/components/autofill/content/browser/content_autofill_driver.cc b/co
    }
    router().DidEndTextFieldEditing(this, [](autofill::AutofillDriver* target) {
      target->GetAutofillManager().OnDidEndTextFieldEditing();
-+    if (target->secondary_autofill_manager_)
-+      target->secondary_autofill_manager_->OnDidEndTextFieldEditing();
++    if (target->secondary_autofill_manager())
++      target->secondary_autofill_manager()->OnDidEndTextFieldEditing();
    });
  }
  
@@ -706,8 +707,8 @@ diff --git a/components/autofill/content/browser/content_autofill_driver.cc b/co
          cast(target)
              ->GetAutofillManager()
              .OnSelectOrSelectListFieldOptionsDidChange(WithNewVersion(form));
-+        if (target->secondary_autofill_manager_) {
-+          target->secondary_autofill_manager_->OnSelectOrSelectMenuFieldOptionsDidChange(
++        if (target->secondary_autofill_manager()) {
++          target->secondary_autofill_manager()->OnSelectOrSelectListFieldOptionsDidChange(
 +            WithNewVersion(form));
 +        }
        });
@@ -717,8 +718,8 @@ diff --git a/components/autofill/content/browser/content_autofill_driver.cc b/co
           const FormFieldData& field, const std::u16string& old_value) {
          target->GetAutofillManager().OnJavaScriptChangedAutofilledValue(
              WithNewVersion(form), field, old_value);
-+        if (target->secondary_autofill_manager_) {
-+          target->secondary_autofill_manager_->OnJavaScriptChangedAutofilledValue(
++        if (target->secondary_autofill_manager()) {
++          target->secondary_autofill_manager()->OnJavaScriptChangedAutofilledValue(
 +            WithNewVersion(form), field, old_value);
 +        }
        });
@@ -728,8 +729,8 @@ diff --git a/components/autofill/content/browser/content_autofill_driver.cc b/co
           const FieldGlobalId& field_global_id) {
          target->GetAutofillManager().OnContextMenuShownInField(form_global_id,
                                                                 field_global_id);
-+        if (target->secondary_autofill_manager_)
-+          target->secondary_autofill_manager_->OnContextMenuShownInField(form_global_id, field_global_id);
++        if (target->secondary_autofill_manager())
++          target->secondary_autofill_manager()->OnContextMenuShownInField(form_global_id, field_global_id);
        });
  }
  
@@ -742,6 +743,17 @@ diff --git a/components/autofill/content/browser/content_autofill_driver.cc b/co
  }
  
  const mojo::AssociatedRemote<mojom::AutofillAgent>&
+@@ -698,6 +751,10 @@ ContentAutofillDriver::GetAutofillAgent() {
+   return autofill_agent_;
+ }
+ 
++raw_ptr<AutofillManager> ContentAutofillDriver::secondary_autofill_manager() {
++  return secondary_autofill_manager_.get();
++}
++
+ void ContentAutofillDriver::SetFrameAndFormMetaData(
+     FormData& form,
+     FormFieldData* optional_field) const {
 diff --git a/components/autofill/content/browser/content_autofill_driver.h b/components/autofill/content/browser/content_autofill_driver.h
 --- a/components/autofill/content/browser/content_autofill_driver.h
 +++ b/components/autofill/content/browser/content_autofill_driver.h
@@ -755,7 +767,7 @@ diff --git a/components/autofill/content/browser/content_autofill_driver.h b/com
      autofill_manager_ = std::move(autofill_manager);
 +    secondary_autofill_manager_ = std::move(secondary_autofill_manager);
    }
-+  AutofillManager* secondary_autofill_manager() { return secondary_autofill_manager_.get(); }
++  raw_ptr<AutofillManager> secondary_autofill_manager() override;
  
    content::RenderFrameHost* render_frame_host() { return &*render_frame_host_; }
    const content::RenderFrameHost* render_frame_host() const {
@@ -826,6 +838,18 @@ diff --git a/components/autofill/content/renderer/password_autofill_agent.cc b/c
  }
  
  void PasswordAutofillAgent::FillPasswordSuggestion(
+diff --git a/components/autofill/core/browser/autofill_driver.h b/components/autofill/core/browser/autofill_driver.h
+--- a/components/autofill/core/browser/autofill_driver.h
++++ b/components/autofill/core/browser/autofill_driver.h
+@@ -69,6 +69,8 @@ class AutofillDriver {
+   // Returns the AutofillManager owned by the AutofillDriver.
+   virtual AutofillManager& GetAutofillManager() = 0;
+ 
++  virtual raw_ptr<AutofillManager> secondary_autofill_manager() = 0;
++
+   // Returns whether the AutofillDriver instance is associated with an active
+   // frame in the MPArch sense.
+   virtual bool IsInActiveFrame() const = 0;
 diff --git a/components/autofill/core/common/autofill_prefs.cc b/components/autofill/core/common/autofill_prefs.cc
 --- a/components/autofill/core/common/autofill_prefs.cc
 +++ b/components/autofill/core/common/autofill_prefs.cc
@@ -972,4 +996,3 @@ diff --git a/ui/android/java/src/org/chromium/ui/base/ViewAndroidDelegate.java b
 +    public void autofill(final SparseArray<AutofillValue> values) {}
  }
 --
-2.25.1

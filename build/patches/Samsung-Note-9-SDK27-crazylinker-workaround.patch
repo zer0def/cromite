@@ -43,4 +43,3 @@ diff --git a/base/android/java/src/org/chromium/base/library_loader/LibraryLoade
                          .ensureInitialized(
                                  /* asRelroProducer= */ true, Linker.PreferAddress.FIND_RESERVED, 0);
 --
-2.25.1

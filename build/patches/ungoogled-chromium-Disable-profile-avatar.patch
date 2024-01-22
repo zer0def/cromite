@@ -52,4 +52,3 @@ diff --git a/chrome/browser/profiles/profile_attributes_storage.cc b/chrome/brow
        profiles::GetDefaultAvatarIconFileNameAtIndex(icon_index);
    DCHECK(file_name);
 --
-2.25.1
