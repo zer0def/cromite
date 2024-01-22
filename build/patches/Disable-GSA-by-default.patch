@@ -1,0 +1,143 @@
+From: uazo <uazo@users.noreply.github.com>
+Date: Sun, 7 May 2023 14:01:56 +0000
+Subject: Disable GSA by default
+
+License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
+---
+ .../org/chromium/chrome/browser/IntentHandler.java   |  5 -----
+ .../org/chromium/chrome/browser/share/LensUtils.java | 12 +-----------
+ .../org/chromium/chrome/browser/gsa/GSAState.java    | 11 +++++------
+ .../Disable-GSA-by-default.inc                       |  2 ++
+ 4 files changed, 8 insertions(+), 22 deletions(-)
+ create mode 100644 cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Disable-GSA-by-default.inc
+
+diff --git a/chrome/android/java/src/org/chromium/chrome/browser/IntentHandler.java b/chrome/android/java/src/org/chromium/chrome/browser/IntentHandler.java
+--- a/chrome/android/java/src/org/chromium/chrome/browser/IntentHandler.java
++++ b/chrome/android/java/src/org/chromium/chrome/browser/IntentHandler.java
+@@ -39,7 +39,6 @@ import org.chromium.chrome.browser.document.ChromeLauncherActivity;
+ import org.chromium.chrome.browser.externalnav.IntentWithRequestMetadataHandler;
+ import org.chromium.chrome.browser.externalnav.IntentWithRequestMetadataHandler.RequestMetadata;
+ import org.chromium.chrome.browser.flags.ChromeFeatureList;
+-import org.chromium.chrome.browser.gsa.GSAState;
+ import org.chromium.chrome.browser.omnibox.suggestions.AutocompleteControllerProvider;
+ import org.chromium.chrome.browser.profiles.Profile;
+ import org.chromium.chrome.browser.renderer_host.ChromeNavigationUIData;
+@@ -239,8 +238,6 @@ public class IntentHandler {
+     private static int sReferrerId;
+     private static String sPendingIncognitoUrl;
+ 
+-    public static final String PACKAGE_GSA = GSAState.PACKAGE_NAME;
+-
+     private static final String PACKAGE_GMAIL = "com.google.android.gm";
+     private static final String PACKAGE_PLUS = "com.google.android.apps.plus";
+     private static final String PACKAGE_HANGOUTS = "com.google.android.talk";
+@@ -456,8 +453,6 @@ public class IntentHandler {
+             return ExternalAppId.LINE;
+         } else if (packageName.equals(PACKAGE_WHATSAPP)) {
+             return ExternalAppId.WHATSAPP;
+-        } else if (packageName.equals(PACKAGE_GSA)) {
+-            return ExternalAppId.GSA;
+         } else if (packageName.equals(ContextUtils.getApplicationContext().getPackageName())) {
+             return ExternalAppId.CHROME;
+         } else if (packageName.startsWith(WEBAPK_PACKAGE_PREFIX)) {
+diff --git a/chrome/android/java/src/org/chromium/chrome/browser/share/LensUtils.java b/chrome/android/java/src/org/chromium/chrome/browser/share/LensUtils.java
+--- a/chrome/android/java/src/org/chromium/chrome/browser/share/LensUtils.java
++++ b/chrome/android/java/src/org/chromium/chrome/browser/share/LensUtils.java
+@@ -11,7 +11,6 @@ import android.text.TextUtils;
+ import org.chromium.base.ResettersForTesting;
+ import org.chromium.chrome.browser.IntentHandler;
+ import org.chromium.chrome.browser.flags.ChromeFeatureList;
+-import org.chromium.chrome.browser.gsa.GSAState;
+ import org.chromium.components.externalauth.ExternalAuthUtils;
+ 
+ /** This class provides utilities for intenting into Google Lens. */
+@@ -55,12 +54,7 @@ public class LensUtils {
+             if (context == null) {
+                 return "";
+             }
+-            String agsaVersion = GSAState.getInstance().getAgsaVersionName();
+-            if (agsaVersion == null) {
+                 return "";
+-            } else {
+-                return agsaVersion;
+-            }
+         }
+     }
+ 
+@@ -112,11 +106,7 @@ public class LensUtils {
+      * @return Whether the package is valid.
+      */
+     public static boolean isValidAgsaPackage(final ExternalAuthUtils externalAuthUtils) {
+-        if (sFakePassableLensEnvironmentForTesting) {
+-            return true;
+-        }
+-
+-        return externalAuthUtils.isGoogleSigned(IntentHandler.PACKAGE_GSA);
++        return false;
+     }
+ 
+     public static boolean isGoogleLensFeatureEnabled(boolean isIncognito) {
+diff --git a/chrome/browser/gsa/java/src/org/chromium/chrome/browser/gsa/GSAState.java b/chrome/browser/gsa/java/src/org/chromium/chrome/browser/gsa/GSAState.java
+--- a/chrome/browser/gsa/java/src/org/chromium/chrome/browser/gsa/GSAState.java
++++ b/chrome/browser/gsa/java/src/org/chromium/chrome/browser/gsa/GSAState.java
+@@ -32,8 +32,6 @@ import java.util.regex.Pattern;
+ 
+ /** A class responsible for representing the current state of Chrome's integration with GSA. */
+ public class GSAState {
+-    public static final String PACKAGE_NAME = "com.google.android.googlequicksearchbox";
+-
+     /** Used to observe state changes in the class. */
+     public interface Observer {
+         /** Called when the GSA account name is set. */
+@@ -71,7 +69,7 @@ public class GSAState {
+     private final ObserverList<Observer> mObserverList = new ObserverList<>();
+ 
+     /** Caches the result of a computation on whether GSA is available. */
+-    private Boolean mGsaAvailable;
++    private Boolean mGsaAvailable = false;
+ 
+     /**
+      * The Google account email address being used by GSA according to the latest update we have
+@@ -153,7 +151,7 @@ public class GSAState {
+ 
+     /** Returns whether the GSA package is installed on device. */
+     public boolean isGsaInstalled() {
+-        return PackageUtils.isPackageInstalled(PACKAGE_NAME);
++        return false;
+     }
+ 
+     /**
+@@ -176,6 +174,7 @@ public class GSAState {
+      */
+     public boolean isAgsaVersionBelowMinimum(
+             String installedVersionName, String minimumVersionName) {
++        if ((true)) return true;
+         if (TextUtils.isEmpty(installedVersionName) || TextUtils.isEmpty(minimumVersionName)) {
+             return true;
+         }
+@@ -207,7 +206,7 @@ public class GSAState {
+      * @return Whether the given intent can be handled by Agsa.
+      */
+     public boolean canAgsaHandleIntent(@NonNull Intent intent) {
+-        if (!intent.getPackage().equals(PACKAGE_NAME)) return false;
++        if ((true)) return false;
+ 
+         ComponentName activity =
+                 intent.resolveActivity(ContextUtils.getApplicationContext().getPackageManager());
+@@ -221,7 +220,7 @@ public class GSAState {
+      * @return The version name of the Agsa package or null if it can't be found.
+      */
+     public @Nullable String getAgsaVersionName() {
+-        PackageInfo packageInfo = PackageUtils.getPackageInfo(PACKAGE_NAME, 0);
++        PackageInfo packageInfo = null;
+         return packageInfo == null ? null : packageInfo.versionName;
+     }
+ 
+diff --git a/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Disable-GSA-by-default.inc b/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Disable-GSA-by-default.inc
+new file mode 100644
+--- /dev/null
++++ b/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Disable-GSA-by-default.inc
+@@ -0,0 +1,2 @@
++SET_CROMITE_FEATURE_DISABLED(kContextMenuSearchWithGoogleLens);
++SET_CROMITE_FEATURE_DISABLED(kExperimentsForAgsa);
+--
