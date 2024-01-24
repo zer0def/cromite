@@ -34,6 +34,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../content/browser/content_autofill_driver.h |  9 ++-
  .../content_autofill_driver_factory.cc        | 11 ++-
  .../browser/content_autofill_driver_factory.h |  1 +
+ .../content/renderer/autofill_agent.cc        |  6 ++
  .../renderer/password_autofill_agent.cc       |  5 +-
  .../autofill/core/browser/autofill_driver.h   |  2 +
  .../autofill/core/common/autofill_prefs.cc    |  6 ++
@@ -41,7 +42,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../embedder_support/view/ContentView.java    | 46 +++++++++++
  .../selection/FloatingPastePopupMenu.java     |  3 +-
  .../chromium/ui/base/ViewAndroidDelegate.java |  8 ++
- 26 files changed, 410 insertions(+), 10 deletions(-)
+ 27 files changed, 416 insertions(+), 10 deletions(-)
  create mode 100644 components/android_autofill/browser/java/src/org/chromium/components/autofill/BrowserSelectionActionMenuDelegate.java
 
 diff --git a/chrome/android/BUILD.gn b/chrome/android/BUILD.gn
@@ -823,6 +824,42 @@ diff --git a/components/autofill/content/browser/content_autofill_driver_factory
                             ContentAutofillDriver* driver);
  
  // Manages lifetime of ContentAutofillDriver. Owned by ContentAutofillClient,
+diff --git a/components/autofill/content/renderer/autofill_agent.cc b/components/autofill/content/renderer/autofill_agent.cc
+--- a/components/autofill/content/renderer/autofill_agent.cc
++++ b/components/autofill/content/renderer/autofill_agent.cc
+@@ -1024,14 +1024,18 @@ void AutofillAgent::ShowSuggestions(
+         password_generation_agent_->ShowPasswordGenerationSuggestions(
+             input_element)) {
+       is_popup_possibly_visible_ = true;
++#if !BUILDFLAG(IS_ANDROID)
+       return;
++#endif
+     }
+     if (password_autofill_agent_->ShowSuggestions(
+             input_element,
+             ShowAll(ShouldShowFullSuggestionListForPasswordManager(
+                 trigger_source, element)))) {
+       is_popup_possibly_visible_ = true;
++#if !BUILDFLAG(IS_ANDROID)
+       return;
++#endif
+     }
+   }
+ 
+@@ -1043,11 +1047,13 @@ void AutofillAgent::ShowSuggestions(
+   // match a regex). In this specific case we are actually interested in whether
+   // the field is currently a password field, not whether it has ever been a
+   // password field.
++#if !BUILDFLAG(IS_ANDROID)
+   if (!input_element.IsNull() &&
+       input_element.IsPasswordField /*disable presubmit*/ () &&
+       !query_password_suggestion_) {
+     return;
+   }
++#endif
+ 
+   QueryAutofillSuggestions(element, trigger_source);
+ }
 diff --git a/components/autofill/content/renderer/password_autofill_agent.cc b/components/autofill/content/renderer/password_autofill_agent.cc
 --- a/components/autofill/content/renderer/password_autofill_agent.cc
 +++ b/components/autofill/content/renderer/password_autofill_agent.cc
