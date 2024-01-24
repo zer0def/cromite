@@ -14,7 +14,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 diff --git a/chrome/browser/segmentation_platform/chrome_browser_main_extra_parts_segmentation_platform.cc b/chrome/browser/segmentation_platform/chrome_browser_main_extra_parts_segmentation_platform.cc
 --- a/chrome/browser/segmentation_platform/chrome_browser_main_extra_parts_segmentation_platform.cc
 +++ b/chrome/browser/segmentation_platform/chrome_browser_main_extra_parts_segmentation_platform.cc
-@@ -12,17 +12,20 @@
+@@ -12,11 +12,13 @@
  #include "components/segmentation_platform/public/segmentation_platform_service.h"
  
  void ChromeBrowserMainExtraPartsSegmentationPlatform::PreCreateThreads() {
@@ -25,9 +25,10 @@ diff --git a/chrome/browser/segmentation_platform/chrome_browser_main_extra_part
  
  void ChromeBrowserMainExtraPartsSegmentationPlatform::PreProfileInit() {
 +  if ((true)) return;
-   segmentation_platform::UkmDatabaseClient::GetInstance().PreProfileInit();
- }
- 
+   segmentation_platform::UkmDatabaseClientHolder::GetClientInstance(nullptr)
+       .PreProfileInit(
+           /*in_memory_database=*/false);
+@@ -25,6 +27,7 @@ void ChromeBrowserMainExtraPartsSegmentationPlatform::PreProfileInit() {
  void ChromeBrowserMainExtraPartsSegmentationPlatform::PostProfileInit(
      Profile* profile,
      bool is_initial_profile) {
@@ -35,12 +36,13 @@ diff --git a/chrome/browser/segmentation_platform/chrome_browser_main_extra_part
    if (!profile || profile->IsOffTheRecord())
      return;
  
-@@ -34,5 +37,6 @@ void ChromeBrowserMainExtraPartsSegmentationPlatform::PostProfileInit(
+@@ -36,6 +39,7 @@ void ChromeBrowserMainExtraPartsSegmentationPlatform::PostProfileInit(
  }
  
  void ChromeBrowserMainExtraPartsSegmentationPlatform::PostMainMessageLoopRun() {
 +  if ((true)) return;
-   segmentation_platform::UkmDatabaseClient::GetInstance().PostMessageLoopRun();
+   segmentation_platform::UkmDatabaseClientHolder::GetClientInstance(nullptr)
+       .PostMessageLoopRun();
  }
 diff --git a/components/segmentation_platform/public/features.cc b/components/segmentation_platform/public/features.cc
 --- a/components/segmentation_platform/public/features.cc
@@ -53,4 +55,3 @@ diff --git a/components/segmentation_platform/public/features.cc b/components/se
 +SET_CROMITE_FEATURE_DISABLED(kSegmentationPlatformFeedSegmentFeature);
  }  // namespace segmentation_platform::features
 --
-2.25.1

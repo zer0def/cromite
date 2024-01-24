@@ -56,10 +56,10 @@ diff --git a/base/android/java/src/org/chromium/base/ContentUriUtils.java b/base
 +import android.system.Os;
 +import android.content.ContentProviderClient;
 +
- /**
-  * This class provides methods to access content URI schemes.
-  */
-@@ -89,6 +92,36 @@ public abstract class ContentUriUtils {
+ /** This class provides methods to access content URI schemes. */
+ public abstract class ContentUriUtils {
+     private static final String TAG = "ContentUriUtils";
+@@ -87,6 +90,36 @@ public abstract class ContentUriUtils {
          return -1;
      }
  
@@ -97,4 +97,3 @@ diff --git a/base/android/java/src/org/chromium/base/ContentUriUtils.java b/base
       * Check whether a content URI exists.
       *
 --
-2.25.1

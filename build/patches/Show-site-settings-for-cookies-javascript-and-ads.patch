@@ -6,14 +6,14 @@ Avoid displaying info about intrusive ads
 
 License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 ---
- .../site_settings/SingleWebsiteSettings.java  | 52 +++++++++----------
- .../browser_ui/site_settings/Website.java     | 15 ++++--
- 2 files changed, 36 insertions(+), 31 deletions(-)
+ .../site_settings/SingleWebsiteSettings.java  | 56 +++++++++----------
+ .../browser_ui/site_settings/Website.java     | 14 ++++-
+ 2 files changed, 40 insertions(+), 30 deletions(-)
 
 diff --git a/components/browser_ui/site_settings/android/java/src/org/chromium/components/browser_ui/site_settings/SingleWebsiteSettings.java b/components/browser_ui/site_settings/android/java/src/org/chromium/components/browser_ui/site_settings/SingleWebsiteSettings.java
 --- a/components/browser_ui/site_settings/android/java/src/org/chromium/components/browser_ui/site_settings/SingleWebsiteSettings.java
 +++ b/components/browser_ui/site_settings/android/java/src/org/chromium/components/browser_ui/site_settings/SingleWebsiteSettings.java
-@@ -541,6 +541,8 @@ public class SingleWebsiteSettings extends BaseSiteSettingsFragment
+@@ -556,6 +556,8 @@ public class SingleWebsiteSettings extends BaseSiteSettingsFragment
                  setUpSoundPreference(preference);
              } else if (type == ContentSettingsType.JAVASCRIPT) {
                  setUpJavascriptPreference(preference);
@@ -22,15 +22,16 @@ diff --git a/components/browser_ui/site_settings/android/java/src/org/chromium/c
              } else if (type == ContentSettingsType.GEOLOCATION) {
                  setUpLocationPreference(preference);
              } else if (type == ContentSettingsType.NOTIFICATIONS) {
-@@ -950,16 +952,8 @@ public class SingleWebsiteSettings extends BaseSiteSettingsFragment
+@@ -1005,17 +1007,8 @@ public class SingleWebsiteSettings extends BaseSiteSettingsFragment
      private void setUpAdsInformationalBanner() {
          // Add the informational banner which shows at the top of the UI if ad blocking is
          // activated on this site.
--        boolean adBlockingActivated = SiteSettingsCategory.adsCategoryEnabled()
--                && WebsitePreferenceBridge.getAdBlockingActivated(
--                        getSiteSettingsDelegate().getBrowserContextHandle(),
--                        mSite.getAddress().getOrigin())
--                && findPreference(getPreferenceKey(ContentSettingsType.ADS)) != null;
+-        boolean adBlockingActivated =
+-                SiteSettingsCategory.adsCategoryEnabled()
+-                        && WebsitePreferenceBridge.getAdBlockingActivated(
+-                                getSiteSettingsDelegate().getBrowserContextHandle(),
+-                                mSite.getAddress().getOrigin())
+-                        && findPreference(getPreferenceKey(ContentSettingsType.ADS)) != null;
 -
 -        if (!adBlockingActivated) {
              removePreferenceSafely(PREF_INTRUSIVE_ADS_INFO);
@@ -39,7 +40,7 @@ diff --git a/components/browser_ui/site_settings/android/java/src/org/chromium/c
      }
  
      private SiteSettingsCategory getWarningCategory() {
-@@ -1133,17 +1127,35 @@ public class SingleWebsiteSettings extends BaseSiteSettingsFragment
+@@ -1201,17 +1194,35 @@ public class SingleWebsiteSettings extends BaseSiteSettingsFragment
          @Nullable
          Integer currentValue =
                  mSite.getContentSetting(browserContextHandle, ContentSettingsType.JAVASCRIPT);
@@ -57,7 +58,8 @@ diff --git a/components/browser_ui/site_settings/android/java/src/org/chromium/c
 +                    : ContentSettingValues.BLOCK;
          }
          // Not possible to embargo JAVASCRIPT.
-         setupContentSettingsPreference(preference, currentValue, false /* isEmbargoed */);
+-        setupContentSettingsPreference(preference, currentValue, /* isEmbargoed= */ false);
++        setupContentSettingsPreference(preference, currentValue, false /* isEmbargoed */);
      }
  
 +    private void setUpCookiesPreference(Preference preference) {
@@ -75,20 +77,21 @@ diff --git a/components/browser_ui/site_settings/android/java/src/org/chromium/c
 +                    : ContentSettingValues.BLOCK;
 +        }
 +        // Not possible to embargo COOKIES.
-+        setupContentSettingsPreference(preference, currentValue, false /* isEmbargoed */);
++        setupContentSettingsPreference(preference, currentValue, /* isEmbargoed= */ false);
 +     }
 +
      /**
       * Updates the ads list preference based on whether the site is a candidate for blocking. This
       * has some custom behavior.
-@@ -1159,22 +1171,10 @@ public class SingleWebsiteSettings extends BaseSiteSettingsFragment
+@@ -1227,23 +1238,10 @@ public class SingleWebsiteSettings extends BaseSiteSettingsFragment
              setupContentSettingsPreference(preference, null, false);
              return;
          }
 -        // If the ad blocker is activated, then this site will have ads blocked unless there is an
 -        // explicit permission disallowing the blocking.
--        boolean activated = WebsitePreferenceBridge.getAdBlockingActivated(
--                browserContextHandle, mSite.getAddress().getOrigin());
+-        boolean activated =
+-                WebsitePreferenceBridge.getAdBlockingActivated(
+-                        browserContextHandle, mSite.getAddress().getOrigin());
          @ContentSettingValues
          @Nullable
          Integer permission = mSite.getContentSetting(browserContextHandle, ContentSettingsType.ADS);
@@ -107,29 +110,25 @@ diff --git a/components/browser_ui/site_settings/android/java/src/org/chromium/c
 diff --git a/components/browser_ui/site_settings/android/java/src/org/chromium/components/browser_ui/site_settings/Website.java b/components/browser_ui/site_settings/android/java/src/org/chromium/components/browser_ui/site_settings/Website.java
 --- a/components/browser_ui/site_settings/android/java/src/org/chromium/components/browser_ui/site_settings/Website.java
 +++ b/components/browser_ui/site_settings/android/java/src/org/chromium/components/browser_ui/site_settings/Website.java
-@@ -236,13 +236,18 @@ public final class Website implements WebsiteEntry {
- 
-         ContentSettingException exception = getContentSettingException(type);
-         if (type == ContentSettingsType.ADS) {
--            // It is possible to set the permission without having an existing exception,
--            // because we can show the BLOCK state even when this permission is set to the
--            // default. In that case, just set an exception now to BLOCK to enable changing the
--            // permission.
-+            // It is possible to set the permission without having an existing exception
-             if (exception == null) {
-                 exception = new ContentSettingException(ContentSettingsType.ADS,
--                        getAddress().getOrigin(), ContentSettingValues.BLOCK, "",
-+                        getAddress().getOrigin(), value, "",
-+                        /*isEmbargoed=*/false);
+@@ -280,7 +280,19 @@ public final class Website implements WebsiteEntry {
+                         new ContentSettingException(
+                                 ContentSettingsType.ADS,
+                                 getAddress().getOrigin(),
+-                                ContentSettingValues.BLOCK,
++                                value,
++                                "",
++                                /* isEmbargoed= */ false);
 +                setContentSettingException(type, exception);
 +            }
 +        } else if (type == ContentSettingsType.COOKIES) {
 +            // It is possible to set the permission without having an existing exception
 +            if (exception == null) {
-+                exception = new ContentSettingException(ContentSettingsType.COOKIES,
-+                        getAddress().getOrigin(), value, "",
-                         /*isEmbargoed=*/false);
++                exception =
++                        new ContentSettingException(
++                                ContentSettingsType.COOKIES,
++                                getAddress().getOrigin(),
++                                value,
+                                 "",
+                                 /* isEmbargoed= */ false);
                  setContentSettingException(type, exception);
-             }
 --
-2.25.1

@@ -61,8 +61,13 @@ enable_jxl_decoder = true
 # see https://github.com/uazo/cromite/issues/697
 use_minikin_hyphenation = false
 
+# disable automatic update of sync-related cookies
+# initial commit: https://source.chromium.org/chromium/chromium/src/+/fd9a841f7a63b9f5510f6b713d9c833d259c63ad
+enable_bound_session_credentials = false
+
 declare_args() {
   _is_debug_build = ""
+  build_webview = false
 }
 
 not_needed(["_target_build", "_is_debug_build"])
@@ -76,7 +81,8 @@ if (target_os == "android") {
   #enable_kythe_annotations = true
 
   chrome_public_manifest_package = "org.cromite.cromite"
-  system_webview_package_name="org.cromite.webview"
+  system_webview_package_name="org.cromite.webview" #"com.android.webview"
+  system_webview_shell_package_name="org.cromite.webview_shell"
 
   if (getenv("USE_KEYSTORE") != "") {
     android_keystore_path = "/home/lg/working_dir/cromite.keystore"
@@ -97,6 +103,11 @@ if (target_os == "android") {
     generate_linker_map = false
   } else {
     generate_linker_map = true
+  }
+
+  if (build_webview) {  
+    # only 64bit
+    skip_secondary_abi_for_cq = true
   }
 }
 

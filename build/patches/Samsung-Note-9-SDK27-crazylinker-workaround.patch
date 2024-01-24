@@ -19,7 +19,7 @@ diff --git a/base/android/java/src/org/chromium/base/library_loader/LibraryLoade
  
  import javax.annotation.concurrent.GuardedBy;
  
-@@ -283,7 +284,21 @@ public class LibraryLoader {
+@@ -290,7 +291,21 @@ public class LibraryLoader {
           */
          public void initInAppZygote() {
              assert !mInitDone;
@@ -39,8 +39,7 @@ diff --git a/base/android/java/src/org/chromium/base/library_loader/LibraryLoade
 +                mFallbackToSystemLinker = true;
 +            }
 +            else if (useChromiumLinker() && !mainProcessIntendsToProvideRelroFd()) {
-                 getLinker().ensureInitialized(
-                         /* asRelroProducer= */ true, Linker.PreferAddress.FIND_RESERVED, 0);
-             } else {
+                 getLinker()
+                         .ensureInitialized(
+                                 /* asRelroProducer= */ true, Linker.PreferAddress.FIND_RESERVED, 0);
 --
-2.25.1
