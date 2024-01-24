@@ -53,7 +53,7 @@ sed -i '/^old mode /d' ~/cromite/build/patches-new/$PATCH_FILE
 sed -i '/^new mode /d' ~/cromite/build/patches-new/$PATCH_FILE
 
 echo "--" >> ~/cromite/build/patches-new/$PATCH_FILE
-echo "2.25.1" >> ~/cromite/build/patches-new/$PATCH_FILE
+#echo "2.25.1" >> ~/cromite/build/patches-new/$PATCH_FILE
 #echo "" >> ~/cromite/build/patches-new/$PATCH_FILE
 
 echo "   done."
