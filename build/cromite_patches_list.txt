@@ -279,6 +279,7 @@ Disable-Android-AppRestrictions.patch
 Customize-selection-popup.patch
 Enables-deactivation-of-the-js-debugger-statement.patch
 Enable-gwp-asan-on-Android.patch
+Disable-Read-Aloud-by-default.patch
 
 Temp-PerformanceNavigationTiming-privacy-fix.patch
 Temp-disable-predictive-back-gesture.patch
