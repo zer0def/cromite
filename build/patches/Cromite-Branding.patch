@@ -47,7 +47,8 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../drawable-xxhdpi/fre_product_logo.png      | Bin 7720 -> 60959 bytes
  .../drawable-xxxhdpi/fre_product_logo.png     | Bin 10740 -> 93273 bytes
  tools/grit/grit/grd_reader.py                 |  35 ++++++++++++++++++
- 43 files changed, 107 insertions(+), 53 deletions(-)
+ ui/base/ui_base_features.cc                   |   2 +
+ 44 files changed, 109 insertions(+), 53 deletions(-)
 
 diff --git a/build/BUILD.gn b/build/BUILD.gn
 --- a/build/BUILD.gn
@@ -18198,4 +18199,14 @@ diff --git a/tools/grit/grit/grd_reader.py b/tools/grit/grit/grd_reader.py
  
  class GrdPartContentHandler(xml.sax.handler.ContentHandler):
    def __init__(self, parent):
+diff --git a/ui/base/ui_base_features.cc b/ui/base/ui_base_features.cc
+--- a/ui/base/ui_base_features.cc
++++ b/ui/base/ui_base_features.cc
+@@ -636,4 +636,6 @@ BASE_FEATURE(kUseGammaContrastRegistrySettings,
+              base::FEATURE_DISABLED_BY_DEFAULT);
+ #endif  // BUILDFLAG(IS_WIN)
+ 
++SET_CROMITE_FEATURE_ENABLED(kChromeRefresh2023);
++SET_CROMITE_FEATURE_ENABLED(kChromeWebuiRefresh2023);
+ }  // namespace features
 --
