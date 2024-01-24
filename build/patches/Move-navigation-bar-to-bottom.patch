@@ -887,8 +887,8 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/compositor/layo
                      && mScrollDirection == ScrollDirection.DOWN) {
                  RecordUserAction.record("MobileToolbarSwipeOpenStackView");
                  showLayout(LayoutType.TAB_SWITCHER, true);
-+            } else if (mSupportSwipeUp && mOverviewLayout != null
-+                    && mScrollDirection == ScrollDirection.UP) {
++            } else if (mSupportSwipeUp && isTabSwitcherReady()
++                       && mScrollDirection == ScrollDirection.UP) {
 +                showLayout(LayoutType.TAB_SWITCHER, true);
              } else if (mScrollDirection == ScrollDirection.LEFT
                      || mScrollDirection == ScrollDirection.RIGHT) {
