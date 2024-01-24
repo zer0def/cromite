@@ -7,20 +7,21 @@ Allows build with clangd by suppressing unsupported parameters
 Original License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 ---
- build/config/compiler/BUILD.gn | 5 +++++
+ build/config/compiler/BUILD.gn | 6 ++++++
  build_overrides/build.gni      | 3 +++
- 2 files changed, 8 insertions(+)
+ 2 files changed, 9 insertions(+)
 
 diff --git a/build/config/compiler/BUILD.gn b/build/config/compiler/BUILD.gn
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -1888,6 +1888,11 @@ config("default_warnings") {
+@@ -1888,6 +1888,12 @@ config("default_warnings") {
            # TODO(https://crbug.com/1490607): Fix and re-enable.
            "-Wno-thread-safety-reference-return",
          ]
 +        if (skip_clangd_unsupported_options) {
 +          cflags -= [
 +            "-Wno-deprecated-builtins",
++            "-Wno-thread-safety-reference-return",
 +          ]
 +        }
        }
