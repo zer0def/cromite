@@ -16,7 +16,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  chrome/browser/signin/chrome_signin_client.cc |   7 +-
  .../ui/webui/policy/policy_ui_handler.cc      | 104 ++++++++++++-
  .../ui/webui/policy/policy_ui_handler.h       |   2 +
- .../commerce/core/commerce_feature_list.cc    |   7 +
+ .../commerce/core/commerce_feature_list.cc    |  13 ++
  .../core/browser/browser_policy_connector.cc  |   3 +
  .../common/command_line_policy_provider.cc    |   3 +
  .../core/common/policy_loader_command_line.cc | 140 ++++++++++++++++--
@@ -32,7 +32,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  components/signin/features.gni                |   2 +-
  .../gaia_cookie_manager_service.cc            |   4 +
  google_apis/gaia/gaia_auth_fetcher.cc         |   1 +
- 28 files changed, 312 insertions(+), 96 deletions(-)
+ 28 files changed, 318 insertions(+), 96 deletions(-)
 
 diff --git a/base/win/win_util.cc b/base/win/win_util.cc
 --- a/base/win/win_util.cc
@@ -474,16 +474,22 @@ diff --git a/chrome/browser/ui/webui/policy/policy_ui_handler.h b/chrome/browser
 diff --git a/components/commerce/core/commerce_feature_list.cc b/components/commerce/core/commerce_feature_list.cc
 --- a/components/commerce/core/commerce_feature_list.cc
 +++ b/components/commerce/core/commerce_feature_list.cc
-@@ -325,6 +325,13 @@ const char kParcelTrackingTestDataParamDelivered[] = "Delivered";
+@@ -325,6 +325,19 @@ const char kParcelTrackingTestDataParamDelivered[] = "Delivered";
  const char kParcelTrackingTestDataParamInProgress[] = "InProgress";
  const char kParcelTrackingTestDataParamOutForDelivery[] = "OutForDelivery";
  
++SET_CROMITE_FEATURE_DISABLED(kCommerceHintAndroid);
 +SET_CROMITE_FEATURE_DISABLED(kCommercePriceTrackingRegionLaunched);
 +SET_CROMITE_FEATURE_DISABLED(kShoppingListRegionLaunched);
-+SET_CROMITE_FEATURE_DISABLED(kCommerceHintAndroid);
 +SET_CROMITE_FEATURE_DISABLED(kMerchantWidePromotion);
++
 +SET_CROMITE_FEATURE_DISABLED(kParcelTracking);
 +SET_CROMITE_FEATURE_DISABLED(kParcelTrackingRegionLaunched);
++
++SET_CROMITE_FEATURE_DISABLED(kEnableDiscountInfoApi);
++SET_CROMITE_FEATURE_DISABLED(kEnableDiscountInfoApiRegionLaunched);
++SET_CROMITE_FEATURE_DISABLED(kShowDiscountOnNavigation);
++SET_CROMITE_FEATURE_DISABLED(kShowDiscountOnNavigationRegionLaunched);
 +
  // Params for Discount Consent V2 in the NTP Cart module.
  const char kNtpChromeCartModuleDiscountConsentNtpVariationParam[] =
