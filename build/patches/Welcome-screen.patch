@@ -12,14 +12,16 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  chrome/android/java/res/values/dimens.xml     |  10 +
  chrome/android/java/res/values/styles.xml     |  24 ++
  .../firstrun/ChildAccountStatusSupplier.java  |  13 -
+ .../DefaultSearchEngineFirstRunFragment.java  |   3 -
  .../browser/firstrun/FirstRunActivity.java    |  17 +-
  .../firstrun/FirstRunActivityBase.java        |   6 +-
  .../firstrun/FirstRunFlowSequencer.java       |  63 +---
  .../browser/firstrun/FirstRunUtils.java       |  15 +-
  .../firstrun/ToSAndUMAFirstRunFragment.java   | 336 ++++++++++++++++++
  .../firstrun/TosAndUmaFragmentView.java       | 336 ++++++++++++++++++
+ .../browser/locale/LocaleManagerDelegate.java |   5 +-
  .../strings/android_chrome_strings.grd        |  24 +-
- 13 files changed, 911 insertions(+), 96 deletions(-)
+ 15 files changed, 914 insertions(+), 101 deletions(-)
  create mode 100644 chrome/android/java/res/layout/fre_tosanduma.xml
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/firstrun/ToSAndUMAFirstRunFragment.java
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/firstrun/TosAndUmaFragmentView.java
@@ -296,6 +298,25 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/firstrun/ChildA
      }
  
      @Override
+diff --git a/chrome/android/java/src/org/chromium/chrome/browser/firstrun/DefaultSearchEngineFirstRunFragment.java b/chrome/android/java/src/org/chromium/chrome/browser/firstrun/DefaultSearchEngineFirstRunFragment.java
+--- a/chrome/android/java/src/org/chromium/chrome/browser/firstrun/DefaultSearchEngineFirstRunFragment.java
++++ b/chrome/android/java/src/org/chromium/chrome/browser/firstrun/DefaultSearchEngineFirstRunFragment.java
+@@ -51,15 +51,12 @@ public class DefaultSearchEngineFirstRunFragment extends Fragment implements Fir
+         Profile profile = getPageDelegate().getProfileProviderSupplier().get().getOriginalProfile();
+ 
+         assert TemplateUrlServiceFactory.getForProfile(profile).isLoaded();
+-        mSearchEnginePromoDialogType = LocaleManager.getInstance().getSearchEnginePromoShowType();
+-        if (mSearchEnginePromoDialogType != SearchEnginePromoType.DONT_SHOW) {
+             new DefaultSearchEngineDialogHelper(
+                     mSearchEnginePromoDialogType,
+                     LocaleManager.getInstance(),
+                     mEngineLayout,
+                     mButton,
+                     getPageDelegate()::advanceToNextPage);
+-        }
+ 
+         return rootView;
+     }
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/firstrun/FirstRunActivity.java b/chrome/android/java/src/org/chromium/chrome/browser/firstrun/FirstRunActivity.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/firstrun/FirstRunActivity.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/firstrun/FirstRunActivity.java
@@ -427,7 +448,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/firstrun/FirstR
 -            int searchPromoType = LocaleManager.getInstance().getSearchEnginePromoShowType();
 -            return searchPromoType == SearchEnginePromoType.SHOW_NEW
 -                    || searchPromoType == SearchEnginePromoType.SHOW_EXISTING;
-+            return false;
++            return true;
          }
  
          /** @return true if Sync is allowed for the current user. */
@@ -1234,6 +1255,21 @@ new file mode 100644
 +        return mLastWidth > mLastHeight;
 +    }
 +}
+diff --git a/chrome/browser/locale/java/src/org/chromium/chrome/browser/locale/LocaleManagerDelegate.java b/chrome/browser/locale/java/src/org/chromium/chrome/browser/locale/LocaleManagerDelegate.java
+--- a/chrome/browser/locale/java/src/org/chromium/chrome/browser/locale/LocaleManagerDelegate.java
++++ b/chrome/browser/locale/java/src/org/chromium/chrome/browser/locale/LocaleManagerDelegate.java
+@@ -331,8 +331,9 @@ public class LocaleManagerDelegate {
+ 
+     /** @see LocaleManager#getSearchEnginesForPromoDialog  */
+     public List<TemplateUrl> getSearchEnginesForPromoDialog(@SearchEnginePromoType int promoType) {
+-        throw new IllegalStateException(
+-                "Not applicable unless existing or new promos are required");
++        TemplateUrlService templateUrlService =
++            TemplateUrlServiceFactory.getForProfile(Profile.getLastUsedRegularProfile());
++        return templateUrlService.getTemplateUrls();
+     }
+ 
+     /** @see LocaleManager#onUserSearchEngineChoice */
 diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chrome/browser/ui/android/strings/android_chrome_strings.grd
 --- a/chrome/browser/ui/android/strings/android_chrome_strings.grd
 +++ b/chrome/browser/ui/android/strings/android_chrome_strings.grd
@@ -1261,10 +1297,10 @@ diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chro
 +        https://docs.github.com/en/github/site-policy/github-privacy-statement#github-pages
 +      </message>
 +      <message name="IDS_ADBLOCK_WIKI_URL" desc="URL for Bromite wiki page about ad blocking" translateable="false">
-+        https://github.com/bromite/bromite/wiki/AdBlocking
++        https://github.com/uazo/cromite/wiki/AdBlocking
 +      </message>
 +      <message name="IDS_AUTO_UPDATES_WIKI_URL" desc="URL for Bromite wiki page about automatic updates" translateable="false">
-+        https://github.com/bromite/bromite/wiki/AutomaticUpdates
++        https://github.com/uazo/cromite/wiki/AutomaticUpdates
        </message>
        <message name="IDS_FRE_WELCOME" desc="Text for greeting the user on Chrome First Run">
          Welcome to Chrome
