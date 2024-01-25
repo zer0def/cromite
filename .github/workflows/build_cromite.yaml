@@ -158,7 +158,7 @@ jobs:
     runs-on: ${{ github.event.inputs.type }}
     needs: check_images
     if: success()
-    timeout-minutes: 1200
+    timeout-minutes: 1440
 
     container:
       image: uazo/cromite-build:build
