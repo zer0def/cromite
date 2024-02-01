@@ -26,6 +26,8 @@ mv third_party/devtools-frontend-bis third_party/devtools-frontend
 git add -f third_party/devtools-frontend >/dev/null
 git commit -m ":NOEXPORT: third_party/devtools-frontend repo" >/dev/null
 
+git prune
+
 echo -e ${RED} ------- patches ${NC}
 cat ../../cromite/build/cromite_patches_list.txt
 echo
