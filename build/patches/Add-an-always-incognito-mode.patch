@@ -26,7 +26,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../AlwaysIncognitoLinkInterceptor.java       |  53 ++++++
  .../chrome/browser/ChromeTabbedActivity.java  |  20 ++-
  .../chrome/browser/app/ChromeActivity.java    |   4 +
- .../AppMenuPropertiesDelegateImpl.java        |  26 ++-
+ .../AppMenuPropertiesDelegateImpl.java        |  27 ++-
  .../ChromeContextMenuPopulator.java           |   7 +-
  .../CustomTabActivityLifecycleUmaTracker.java |  31 ----
  .../CustomTabAppMenuPropertiesDelegate.java   |   4 +
@@ -85,7 +85,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../add-an-always-incognito-mode.inc          |   3 +
  .../add-an-always-incognito-mode.inc          |   1 +
  net/base/file_stream_context.cc               |   2 +-
- 66 files changed, 773 insertions(+), 102 deletions(-)
+ 66 files changed, 773 insertions(+), 103 deletions(-)
  create mode 100644 chrome/android/java/res/xml/incognito_preferences.xml
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/AlwaysIncognitoLinkInterceptor.java
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/IncognitoSettings.java
@@ -348,7 +348,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/app/appmenu/App
 -                item.setVisible(!isIncognito);
 +                if (always_incognito) {
 +                    PrefService prefService =
-+                                                            UserPrefs.get(Profile.getLastUsedRegularProfile());
++                        UserPrefs.get(Profile.getLastUsedRegularProfile());
 +                    boolean historyEnabledInIncognito =
 +                        prefService.getBoolean(Pref.INCOGNITO_TAB_HISTORY_ENABLED);
 +                    item.setVisible(historyEnabledInIncognito);
@@ -358,10 +358,11 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/app/appmenu/App
              }
              if (item.getItemId() == R.id.menu_select_tabs) {
                  item.setVisible(isMenuSelectTabsVisible);
-@@ -866,7 +886,9 @@ public class AppMenuPropertiesDelegateImpl implements AppMenuPropertiesDelegate
+@@ -865,8 +885,9 @@ public class AppMenuPropertiesDelegateImpl implements AppMenuPropertiesDelegate
+                 && !isChromeScheme
                  && !isFileScheme
                  && !isContentScheme
-                 && !isIncognito
+-                && !isIncognito
 -                && !url.isEmpty();
 +                && !url.isEmpty()
 +                && (!isIncognito ||
