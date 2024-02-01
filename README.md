@@ -32,7 +32,7 @@ Cromite's goal is to
 In addition, Cromite would like to promote greater integration with other non-profit, open source browsers, encouraging closer collaboration with others, and attempt to integrate them directly into Chromium once they have reached an appropriate level of maturity.
 
 # Features
-see [Features](https://github.com/uazo/cromite/FEATURES.md)
+see [Features](https://github.com/uazo/cromite/blob/master/FEATURES.md)
 
 # Privacy limitations
 
