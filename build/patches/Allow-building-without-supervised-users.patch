@@ -272,7 +272,7 @@ diff --git a/components/supervised_user/core/common/supervised_user_constants.cc
 diff --git a/components/supervised_user/core/common/supervised_user_utils.cc b/components/supervised_user/core/common/supervised_user_utils.cc
 --- a/components/supervised_user/core/common/supervised_user_utils.cc
 +++ b/components/supervised_user/core/common/supervised_user_utils.cc
-@@ -75,11 +75,14 @@ GURL NormalizeUrl(const GURL& url) {
+@@ -52,11 +52,14 @@ GURL NormalizeUrl(const GURL& url) {
  }
  
  bool AreWebFilterPrefsDefault(const PrefService& pref_service) {
@@ -289,5 +289,5 @@ diff --git a/components/supervised_user/core/common/supervised_user_utils.cc b/c
 +#endif
  }
  
- bool EmitLogSegmentHistogram(const std::vector<AccountInfo>& primary_accounts) {
+ absl::optional<LogSegment> SupervisionStatusForUser(
 --

@@ -85,7 +85,7 @@ diff --git a/chrome/browser/optimization_guide/chrome_hints_manager.cc b/chrome/
 diff --git a/chrome/browser/optimization_guide/optimization_guide_keyed_service.cc b/chrome/browser/optimization_guide/optimization_guide_keyed_service.cc
 --- a/chrome/browser/optimization_guide/optimization_guide_keyed_service.cc
 +++ b/chrome/browser/optimization_guide/optimization_guide_keyed_service.cc
-@@ -517,7 +517,6 @@ void OptimizationGuideKeyedService::RemoveObserverForOptimizationTargetModel(
+@@ -520,7 +520,6 @@ void OptimizationGuideKeyedService::RemoveObserverForOptimizationTargetModel(
  void OptimizationGuideKeyedService::RegisterOptimizationTypes(
      const std::vector<optimization_guide::proto::OptimizationType>&
          optimization_types) {
@@ -343,7 +343,7 @@ diff --git a/components/optimization_guide/core/optimization_guide_features.cc b
  
  // Returns whether |locale| is a supported locale for |feature|.
  //
-@@ -582,8 +570,7 @@ size_t MaxURLKeyedHintCacheSize() {
+@@ -587,8 +575,7 @@ size_t MaxURLKeyedHintCacheSize() {
  }
  
  bool ShouldPersistHintsToDisk() {
@@ -353,7 +353,7 @@ diff --git a/components/optimization_guide/core/optimization_guide_features.cc b
  }
  
  bool ShouldEnablePersonalizedMetadata(proto::RequestContext request_context) {
-@@ -1002,5 +989,19 @@ bool CanLaunchOnDeviceModelService() {
+@@ -1007,5 +994,19 @@ bool CanLaunchOnDeviceModelService() {
           base::FeatureList::IsEnabled(kLogOnDeviceMetricsOnStartup);
  }
  
@@ -437,7 +437,7 @@ diff --git a/components/optimization_guide/features.gni b/components/optimizatio
 diff --git a/components/search/ntp_features.cc b/components/search/ntp_features.cc
 --- a/components/search/ntp_features.cc
 +++ b/components/search/ntp_features.cc
-@@ -499,4 +499,7 @@ std::vector<std::string> GetModulesOrder() {
+@@ -501,4 +501,7 @@ std::vector<std::string> GetModulesOrder() {
                             base::SplitResult::SPLIT_WANT_NONEMPTY);
  }
  

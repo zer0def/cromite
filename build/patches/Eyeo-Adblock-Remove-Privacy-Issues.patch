@@ -1002,7 +1002,7 @@ new file mode 100644
 diff --git a/chrome/browser/resources/settings/basic_page/basic_page.html b/chrome/browser/resources/settings/basic_page/basic_page.html
 --- a/chrome/browser/resources/settings/basic_page/basic_page.html
 +++ b/chrome/browser/resources/settings/basic_page/basic_page.html
-@@ -31,6 +31,13 @@
+@@ -32,6 +32,13 @@
              <settings-ai-page prefs="{{prefs}}"></settings-ai-page>
            </settings-section>
          </template>
@@ -1231,7 +1231,7 @@ diff --git a/chrome/test/BUILD.gn b/chrome/test/BUILD.gn
  import("//components/captive_portal/core/features.gni")
  import("//components/compose/features.gni")
  import("//components/enterprise/buildflags/buildflags.gni")
-@@ -2957,10 +2956,6 @@ if (!is_android) {
+@@ -2958,10 +2957,6 @@ if (!is_android) {
        sources += [ "../browser/chrome_for_testing/chrome_for_testing_info_bar_browsertest.cc" ]
      }
  

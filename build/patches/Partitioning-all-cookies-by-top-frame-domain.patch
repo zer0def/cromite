@@ -72,7 +72,7 @@ diff --git a/components/content_settings/core/browser/cookie_settings.cc b/compo
 diff --git a/components/content_settings/core/common/cookie_settings_base.cc b/components/content_settings/core/common/cookie_settings_base.cc
 --- a/components/content_settings/core/common/cookie_settings_base.cc
 +++ b/components/content_settings/core/common/cookie_settings_base.cc
-@@ -414,7 +414,7 @@ CookieSettingsBase::GetCookieSettingInternal(
+@@ -419,7 +419,7 @@ CookieSettingsBase::GetCookieSettingInternal(
    absl::optional<ThirdPartyBlockingScope> scope;
    if (block_third) {
      scope = IsAllowed(setting)
