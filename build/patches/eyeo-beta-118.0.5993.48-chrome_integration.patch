@@ -8170,7 +8170,7 @@ diff --git a/chrome/test/BUILD.gn b/chrome/test/BUILD.gn
        "../browser/apps/guest_view/app_view_browsertest.cc",
        "../browser/apps/guest_view/web_view_browsertest.cc",
        "../browser/apps/platform_apps/app_browsertest.cc",
-@@ -2939,6 +2957,10 @@ if (!is_android) {
+@@ -2940,6 +2958,10 @@ if (!is_android) {
        sources += [ "../browser/chrome_for_testing/chrome_for_testing_info_bar_browsertest.cc" ]
      }
  
@@ -8181,7 +8181,7 @@ diff --git a/chrome/test/BUILD.gn b/chrome/test/BUILD.gn
      if (enable_reporting) {
        sources += [ "../browser/net/reporting_browsertest.cc" ]
      }
-@@ -3793,6 +3815,7 @@ if (!is_android) {
+@@ -3794,6 +3816,7 @@ if (!is_android) {
          ]
        }
  
@@ -8189,7 +8189,7 @@ diff --git a/chrome/test/BUILD.gn b/chrome/test/BUILD.gn
        if (is_chromeos_ash && enable_extensions) {
          deps +=
              [ "//chromeos/ash/components/network/portal_detector:test_support" ]
-@@ -6096,6 +6119,7 @@ test("unit_tests") {
+@@ -6097,6 +6120,7 @@ test("unit_tests") {
    sources = [
      # All unittests in browser, common, renderer and service.
      "../browser/about_flags_unittest.cc",
@@ -8197,7 +8197,7 @@ diff --git a/chrome/test/BUILD.gn b/chrome/test/BUILD.gn
      "../browser/after_startup_task_utils_unittest.cc",
      "../browser/apps/icon_standardizer_unittest.cc",
      "../browser/apps/user_type_filter_unittest.cc",
-@@ -6786,6 +6810,8 @@ test("unit_tests") {
+@@ -6787,6 +6811,8 @@ test("unit_tests") {
      "//chrome/services/file_util:unit_tests",
      "//chrome/services/qrcode_generator/public/cpp",
      "//components/account_id",
@@ -8206,7 +8206,7 @@ diff --git a/chrome/test/BUILD.gn b/chrome/test/BUILD.gn
      "//components/assist_ranker/proto",
      "//components/autofill/content/browser:test_support",
      "//components/background_sync",
-@@ -10380,6 +10406,7 @@ if (!is_android) {
+@@ -10381,6 +10407,7 @@ if (!is_android) {
  
      public_deps = [
        "//chrome/browser:test_support_ui",

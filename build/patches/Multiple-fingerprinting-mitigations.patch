@@ -498,7 +498,7 @@ diff --git a/third_party/blink/renderer/modules/canvas/canvas2d/base_rendering_c
    }
  
    return image_data;
-@@ -2908,9 +2916,23 @@ TextMetrics* BaseRenderingContext2D::measureText(const String& text) {
+@@ -2885,9 +2893,23 @@ TextMetrics* BaseRenderingContext2D::measureText(const String& text) {
  
    TextDirection direction = ToTextDirection(GetState().GetDirection(), canvas);
  
