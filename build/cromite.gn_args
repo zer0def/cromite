@@ -37,11 +37,13 @@ enable_feed_v2=false
 enable_cardboard=false
 is_high_end_android=true
 
-# Do not compile with proprietary codecs
-proprietary_codecs=false
-ffmpeg_branding="Chromium"
+proprietary_codecs=true
+ffmpeg_branding="Chrome"
 enable_av1_decoder=true
 enable_dav1d_decoder=true
+enable_platform_dolby_vision=true
+enable_platform_hevc=true
+enable_mse_mpeg2ts_stream_parser=true
 
 # Do not compile libmonochrome.so with RELR relocations
 # since supported only on API 28+
