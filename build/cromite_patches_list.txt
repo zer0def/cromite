@@ -240,6 +240,7 @@ Add-webRTC-site-settings.patch
 Show-site-settings-for-cookies-javascript-and-ads.patch
 Viewport-Protection-flag.patch
 Timezone-customization.patch
+Change-popup-site-setting.patch
 Disable-speechSynthesis-getVoices-API.patch
 Remove-support-for-device-memory-and-cpu-recovery.patch
 Log-dangling-attributes-in-some-html-elements.patch
