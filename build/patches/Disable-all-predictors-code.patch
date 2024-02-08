@@ -437,7 +437,7 @@ diff --git a/components/optimization_guide/features.gni b/components/optimizatio
 diff --git a/components/search/ntp_features.cc b/components/search/ntp_features.cc
 --- a/components/search/ntp_features.cc
 +++ b/components/search/ntp_features.cc
-@@ -501,4 +501,7 @@ std::vector<std::string> GetModulesOrder() {
+@@ -502,4 +502,7 @@ std::vector<std::string> GetModulesOrder() {
                             base::SplitResult::SPLIT_WANT_NONEMPTY);
  }
  
