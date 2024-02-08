@@ -296,3 +296,5 @@ eyeo-beta-118.0.5993.48-extension_api.patch
 Eyeo-Adblock-Remove-Privacy-Issues.patch
 AdblockPlus-add-blocking-in-service-workers.patch
 AdblockPlus-connect-popup-blocker.patch
+
+Temp-FIXUP-Content-settings-infrastructure.patch
