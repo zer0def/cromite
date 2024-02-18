@@ -220,7 +220,6 @@ Disable-SHA1-Server-Signature.patch
 Remove-auth-header-upon-cross-origin-redirect.patch
 Clear-CORS-Preflight-Cache-on-clearing-data.patch
 Multi-Screen-Window-Placement-API-fix.patch
-Remove-https-connection-from-chrome-discards.patch
 Add-a-flag-to-disable-GamePad-API.patch
 Disable-WebGPU.patch
 Disable-FirstPartySets-and-StorageAccessAPI.patch
@@ -296,5 +295,3 @@ eyeo-beta-118.0.5993.48-extension_api.patch
 Eyeo-Adblock-Remove-Privacy-Issues.patch
 AdblockPlus-add-blocking-in-service-workers.patch
 AdblockPlus-connect-popup-blocker.patch
-
-Temp-FIXUP-Content-settings-infrastructure.patch

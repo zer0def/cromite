@@ -19,14 +19,14 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 diff --git a/chrome/browser/flags/BUILD.gn b/chrome/browser/flags/BUILD.gn
 --- a/chrome/browser/flags/BUILD.gn
 +++ b/chrome/browser/flags/BUILD.gn
-@@ -34,6 +34,7 @@ android_library("java") {
+@@ -23,6 +23,7 @@ android_library("java") {
      "//build:chromeos_buildflags",
      "//build/android:build_java",
      "//chrome/browser/preferences:java",
 +    "//components/policy/android:policy_java",
-     "//components/version_info/android:version_constants_java",
      "//third_party/android_deps:guava_android_java",
      "//third_party/androidx:androidx_annotation_annotation_java",
+     "//third_party/jni_zero:jni_zero_java",
 diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/cromite/sEnableAndroidAppRestriction.java b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/cromite/sEnableAndroidAppRestriction.java
 new file mode 100644
 --- /dev/null
