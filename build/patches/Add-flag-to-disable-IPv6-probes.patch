@@ -45,7 +45,7 @@ new file mode 100644
 diff --git a/net/BUILD.gn b/net/BUILD.gn
 --- a/net/BUILD.gn
 +++ b/net/BUILD.gn
-@@ -1033,6 +1033,7 @@ component("net") {
+@@ -1028,6 +1028,7 @@ component("net") {
      "//build:chromeos_buildflags",
      "//components/miracle_parameter/common",
      "//net/http:transport_security_state_generated_files",
@@ -56,7 +56,7 @@ diff --git a/net/BUILD.gn b/net/BUILD.gn
 diff --git a/net/dns/host_resolver_manager.cc b/net/dns/host_resolver_manager.cc
 --- a/net/dns/host_resolver_manager.cc
 +++ b/net/dns/host_resolver_manager.cc
-@@ -109,6 +109,7 @@
+@@ -113,6 +113,7 @@
  #include "net/log/net_log_event_type.h"
  #include "net/log/net_log_source.h"
  #include "net/log/net_log_source_type.h"
@@ -64,17 +64,17 @@ diff --git a/net/dns/host_resolver_manager.cc b/net/dns/host_resolver_manager.cc
  #include "net/log/net_log_with_source.h"
  #include "net/socket/client_socket_factory.h"
  #include "net/url_request/url_request_context.h"
-@@ -681,6 +682,9 @@ class HostResolverManager::RequestImpl
-     // request source is LOCAL_ONLY. This is due to LOCAL_ONLY requiring a
-     // synchronous response, so it cannot wait on an async probe result and
-     // cannot make assumptions about reachability.
+@@ -1320,6 +1321,9 @@ void HostResolverManager::CreateTaskSequence(
+     case HostResolverSource::MULTICAST_DNS:
+       out_tasks->push_back(TaskType::MDNS);
+       break;
 +    if (!base::FeatureList::IsEnabled(features::kIPv6Probing)) {
 +      return OK;
 +    }
-     if (parameters_.source == HostResolverSource::LOCAL_ONLY) {
-       int rv = resolver_->StartIPv6ReachabilityCheck(
-           source_net_log_, GetClientSocketFactory(),
-@@ -3899,6 +3903,13 @@ int HostResolverManager::StartIPv6ReachabilityCheck(
+     case HostResolverSource::LOCAL_ONLY:
+       // If no external source allowed, a job should not be created or started
+       break;
+@@ -1373,6 +1377,13 @@ int HostResolverManager::StartIPv6ReachabilityCheck(
      return OK;
    }
  
