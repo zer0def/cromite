@@ -8,11 +8,11 @@ need: Add-cromite-flags-support.patch
 License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
  .../tab_management/TabUiFeatureUtilities.java |  4 +--
- .../java/res/xml/privacy_preferences.xml      |  7 +++++
- .../flags/cromite/sTabSwitcherListMode.java   | 31 +++++++++++++++++++
- .../Use-list-mode-for-tab-switcher.grdp       |  9 ++++++
+ .../java/res/xml/privacy_preferences.xml      |  7 ++++
+ .../flags/cromite/sTabSwitcherListMode.java   | 33 +++++++++++++++++++
+ .../Use-list-mode-for-tab-switcher.grdp       |  9 +++++
  .../tab-switcher-list-mode.inc                |  3 ++
- 5 files changed, 52 insertions(+), 2 deletions(-)
+ 5 files changed, 54 insertions(+), 2 deletions(-)
  create mode 100644 chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/cromite/sTabSwitcherListMode.java
  create mode 100644 chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Use-list-mode-for-tab-switcher.grdp
  create mode 100644 cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/tab-switcher-list-mode.inc
@@ -20,15 +20,15 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabUiFeatureUtilities.java b/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabUiFeatureUtilities.java
 --- a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabUiFeatureUtilities.java
 +++ b/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabUiFeatureUtilities.java
-@@ -15,6 +15,7 @@ import org.chromium.chrome.browser.flags.ChromeFeatureList;
- import org.chromium.chrome.browser.flags.IntCachedFieldTrialParameter;
+@@ -15,6 +15,7 @@ import org.chromium.build.BuildConfig;
+ import org.chromium.chrome.browser.flags.ChromeFeatureList;
  import org.chromium.chrome.browser.multiwindow.MultiWindowUtils;
  import org.chromium.ui.base.DeviceFormFactor;
 +import org.chromium.chrome.browser.flags.cromite.sTabSwitcherListMode;
  
  /** A class to handle the state of flags for tab_management. */
  public class TabUiFeatureUtilities {
-@@ -71,8 +72,7 @@ public class TabUiFeatureUtilities {
+@@ -100,8 +101,7 @@ public class TabUiFeatureUtilities {
       * @param context The activity context.
       */
      public static boolean shouldUseListMode(Context context) {
@@ -41,7 +41,7 @@ diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser
 diff --git a/chrome/android/java/res/xml/privacy_preferences.xml b/chrome/android/java/res/xml/privacy_preferences.xml
 --- a/chrome/android/java/res/xml/privacy_preferences.xml
 +++ b/chrome/android/java/res/xml/privacy_preferences.xml
-@@ -73,6 +73,13 @@ found in the LICENSE file.
+@@ -74,6 +74,13 @@ found in the LICENSE file.
          android:summary="@string/settings_incognito_tab_lock_summary_android_setting_off"
          android:persistent="false" />
  
@@ -59,7 +59,7 @@ diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/f
 new file mode 100644
 --- /dev/null
 +++ b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/cromite/sTabSwitcherListMode.java
-@@ -0,0 +1,31 @@
+@@ -0,0 +1,33 @@
 +/*
 +    This file is part of Cromite.
 +
@@ -79,11 +79,13 @@ new file mode 100644
 +
 +package org.chromium.chrome.browser.flags.cromite;
 +
-+import org.chromium.chrome.browser.flags.CachedFlag;
++import org.chromium.base.cached_flags.CachedFlag;
++import org.chromium.chrome.browser.flags.ChromeFeatureMap;
 +
 +public class sTabSwitcherListMode {
 +    private static final CachedFlag sInstance =
-+        new CachedFlag("TabSwitcherListMode", false);
++        new CachedFlag(ChromeFeatureMap.getInstance(),
++            "TabSwitcherListMode", false);
 +
 +    private sTabSwitcherListMode() {}
 +

@@ -16,10 +16,10 @@ Subject: bromite build utils
  chrome/browser/flags/BUILD.gn                 |  10 +-
  .../flags/android/cromite_native_utils.cc     |  41 +++++++
  .../flags/android/cromite_native_utils.h      |  14 +++
- .../browser/flags/CromiteNativeUtils.java     |  46 ++++++++
+ .../browser/flags/CromiteNativeUtils.java     |  47 ++++++++
  tools/grit/grit/grd_reader.py                 |  27 ++++-
  tools/grit/preprocess_if_expr.py              |  32 +++++-
- 16 files changed, 467 insertions(+), 16 deletions(-)
+ 16 files changed, 468 insertions(+), 16 deletions(-)
  create mode 100644 build/bromite/bromite_utils.gni
  create mode 100644 build/bromite/gyp/cpp_bromite_include.py
  create mode 100644 build/bromite/gyp/cpp_bromite_include.pydeps
@@ -482,10 +482,10 @@ diff --git a/chrome/browser/flags/BUILD.gn b/chrome/browser/flags/BUILD.gn
 -  sources = [
 +  sources = [ "android/java/src/org/chromium/chrome/browser/flags/CromiteNativeUtils.java" ]
 +  sources += [
-     "android/java/src/org/chromium/chrome/browser/flags/AllCachedFieldTrialParameters.java",
-     "android/java/src/org/chromium/chrome/browser/flags/BooleanCachedFieldTrialParameter.java",
-     "android/java/src/org/chromium/chrome/browser/flags/CachedFieldTrialParameter.java",
-@@ -41,7 +42,8 @@ android_library("java") {
+     "android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java",
+     "android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureMap.java",
+     "android/java/src/org/chromium/chrome/browser/flags/ChromeSessionState.java",
+@@ -30,7 +31,8 @@ android_library("java") {
  }
  
  generate_jni("jni_headers") {
@@ -495,7 +495,7 @@ diff --git a/chrome/browser/flags/BUILD.gn b/chrome/browser/flags/BUILD.gn
      "android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureMap.java",
      "android/java/src/org/chromium/chrome/browser/flags/ChromeSessionState.java",
    ]
-@@ -49,6 +51,10 @@ generate_jni("jni_headers") {
+@@ -38,6 +40,10 @@ generate_jni("jni_headers") {
  
  static_library("flags_android") {
    sources = [
@@ -575,9 +575,10 @@ diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/f
 new file mode 100755
 --- /dev/null
 +++ b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/CromiteNativeUtils.java
-@@ -0,0 +1,46 @@
+@@ -0,0 +1,47 @@
 +package org.chromium.chrome.browser.flags;
 +
++import org.chromium.base.cached_flags.CachedFlag;
 +import org.chromium.chrome.browser.flags.ChromeFeatureList;
 +import org.chromium.chrome.browser.preferences.ChromePreferenceKeys;
 +import org.chromium.chrome.browser.preferences.ChromeSharedPreferences;
