@@ -1354,8 +1354,8 @@ diff --git a/net/proxy_resolution/proxy_config.cc b/net/proxy_resolution/proxy_c
 +  // special case: a single proxy servers list specified
 +  if (type == Type::PROXY_LIST) {
 +    std::string proxy_list;
-+    for (const ProxyServer& proxy_server :
-+         single_proxies.GetAll()) {
++    for (const auto& proxy_chain : single_proxies.AllChains()) {
++      net::ProxyServer proxy_server = proxy_chain.GetProxyServer(/*chain_index=*/0);
 +      proxy_list += ProxyServerToProxyUri(proxy_server) + ";";
 +    }
 +    // remove last semicolon
@@ -1373,20 +1373,20 @@ diff --git a/net/proxy_resolution/proxy_config.cc b/net/proxy_resolution/proxy_c
 +
 +  // start to build a per-scheme list
 +  std::string list;
-+  for (const ProxyServer& proxy_server :
-+       proxies_for_http.GetAll()) {
++  for (const auto& proxy_chain : proxies_for_http.AllChains()) {
++    net::ProxyServer proxy_server = proxy_chain.GetProxyServer(/*chain_index=*/0);
 +    list += "http=" + ProxyServerToProxyUri(proxy_server) + ";";
 +  }
-+  for (const ProxyServer& proxy_server :
-+       proxies_for_https.GetAll()) {
++  for (const auto& proxy_chain : proxies_for_https.AllChains()) {
++    net::ProxyServer proxy_server = proxy_chain.GetProxyServer(/*chain_index=*/0);
 +    list += "https=" + ProxyServerToProxyUri(proxy_server) + ";";
 +  }
-+  for (const ProxyServer& proxy_server :
-+       proxies_for_ftp.GetAll()) {
++  for (const auto& proxy_chain : proxies_for_ftp.AllChains()) {
++    net::ProxyServer proxy_server = proxy_chain.GetProxyServer(/*chain_index=*/0);
 +    list += "ftp=" + ProxyServerToProxyUri(proxy_server) + ";";
 +  }
-+  for (const ProxyServer& proxy_server :
-+       fallback_proxies.GetAll()) {
++  for (const auto& proxy_chain : fallback_proxies.AllChains()) {
++    net::ProxyServer proxy_server = proxy_chain.GetProxyServer(/*chain_index=*/0);
 +    list += "socks=" + ProxyServerToProxyUri(proxy_server) + ";";
 +  }
 +  if (list.length() != 0 ) {

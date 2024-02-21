@@ -20,7 +20,7 @@ Based on Chromium 118.0.5993.48
  .../content/browser/adblock_filter_match.h    |   30 +
  .../adblock_telemetry_service_factory_base.cc |  100 ++
  .../adblock_telemetry_service_factory_base.h  |   54 +
- .../browser/adblock_url_loader_factory.cc     |  747 +++++++++
+ .../browser/adblock_url_loader_factory.cc     |  748 +++++++++
  .../browser/adblock_url_loader_factory.h      |  100 ++
  .../adblock_url_loader_factory_for_test.cc    |  436 +++++
  .../adblock_url_loader_factory_for_test.h     |   70 +
@@ -223,7 +223,7 @@ Based on Chromium 118.0.5993.48
  tools/eyeo/generate_modules.sh                |  209 +++
  tools/eyeo/snippets_deps.py                   |   61 +
  tools/gritsettings/resource_ids.spec          |    8 +
- 219 files changed, 22060 insertions(+), 3 deletions(-)
+ 219 files changed, 22061 insertions(+), 3 deletions(-)
  create mode 100644 components/adblock/CHANGELOG.md
  create mode 100644 components/adblock/LICENSE
  create mode 100644 components/adblock/README.md
@@ -2540,7 +2540,7 @@ diff --git a/components/adblock/content/browser/adblock_url_loader_factory.cc b/
 new file mode 100644
 --- /dev/null
 +++ b/components/adblock/content/browser/adblock_url_loader_factory.cc
-@@ -0,0 +1,747 @@
+@@ -0,0 +1,748 @@
 +/*
 + * This file is part of eyeo Chromium SDK,
 + * Copyright (C) 2006-present eyeo GmbH
@@ -2623,6 +2623,7 @@ new file mode 100644
 +    case network::mojom::RequestDestination::kWorker:
 +    case network::mojom::RequestDestination::kSharedWorker:
 +    case network::mojom::RequestDestination::kServiceWorker:
++    case network::mojom::RequestDestination::kJson:
 +      return ContentType::Script;
 +    case network::mojom::RequestDestination::kImage:
 +      return ContentType::Image;

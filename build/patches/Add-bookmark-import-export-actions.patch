@@ -26,7 +26,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../bookmarks/BookmarkToolbarViewBinder.java  |   6 +
  .../native_page/NativePageFactory.java        |  11 +-
  chrome/browser/BUILD.gn                       |  11 +-
- .../bookmarks/android/bookmark_bridge.cc      | 283 ++++++++++++++++++
+ .../bookmarks/android/bookmark_bridge.cc      | 287 ++++++++++++++++++
  .../bookmarks/android/bookmark_bridge.h       |  30 +-
  .../browser/bookmarks/bookmark_html_writer.cc |  11 +
  .../dialogs/DownloadLocationCustomView.java   |   8 +-
@@ -53,7 +53,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  ui/shell_dialogs/select_file_dialog_linux.cc  |   4 +
  ui/shell_dialogs/select_file_dialog_linux.h   |   2 +
  ui/shell_dialogs/select_file_dialog_win.cc    |   5 +
- 43 files changed, 918 insertions(+), 29 deletions(-)
+ 43 files changed, 922 insertions(+), 29 deletions(-)
  create mode 100644 cromite_flags/chrome/browser/about_flags_cc/add-bookmark-import-export-actions.inc
  create mode 100644 cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/add-bookmark-import-export-actions.inc
  create mode 100644 cromite_flags/chrome/browser/flags/android/chrome_feature_list_h/add-bookmark-import-export-actions.inc
@@ -863,7 +863,7 @@ diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 diff --git a/chrome/browser/bookmarks/android/bookmark_bridge.cc b/chrome/browser/bookmarks/android/bookmark_bridge.cc
 --- a/chrome/browser/bookmarks/android/bookmark_bridge.cc
 +++ b/chrome/browser/bookmarks/android/bookmark_bridge.cc
-@@ -58,6 +58,25 @@
+@@ -58,6 +58,28 @@
  #include "content/public/browser/browser_thread.h"
  #include "content/public/browser/web_contents.h"
  
@@ -885,11 +885,14 @@ diff --git a/chrome/browser/bookmarks/android/bookmark_bridge.cc b/chrome/browse
 +#include "base/task/task_traits.h"
 +#include "base/task/thread_pool.h"
 +#include "content/public/browser/browser_task_traits.h"
++#include "base/files/file_path.h"
++#include "ui/shell_dialogs/selected_file_info.h"
++#include "ui/shell_dialogs/select_file_dialog.h"
 +
  using base::android::AttachCurrentThread;
  using base::android::ConvertUTF16ToJavaString;
  using base::android::ConvertUTF8ToJavaString;
-@@ -75,12 +94,96 @@ using bookmarks::android::JavaBookmarkIdGetType;
+@@ -75,12 +97,96 @@ using bookmarks::android::JavaBookmarkIdGetType;
  using content::BrowserThread;
  using power_bookmarks::PowerBookmarkMeta;
  
@@ -986,7 +989,7 @@ diff --git a/chrome/browser/bookmarks/android/bookmark_bridge.cc b/chrome/browse
  class BookmarkTitleComparer {
   public:
    explicit BookmarkTitleComparer(BookmarkBridge* bookmark_bridge,
-@@ -221,6 +324,10 @@ BookmarkBridge::~BookmarkBridge() {
+@@ -221,6 +327,10 @@ BookmarkBridge::~BookmarkBridge() {
    partner_bookmarks_shim_observation_.Reset();
    bookmark_model_observation_.Reset();
    profile_observation_.Reset();
@@ -997,7 +1000,7 @@ diff --git a/chrome/browser/bookmarks/android/bookmark_bridge.cc b/chrome/browse
  }
  
  void BookmarkBridge::Destroy(JNIEnv*) {
-@@ -638,6 +745,182 @@ jint BookmarkBridge::GetTotalBookmarkCount(
+@@ -638,6 +748,183 @@ jint BookmarkBridge::GetTotalBookmarkCount(
    return count;
  }
  
@@ -1079,8 +1082,9 @@ diff --git a/chrome/browser/bookmarks/android/bookmark_bridge.cc b/chrome/browse
 +  return std::make_unique<TemplateURL>(data);
 +}
 +
-+void BookmarkBridge::FileSelected(const base::FilePath& path, int index,
++void BookmarkBridge::FileSelected(const ui::SelectedFileInfo& file, int index,
 +                            void* params) {
++  base::FilePath path = file.path();
 +  base::ThreadPool::PostTaskAndReplyWithResult(
 +      FROM_HERE, {base::TaskPriority::BEST_EFFORT, base::MayBlock()},
 +      base::BindOnce(&BookmarkBridge::FileSelectedImpl,
@@ -1216,7 +1220,7 @@ diff --git a/chrome/browser/bookmarks/android/bookmark_bridge.h b/chrome/browser
    bool IsDoingExtensiveChanges(JNIEnv* env);
  
 +  // SelectFileDialog::Listener implementation.
-+  void FileSelected(const base::FilePath& path,
++  void FileSelected(const ui::SelectedFileInfo& file,
 +                    int index,
 +                    void* params) override;
 +  void FileSelectionCanceled(void* params) override;
@@ -1371,7 +1375,7 @@ diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browse
      &kCacheActivityTaskID,
      &kCastDeviceFilter,
      &kClearOmniboxFocusAfterNavigation,
-+    &kBookmarksExportUseSaf
++    &kBookmarksExportUseSaf,
      &kCreateNewTabInitializeRenderer,
      &kCCTBrandTransparencyMemoryImprovement,
      &kCCTClientDataHeader,

@@ -142,7 +142,7 @@ diff --git a/net/quic/quic_session_pool.cc b/net/quic/quic_session_pool.cc
                HostsFromOrigins(params_.origins_to_force_quic_on),
                actual_network_anonymization_key),
 -          std::make_unique<quic::QuicClientSessionCache>(), this);
-+          std::make_unique<quic::BromiteSessionCache>(), this);
++          std::make_unique<BromiteSessionCache>(), this);
  
    quic::QuicCryptoClientConfig* crypto_config = crypto_config_owner->config();
    crypto_config->AddCanonicalSuffix(".c.youtube.com");

@@ -15,17 +15,17 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  components/bookmark_bar_strings.grdp          |  6 ++
  .../bookmarks/browser/bookmark_codec.cc       | 22 ++++--
  components/bookmarks/browser/bookmark_codec.h |  7 +-
- .../browser/bookmark_load_details.cc          |  4 ++
+ .../browser/bookmark_load_details.cc          |  2 +
  .../bookmarks/browser/bookmark_load_details.h |  3 +
  .../bookmarks/browser/bookmark_model.cc       |  3 +-
  components/bookmarks/browser/bookmark_model.h |  7 ++
- components/bookmarks/browser/bookmark_node.cc | 13 ++++
- components/bookmarks/browser/bookmark_node.h  |  4 ++
+ components/bookmarks/browser/bookmark_node.cc | 11 +++
+ components/bookmarks/browser/bookmark_node.h  |  3 +
  .../bookmarks/browser/bookmark_uuids.cc       |  3 +
  components/bookmarks/browser/bookmark_uuids.h |  1 +
  components/bookmarks/browser/model_loader.cc  |  3 +-
  .../bookmark_specifics_conversions.cc         |  1 +
- 21 files changed, 232 insertions(+), 10 deletions(-)
+ 21 files changed, 227 insertions(+), 10 deletions(-)
 
 diff --git a/chrome/android/java/res/menu/main_menu.xml b/chrome/android/java/res/menu/main_menu.xml
 --- a/chrome/android/java/res/menu/main_menu.xml
@@ -219,7 +219,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/bookmarks/Bookm
 diff --git a/chrome/browser/bookmarks/android/bookmark_bridge.cc b/chrome/browser/bookmarks/android/bookmark_bridge.cc
 --- a/chrome/browser/bookmarks/android/bookmark_bridge.cc
 +++ b/chrome/browser/bookmarks/android/bookmark_bridge.cc
-@@ -353,6 +353,33 @@ void BookmarkBridge::GetImageUrlForBookmark(
+@@ -356,6 +356,33 @@ void BookmarkBridge::GetImageUrlForBookmark(
        base::BindOnce(&HandleImageUrlResponse, callback));
  }
  
@@ -234,11 +234,11 @@ diff --git a/chrome/browser/bookmarks/android/bookmark_bridge.cc b/chrome/browse
 +  bookmarks::BookmarkModel* model =
 +      BookmarkModelFactory::GetForBrowserContext(profile_);
 +
-+  std::vector<const bookmarks::BookmarkNode*> nodes =
++  std::vector<raw_ptr<const bookmarks::BookmarkNode, VectorExperimental>> nodes =
 +    model->GetNodesByURL(gurl);
 +  std::sort(nodes.begin(), nodes.end(), &bookmarks::MoreRecentlyAdded);
 +
-+  for (const auto* node : nodes) {
++  for (const BookmarkNode* node : nodes) {
 +    for (const auto& child : model->tabs_collection_node()->children()) {
 +      if (node->id() == child->id()) {
 +        return JavaBookmarkIdCreateBookmarkId(env, node->id(),
@@ -253,7 +253,7 @@ diff --git a/chrome/browser/bookmarks/android/bookmark_bridge.cc b/chrome/browse
  base::android::ScopedJavaLocalRef<jobject>
  BookmarkBridge::GetMostRecentlyAddedUserBookmarkIdForUrl(
      JNIEnv* env,
-@@ -461,6 +488,7 @@ void BookmarkBridge::GetAllFoldersWithDepths(
+@@ -464,6 +491,7 @@ void BookmarkBridge::GetAllFoldersWithDepths(
    // Vector to temporarily contain all child bookmarks at same level for sorting
    std::vector<const BookmarkNode*> bookmarks = {
        bookmark_model_->mobile_node(),
@@ -261,7 +261,7 @@ diff --git a/chrome/browser/bookmarks/android/bookmark_bridge.cc b/chrome/browse
        bookmark_model_->bookmark_bar_node(),
        bookmark_model_->other_node(),
    };
-@@ -518,6 +546,11 @@ std::vector<const BookmarkNode*> BookmarkBridge::GetTopLevelFolderIdsImpl(
+@@ -521,6 +549,11 @@ std::vector<const BookmarkNode*> BookmarkBridge::GetTopLevelFolderIdsImpl(
      top_level_folders.push_back(root_child.get());
    }
  
@@ -273,7 +273,7 @@ diff --git a/chrome/browser/bookmarks/android/bookmark_bridge.cc b/chrome/browse
    if (account_reading_list_manager_ &&
        account_reading_list_manager_->GetRoot()) {
      top_level_folders.push_back(account_reading_list_manager_->GetRoot());
-@@ -1143,6 +1176,17 @@ void BookmarkBridge::GetBookmarksOfType(
+@@ -1147,6 +1180,17 @@ void BookmarkBridge::GetBookmarksOfType(
    AddBookmarkNodesToBookmarkIdList(env, j_list, results);
  }
  
@@ -565,14 +565,12 @@ diff --git a/components/bookmarks/browser/bookmark_codec.h b/components/bookmark
 diff --git a/components/bookmarks/browser/bookmark_load_details.cc b/components/bookmarks/browser/bookmark_load_details.cc
 --- a/components/bookmarks/browser/bookmark_load_details.cc
 +++ b/components/bookmarks/browser/bookmark_load_details.cc
-@@ -31,6 +31,10 @@ BookmarkLoadDetails::BookmarkLoadDetails(BookmarkClient* client)
+@@ -31,6 +31,8 @@ BookmarkLoadDetails::BookmarkLoadDetails(BookmarkClient* client)
        root_node_->Add(BookmarkPermanentNode::CreateOtherBookmarks(max_id_++)));
    mobile_folder_node_ = static_cast<BookmarkPermanentNode*>(
        root_node_->Add(BookmarkPermanentNode::CreateMobileBookmarks(max_id_++)));
 +  tabs_collection_folder_node_ = static_cast<BookmarkPermanentNode*>(
-+      root_node_->Add(BookmarkPermanentNode::CreateTabsCollectionBookmarks(
-+          max_id_++,
-+          client->IsPermanentNodeVisibleWhenEmpty(BookmarkNode::TABS_COLLECTION))));
++      root_node_->Add(BookmarkPermanentNode::CreateTabsCollectionBookmarks(max_id_++)));
  }
  
  BookmarkLoadDetails::~BookmarkLoadDetails() = default;
@@ -652,19 +650,17 @@ diff --git a/components/bookmarks/browser/bookmark_node.cc b/components/bookmark
      case BookmarkNode::URL:
        NOTREACHED_NORETURN();
      case BookmarkNode::FOLDER:
-@@ -211,6 +213,17 @@ BookmarkPermanentNode::CreateMobileBookmarks(int64_t id) {
+@@ -211,6 +213,15 @@ BookmarkPermanentNode::CreateMobileBookmarks(int64_t id) {
        l10n_util::GetStringUTF16(IDS_BOOKMARK_BAR_MOBILE_FOLDER_NAME)));
  }
  
 +// static
 +std::unique_ptr<BookmarkPermanentNode>
-+BookmarkPermanentNode::CreateTabsCollectionBookmarks(int64_t id,
-+                                             bool visible_when_empty) {
++BookmarkPermanentNode::CreateTabsCollectionBookmarks(int64_t id) {
 +  // base::WrapUnique() used because the constructor is private.
 +  return base::WrapUnique(new BookmarkPermanentNode(
 +      id, TABS_COLLECTION, base::Uuid::ParseLowercase(kTabsCollectionBookmarksNodeUuid),
-+      l10n_util::GetStringUTF16(IDS_BOOKMARK_BAR_TABS_COLLECTION_FOLDER_NAME),
-+      visible_when_empty));
++      l10n_util::GetStringUTF16(IDS_BOOKMARK_BAR_TABS_COLLECTION_FOLDER_NAME)));
 +}
 +
  BookmarkPermanentNode::BookmarkPermanentNode(int64_t id,
@@ -681,13 +677,12 @@ diff --git a/components/bookmarks/browser/bookmark_node.h b/components/bookmarks
      MOBILE
    };
  
-@@ -247,6 +248,9 @@ class BookmarkPermanentNode : public BookmarkNode {
+@@ -247,6 +248,8 @@ class BookmarkPermanentNode : public BookmarkNode {
        int64_t id);
    static std::unique_ptr<BookmarkPermanentNode> CreateMobileBookmarks(
        int64_t id);
 +  static std::unique_ptr<BookmarkPermanentNode> CreateTabsCollectionBookmarks(
-+      int64_t id,
-+      bool visible_when_empty);
++      int64_t id);
  
    // Constructor is private to disallow the construction of permanent nodes
    // other than the well-known ones, see factory methods.

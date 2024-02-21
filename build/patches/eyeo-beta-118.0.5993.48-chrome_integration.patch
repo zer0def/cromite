@@ -177,7 +177,7 @@ diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
      "//components/assist_ranker",
      "//components/autofill/content/browser",
      "//components/autofill/core/browser",
-@@ -3405,6 +3431,8 @@ static_library("browser") {
+@@ -3406,6 +3432,8 @@ static_library("browser") {
        "webauthn/android/webauthn_request_delegate_android.cc",
        "webauthn/android/webauthn_request_delegate_android.h",
      ]
@@ -186,7 +186,7 @@ diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
      public_deps += [
        "//chrome/android/features/dev_ui:buildflags",
        "//components/image_fetcher/core",
-@@ -3591,6 +3619,7 @@ static_library("browser") {
+@@ -3593,6 +3621,7 @@ static_library("browser") {
        "//url",
      ]
  
@@ -2629,7 +2629,7 @@ new file mode 100644
 +mojom("mojo_bindings") {
 +  sources = [ "adblock_internals.mojom" ]
 +  webui_module_path = "/"
-+  use_typescript_sources = true
++  #use_typescript_sources = true
 +}
 diff --git a/chrome/browser/ui/webui/adblock_internals/adblock_internals.mojom b/chrome/browser/ui/webui/adblock_internals/adblock_internals.mojom
 new file mode 100644

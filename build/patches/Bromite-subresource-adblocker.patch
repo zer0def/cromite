@@ -29,7 +29,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  chrome/browser/browser_process_impl.cc        |  21 ++
  chrome/browser/browser_process_impl.h         |   2 +
  chrome/browser/chrome_browser_main.cc         |   3 +
- chrome/browser/flags/BUILD.gn                 |   3 +
+ chrome/browser/flags/BUILD.gn                 |   4 +
  .../flags/android/adblock_native_gateway.cc   |  31 ++
  .../browser/flags/AdBlockNativeGateway.java   |  30 ++
  .../net/system_network_context_manager.cc     |   8 +
@@ -52,7 +52,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../browser/subresource_filter_features.cc    | 116 +-------
  .../core/common/indexed_ruleset.cc            |   5 +-
  .../Bromite-subresource-adblocker.inc         |   3 +
- 40 files changed, 1253 insertions(+), 127 deletions(-)
+ 40 files changed, 1254 insertions(+), 127 deletions(-)
  create mode 100644 chrome/android/java/res/layout/adblock_editor.xml
  create mode 100644 chrome/android/java/res/xml/adblock_preferences.xml
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/settings/AdBlockEditor.java
@@ -574,7 +574,15 @@ diff --git a/chrome/browser/chrome_browser_main.cc b/chrome/browser/chrome_brows
 diff --git a/chrome/browser/flags/BUILD.gn b/chrome/browser/flags/BUILD.gn
 --- a/chrome/browser/flags/BUILD.gn
 +++ b/chrome/browser/flags/BUILD.gn
-@@ -33,6 +33,7 @@ android_library("java") {
+@@ -8,6 +8,7 @@ import("//third_party/jni_zero/jni_zero.gni")
+ android_library("java") {
+   sources = [ "android/java/src/org/chromium/chrome/browser/flags/CromiteNativeUtils.java" ]
+   sources += [
++    "android/java/src/org/chromium/chrome/browser/flags/AdBlockNativeGateway.java",
+     "android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java",
+     "android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureMap.java",
+     "android/java/src/org/chromium/chrome/browser/flags/ChromeSessionState.java",
+@@ -33,6 +34,7 @@ android_library("java") {
  generate_jni("jni_headers") {
    sources = [ "android/java/src/org/chromium/chrome/browser/flags/CromiteNativeUtils.java" ]
    sources += [
@@ -582,7 +590,7 @@ diff --git a/chrome/browser/flags/BUILD.gn b/chrome/browser/flags/BUILD.gn
      "android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureMap.java",
      "android/java/src/org/chromium/chrome/browser/flags/ChromeSessionState.java",
    ]
-@@ -47,6 +48,7 @@ static_library("flags_android") {
+@@ -47,6 +49,7 @@ static_library("flags_android") {
      "android/chrome_session_state.cc",
      "android/chrome_session_state.h",
    ]
@@ -590,7 +598,7 @@ diff --git a/chrome/browser/flags/BUILD.gn b/chrome/browser/flags/BUILD.gn
    deps = [
      ":jni_headers",
      "//base",
-@@ -71,6 +73,7 @@ robolectric_library("flags_junit_tests") {
+@@ -71,6 +74,7 @@ robolectric_library("flags_junit_tests") {
      "android/java/src/org/chromium/chrome/browser/flags/CachedFeatureFlagsAnnotationUnitTest.java",
      "android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureListWithProcessorUnitTest.java",
      "android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureListWithoutProcessorUnitTest.java",
@@ -1975,7 +1983,7 @@ diff --git a/components/subresource_filter/core/common/indexed_ruleset.cc b/comp
    // checksum, and is unneeded once expected_checksum is consistently nonzero.
    flatbuffers::Verifier verifier(buffer.data(), buffer.size());
 -  if (expected_checksum != 0 && expected_checksum != LocalGetChecksum(buffer)) {
-+  int local_checksum = LocalGetChecksum(buffer, size);
++  int local_checksum = LocalGetChecksum(buffer);
 +  LOG(INFO) << "GetVerifyStatus: expected checksum = 0x" << std::hex << expected_checksum << ", local checksum = 0x" << std::hex << local_checksum;
 +  if (expected_checksum != 0 && expected_checksum != local_checksum) {
      return flat::VerifyIndexedRulesetBuffer(verifier)

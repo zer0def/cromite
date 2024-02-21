@@ -62,7 +62,6 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../site_settings/SingleWebsiteSettings.java  |  9 ++
  .../android/website_preference_bridge.cc      |  2 +-
  .../strings/android/browser_ui_strings.grd    |  5 ++
- components/content_settings/android/BUILD.gn  |  1 +
  .../core/browser/content_settings_utils.cc    | 36 ++++++++
  .../core/browser/content_settings_utils.h     |  6 ++
  .../common/content_settings_constraints.h     |  9 ++
@@ -73,21 +72,21 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  components/page_info/page_info.h              |  1 +
  .../permissions/PermissionDialogDelegate.java | 13 +++
  .../PermissionDialogModelFactory.java         | 82 ++++++++++++++++++-
- .../permission_dialog_delegate.cc             | 19 +++++
+ .../permission_dialog_delegate.cc             | 24 +++++-
  .../permission_dialog_delegate.h              |  1 +
- .../permission_prompt_android.cc              |  8 ++
+ .../permission_prompt_android.cc              |  8 +-
  .../permission_prompt_android.h               |  3 +-
  .../android/permissions_android_strings.grd   | 17 ++++
- .../geolocation_permission_context_android.cc | 32 ++++++--
+ .../geolocation_permission_context_android.cc | 34 ++++++--
  .../geolocation_permission_context_android.h  | 13 ++-
- .../permissions/permission_context_base.cc    | 51 ++++++++++--
+ .../permissions/permission_context_base.cc    | 52 ++++++++++--
  .../permissions/permission_context_base.h     | 23 +++++-
  components/permissions/permission_prompt.h    |  3 +-
  components/permissions/permission_request.cc  | 30 ++++++-
  components/permissions/permission_request.h   | 16 +++-
  .../permissions/permission_request_manager.cc | 45 ++++++----
  .../permissions/permission_request_manager.h  | 11 ++-
- 35 files changed, 485 insertions(+), 57 deletions(-)
+ 34 files changed, 488 insertions(+), 61 deletions(-)
 
 diff --git a/chrome/browser/permissions/last_tab_standing_tracker.cc b/chrome/browser/permissions/last_tab_standing_tracker.cc
 --- a/chrome/browser/permissions/last_tab_standing_tracker.cc
@@ -268,7 +267,7 @@ diff --git a/components/browser_ui/site_settings/android/java/src/org/chromium/c
          }
      }
  
-+    private boolean isSessionPermission(@ContentSettingsType int type) {
++    private boolean isSessionPermission(@ContentSettingsType.EnumType int type) {
 +        return mSite.getPermissionInfo(type) != null &&
 +               mSite.getPermissionInfo(type).getSessionModel() == SessionModel.USER_SESSION;
 +    }
@@ -314,17 +313,6 @@ diff --git a/components/browser_ui/strings/android/browser_ui_strings.grd b/comp
        <message name="IDS_PAGE_INFO_AD_PRIVACY_HEADER" desc="A label that represents the new ad-related settings. 1) Navigate to any site. 2) Click the icon (often a lock) to the left of the URL in the address bar. Information about the page you're viewing appears. The 'Ad privacy' label will appear above the 'Site settings' button.">
          Ad privacy
        </message>
-diff --git a/components/content_settings/android/BUILD.gn b/components/content_settings/android/BUILD.gn
---- a/components/content_settings/android/BUILD.gn
-+++ b/components/content_settings/android/BUILD.gn
-@@ -65,6 +65,7 @@ java_cpp_enum("content_settings_enums_javagen") {
-     "../core/common/cookie_controls_breakage_confidence_level.h",
-     "../core/common/cookie_controls_enforcement.h",
-     "../core/common/cookie_controls_status.h",
-+    "../core/common/content_settings_constraints.h",
-   ]
-   visibility = [ ":*" ]  # Depend on through :content_settings_enums_java
- }
 diff --git a/components/content_settings/core/browser/content_settings_utils.cc b/components/content_settings/core/browser/content_settings_utils.cc
 --- a/components/content_settings/core/browser/content_settings_utils.cc
 +++ b/components/content_settings/core/browser/content_settings_utils.cc
@@ -692,9 +680,19 @@ diff --git a/components/permissions/android/permission_prompt/permission_dialog_
    permission_prompt_->Accept();
  }
  
-@@ -179,6 +191,13 @@ void PermissionDialogDelegate::AcceptThisTime(
+@@ -179,12 +191,22 @@ void PermissionDialogDelegate::AcceptThisTime(
      JNIEnv* env,
      const JavaParamRef<jobject>& obj) {
+   CHECK(permission_prompt_);
+-  permission_prompt_->AcceptThisTime();
++  content_settings::LifetimeMode lifetimeOption =
++    static_cast<content_settings::LifetimeMode>(
++      java_delegate_->GetSelectedLifetimeOption());
++  permission_prompt_->AcceptThisTime(lifetimeOption);
+ }
+ 
+ void PermissionDialogDelegate::Cancel(JNIEnv* env,
+                                       const JavaParamRef<jobject>& obj) {
    CHECK(permission_prompt_);
 +  content_settings::LifetimeMode lifetimeOption =
 +    static_cast<content_settings::LifetimeMode>(
@@ -703,7 +701,7 @@ diff --git a/components/permissions/android/permission_prompt/permission_dialog_
 +    permission_prompt_->DenyThisTime(lifetimeOption);
 +    return;
 +  }
-   permission_prompt_->AcceptThisTime();
+   permission_prompt_->Deny();
  }
  
 diff --git a/components/permissions/android/permission_prompt/permission_dialog_delegate.h b/components/permissions/android/permission_prompt/permission_dialog_delegate.h
@@ -720,21 +718,21 @@ diff --git a/components/permissions/android/permission_prompt/permission_dialog_
 diff --git a/components/permissions/android/permission_prompt/permission_prompt_android.cc b/components/permissions/android/permission_prompt/permission_prompt_android.cc
 --- a/components/permissions/android/permission_prompt/permission_prompt_android.cc
 +++ b/components/permissions/android/permission_prompt/permission_prompt_android.cc
-@@ -57,6 +57,14 @@ void PermissionPromptAndroid::AcceptThisTime() {
-   delegate_->AcceptThisTime();
+@@ -53,8 +53,12 @@ void PermissionPromptAndroid::Accept() {
+   delegate_->Accept();
  }
  
+-void PermissionPromptAndroid::AcceptThisTime() {
+-  delegate_->AcceptThisTime();
 +void PermissionPromptAndroid::AcceptThisTime(content_settings::LifetimeMode lifetimeOption) {
 +  delegate_->AcceptThisTime(lifetimeOption);
 +}
 +
 +void PermissionPromptAndroid::DenyThisTime(content_settings::LifetimeMode lifetimeOption) {
 +  delegate_->DenyThisTime(lifetimeOption);
-+}
-+
- void PermissionPromptAndroid::Deny() {
-   delegate_->Deny();
  }
+ 
+ void PermissionPromptAndroid::Deny() {
 diff --git a/components/permissions/android/permission_prompt/permission_prompt_android.h b/components/permissions/android/permission_prompt/permission_prompt_android.h
 --- a/components/permissions/android/permission_prompt/permission_prompt_android.h
 +++ b/components/permissions/android/permission_prompt/permission_prompt_android.h
@@ -860,8 +858,9 @@ diff --git a/components/permissions/contexts/geolocation_permission_context_andr
      bool persist,
      ContentSetting content_setting,
 -    bool is_one_time) {
+-  GeolocationPermissionContext::NotifyPermissionSet(
 +    bool is_one_time, content_settings::LifetimeMode lifetime_option) {
-   GeolocationPermissionContext::NotifyPermissionSet(
++  GeolocationPermissionContext::NotifyPermissionSetWithLifetime(
        id, requesting_origin, embedding_origin, std::move(callback), persist,
 -      content_setting, is_one_time, /*is_final_decision=*/true);
 +      content_setting, is_one_time, /*is_final_decision=*/true, lifetime_option);
@@ -908,11 +907,12 @@ diff --git a/components/permissions/contexts/geolocation_permission_context_andr
 diff --git a/components/permissions/permission_context_base.cc b/components/permissions/permission_context_base.cc
 --- a/components/permissions/permission_context_base.cc
 +++ b/components/permissions/permission_context_base.cc
-@@ -265,6 +265,16 @@ bool PermissionContextBase::UsesAutomaticEmbargo() const {
+@@ -265,6 +265,17 @@ bool PermissionContextBase::UsesAutomaticEmbargo() const {
    return true;
  }
  
-+std::unique_ptr<PermissionRequest> PermissionContextBase::CreatePermissionRequest(
++std::unique_ptr<PermissionRequest>
++PermissionContextBase::CreatePermissionRequest(
 +    content::WebContents* web_contents,
 +    PermissionRequestData request_data,
 +    PermissionRequest::PermissionDecidedCallbackWithLifetime permission_decided_callback,
@@ -925,7 +925,7 @@ diff --git a/components/permissions/permission_context_base.cc b/components/perm
  content::PermissionResult PermissionContextBase::GetPermissionStatus(
      content::RenderFrameHost* render_frame_host,
      const GURL& requesting_origin,
-@@ -511,7 +521,8 @@ void PermissionContextBase::PermissionDecided(const PermissionRequestID& id,
+@@ -511,7 +522,8 @@ void PermissionContextBase::PermissionDecided(const PermissionRequestID& id,
                                                const GURL& embedding_origin,
                                                ContentSetting content_setting,
                                                bool is_one_time,
@@ -935,7 +935,7 @@ diff --git a/components/permissions/permission_context_base.cc b/components/perm
    DCHECK(content_setting == CONTENT_SETTING_ALLOW ||
           content_setting == CONTENT_SETTING_BLOCK ||
           content_setting == CONTENT_SETTING_DEFAULT);
-@@ -526,13 +537,14 @@ void PermissionContextBase::PermissionDecided(const PermissionRequestID& id,
+@@ -526,13 +538,14 @@ void PermissionContextBase::PermissionDecided(const PermissionRequestID& id,
    // missing if a permission prompt was preignored and we already notified an
    // origin about it.
    if (request->second.second) {
@@ -954,7 +954,7 @@ diff --git a/components/permissions/permission_context_base.cc b/components/perm
    }
  }
  
-@@ -578,11 +590,27 @@ void PermissionContextBase::NotifyPermissionSet(
+@@ -578,11 +591,27 @@ void PermissionContextBase::NotifyPermissionSet(
      ContentSetting content_setting,
      bool is_one_time,
      bool is_final_decision) {
@@ -983,7 +983,7 @@ diff --git a/components/permissions/permission_context_base.cc b/components/perm
    }
  
    if (is_final_decision) {
-@@ -612,6 +640,15 @@ void PermissionContextBase::UpdateContentSetting(const GURL& requesting_origin,
+@@ -612,6 +641,15 @@ void PermissionContextBase::UpdateContentSetting(const GURL& requesting_origin,
                                                   const GURL& embedding_origin,
                                                   ContentSetting content_setting,
                                                   bool is_one_time) {
@@ -999,7 +999,7 @@ diff --git a/components/permissions/permission_context_base.cc b/components/perm
    DCHECK_EQ(requesting_origin, requesting_origin.DeprecatedGetOriginAsURL());
    DCHECK_EQ(embedding_origin, embedding_origin.DeprecatedGetOriginAsURL());
    DCHECK(content_setting == CONTENT_SETTING_ALLOW ||
-@@ -621,6 +658,8 @@ void PermissionContextBase::UpdateContentSetting(const GURL& requesting_origin,
+@@ -621,6 +659,8 @@ void PermissionContextBase::UpdateContentSetting(const GURL& requesting_origin,
    constraints.set_session_model(is_one_time
                                      ? content_settings::SessionModel::OneTime
                                      : content_settings::SessionModel::Durable);

@@ -13,13 +13,14 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 ---
  .../java/res/xml/privacy_preferences.xml      | 10 ++++++++
  .../browser/LaunchIntentDispatcher.java       | 21 ++++++++++++++++
+ .../customtabs/CustomTabsConnection.java      |  1 +
  .../IncognitoCustomTabIntentDataProvider.java |  6 +++++
  .../privacy/settings/PrivacySettings.java     | 24 +++++++++++++++++++
  .../chrome/browser/tab/TabAssociatedApp.java  |  6 ++++-
  .../strings/android_chrome_strings.grd        | 14 +++++++++++
  .../core/common/language_experiments.cc       |  1 +
- .../add-custom-tab-intents-privacy-option.inc |  2 ++
- 8 files changed, 83 insertions(+), 1 deletion(-)
+ .../add-custom-tab-intents-privacy-option.inc |  1 +
+ 9 files changed, 83 insertions(+), 1 deletion(-)
  create mode 100644 cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/add-custom-tab-intents-privacy-option.inc
 
 diff --git a/chrome/android/java/res/xml/privacy_preferences.xml b/chrome/android/java/res/xml/privacy_preferences.xml
@@ -94,6 +95,17 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/LaunchIntentDis
              if (!chromeTabbedTaskExists()) {
                  newIntent.putExtra(IntentHandler.EXTRA_STARTED_TABBED_CHROME_TASK, true);
              }
+diff --git a/chrome/android/java/src/org/chromium/chrome/browser/customtabs/CustomTabsConnection.java b/chrome/android/java/src/org/chromium/chrome/browser/customtabs/CustomTabsConnection.java
+--- a/chrome/android/java/src/org/chromium/chrome/browser/customtabs/CustomTabsConnection.java
++++ b/chrome/android/java/src/org/chromium/chrome/browser/customtabs/CustomTabsConnection.java
+@@ -849,6 +849,7 @@ public class CustomTabsConnection {
+         PostTask.postTask(
+                 TaskTraits.UI_DEFAULT,
+                 () -> {
++                    if ((true)) return; // Disable CCTPostMessageAPI
+                     // Attempt to verify origin synchronously. If successful directly initialize
+                     // postMessage channel for session.
+                     Uri verifiedOrigin = verifyOriginForSession(session, uid, postMessageOrigin);
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/customtabs/IncognitoCustomTabIntentDataProvider.java b/chrome/android/java/src/org/chromium/chrome/browser/customtabs/IncognitoCustomTabIntentDataProvider.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/customtabs/IncognitoCustomTabIntentDataProvider.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/customtabs/IncognitoCustomTabIntentDataProvider.java
@@ -225,7 +237,6 @@ diff --git a/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/a
 new file mode 100644
 --- /dev/null
 +++ b/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/add-custom-tab-intents-privacy-option.inc
-@@ -0,0 +1,2 @@
+@@ -0,0 +1 @@
 +SET_CROMITE_FEATURE_DISABLED(kCCTIntentFeatureOverrides);
-+SET_CROMITE_FEATURE_DISABLED(kCCTPostMessageAPI);
 --

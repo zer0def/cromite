@@ -7,18 +7,20 @@ Use Google Chrome branding for client hints
 
 License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 ---
- components/embedder_support/user_agent_utils.cc  |  4 +---
- content/browser/client_hints/client_hints.cc     | 16 ++++++++++------
- .../browser/loader/navigation_url_loader_impl.cc |  5 +++++
- .../features_cc/Client-hints-overrides.inc       |  1 +
- .../cpp/features_cc/Client-hints-overrides.inc   |  1 +
- net/http/http_network_transaction.cc             |  1 +
- services/network/public/cpp/client_hints.cc      |  1 +
- .../blink/common/client_hints/client_hints.cc    |  1 +
- .../common/client_hints/enabled_client_hints.cc  |  4 +++-
- .../renderer/core/loader/base_fetch_context.cc   |  6 ++++--
- .../platform/runtime_enabled_features.json5      |  4 ++++
- 11 files changed, 32 insertions(+), 12 deletions(-)
+ components/embedder_support/user_agent_utils.cc |  4 +---
+ content/browser/client_hints/client_hints.cc    | 17 +++++++++++------
+ .../loader/navigation_url_loader_impl.cc        |  5 +++++
+ .../features_cc/Client-hints-overrides.inc      |  1 +
+ .../cpp/features_cc/Client-hints-overrides.inc  |  1 +
+ net/http/http_network_transaction.cc            |  1 +
+ services/network/public/cpp/client_hints.cc     |  1 +
+ .../blink/common/client_hints/client_hints.cc   |  1 +
+ .../common/client_hints/enabled_client_hints.cc |  4 +++-
+ .../blink/renderer/core/frame/navigator_ua.idl  |  4 +++-
+ .../renderer/core/frame/navigator_ua_data.idl   |  5 ++++-
+ .../renderer/core/loader/base_fetch_context.cc  |  6 ++++--
+ .../platform/runtime_enabled_features.json5     |  4 ++++
+ 13 files changed, 40 insertions(+), 14 deletions(-)
  create mode 100644 cromite_flags/content/common/features_cc/Client-hints-overrides.inc
  create mode 100644 cromite_flags/services/network/public/cpp/features_cc/Client-hints-overrides.inc
 
@@ -39,7 +41,15 @@ diff --git a/components/embedder_support/user_agent_utils.cc b/components/embedd
 diff --git a/content/browser/client_hints/client_hints.cc b/content/browser/client_hints/client_hints.cc
 --- a/content/browser/client_hints/client_hints.cc
 +++ b/content/browser/client_hints/client_hints.cc
-@@ -516,7 +516,8 @@ void AddPrefersReducedTransparencyHeader(net::HttpRequestHeaders* headers,
+@@ -55,6 +55,7 @@
+ #include "third_party/blink/public/common/permissions_policy/origin_with_possible_wildcards.h"
+ #include "third_party/blink/public/common/permissions_policy/permissions_policy.h"
+ #include "third_party/blink/public/common/user_agent/user_agent_metadata.h"
++#include "third_party/blink/renderer/platform/runtime_enabled_features.h"
+ #include "ui/display/display.h"
+ #include "ui/display/screen.h"
+ #include "url/origin.h"
+@@ -516,7 +517,8 @@ void AddPrefersReducedTransparencyHeader(net::HttpRequestHeaders* headers,
                          : network::kPrefersReducedTransparencyNoPreference);
  }
  
@@ -49,17 +59,17 @@ diff --git a/content/browser/client_hints/client_hints.cc b/content/browser/clie
    return network::IsOriginPotentiallyTrustworthy(origin);
  }
  
-@@ -718,7 +719,8 @@ void UpdateNavigationRequestClientUaHeadersImpl(
+@@ -718,7 +720,8 @@ void UpdateNavigationRequestClientUaHeadersImpl(
      // value, disable them. This overwrites previous decision from UI.
      disable_due_to_custom_ua = !ua_metadata.has_value();
    }
 -
-+  if (!RuntimeEnabledFeatures::UserAgentClientHintEnabled())
++  if (!blink::RuntimeEnabledFeatures::UserAgentClientHintEnabled())
 +    disable_due_to_custom_ua = true;
    if (!disable_due_to_custom_ua) {
      if (!ua_metadata.has_value())
        ua_metadata = delegate->GetUserAgentMetadata();
-@@ -900,10 +902,12 @@ void AddRequestClientHintsHeaders(
+@@ -900,10 +903,12 @@ void AddRequestClientHintsHeaders(
      AddEctHeader(headers, network_quality_tracker, url);
    }
  
@@ -67,7 +77,7 @@ diff --git a/content/browser/client_hints/client_hints.cc b/content/browser/clie
 -      delegate, is_ua_override_on, frame_tree_node,
 -      ClientUaHeaderCallType::kDuringCreation, headers, container_policy,
 -      request_url, data);
-+  if (RuntimeEnabledFeatures::UserAgentClientHintEnabled()) {
++  if (blink::RuntimeEnabledFeatures::UserAgentClientHintEnabled()) {
 +    UpdateNavigationRequestClientUaHeadersImpl(
 +        delegate, is_ua_override_on, frame_tree_node,
 +        ClientUaHeaderCallType::kDuringCreation, headers, container_policy,
@@ -164,6 +174,34 @@ diff --git a/third_party/blink/common/client_hints/enabled_client_hints.cc b/thi
    for (const auto& elem : network::GetClientHintToNameMap()) {
      const auto& type = elem.first;
      if (IsEnabled(type))
+diff --git a/third_party/blink/renderer/core/frame/navigator_ua.idl b/third_party/blink/renderer/core/frame/navigator_ua.idl
+--- a/third_party/blink/renderer/core/frame/navigator_ua.idl
++++ b/third_party/blink/renderer/core/frame/navigator_ua.idl
+@@ -4,6 +4,8 @@
+ 
+ // https://github.com/WICG/ua-client-hints
+ 
+-interface mixin NavigatorUA {
++[
++    RuntimeEnabled=UserAgentClientHint
++] interface mixin NavigatorUA {
+   [SecureContext] readonly attribute NavigatorUAData userAgentData;
+ };
+diff --git a/third_party/blink/renderer/core/frame/navigator_ua_data.idl b/third_party/blink/renderer/core/frame/navigator_ua_data.idl
+--- a/third_party/blink/renderer/core/frame/navigator_ua_data.idl
++++ b/third_party/blink/renderer/core/frame/navigator_ua_data.idl
+@@ -4,7 +4,10 @@
+ 
+ // https://github.com/WICG/ua-client-hints
+ 
+-[Exposed=(Window,Worker)] interface NavigatorUAData {
++[
++    RuntimeEnabled=UserAgentClientHint,
++    Exposed=(Window,Worker)
++] interface NavigatorUAData {
+   [HighEntropy, MeasureAs=NavigatorUAData_Brands] readonly attribute FrozenArray<NavigatorUABrandVersion> brands;
+   [HighEntropy=Direct, MeasureAs=NavigatorUAData_Mobile]  readonly attribute boolean mobile;
+   [HighEntropy=Direct, MeasureAs=NavigatorUAData_Platform] readonly attribute DOMString platform;
 diff --git a/third_party/blink/renderer/core/loader/base_fetch_context.cc b/third_party/blink/renderer/core/loader/base_fetch_context.cc
 --- a/third_party/blink/renderer/core/loader/base_fetch_context.cc
 +++ b/third_party/blink/renderer/core/loader/base_fetch_context.cc

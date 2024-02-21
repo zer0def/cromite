@@ -17,11 +17,11 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../firstrun/FirstRunActivityBase.java        |   6 +-
  .../firstrun/FirstRunFlowSequencer.java       |  63 +---
  .../browser/firstrun/FirstRunUtils.java       |  15 +-
- .../firstrun/ToSAndUMAFirstRunFragment.java   | 336 ++++++++++++++++++
+ .../firstrun/ToSAndUMAFirstRunFragment.java   | 335 +++++++++++++++++
  .../firstrun/TosAndUmaFragmentView.java       | 336 ++++++++++++++++++
  .../browser/locale/LocaleManagerDelegate.java |   5 +-
  .../strings/android_chrome_strings.grd        |  24 +-
- 15 files changed, 914 insertions(+), 101 deletions(-)
+ 15 files changed, 913 insertions(+), 101 deletions(-)
  create mode 100644 chrome/android/java/res/layout/fre_tosanduma.xml
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/firstrun/ToSAndUMAFirstRunFragment.java
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/firstrun/TosAndUmaFragmentView.java
@@ -577,7 +577,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/firstrun/ToSAnd
 new file mode 100644
 --- /dev/null
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/firstrun/ToSAndUMAFirstRunFragment.java
-@@ -0,0 +1,336 @@
+@@ -0,0 +1,335 @@
 +// Copyright 2015 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
@@ -608,7 +608,6 @@ new file mode 100644
 +import org.chromium.base.metrics.RecordHistogram;
 +import org.chromium.chrome.R;
 +import org.chromium.chrome.browser.privacy.settings.PrivacyPreferencesManagerImpl;
-+import org.chromium.components.version_info.VersionInfo;
 +import org.chromium.ui.modaldialog.ModalDialogManagerHolder;
 +import org.chromium.ui.text.NoUnderlineClickableSpan;
 +import org.chromium.ui.text.SpanApplier;

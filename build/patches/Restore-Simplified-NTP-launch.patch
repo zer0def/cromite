@@ -14,14 +14,14 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../feedback/SimplifiedNtpFeedbackSource.java | 38 +++++++++++
  .../identity_disc/IdentityDiscController.java |  5 +-
  .../NativePageNavigationDelegateImpl.java     |  4 +-
- .../chrome/browser/ntp/NewTabPageLayout.java  | 30 ++++++++-
+ .../chrome/browser/ntp/NewTabPageLayout.java  | 31 ++++++++-
  .../SuggestionsNavigationDelegate.java        | 17 +++++
  .../flags/android/chrome_feature_list.cc      |  1 +
  .../browser/flags/ChromeFeatureList.java      |  1 +
  .../Restore-Simplified-NTP-launch.inc         | 12 ++++
  .../Restore-Simplified-NTP-launch.inc         |  3 +
  .../Restore-Simplified-NTP-launch.inc         |  1 +
- 15 files changed, 182 insertions(+), 5 deletions(-)
+ 15 files changed, 183 insertions(+), 5 deletions(-)
  create mode 100644 chrome/android/java/res/layout/ntp_shortcuts.xml
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/feedback/SimplifiedNtpFeedbackSource.java
  create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Restore-Simplified-NTP-launch.inc
@@ -224,7 +224,15 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/native_page/Nat
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ntp/NewTabPageLayout.java b/chrome/android/java/src/org/chromium/chrome/browser/ntp/NewTabPageLayout.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/ntp/NewTabPageLayout.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/ntp/NewTabPageLayout.java
-@@ -37,6 +37,7 @@ import org.chromium.chrome.browser.compositor.layouts.content.InvalidationAwareT
+@@ -18,6 +18,7 @@ import android.util.AttributeSet;
+ import android.view.DragEvent;
+ import android.view.Gravity;
+ import android.view.LayoutInflater;
++import android.view.ViewStub;
+ import android.view.View;
+ import android.view.ViewGroup;
+ import android.widget.LinearLayout;
+@@ -37,6 +38,7 @@ import org.chromium.chrome.browser.compositor.layouts.content.InvalidationAwareT
  import org.chromium.chrome.browser.feed.FeedSurfaceScrollDelegate;
  import org.chromium.chrome.browser.flags.ChromeFeatureList;
  import org.chromium.chrome.browser.lens.LensEntryPoint;
@@ -232,7 +240,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ntp/NewTabPageL
  import org.chromium.chrome.browser.lens.LensMetrics;
  import org.chromium.chrome.browser.lifecycle.ActivityLifecycleDispatcher;
  import org.chromium.chrome.browser.logo.LogoBridge.Logo;
-@@ -107,6 +108,8 @@ public class NewTabPageLayout extends LinearLayout {
+@@ -107,6 +109,8 @@ public class NewTabPageLayout extends LinearLayout {
      private @Nullable DisplayStyleObserver mDisplayStyleObserver;
      private CallbackController mCallbackController = new CallbackController();
  
@@ -241,7 +249,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ntp/NewTabPageL
      /**
       * Whether the tiles shown in the layout have finished loading.
       * With {@link #mHasShownView}, it's one of the 2 flags used to track initialisation progress.
-@@ -314,6 +317,7 @@ public class NewTabPageLayout extends LinearLayout {
+@@ -314,6 +318,7 @@ public class NewTabPageLayout extends LinearLayout {
                  isScrollableMvtEnabled(),
                  searchProviderIsGoogle);
          initializeSearchBoxBackground();
@@ -249,7 +257,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ntp/NewTabPageL
          initializeSearchBoxTextView();
          initializeVoiceSearchButton();
          initializeLensButton();
-@@ -802,12 +806,15 @@ public class NewTabPageLayout extends LinearLayout {
+@@ -802,12 +807,15 @@ public class NewTabPageLayout extends LinearLayout {
                  marginLayoutParams.leftMargin = lateralPaddingsForNtp;
                  marginLayoutParams.rightMargin = lateralPaddingsForNtp;
              }
@@ -266,7 +274,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ntp/NewTabPageL
              marginLayoutParams.bottomMargin =
                      getResources()
                              .getDimensionPixelSize(R.dimen.tile_carousel_layout_bottom_margin);
-@@ -815,7 +822,10 @@ public class NewTabPageLayout extends LinearLayout {
+@@ -815,7 +823,10 @@ public class NewTabPageLayout extends LinearLayout {
              // Set a bit more top padding on the tile grid if there is no logo.
              ViewGroup.LayoutParams layoutParams = mMvTilesContainerLayout.getLayoutParams();
              layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT;
@@ -278,7 +286,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ntp/NewTabPageL
              marginLayoutParams.bottomMargin = getGridMvtBottomMargin();
          }
  
-@@ -1117,6 +1127,22 @@ public class NewTabPageLayout extends LinearLayout {
+@@ -1117,6 +1128,22 @@ public class NewTabPageLayout extends LinearLayout {
          return iphCommandBuilder;
      }
  

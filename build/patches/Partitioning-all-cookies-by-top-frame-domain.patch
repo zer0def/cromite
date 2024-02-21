@@ -10,26 +10,26 @@ samesite=none first-party cookies are sent in third-party contexts.
 License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
  .../browser/chrome_content_browser_client.cc  |  2 +-
- .../net/profile_network_context_service.cc    | 12 +++---
+ .../net/profile_network_context_service.cc    | 12 ++---
  .../privacy_sandbox_settings_delegate.cc      |  1 +
  .../experiment/experiment_manager_impl.cc     |  1 +
  .../core/browser/cookie_settings.cc           |  2 +
- .../core/common/cookie_settings_base.cc       | 38 -------------------
+ .../core/common/cookie_settings_base.cc       | 48 -------------------
  ...ioning-all-cookies-by-top-frame-domain.inc |  3 ++
  ...ioning-all-cookies-by-top-frame-domain.inc |  2 +
  ...ioning-all-cookies-by-top-frame-domain.inc |  1 +
- ...ioning-all-cookies-by-top-frame-domain.inc |  5 +++
- net/cookies/canonical_cookie.cc               | 12 +-----
+ ...ioning-all-cookies-by-top-frame-domain.inc |  5 ++
+ net/cookies/canonical_cookie.cc               | 12 +----
  net/cookies/cookie_deletion_info.cc           |  3 +-
- net/cookies/parsed_cookie.h                   |  7 +++-
- .../sqlite/sqlite_persistent_cookie_store.cc  | 10 +++++
- net/url_request/url_request_http_job.cc       | 10 ++---
+ net/cookies/parsed_cookie.h                   |  7 ++-
+ .../sqlite/sqlite_persistent_cookie_store.cc  | 10 ++++
+ net/url_request/url_request_http_job.cc       | 10 ++--
  services/network/restricted_cookie_manager.cc |  6 +++
  .../modules/cookie_store/cookie_init.idl      |  2 +-
- .../modules/cookie_store/cookie_store.cc      | 12 ++++++
+ .../modules/cookie_store/cookie_store.cc      | 12 +++++
  .../cookie_store_delete_options.idl           |  2 +-
  ui/webui/webui_allowlist.cc                   |  1 +
- 20 files changed, 65 insertions(+), 67 deletions(-)
+ 20 files changed, 65 insertions(+), 77 deletions(-)
  create mode 100644 cromite_flags/components/content_settings/core/common/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
  create mode 100644 cromite_flags/components/permissions/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
  create mode 100644 cromite_flags/content/public/common/content_features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
@@ -117,7 +117,24 @@ diff --git a/components/content_settings/core/browser/cookie_settings.cc b/compo
 diff --git a/components/content_settings/core/common/cookie_settings_base.cc b/components/content_settings/core/common/cookie_settings_base.cc
 --- a/components/content_settings/core/common/cookie_settings_base.cc
 +++ b/components/content_settings/core/common/cookie_settings_base.cc
-@@ -364,34 +364,6 @@ CookieSettingsBase::DecideAccess(const GURL& url,
+@@ -36,16 +36,6 @@ using net::cookie_util::StorageAccessResult;
+ using ThirdPartyCookieAllowMechanism =
+     CookieSettingsBase::ThirdPartyCookieAllowMechanism;
+ 
+-bool IsAllowedByCORS(const net::CookieSettingOverrides& overrides,
+-                     const GURL& request_url,
+-                     const GURL& first_party_url) {
+-  return overrides.Has(
+-             net::CookieSettingOverride::kCrossSiteCredentialedWithCORS) &&
+-         base::FeatureList::IsEnabled(
+-             net::features::kThirdPartyCookieTopLevelSiteCorsException) &&
+-         net::SchemefulSite(request_url) == net::SchemefulSite(first_party_url);
+-}
+-
+ constexpr StorageAccessResult GetStorageAccessResult(
+     ThirdPartyCookieAllowMechanism mechanism) {
+   switch (mechanism) {
+@@ -364,34 +354,6 @@ CookieSettingsBase::DecideAccess(const GURL& url,
    if (!is_third_party_request) {
      return AllowAllCookies{ThirdPartyCookieAllowMechanism::kNone};
    }
@@ -152,7 +169,7 @@ diff --git a/components/content_settings/core/common/cookie_settings_base.cc b/c
  
    const bool has_storage_access_opt_in =
        ShouldConsiderStorageAccessGrants(overrides);
-@@ -414,16 +386,6 @@ CookieSettingsBase::DecideAccess(const GURL& url,
+@@ -414,16 +376,6 @@ CookieSettingsBase::DecideAccess(const GURL& url,
      }
    }
  

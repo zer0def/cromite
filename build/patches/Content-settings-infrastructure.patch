@@ -42,10 +42,10 @@ Require: bromite-build-utils.patch
  .../BromiteCustomContentSetting.java          | 155 +++++++
  .../BromiteCustomContentSettingImpl.java      | 409 ++++++++++++++++++
  ...tomTriStateSiteSettingsPreferenceImpl.java |  24 +
- .../ContentSettingsResources.java             |  14 +-
+ .../ContentSettingsResources.java             |  16 +-
  .../site_settings/SingleCategorySettings.java |  50 ++-
  .../site_settings/SingleWebsiteSettings.java  |  58 ++-
- .../site_settings/SiteSettings.java           |  30 +-
+ .../site_settings/SiteSettings.java           |  31 +-
  .../site_settings/SiteSettingsCategory.java   |  18 +-
  .../site_settings/SiteSettingsDelegate.java   |   2 +
  .../TriStateSiteSettingsPreference.java       |  13 +-
@@ -84,7 +84,7 @@ Require: bromite-build-utils.patch
  .../platform/web_content_settings_client.h    |   5 +
  .../execution_context/execution_context.cc    |  16 +
  .../execution_context/execution_context.h     |   5 +
- 73 files changed, 1829 insertions(+), 85 deletions(-)
+ 73 files changed, 1832 insertions(+), 85 deletions(-)
  create mode 100644 components/browser_ui/settings/android/java/res/layout/preference_spinner_single_widget.xml
  create mode 100644 components/browser_ui/site_settings/android/java/src/org/chromium/components/browser_ui/site_settings/BromiteCustomContentSetting.java
  create mode 100644 components/browser_ui/site_settings/android/java/src/org/chromium/components/browser_ui/site_settings/BromiteCustomContentSettingImpl.java
@@ -1550,7 +1550,7 @@ new file mode 100644
 +
 +public abstract class BromiteCustomContentSetting {
 +
-+    private @ContentSettingsType int mContentSettingsType;
++    private @ContentSettingsType.EnumType int mContentSettingsType;
 +    private @SiteSettingsCategory.Type int mSiteSettingsCategory;
 +    private @ContentSettingValues Integer mDefaultEnabledValue;
 +    private @ContentSettingValues Integer mDefaultDisabledValue;
@@ -1558,7 +1558,7 @@ new file mode 100644
 +    private String mPreferenceKey;
 +    private String mProfilePrefKey;
 +
-+    public BromiteCustomContentSetting(@ContentSettingsType int contentSettingsType,
++    public BromiteCustomContentSetting(@ContentSettingsType.EnumType int contentSettingsType,
 +                                       @ContentSettingValues Integer defaultEnabledValue,
 +                                       @ContentSettingValues Integer defaultDisabledValue,
 +                                       boolean allowException,
@@ -1572,7 +1572,7 @@ new file mode 100644
 +        mProfilePrefKey = profilePrefKey;
 +    }
 +
-+    public @ContentSettingsType int getContentSetting() {
++    public @ContentSettingsType.EnumType int getContentSetting() {
 +        return mContentSettingsType;
 +    }
 +
@@ -1637,7 +1637,7 @@ new file mode 100644
 +
 +    public abstract @Nullable Boolean considerException(SiteSettingsCategory category, @ContentSettingValues int value);
 +
-+    public ContentSettingException createCustomException(@ContentSettingsType int type,
++    public ContentSettingException createCustomException(@ContentSettingsType.EnumType int type,
 +                                                         @ContentSettingValues int value,
 +                                                         WebsiteAddress websiteAddress) {
 +        return null;
@@ -1754,7 +1754,7 @@ new file mode 100644
 +        return BromiteCustomContentSettingImplBase.NUM_ENTRIES();
 +    }
 +
-+    public static BromiteCustomContentSetting getContentSetting(@ContentSettingsType int type) {
++    public static BromiteCustomContentSetting getContentSetting(@ContentSettingsType.EnumType int type) {
 +        for (BromiteCustomContentSetting cs : mItemList) {
 +            if (type == cs.getContentSetting()) {
 +                return cs;
@@ -1764,7 +1764,7 @@ new file mode 100644
 +    }
 +
 +    public static Preference createWebSitePreference(
-+                                @ContentSettingsType int type,
++                                @ContentSettingsType.EnumType int type,
 +                                Context context,
 +                                @ContentSettingValues @Nullable Integer value) {
 +        BromiteCustomContentSetting cs = getContentSetting(type);
@@ -1809,7 +1809,7 @@ new file mode 100644
 +    }
 +
 +    public static void setWebSitePreferenceValue(
-+                                @ContentSettingsType int type,
++                                @ContentSettingsType.EnumType int type,
 +                                Preference preference,
 +                                @ContentSettingValues @Nullable Integer value) {
 +        BromiteCustomContentSetting cs = getContentSetting(type);
@@ -1827,7 +1827,7 @@ new file mode 100644
 +    }
 +
 +    public static Integer getWebSitePreferenceValue(
-+                                @ContentSettingsType int type,
++                                @ContentSettingsType.EnumType int type,
 +                                Object newValue) {
 +        BromiteCustomContentSetting cs = getContentSetting(type);
 +        if (cs != null) {
@@ -1851,13 +1851,13 @@ new file mode 100644
 +        return null;
 +    }
 +
-+   public static String getProfilePrefKey(@ContentSettingsType int type) {
++   public static String getProfilePrefKey(@ContentSettingsType.EnumType int type) {
 +        BromiteCustomContentSetting cs = getContentSetting(type);
 +        if (cs != null) return cs.getProfilePrefKey();
 +        return null;
 +    }
 +
-+    public static @ContentSettingsType int contentSettingsType(@SiteSettingsCategory.Type int type) {
++    public static @ContentSettingsType.EnumType int contentSettingsType(@SiteSettingsCategory.Type int type) {
 +        for (BromiteCustomContentSetting cs : mItemList) {
 +            if (type == cs.getSiteSettingsCategory()) {
 +                return cs.getContentSetting();
@@ -1868,31 +1868,31 @@ new file mode 100644
 +    }
 +
 +    public static WebsitePermissionsFetcher.WebsitePermissionsType getPermissionsType(
-+            @ContentSettingsType int type) {
++            @ContentSettingsType.EnumType int type) {
 +        BromiteCustomContentSetting cs = getContentSetting(type);
 +        if (cs != null) return cs.getPermissionsType();
 +        return null;
 +    }
 +
-+    public static ContentSettingsResources.ResourceItem getResourceItem(@ContentSettingsType int type) {
++    public static ContentSettingsResources.ResourceItem getResourceItem(@ContentSettingsType.EnumType int type) {
 +        BromiteCustomContentSetting cs = getContentSetting(type);
 +        if (cs != null) return cs.getResourceItem();
 +        return null;
 +    }
 +
-+    public static int getCategorySummary(@ContentSettingsType int type, @Nullable @ContentSettingValues int value) {
++    public static int getCategorySummary(@ContentSettingsType.EnumType int type, @Nullable @ContentSettingValues int value) {
 +        BromiteCustomContentSetting cs = getContentSetting(type);
 +        if (cs != null) return cs.getCategorySummary(value);
 +        return 0;
 +    }
 +
-+    public static boolean requiresTriStateContentSetting(@ContentSettingsType int type) {
++    public static boolean requiresTriStateContentSetting(@ContentSettingsType.EnumType int type) {
 +        BromiteCustomContentSetting cs = getContentSetting(type);
 +        if (cs != null) return cs.requiresTriStateContentSetting();
 +        return false;
 +    }
 +
-+    public static int[] getTriStateSettingDescriptionIDs(@ContentSettingsType int type) {
++    public static int[] getTriStateSettingDescriptionIDs(@ContentSettingsType.EnumType int type) {
 +        BromiteCustomContentSetting cs = getContentSetting(type);
 +        if (cs != null) return cs.getTriStateSettingDescriptionIDs();
 +        return null;
@@ -1928,13 +1928,13 @@ new file mode 100644
 +        return false;
 +    }
 +
-+    public static boolean processOnBlockList(@ContentSettingsType int type, @ContentSettingValues Integer value) {
++    public static boolean processOnBlockList(@ContentSettingsType.EnumType int type, @ContentSettingValues Integer value) {
 +        BromiteCustomContentSetting cs = getContentSetting(type);
 +        if (cs != null) return cs.processOnBlockList(value);
 +        return false;
 +    }
 +
-+    public static boolean isOnBlockList(@ContentSettingsType int type,
++    public static boolean isOnBlockList(@ContentSettingsType.EnumType int type,
 +                                        WebsitePreference website,
 +                                        @ContentSettingValues Integer contentSetting) {
 +        BromiteCustomContentSetting cs = getContentSetting(type);
@@ -2024,7 +2024,7 @@ new file mode 100644
 +        return "";
 +    }
 +
-+    public static ContentSettingException createCustomException(@ContentSettingsType int type,
++    public static ContentSettingException createCustomException(@ContentSettingsType.EnumType int type,
 +                                                                @ContentSettingValues int value,
 +                                                                WebsiteAddress websiteAddress) {
 +        BromiteCustomContentSetting cs = getContentSetting(type);
@@ -2040,7 +2040,7 @@ new file mode 100644
 +        return null;
 +    }
 +
-+    public static AlertDialog.Builder buildPreferenceDialog(Website site, @ContentSettingsType int type,
++    public static AlertDialog.Builder buildPreferenceDialog(Website site, @ContentSettingsType.EnumType int type,
 +                                                            BrowserContextHandle browserContextHandle,
 +                                                            Context context,
 +                                                            final DialogInterface.OnClickListener listener) {
@@ -2143,20 +2143,22 @@ diff --git a/components/browser_ui/site_settings/android/java/src/org/chromium/c
          assert false; // NOTREACHED
          return null;
      }
-@@ -600,6 +602,12 @@ public class ContentSettingsResources {
+@@ -600,6 +602,14 @@ public class ContentSettingsResources {
          return getResourceItem(contentType, null).getDefaultDisabledValue();
      }
  
-+    public static int getCategorySummary(int contentType, @Nullable @ContentSettingValues int value) {
++    public static int getCategorySummary(int contentType,
++                                         @Nullable @ContentSettingValues int value,
++                                         boolean isOneTime) {
 +        int result = BromiteCustomContentSettingImpl.getCategorySummary(contentType, value);
 +        if (result != 0) return result;
-+        return getCategorySummary(value);
++        return getCategorySummary(value, isOneTime);
 +    }
 +
      /**
       * Returns the string resource id for a given ContentSetting to show with a permission category.
       *
-@@ -762,6 +770,8 @@ public class ContentSettingsResources {
+@@ -762,6 +772,8 @@ public class ContentSettingsResources {
       *         Blocked states, in that order.
       */
      public static int[] getTriStateSettingDescriptionIDs(int contentType) {
@@ -2463,7 +2465,7 @@ diff --git a/components/browser_ui/site_settings/android/java/src/org/chromium/c
              Preference p = findPreference(prefCategory);
              int contentType = SiteSettingsCategory.contentSettingsType(prefCategory);
              // p can be null if the Preference was removed in configurePreferences.
-@@ -142,19 +143,20 @@ public class SiteSettings extends BaseSiteSettingsFragment
+@@ -142,19 +143,21 @@ public class SiteSettings extends BaseSiteSettingsFragment
              } else if (Type.ZOOM == prefCategory) {
                  // Don't want to set a summary for Zoom because we don't want any message to display
                  // under the Zoom row on site settings.
@@ -2480,7 +2482,8 @@ diff --git a/components/browser_ui/site_settings/android/java/src/org/chromium/c
 -                p.setSummary(
 -                        ContentSettingsResources.getCategorySummary(
 -                                defaultForToggle, /* isOneTime= */ false));
-+                int summary = ContentSettingsResources.getCategorySummary(contentType, setting);
++                int summary = ContentSettingsResources.getCategorySummary(
++                                    contentType, setting, /* isOneTime= */ false);
 +                if (summary != 0) {
 +                    p.setSummary(summary);
 +                } else {
@@ -2595,7 +2598,7 @@ diff --git a/components/browser_ui/site_settings/android/java/src/org/chromium/c
      private RadioButtonWithDescription mAsk;
      private RadioButtonWithDescription mBlocked;
      private RadioGroup mRadioGroup;
-+    private @ContentSettingsType int mContentType;
++    private @ContentSettingsType.EnumType int mContentType;
  
      public TriStateSiteSettingsPreference(Context context, AttributeSet attrs) {
          super(context, attrs);
@@ -2604,7 +2607,7 @@ diff --git a/components/browser_ui/site_settings/android/java/src/org/chromium/c
       *                       Allowed, Ask and Blocked states, in that order.
       */
 -    public void initialize(@ContentSettingValues int setting, int[] descriptionIds) {
-+    public void initialize(@ContentSettingsType int contentType,
++    public void initialize(@ContentSettingsType.EnumType int contentType,
 +                           @ContentSettingValues int setting, int[] descriptionIds) {
 +        mContentType = contentType;
          mSetting = setting;
@@ -3126,7 +3129,7 @@ diff --git a/components/content_settings/core/common/content_settings_types.mojo
  
 -  NUM_TYPES,
 +  NUM_TYPES_CHROMIUM,
-+#include "components/content_settings/core/common/bromite_content_settings.inc"
++// #include "components/content_settings/core/common/bromite_content_settings.inc"
 +  NUM_TYPES_BROMITE,
  };
  

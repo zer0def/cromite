@@ -447,7 +447,7 @@ diff --git a/chrome/browser/chrome_content_browser_client.h b/chrome/browser/chr
 diff --git a/components/adblock/content/browser/adblock_url_loader_factory.cc b/components/adblock/content/browser/adblock_url_loader_factory.cc
 --- a/components/adblock/content/browser/adblock_url_loader_factory.cc
 +++ b/components/adblock/content/browser/adblock_url_loader_factory.cc
-@@ -343,12 +343,6 @@ void AdblockURLLoaderFactory::InProgressRequest::OnRequestError(
+@@ -344,12 +344,6 @@ void AdblockURLLoaderFactory::InProgressRequest::OnRequestError(
  
  void AdblockURLLoaderFactory::InProgressRequest::CheckFilterMatch(
      CheckFilterMatchCallback callback) {
@@ -460,7 +460,7 @@ diff --git a/components/adblock/content/browser/adblock_url_loader_factory.cc b/
    auto subscription_service = factory_->config_.subscription_service;
    if (is_document_request_) {
      auto* host = content::RenderFrameHost::FromID(factory_->host_id_);
-@@ -387,7 +381,7 @@ void AdblockURLLoaderFactory::InProgressRequest::CheckFilterMatch(
+@@ -388,7 +382,7 @@ void AdblockURLLoaderFactory::InProgressRequest::CheckFilterMatch(
    } else {
      factory_->config_.resource_classifier->CheckRequestFilterMatch(
          subscription_service->GetCurrentSnapshot(), request_url_,
@@ -469,7 +469,7 @@ diff --git a/components/adblock/content/browser/adblock_url_loader_factory.cc b/
          base::BindOnce(
              &AdblockURLLoaderFactory::InProgressRequest::OnRequestUrlClassified,
              weak_factory_.GetWeakPtr(),
-@@ -676,12 +670,14 @@ void AdblockURLLoaderFactory::InProgressRequest::OnRequestFilterMatchResult(
+@@ -677,12 +671,14 @@ void AdblockURLLoaderFactory::InProgressRequest::OnRequestFilterMatchResult(
  
  AdblockURLLoaderFactory::AdblockURLLoaderFactory(
      AdblockURLLoaderFactoryConfig config,
@@ -528,7 +528,7 @@ diff --git a/components/adblock/content/browser/frame_hierarchy_builder.cc b/com
 diff --git a/components/adblock/content/browser/resource_classification_runner.h b/components/adblock/content/browser/resource_classification_runner.h
 --- a/components/adblock/content/browser/resource_classification_runner.h
 +++ b/components/adblock/content/browser/resource_classification_runner.h
-@@ -81,14 +81,22 @@ class ResourceClassificationRunner : public KeyedService {
+@@ -81,12 +81,20 @@ class ResourceClassificationRunner : public KeyedService {
    virtual void CheckRequestFilterMatch(
        SubscriptionService::Snapshot subscription_collections,
        const GURL& request_url,
@@ -540,17 +540,15 @@ diff --git a/components/adblock/content/browser/resource_classification_runner.h
        SubscriptionService::Snapshot subscription_collections,
        const GURL& request_url,
 +      const GURL& request_initiator,
-       content::GlobalRenderFrameHostId render_frame_host_id,
-       CheckFilterMatchCallback callback) = 0;
++      content::GlobalRenderFrameHostId render_frame_host_id,
++      CheckFilterMatchCallback callback) = 0;
 +  virtual void CheckRequestFilterMatchForWebTransport(
 +      SubscriptionService::Snapshot subscription_collections,
 +      const GURL& request_url,
 +      const GURL& request_initiator,
-+      content::GlobalRenderFrameHostId render_frame_host_id,
-+      CheckFilterMatchCallback callback);
+       content::GlobalRenderFrameHostId render_frame_host_id,
+       CheckFilterMatchCallback callback) = 0;
    // No callback, just notify observers
-   virtual void CheckDocumentAllowlisted(
-       SubscriptionService::Snapshot subscription_collection,
 diff --git a/components/adblock/content/browser/resource_classification_runner_impl.cc b/components/adblock/content/browser/resource_classification_runner_impl.cc
 --- a/components/adblock/content/browser/resource_classification_runner_impl.cc
 +++ b/components/adblock/content/browser/resource_classification_runner_impl.cc

@@ -70,6 +70,7 @@ suit Bromite logic
  .../core/converter/parser/url_filter.cc       |   10 +-
  .../converter/parser/url_filter_options.cc    |   21 +-
  .../serializer/flatbuffer_serializer.cc       |   75 +-
+ components/adblock/core/hash/schema_hash.h    |   10 +
  .../adblock/core/sitekey_storage_impl.cc      |    7 +
  .../core/subscription/conversion_executors.h  |    1 +
  .../filtering_configuration_maintainer.h      |    4 +
@@ -107,7 +108,7 @@ suit Bromite logic
  .../blink/renderer/core/css/style_engine.h    |    1 +
  .../renderer/core/exported/web_document.cc    |   15 +-
  .../definitions/adblock_private.d.ts          |   14 +
- 102 files changed, 8856 insertions(+), 1160 deletions(-)
+ 103 files changed, 8866 insertions(+), 1160 deletions(-)
  create mode 100644 chrome/browser/resources/settings/adblock_page/adblock_page.html
  create mode 100644 chrome/browser/resources/settings/adblock_page/adblock_page.ts
  rename components/adblock/android/java/res/xml/{adblock_preferences.xml => eyeo_adblock_preferences.xml} (56%)
@@ -116,6 +117,7 @@ suit Bromite logic
  delete mode 100644 components/adblock/core/adblock_telemetry_service.cc
  delete mode 100644 components/adblock/core/adblock_telemetry_service.h
  create mode 100644 components/adblock/core/converter/parser/test/test_rules.txt
+ create mode 100644 components/adblock/core/hash/schema_hash.h
  create mode 100644 components/content_settings/core/browser/bromite_content_settings/ads.inc
  create mode 100644 components/resources/adblocking/snippets/dist/isolated-first-xpath3.jst
  create mode 100644 components/resources/adblocking/snippets/dist/isolated-first-xpath3.source.jst
@@ -3574,6 +3576,21 @@ diff --git a/components/adblock/core/converter/serializer/flatbuffer_serializer.
      return;
    }
  
+diff --git a/components/adblock/core/hash/schema_hash.h b/components/adblock/core/hash/schema_hash.h
+new file mode 100644
+--- /dev/null
++++ b/components/adblock/core/hash/schema_hash.h
+@@ -0,0 +1,10 @@
++#include <stdint.h>
++
++#include <array>
++
++#ifndef GEN_COMPONENTS_ADBLOCK_CORE_HASH_SCHEMA_HASH_H_
++#define GEN_COMPONENTS_ADBLOCK_CORE_HASH_SCHEMA_HASH_H_
++
++extern const std::array<uint8_t, 32> kSha256_filter_list_schema_generated_h;
++
++#endif  // GEN_COMPONENTS_ADBLOCK_CORE_HASH_SCHEMA_HASH_H_
 diff --git a/components/adblock/core/sitekey_storage_impl.cc b/components/adblock/core/sitekey_storage_impl.cc
 --- a/components/adblock/core/sitekey_storage_impl.cc
 +++ b/components/adblock/core/sitekey_storage_impl.cc

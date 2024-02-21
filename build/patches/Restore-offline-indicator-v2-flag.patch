@@ -6,14 +6,14 @@ Reverts acc8b6f4542703211e5f3c5181914fd3374c9e84
 
 License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 ---
- .../indicator/OfflineDetector.java            | 41 ++++++++++++++++++-
+ .../indicator/OfflineDetector.java            | 40 ++++++++++++++++++-
  .../tabbed_mode/TabbedRootUiCoordinator.java  |  8 +++-
  .../flags/android/chrome_feature_list.cc      |  1 +
  .../browser/flags/ChromeFeatureList.java      |  1 +
  .../Restore-offline-indicator-v2-flag.inc     | 12 ++++++
  .../Restore-offline-indicator-v2-flag.inc     |  3 ++
  .../Restore-offline-indicator-v2-flag.inc     |  1 +
- 7 files changed, 64 insertions(+), 3 deletions(-)
+ 7 files changed, 63 insertions(+), 3 deletions(-)
  create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Restore-offline-indicator-v2-flag.inc
  create mode 100644 cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Restore-offline-indicator-v2-flag.inc
  create mode 100644 cromite_flags/chrome/browser/flags/android/chrome_feature_list_h/Restore-offline-indicator-v2-flag.inc
@@ -29,7 +29,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/offlinepages/in
  
  import androidx.annotation.VisibleForTesting;
  
-@@ -17,8 +18,13 @@ import org.chromium.base.Callback;
+@@ -17,8 +18,12 @@ import org.chromium.base.Callback;
  import org.chromium.base.Log;
  import org.chromium.base.supplier.Supplier;
  import org.chromium.base.version_info.VersionInfo;
@@ -39,11 +39,10 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/offlinepages/in
 +import org.chromium.chrome.browser.net.connectivitydetector.ConnectivityDetector;
 +import org.chromium.chrome.browser.net.connectivitydetector.ConnectivityDetector.ConnectionState;
 +import org.chromium.components.variations.VariationsAssociatedData;
-+import org.chromium.components.version_info.VersionInfo;
  
  /**
   * Class that detects if the network is offline. Waits for the network to stablize before notifying
-@@ -127,8 +133,9 @@ class OfflineDetector
+@@ -127,8 +132,9 @@ class OfflineDetector
          mIsForegroundCallback = isForegroundCallback;
          mContext = context;
          mHandler = new Handler();
@@ -55,7 +54,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/offlinepages/in
  
          mUpdateOfflineStatusIndicatorDelayedRunnable =
                  () -> {
-@@ -384,4 +391,34 @@ class OfflineDetector
+@@ -384,4 +390,34 @@ class OfflineDetector
                                  timeNeededAfterConnectionChangeFromOnlineToOffline),
                          timeNeededAfterConnectionChangeFromAirplaneToOffline));
      }

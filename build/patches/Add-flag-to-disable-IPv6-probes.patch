@@ -4,12 +4,12 @@ Subject: Add flag to disable IPv6 probes
 
 License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 ---
- .../add-flag-to-disable-IPv6-probes.inc               |  8 ++++++++
- .../features_cc/add-flag-to-disable-IPv6-probes.inc   |  3 +++
- .../features_h/add-flag-to-disable-IPv6-probes.inc    |  2 ++
- net/BUILD.gn                                          |  1 +
- net/dns/host_resolver_manager.cc                      | 11 +++++++++++
- 5 files changed, 25 insertions(+)
+ .../about_flags_cc/add-flag-to-disable-IPv6-probes.inc    | 8 ++++++++
+ .../base/features_cc/add-flag-to-disable-IPv6-probes.inc  | 3 +++
+ .../base/features_h/add-flag-to-disable-IPv6-probes.inc   | 2 ++
+ net/BUILD.gn                                              | 1 +
+ net/dns/host_resolver_manager.cc                          | 8 ++++++++
+ 5 files changed, 22 insertions(+)
  create mode 100644 cromite_flags/chrome/browser/about_flags_cc/add-flag-to-disable-IPv6-probes.inc
  create mode 100644 cromite_flags/net/base/features_cc/add-flag-to-disable-IPv6-probes.inc
  create mode 100644 cromite_flags/net/base/features_h/add-flag-to-disable-IPv6-probes.inc
@@ -64,17 +64,7 @@ diff --git a/net/dns/host_resolver_manager.cc b/net/dns/host_resolver_manager.cc
  #include "net/log/net_log_with_source.h"
  #include "net/socket/client_socket_factory.h"
  #include "net/url_request/url_request_context.h"
-@@ -1320,6 +1321,9 @@ void HostResolverManager::CreateTaskSequence(
-     case HostResolverSource::MULTICAST_DNS:
-       out_tasks->push_back(TaskType::MDNS);
-       break;
-+    if (!base::FeatureList::IsEnabled(features::kIPv6Probing)) {
-+      return OK;
-+    }
-     case HostResolverSource::LOCAL_ONLY:
-       // If no external source allowed, a job should not be created or started
-       break;
-@@ -1373,6 +1377,13 @@ int HostResolverManager::StartIPv6ReachabilityCheck(
+@@ -1373,6 +1374,13 @@ int HostResolverManager::StartIPv6ReachabilityCheck(
      return OK;
    }
  

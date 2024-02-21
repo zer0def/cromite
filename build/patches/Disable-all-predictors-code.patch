@@ -9,12 +9,14 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../preloading_model_keyed_service.cc         |  1 +
  .../preloading_model_keyed_service_factory.cc |  4 +--
  .../chrome_hints_manager.cc                   |  1 +
+ .../model_validator_keyed_service.cc          |  4 ++-
  .../optimization_guide_keyed_service.cc       |  1 -
  .../predictors/loading_predictor_config.cc    |  4 +--
  .../browser/predictors/predictors_features.cc | 11 ++------
  chrome/browser/ui/tab_helpers.cc              |  1 -
  .../ui/webui/omnibox/omnibox_page_handler.cc  | 14 +++++++++++
  .../browser/autofill_optimization_guide.cc    |  5 ++--
+ .../metrics/shadow_prediction_metrics.cc      |  2 +-
  .../browser/autocomplete_controller.cc        |  2 ++
  .../optimization_guide/core/hints_fetcher.cc  |  1 +
  .../optimization_guide/core/hints_manager.cc  |  5 ++++
@@ -22,6 +24,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../core/prediction_model_download_manager.cc |  6 +++--
  .../core/prediction_model_fetcher_impl.cc     |  1 +
  components/optimization_guide/features.gni    |  3 +--
+ .../phishing_classifier.cc                    |  2 +-
  components/search/ntp_features.cc             |  3 +++
  .../Disable-all-predictors-code.inc           |  4 +++
  .../Disable-all-predictors-code.inc           |  7 ++++++
@@ -29,7 +32,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../Disable-all-predictors-code.inc           |  2 ++
  .../document_speculation_rules.cc             |  1 +
  .../platform/runtime_enabled_features.json5   |  2 +-
- 24 files changed, 75 insertions(+), 35 deletions(-)
+ 27 files changed, 80 insertions(+), 38 deletions(-)
  create mode 100644 cromite_flags/chrome/browser/browser_features_cc/Disable-all-predictors-code.inc
  create mode 100644 cromite_flags/chrome/common/chrome_features_cc/Disable-all-predictors-code.inc
  create mode 100644 cromite_flags/components/permissions/features_cc/Disable-all-predictors-code.inc
@@ -81,6 +84,40 @@ diff --git a/chrome/browser/optimization_guide/chrome_hints_manager.cc b/chrome/
  
    if (prediction->prediction_source() !=
        NavigationPredictorKeyedService::PredictionSource::
+diff --git a/chrome/browser/optimization_guide/model_validator_keyed_service.cc b/chrome/browser/optimization_guide/model_validator_keyed_service.cc
+--- a/chrome/browser/optimization_guide/model_validator_keyed_service.cc
++++ b/chrome/browser/optimization_guide/model_validator_keyed_service.cc
+@@ -34,13 +34,13 @@ namespace optimization_guide {
+ ModelValidatorKeyedService::ModelValidatorKeyedService(Profile* profile)
+     : profile_(profile) {
+   DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
++#if BUILDFLAG(BUILD_WITH_TFLITE_LIB)
+   DCHECK(ShouldStartModelValidator());
+   auto* opt_guide_service =
+       OptimizationGuideKeyedServiceFactory::GetForProfile(profile);
+   if (!opt_guide_service) {
+     return;
+   }
+-#if BUILDFLAG(BUILD_WITH_TFLITE_LIB)
+   if (switches::ShouldValidateModel()) {
+     // Create the validator object which will get destroyed when the model
+     // load is complete.
+@@ -93,6 +93,7 @@ void ModelValidatorKeyedService::OnPrimaryAccountChanged(
+ 
+ void ModelValidatorKeyedService::StartModelExecutionValidation() {
+   DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
++#if BUILDFLAG(BUILD_WITH_TFLITE_LIB)
+   auto* opt_guide_service =
+       OptimizationGuideKeyedServiceFactory::GetForProfile(profile_);
+   if (!opt_guide_service) {
+@@ -110,6 +111,7 @@ void ModelValidatorKeyedService::StartModelExecutionValidation() {
+       proto::ModelExecutionFeature::MODEL_EXECUTION_FEATURE_TEST, request,
+       base::BindOnce(&ModelValidatorKeyedService::OnModelExecuteResponse,
+                      weak_ptr_factory_.GetWeakPtr()));
++#endif
+ }
+ 
+ void ModelValidatorKeyedService::OnModelExecuteResponse(
 diff --git a/chrome/browser/optimization_guide/optimization_guide_keyed_service.cc b/chrome/browser/optimization_guide/optimization_guide_keyed_service.cc
 --- a/chrome/browser/optimization_guide/optimization_guide_keyed_service.cc
 +++ b/chrome/browser/optimization_guide/optimization_guide_keyed_service.cc
@@ -239,6 +276,18 @@ diff --git a/components/autofill/core/browser/autofill_optimization_guide.cc b/c
      optimization_guide::OptimizationGuideDecision decision =
          decider_->CanApplyOptimization(url, optimization_type,
                                         /*optimization_metadata=*/nullptr);
+diff --git a/components/autofill/core/browser/metrics/shadow_prediction_metrics.cc b/components/autofill/core/browser/metrics/shadow_prediction_metrics.cc
+--- a/components/autofill/core/browser/metrics/shadow_prediction_metrics.cc
++++ b/components/autofill/core/browser/metrics/shadow_prediction_metrics.cc
+@@ -74,7 +74,7 @@ void LogRegexShadowPredictions(const AutofillField& field) {
+ 
+ void LogMlShadowPredictions(const AutofillField& field) {
+ #if !BUILDFLAG(BUILD_WITH_TFLITE_LIB)
+-  return;
++  if ((true)) return;
+ #endif
+   if (!base::FeatureList::IsEnabled(features::kAutofillModelPredictions)) {
+     return;
 diff --git a/components/omnibox/browser/autocomplete_controller.cc b/components/omnibox/browser/autocomplete_controller.cc
 --- a/components/omnibox/browser/autocomplete_controller.cc
 +++ b/components/omnibox/browser/autocomplete_controller.cc
@@ -405,6 +454,18 @@ diff --git a/components/optimization_guide/features.gni b/components/optimizatio
  }
  
  declare_args() {
+diff --git a/components/safe_browsing/content/renderer/phishing_classifier/phishing_classifier.cc b/components/safe_browsing/content/renderer/phishing_classifier/phishing_classifier.cc
+--- a/components/safe_browsing/content/renderer/phishing_classifier/phishing_classifier.cc
++++ b/components/safe_browsing/content/renderer/phishing_classifier/phishing_classifier.cc
+@@ -234,7 +234,7 @@ void PhishingClassifier::VisualExtractionFinished(bool success) {
+       *bitmap_, base::BindOnce(&PhishingClassifier::OnVisualTfLiteModelDone,
+                                weak_factory_.GetWeakPtr(), std::move(verdict)));
+ #else
+-  RunCallback(*verdict);
++  //RunCallback(*verdict);
+ #endif
+ }
+ 
 diff --git a/components/search/ntp_features.cc b/components/search/ntp_features.cc
 --- a/components/search/ntp_features.cc
 +++ b/components/search/ntp_features.cc

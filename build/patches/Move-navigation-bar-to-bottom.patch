@@ -37,7 +37,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../strip/StripLayoutHelperManager.java       | 35 ++++++-
  .../scene_layer/StaticTabSceneLayer.java      |  7 +-
  .../scene_layer/TabListSceneLayer.java        |  8 ++
- .../scene_layer/TabStripSceneLayer.java       | 20 +++-
+ .../scene_layer/TabStripSceneLayer.java       | 22 ++++-
  .../browser/findinpage/FindToolbarTablet.java | 10 +-
  .../fullscreen/BrowserControlsManager.java    | 12 +++
  .../messages/MessageContainerCoordinator.java | 16 +++-
@@ -87,7 +87,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../AccessibilitySettingsDelegate.java        |  6 ++
  .../render_widget_host_view_android.cc        |  3 +
  .../Move-navigation-bar-to-bottom.inc         | 12 +++
- 74 files changed, 894 insertions(+), 82 deletions(-)
+ 74 files changed, 895 insertions(+), 83 deletions(-)
  create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Move-navigation-bar-to-bottom.inc
 
 diff --git a/cc/base/features.cc b/cc/base/features.cc
@@ -1180,7 +1180,8 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/compositor/scen
 +            float viewportHeight,
 +            int topControlsHeight) {
          if (mNativePtr == 0) return;
-         final boolean visible = yOffset > -layoutHelper.getHeight();
+-        final boolean visible = yOffset > -layoutHelper.getHeight();
++        boolean visible = yOffset > -layoutHelper.getHeight();
 +        if (ChromeFeatureList.sMoveTopToolbarToBottom.isEnabled()) {
 +            // check if force tablet mode is active
 +            // is active if(isTablet != isNonMultiDisplayContextOnTablet)
@@ -1356,16 +1357,16 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ntp/NewTabPage.
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ntp/NewTabPageLayout.java b/chrome/android/java/src/org/chromium/chrome/browser/ntp/NewTabPageLayout.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/ntp/NewTabPageLayout.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/ntp/NewTabPageLayout.java
-@@ -18,6 +18,8 @@ import android.util.AttributeSet;
- import android.view.DragEvent;
+@@ -19,6 +19,8 @@ import android.view.DragEvent;
  import android.view.Gravity;
  import android.view.LayoutInflater;
+ import android.view.ViewStub;
 +import android.view.ViewGroup.LayoutParams;
 +import android.widget.FrameLayout;
  import android.view.View;
  import android.view.ViewGroup;
  import android.widget.LinearLayout;
-@@ -201,6 +203,12 @@ public class NewTabPageLayout extends LinearLayout {
+@@ -202,6 +204,12 @@ public class NewTabPageLayout extends LinearLayout {
          super.onFinishInflate();
          mMiddleSpacer = findViewById(R.id.ntp_middle_spacer);
          insertSiteSectionView();
@@ -1893,7 +1894,7 @@ diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/f
      public static final CachedFlag sOmniboxMatchToolbarAndStatusBarColor =
              newCachedFlag(OMNIBOX_MATCH_TOOLBAR_AND_STATUS_BAR_COLOR, false);
 +    public static final CachedFlag sMoveTopToolbarToBottom =
-+            new CachedFlag(MOVE_TOP_TOOLBAR_TO_BOTTOM, false);
++            newCachedFlag(MOVE_TOP_TOOLBAR_TO_BOTTOM, false);
      public static final CachedFlag sOmniboxModernizeVisualUpdate =
              newCachedFlag(OMNIBOX_MODERNIZE_VISUAL_UPDATE, true);
      public static final CachedFlag sOptimizationGuidePushNotifications =

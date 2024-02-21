@@ -89,9 +89,13 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  components/module_installer/android/BUILD.gn  |   4 -
  components/signin/public/android/BUILD.gn     |   3 -
  .../signin/AccountRenameChecker.java          |  16 -
- components/webauthn/android/BUILD.gn          |  11 -
+ components/webauthn/android/BUILD.gn          |  13 +-
  .../webauthn/AuthenticatorImpl.java           | 110 +--
- .../webauthn/Fido2ApiCallHelper.java          |  72 +-
+ .../webauthn/ConditionalUiState.java          |  15 +
+ .../webauthn/Fido2ApiCallHelper.java          |  73 +-
+ .../webauthn/WebauthnModeProvider.java        |  12 -
+ .../webauthn/cred_man/CredManHelper.java      |  16 +-
+ .../cred_man/CredManMetricsHelper.java        |   2 +-
  .../push_messaging/push_messaging_manager.cc  |   2 +-
  content/public/android/BUILD.gn               |   4 -
  content/test/BUILD.gn                         |   4 -
@@ -104,7 +108,8 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../preconditions/javatests/BUILD.gn          |   1 -
  .../gms/ChromiumPlayServicesAvailability.java |  10 +-
  third_party/cardboard/BUILD.gn                |   4 -
- 80 files changed, 97 insertions(+), 2178 deletions(-)
+ 84 files changed, 119 insertions(+), 2204 deletions(-)
+ create mode 100644 components/webauthn/android/java/src/org/chromium/components/webauthn/ConditionalUiState.java
 
 diff --git a/android_webview/expectations/system_webview_bundle.AndroidManifest.expected b/android_webview/expectations/system_webview_bundle.AndroidManifest.expected
 --- a/android_webview/expectations/system_webview_bundle.AndroidManifest.expected
@@ -3138,7 +3143,7 @@ diff --git a/components/webauthn/android/BUILD.gn b/components/webauthn/android/
      "java/src/org/chromium/components/webauthn/InternalAuthenticator.java",
      "java/src/org/chromium/components/webauthn/WebauthnBrowserBridge.java",
      "java/src/org/chromium/components/webauthn/cred_man/CredManSupportProvider.java",
-@@ -30,11 +28,7 @@ android_library("java") {
+@@ -30,11 +28,8 @@ android_library("java") {
      "java/src/org/chromium/components/webauthn/AuthenticatorImpl.java",
      "java/src/org/chromium/components/webauthn/Barrier.java",
      "java/src/org/chromium/components/webauthn/CreateConfirmationUiDelegate.java",
@@ -3147,10 +3152,11 @@ diff --git a/components/webauthn/android/BUILD.gn b/components/webauthn/android/
      "java/src/org/chromium/components/webauthn/Fido2ApiCallHelper.java",
 -    "java/src/org/chromium/components/webauthn/Fido2CredentialRequest.java",
 -    "java/src/org/chromium/components/webauthn/FidoErrorResponseCallback.java",
++    "java/src/org/chromium/components/webauthn/ConditionalUiState.java",
      "java/src/org/chromium/components/webauthn/FidoIntentSender.java",
      "java/src/org/chromium/components/webauthn/GetAssertionResponseCallback.java",
      "java/src/org/chromium/components/webauthn/GetMatchingCredentialIdsResponseCallback.java",
-@@ -59,9 +53,6 @@ android_library("java") {
+@@ -59,9 +54,6 @@ android_library("java") {
    jar_excluded_patterns = [ "*/cred_man/CredManUiModeRecommender.class" ]
  
    deps = [
@@ -3160,7 +3166,7 @@ diff --git a/components/webauthn/android/BUILD.gn b/components/webauthn/android/
      "//base:base_java",
      "//base/version_info/android:version_constants_java",
      "//build/android:build_java",
-@@ -118,8 +109,6 @@ android_library("test_support_java") {
+@@ -118,8 +110,6 @@ android_library("test_support_java") {
  source_set("android") {
    sources = [
      "cred_man_support.h",
@@ -3169,6 +3175,14 @@ diff --git a/components/webauthn/android/BUILD.gn b/components/webauthn/android/
      "internal_authenticator_android.cc",
      "internal_authenticator_android.h",
      "webauthn_browser_bridge.cc",
+@@ -186,7 +176,6 @@ robolectric_library("junit") {
+     ":delegate_public_java",
+     ":java",
+     ":test_support_java",
+-    "$google_play_services_package:google_play_services_tasks_java",
+     "//base:base_java",
+     "//base:base_java_test_support",
+     "//base:base_junit_test_support",
 diff --git a/components/webauthn/android/java/src/org/chromium/components/webauthn/AuthenticatorImpl.java b/components/webauthn/android/java/src/org/chromium/components/webauthn/AuthenticatorImpl.java
 --- a/components/webauthn/android/java/src/org/chromium/components/webauthn/AuthenticatorImpl.java
 +++ b/components/webauthn/android/java/src/org/chromium/components/webauthn/AuthenticatorImpl.java
@@ -3386,10 +3400,30 @@ diff --git a/components/webauthn/android/java/src/org/chromium/components/webaut
          cleanupRequest();
      }
  
+diff --git a/components/webauthn/android/java/src/org/chromium/components/webauthn/ConditionalUiState.java b/components/webauthn/android/java/src/org/chromium/components/webauthn/ConditionalUiState.java
+new file mode 100644
+--- /dev/null
++++ b/components/webauthn/android/java/src/org/chromium/components/webauthn/ConditionalUiState.java
+@@ -0,0 +1,15 @@
++// Copyright 2018 The Chromium Authors
++// Use of this source code is governed by a BSD-style license that can be
++// found in the LICENSE file.
++
++package org.chromium.components.webauthn;
++
++public enum ConditionalUiState {
++    NONE,
++    WAITING_FOR_RP_ID_VALIDATION,
++    WAITING_FOR_CREDENTIAL_LIST,
++    WAITING_FOR_SELECTION,
++    REQUEST_SENT_TO_PLATFORM,
++    CANCEL_PENDING,
++    CANCEL_PENDING_RP_ID_VALIDATION_COMPLETE,
++}
 diff --git a/components/webauthn/android/java/src/org/chromium/components/webauthn/Fido2ApiCallHelper.java b/components/webauthn/android/java/src/org/chromium/components/webauthn/Fido2ApiCallHelper.java
 --- a/components/webauthn/android/java/src/org/chromium/components/webauthn/Fido2ApiCallHelper.java
 +++ b/components/webauthn/android/java/src/org/chromium/components/webauthn/Fido2ApiCallHelper.java
-@@ -8,10 +8,6 @@ import android.app.PendingIntent;
+@@ -8,16 +8,11 @@ import android.app.PendingIntent;
  import android.net.Uri;
  import android.os.Parcel;
  
@@ -3400,7 +3434,13 @@ diff --git a/components/webauthn/android/java/src/org/chromium/components/webaut
  import org.chromium.base.ContextUtils;
  import org.chromium.blink.mojom.PublicKeyCredentialCreationOptions;
  import org.chromium.blink.mojom.PublicKeyCredentialRequestOptions;
-@@ -44,72 +40,6 @@ public class Fido2ApiCallHelper {
+ import org.chromium.components.externalauth.ExternalAuthUtils;
+ import org.chromium.components.externalauth.UserRecoverableErrorHandler;
+-import org.chromium.components.webauthn.Fido2ApiCall.Fido2ApiCallParams;
+ 
+ import java.security.NoSuchAlgorithmException;
+ import java.util.List;
+@@ -44,72 +39,6 @@ public class Fido2ApiCallHelper {
      }
  
      public boolean arePlayServicesAvailable() {
@@ -3474,6 +3514,101 @@ diff --git a/components/webauthn/android/java/src/org/chromium/components/webaut
 +        return false;
      }
  }
+diff --git a/components/webauthn/android/java/src/org/chromium/components/webauthn/WebauthnModeProvider.java b/components/webauthn/android/java/src/org/chromium/components/webauthn/WebauthnModeProvider.java
+--- a/components/webauthn/android/java/src/org/chromium/components/webauthn/WebauthnModeProvider.java
++++ b/components/webauthn/android/java/src/org/chromium/components/webauthn/WebauthnModeProvider.java
+@@ -6,7 +6,6 @@ package org.chromium.components.webauthn;
+ 
+ import androidx.annotation.IntDef;
+ 
+-import org.chromium.components.webauthn.Fido2ApiCall.Fido2ApiCallParams;
+ import org.chromium.components.webauthn.cred_man.AppCredManRequestDecorator;
+ import org.chromium.components.webauthn.cred_man.BrowserCredManRequestDecorator;
+ import org.chromium.components.webauthn.cred_man.CredManRequestDecorator;
+@@ -37,17 +36,6 @@ public class WebauthnModeProvider {
+         return null;
+     }
+ 
+-    public Fido2ApiCallParams getFido2ApiCallParams() {
+-        if (mMode == WebauthnMode.APP) {
+-            return Fido2ApiCall.APP_API;
+-        } else if (mMode == WebauthnMode.BROWSER || mMode == WebauthnMode.CHROME) {
+-            return Fido2ApiCall.BROWSER_API;
+-        } else {
+-            assert false : "WebauthnMode not set! Please set using WebAuthnModeProvider.setMode()";
+-        }
+-        return null;
+-    }
+-
+     public @WebauthnMode int getWebauthnMode() {
+         return mMode;
+     }
+diff --git a/components/webauthn/android/java/src/org/chromium/components/webauthn/cred_man/CredManHelper.java b/components/webauthn/android/java/src/org/chromium/components/webauthn/cred_man/CredManHelper.java
+--- a/components/webauthn/android/java/src/org/chromium/components/webauthn/cred_man/CredManHelper.java
++++ b/components/webauthn/android/java/src/org/chromium/components/webauthn/cred_man/CredManHelper.java
+@@ -29,8 +29,7 @@ import org.chromium.blink.mojom.MakeCredentialAuthenticatorResponse;
+ import org.chromium.blink.mojom.PublicKeyCredentialCreationOptions;
+ import org.chromium.blink.mojom.PublicKeyCredentialRequestOptions;
+ import org.chromium.components.webauthn.Barrier;
+-import org.chromium.components.webauthn.Fido2CredentialRequest.ConditionalUiState;
+-import org.chromium.components.webauthn.Fido2CredentialRequestJni;
++import org.chromium.components.webauthn.ConditionalUiState;
+ import org.chromium.components.webauthn.GetAssertionResponseCallback;
+ import org.chromium.components.webauthn.MakeCredentialResponseCallback;
+ import org.chromium.components.webauthn.WebauthnBrowserBridge;
+@@ -96,8 +95,7 @@ public class CredManHelper {
+             Callback<Integer> errorCallback) {
+         mContext = context;
+         mFrameHost = frameHost;
+-        final String requestAsJson =
+-                Fido2CredentialRequestJni.get().createOptionsToJson(options.serialize());
++        final String requestAsJson = "";
+         final byte[] clientDataHash =
+                 maybeClientDataHash != null
+                         ? maybeClientDataHash
+@@ -151,9 +149,7 @@ public class CredManHelper {
+                         String json =
+                                 data.getString(
+                                         CRED_MAN_PREFIX + "BUNDLE_KEY_REGISTRATION_RESPONSE_JSON");
+-                        byte[] responseSerialized =
+-                                Fido2CredentialRequestJni.get()
+-                                        .makeCredentialResponseFromJson(json);
++                        byte[] responseSerialized = null;
+                         if (responseSerialized == null) {
+                             Log.e(
+                                     TAG,
+@@ -421,8 +417,7 @@ public class CredManHelper {
+                                 data.getString(
+                                         CRED_MAN_PREFIX
+                                                 + "BUNDLE_KEY_AUTHENTICATION_RESPONSE_JSON");
+-                        byte[] responseSerialized =
+-                                Fido2CredentialRequestJni.get().getCredentialResponseFromJson(json);
++                        byte[] responseSerialized = null;
+                         if (responseSerialized == null) {
+                             Log.e(
+                                     TAG,
+@@ -587,8 +582,7 @@ public class CredManHelper {
+             boolean requestPasswords,
+             boolean preferImmediatelyAvailable,
+             boolean ignoreGpm) {
+-        final String requestAsJson =
+-                Fido2CredentialRequestJni.get().getOptionsToJson(options.serialize());
++        final String requestAsJson = "";
+         final byte[] clientDataHash =
+                 maybeClientDataHash != null
+                         ? maybeClientDataHash
+diff --git a/components/webauthn/android/java/src/org/chromium/components/webauthn/cred_man/CredManMetricsHelper.java b/components/webauthn/android/java/src/org/chromium/components/webauthn/cred_man/CredManMetricsHelper.java
+--- a/components/webauthn/android/java/src/org/chromium/components/webauthn/cred_man/CredManMetricsHelper.java
++++ b/components/webauthn/android/java/src/org/chromium/components/webauthn/cred_man/CredManMetricsHelper.java
+@@ -7,7 +7,7 @@ package org.chromium.components.webauthn.cred_man;
+ import androidx.annotation.IntDef;
+ 
+ import org.chromium.base.metrics.RecordHistogram;
+-import org.chromium.components.webauthn.Fido2CredentialRequest.ConditionalUiState;
++import org.chromium.components.webauthn.ConditionalUiState;
+ 
+ /**
+  * This class is responsible for emitting histograms regarding CredMan usage in
 diff --git a/content/browser/push_messaging/push_messaging_manager.cc b/content/browser/push_messaging/push_messaging_manager.cc
 --- a/content/browser/push_messaging/push_messaging_manager.cc
 +++ b/content/browser/push_messaging/push_messaging_manager.cc

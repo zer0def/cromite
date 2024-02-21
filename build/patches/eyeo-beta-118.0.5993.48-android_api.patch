@@ -140,7 +140,7 @@ diff --git a/chrome/android/BUILD.gn b/chrome/android/BUILD.gn
 diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -3432,6 +3432,17 @@ static_library("browser") {
+@@ -3433,6 +3433,17 @@ static_library("browser") {
        "webauthn/android/webauthn_request_delegate_android.h",
      ]
  
@@ -158,7 +158,7 @@ diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
  
      public_deps += [
        "//chrome/android/features/dev_ui:buildflags",
-@@ -3619,6 +3630,9 @@ static_library("browser") {
+@@ -3621,6 +3632,9 @@ static_library("browser") {
        "//url",
      ]
  
@@ -1282,7 +1282,7 @@ new file mode 100644
 +    const base::android::JavaParamRef<jstring>& allowed_domain) {
 +  auto* configuration = GetConfigurationWithName(env, configuration_name);
 +  if (configuration) {
-+    configuration->RemoveAllowedDomain(ConvertJavaStringToUTF8(allowed_domain));
++    configuration->RemoveAllowedDomain(base::android::ConvertJavaStringToUTF8(allowed_domain));
 +  }
 +}
 +
@@ -1302,7 +1302,7 @@ new file mode 100644
 +    const base::android::JavaParamRef<jstring>& custom_filter) {
 +  auto* configuration = GetConfigurationWithName(env, configuration_name);
 +  if (configuration) {
-+    configuration->AddCustomFilter(ConvertJavaStringToUTF8(custom_filter));
++    configuration->AddCustomFilter(base::android::ConvertJavaStringToUTF8(custom_filter));
 +  }
 +}
 +

@@ -43,8 +43,8 @@ diff --git a/chrome/services/file_util/safe_archive_analyzer.cc b/chrome/service
 -                        /*password=*/password,
 -                        std::move(analysis_finished_callback),
 -                        std::move(temp_file_getter_callback), &results_);
-+  LOG(FATAL) << "AnalyzeRarFile is disabled in this build";
 +  Timeout();
++  LOG(FATAL) << "AnalyzeRarFile is disabled in this build";
  }
  
  void SafeArchiveAnalyzer::AnalyzeSevenZipFile(
