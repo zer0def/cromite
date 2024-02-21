@@ -419,7 +419,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/toolbar/Toolbar
  import org.chromium.chrome.browser.page_info.ChromePageInfo;
  import org.chromium.chrome.browser.partnercustomizations.PartnerBrowserCustomizations;
  import org.chromium.chrome.browser.preferences.ChromeSharedPreferences;
-@@ -2503,10 +2502,6 @@ public class ToolbarManager
+@@ -2511,10 +2510,6 @@ public class ToolbarManager
          return mLocationBar.getOmniboxStub();
      }
  

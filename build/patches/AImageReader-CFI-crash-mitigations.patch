@@ -183,7 +183,7 @@ diff --git a/gpu/config/gpu_util.cc b/gpu/config/gpu_util.cc
    if (!gpu_preferences.enable_android_surface_control)
      return kGpuFeatureStatusDisabled;
  
-@@ -356,6 +359,11 @@ void AdjustGpuFeatureStatusToWorkarounds(GpuFeatureInfo* gpu_feature_info) {
+@@ -368,6 +371,11 @@ void AdjustGpuFeatureStatusToWorkarounds(GpuFeatureInfo* gpu_feature_info) {
      gpu_feature_info->status_values[GPU_FEATURE_TYPE_CANVAS_OOP_RASTERIZATION] =
          kGpuFeatureStatusBlocklisted;
    }
