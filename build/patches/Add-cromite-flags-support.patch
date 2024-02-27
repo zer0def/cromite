@@ -22,6 +22,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  build/android/gyp/java_cpp_features.py        |  17 ++
  chrome/android/java/res/values/values.xml     |   3 +
  .../java/res/xml/privacy_preferences.xml      |   4 +
+ .../homepage/settings/HomepageSettings.java   |   2 +-
  .../privacy/settings/PrivacySettings.java     |   2 +-
  .../browser/settings/SettingsActivity.java    |  36 +++++
  chrome/browser/about_flags.cc                 |  11 ++
@@ -87,7 +88,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  services/network/public/cpp/features.h        |   1 +
  third_party/blink/common/features.cc          |   1 +
  third_party/blink/public/common/features.h    |   1 +
- 73 files changed, 737 insertions(+), 19 deletions(-)
+ 74 files changed, 738 insertions(+), 20 deletions(-)
  create mode 100644 chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/cromite/include_all_directory.java
  create mode 100644 chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/cromite/java_template/CromiteCachedFlag.java.tmpl
  create mode 100644 chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/placeholder.txt
@@ -443,6 +444,18 @@ diff --git a/chrome/android/java/res/xml/privacy_preferences.xml b/chrome/androi
      <Preference
          android:key="preload_pages"
          android:title="@string/preload_pages_title"
+diff --git a/chrome/android/java/src/org/chromium/chrome/browser/homepage/settings/HomepageSettings.java b/chrome/android/java/src/org/chromium/chrome/browser/homepage/settings/HomepageSettings.java
+--- a/chrome/android/java/src/org/chromium/chrome/browser/homepage/settings/HomepageSettings.java
++++ b/chrome/android/java/src/org/chromium/chrome/browser/homepage/settings/HomepageSettings.java
+@@ -37,7 +37,7 @@ public class HomepageSettings extends ChromeBaseSettingsFragment {
+     private RadioButtonGroupHomepagePreference mRadioButtons;
+ 
+     @Override
+-    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
++    public void onCreatePreferencesCromite(Bundle savedInstanceState, String rootKey) {
+         mHomepageManager = HomepageManager.getInstance();
+ 
+         getActivity().setTitle(R.string.options_homepage_title);
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/PrivacySettings.java b/chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/PrivacySettings.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/PrivacySettings.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/PrivacySettings.java
