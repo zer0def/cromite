@@ -17,6 +17,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../developer_private_api.cc                  | 37 ++++++++++++-
  .../developer_private/developer_private_api.h |  3 ++
  .../webstore_private/webstore_private_api.cc  | 15 +++++-
+ chrome/browser/extensions/cws_info_service.cc |  1 +
  .../extensions/extension_system_impl.cc       |  2 +
  .../chrome_extension_downloader_factory.cc    |  1 -
  .../extensions/updater/extension_updater.cc   | 40 ++++++++------
@@ -42,7 +43,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  extensions/common/extension_features.cc       | 15 ++++++
  extensions/common/extension_features.h        |  4 ++
  .../definitions/developer_private.d.ts        |  4 +-
- 29 files changed, 251 insertions(+), 93 deletions(-)
+ 30 files changed, 252 insertions(+), 93 deletions(-)
  create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Webstore-protection.inc
 
 diff --git a/chrome/app/extensions_strings.grdp b/chrome/app/extensions_strings.grdp
@@ -215,6 +216,17 @@ diff --git a/chrome/browser/extensions/api/webstore_private/webstore_private_api
  }
  
  WebstorePrivateGetExtensionStatusFunction::
+diff --git a/chrome/browser/extensions/cws_info_service.cc b/chrome/browser/extensions/cws_info_service.cc
+--- a/chrome/browser/extensions/cws_info_service.cc
++++ b/chrome/browser/extensions/cws_info_service.cc
+@@ -156,6 +156,7 @@ namespace extensions {
+ BASE_FEATURE(kCWSInfoService,
+              "CWSInfoService",
+              base::FEATURE_ENABLED_BY_DEFAULT);
++SET_CROMITE_FEATURE_DISABLED(kCWSInfoService);
+ 
+ // Increase the frequency of periodic retrieval of extensions metadata from
+ // CWS. This feature is used only for testing purposes.
 diff --git a/chrome/browser/extensions/extension_system_impl.cc b/chrome/browser/extensions/extension_system_impl.cc
 --- a/chrome/browser/extensions/extension_system_impl.cc
 +++ b/chrome/browser/extensions/extension_system_impl.cc
