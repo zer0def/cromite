@@ -14,12 +14,12 @@ Subject: bromite build utils
  build/config/android/rules.gni                |   6 +-
  .../ChromeAccessibilitySettingsDelegate.java  |   5 +
  chrome/browser/flags/BUILD.gn                 |  10 +-
- .../flags/android/cromite_native_utils.cc     |  41 +++++++
+ .../flags/android/cromite_native_utils.cc     |  43 +++++++
  .../flags/android/cromite_native_utils.h      |  14 +++
- .../browser/flags/CromiteNativeUtils.java     |  47 ++++++++
+ .../browser/flags/CromiteNativeUtils.java     |  46 ++++++++
  tools/grit/grit/grd_reader.py                 |  27 ++++-
  tools/grit/preprocess_if_expr.py              |  32 +++++-
- 16 files changed, 468 insertions(+), 16 deletions(-)
+ 16 files changed, 469 insertions(+), 16 deletions(-)
  create mode 100644 build/bromite/bromite_utils.gni
  create mode 100644 build/bromite/gyp/cpp_bromite_include.py
  create mode 100644 build/bromite/gyp/cpp_bromite_include.pydeps
@@ -510,7 +510,7 @@ diff --git a/chrome/browser/flags/android/cromite_native_utils.cc b/chrome/brows
 new file mode 100755
 --- /dev/null
 +++ b/chrome/browser/flags/android/cromite_native_utils.cc
-@@ -0,0 +1,41 @@
+@@ -0,0 +1,43 @@
 +#include "chrome/browser/flags/android/cromite_native_utils.h"
 +
 +#include "chrome/browser/browser_process.h"
@@ -534,6 +534,8 @@ new file mode 100755
 +
 +  if (isEnabled)
 +    entries.insert(internal_name + "@1");
++  else
++    entries.insert(internal_name + "@2");
 +
 +  flags_storage.SetFlags(entries);
 +  flags_storage.CommitPendingWrites();
@@ -575,13 +577,12 @@ diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/f
 new file mode 100755
 --- /dev/null
 +++ b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/CromiteNativeUtils.java
-@@ -0,0 +1,47 @@
+@@ -0,0 +1,46 @@
 +package org.chromium.chrome.browser.flags;
 +
 +import org.chromium.base.cached_flags.CachedFlag;
 +import org.chromium.chrome.browser.flags.ChromeFeatureList;
-+import org.chromium.chrome.browser.preferences.ChromePreferenceKeys;
-+import org.chromium.chrome.browser.preferences.ChromeSharedPreferences;
++import org.chromium.base.cached_flags.CachedFlagsSharedPreferences;
 +
 +import org.jni_zero.CalledByNative;
 +import org.jni_zero.NativeMethods;
@@ -608,7 +609,7 @@ new file mode 100755
 +            CachedFlag cachedFlag = ChromeFeatureList.sAllCachedFlags.get(featureName);
 +            String preferenceName = cachedFlag.getSharedPreferenceKey();
 +
-+            ChromeSharedPreferences.getInstance().writeBoolean(preferenceName, newValue);
++            CachedFlagsSharedPreferences.getInstance().writeBoolean(preferenceName, newValue);
 +            cachedFlag.setValueReturnedOverride(newValue);
 +        }
 +    }
