@@ -56,7 +56,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../scene_layer/tab_strip_scene_layer.cc      | 16 +++-
  .../BrowserControlsMarginSupplier.java        |  5 +
  .../BrowserControlsStateProvider.java         |  6 ++
- .../browser/feed/FeedListContentManager.java  |  2 +-
+ .../browser/feed/FeedListContentManager.java  |  6 +-
  .../flags/android/chrome_feature_list.cc      |  2 +
  .../browser/flags/ChromeFeatureList.java      |  5 +
  chrome/browser/prefs/browser_prefs.cc         |  2 +-
@@ -87,7 +87,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../AccessibilitySettingsDelegate.java        |  6 ++
  .../render_widget_host_view_android.cc        |  3 +
  .../Move-navigation-bar-to-bottom.inc         | 12 +++
- 74 files changed, 895 insertions(+), 83 deletions(-)
+ 74 files changed, 899 insertions(+), 83 deletions(-)
  create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Move-navigation-bar-to-bottom.inc
 
 diff --git a/cc/base/features.cc b/cc/base/features.cc
@@ -1849,12 +1849,23 @@ diff --git a/chrome/browser/browser_controls/android/java/src/org/chromium/chrom
 diff --git a/chrome/browser/feed/android/java/src/org/chromium/chrome/browser/feed/FeedListContentManager.java b/chrome/browser/feed/android/java/src/org/chromium/chrome/browser/feed/FeedListContentManager.java
 --- a/chrome/browser/feed/android/java/src/org/chromium/chrome/browser/feed/FeedListContentManager.java
 +++ b/chrome/browser/feed/android/java/src/org/chromium/chrome/browser/feed/FeedListContentManager.java
-@@ -133,7 +133,7 @@ public class FeedListContentManager implements ListContentManager {
+@@ -14,6 +14,7 @@ import android.widget.FrameLayout;
+ import androidx.annotation.Nullable;
+ import androidx.annotation.Px;
+ 
++import org.chromium.chrome.browser.flags.ChromeFeatureList;
+ import org.chromium.chrome.browser.xsurface.ListContentManager;
+ import org.chromium.chrome.browser.xsurface.ListContentManagerObserver;
+ import org.chromium.chrome.browser.xsurface.LoggingParameters;
+@@ -133,7 +134,10 @@ public class FeedListContentManager implements ListContentManager {
              FrameLayout enclosingLayout = new FrameLayout(parent.getContext());
              FrameLayout.LayoutParams layoutParams =
                      new FrameLayout.LayoutParams(
 -                            new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-+                            new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
++                            new LayoutParams(LayoutParams.MATCH_PARENT,
++                                    ChromeFeatureList.sMoveTopToolbarToBottom.isEnabled()
++                                        ? LayoutParams.MATCH_PARENT
++                                        : LayoutParams.WRAP_CONTENT));
              enclosingLayout.setLayoutParams(layoutParams);
  
              // Set the left and right paddings.
