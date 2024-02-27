@@ -278,6 +278,10 @@ Customize-selection-popup.patch
 Enables-deactivation-of-the-js-debugger-statement.patch
 Enable-gwp-asan-on-Android.patch
 Disable-Read-Aloud-by-default.patch
+Disable-Compose-feature.patch
+Disable-offline-autofetch-flag.patch
+Enable-percent-based-scrolling-on-Windows.patch
+Show-NTP-at-startup.patch
 
 Temp-PerformanceNavigationTiming-privacy-fix.patch
 Temp-disable-predictive-back-gesture.patch
