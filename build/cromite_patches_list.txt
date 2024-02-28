@@ -289,7 +289,6 @@ TEMP-Add-a-log-to-track-strange-behavior.patch
 Temp-guard-FileSystemAccessPersistentPermissions.patch
 Fix-chromium-build-bugs.patch
 00Temp-disable-network-service-windows.patch
-00Temp-fix-Content-settings-infrastructure.patch
 
 eyeo-beta-118.0.5993.48-base.patch
 eyeo-beta-118.0.5993.48-chrome_integration.patch

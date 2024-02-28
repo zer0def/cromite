@@ -3129,7 +3129,7 @@ diff --git a/components/content_settings/core/common/content_settings_types.mojo
  
 -  NUM_TYPES,
 +  NUM_TYPES_CHROMIUM,
-+// #include "components/content_settings/core/common/bromite_content_settings.inc"
++#include "components/content_settings/core/common/bromite_content_settings.inc"
 +  NUM_TYPES_BROMITE,
  };
  
