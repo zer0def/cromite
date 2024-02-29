@@ -288,7 +288,6 @@ Temp-disable-predictive-back-gesture.patch
 TEMP-Add-a-log-to-track-strange-behavior.patch
 Temp-guard-FileSystemAccessPersistentPermissions.patch
 Fix-chromium-build-bugs.patch
-00Temp-disable-network-service-windows.patch
 
 eyeo-beta-118.0.5993.48-base.patch
 eyeo-beta-118.0.5993.48-chrome_integration.patch
