@@ -59,7 +59,7 @@ diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/f
      public static final String ADAPTIVE_BUTTON_IN_TOP_TOOLBAR_TRANSLATE =
              "AdaptiveButtonInTopToolbarTranslate";
      public static final String ADAPTIVE_BUTTON_IN_TOP_TOOLBAR_ADD_TO_BOOKMARKS =
-@@ -521,6 +522,8 @@ public abstract class ChromeFeatureList {
+@@ -523,6 +524,8 @@ public abstract class ChromeFeatureList {
              newCachedFlag(ANDROID_ELEGANT_TEXT_HEIGHT, false);
  
      public static final CachedFlag sAndroidHub = newCachedFlag(ANDROID_HUB, false);
@@ -68,7 +68,7 @@ diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/f
      public static final CachedFlag sArchiveTabService = newCachedFlag(ARCHIVE_TAB_SERVICE, false);
      public static final CachedFlag sBackGestureActivityTabProvider =
              newCachedFlag(BACK_GESTURE_ACTIVITY_TAB_PROVIDER, false);
-@@ -655,6 +658,7 @@ public abstract class ChromeFeatureList {
+@@ -657,6 +660,7 @@ public abstract class ChromeFeatureList {
  
      public static final List<CachedFlag> sFlagsCachedFullBrowser =
              List.of(
