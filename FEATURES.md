@@ -152,6 +152,19 @@
 ##### from [120.0.6099.230](https://github.com/uazo/cromite/issues/720#issuecomment-1898490097)
 * Disable minikin engine
 
+##### from [121.0.6167.101](https://github.com/uazo/cromite/issues/743#issuecomment-1909799070)
+* Disable Read Aloud by default [patch](https://github.com/uazo/cromite/blob/master/build/patches/Disable-Read-Aloud-by-default.patch)
+* Disable Discount Info Api 
+
+##### from [121.0.6167.164](https://github.com/uazo/cromite/issues/784#issuecomment-1933505763)
+* Ability to block all popups per site [patch](https://github.com/uazo/cromite/blob/master/build/patches/Change-popup-site-setting.patch)
+
+##### from [122.0.6261.70](https://github.com/uazo/cromite/issues/825#issuecomment-1969089406)
+* Expose in settings and activate by default NewTabPage in startup [patch](https://github.com/uazo/cromite/blob/master/build/patches/Show-NTP-at-startup.patch)
+* Enable percent based scrolling on Windows [patch](https://github.com/uazo/cromite/blob/master/build/patches/Enable-percent-based-scrolling-on-Windows.patch)
+* Disable Compose by default [patch](https://github.com/uazo/cromite/blob/master/build/patches/Disable-Compose-feature.patch)
+* Offline autofetch by default [patch](https://github.com/uazo/cromite/blob/master/build/patches/Disable-offline-autofetch-flag.patch)
+
 #### Windows Cromite-specific features
 
 * enable Network Service Sandbox by default
