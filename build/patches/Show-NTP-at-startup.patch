@@ -13,12 +13,12 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../android/java/res/xml/homepage_preferences.xml   |  6 ++++++
  .../chrome/browser/ChromeInactivityTracker.java     | 13 +++++++++++++
  .../chrome/browser/ChromeTabbedActivity.java        |  4 +++-
- .../chrome/browser/tasks/ReturnToChromeUtil.java    |  6 ++++++
+ .../chrome/browser/tasks/ReturnToChromeUtil.java    |  8 +++++++-
  .../browser/preferences/ChromePreferenceKeys.java   |  2 ++
  .../preferences/LegacyChromePreferenceKeys.java     |  1 +
  .../show-ntp-at-startup.grdp                        |  9 +++++++++
  .../chrome_feature_list_cc/show-ntp-at-startup.inc  |  2 ++
- 10 files changed, 55 insertions(+), 7 deletions(-)
+ 10 files changed, 56 insertions(+), 8 deletions(-)
  create mode 100644 chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/show-ntp-at-startup.grdp
  create mode 100644 cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/show-ntp-at-startup.inc
 
@@ -162,6 +162,15 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tasks/ReturnToC
          // Checks whether to show the Start surface due to feature flag TAB_SWITCHER_ON_RETURN_MS.
          long lastVisibleTimeMs = inactivityTracker.getLastVisibleTimeMs();
          long lastBackgroundTimeMs = inactivityTracker.getLastBackgroundedTimeMs();
+@@ -792,7 +798,7 @@ public final class ReturnToChromeUtil {
+             TabModel currentTabModel,
+             TabCreator tabCreator,
+             HomeSurfaceTracker homeSurfaceTracker) {
+-        if (isIncognito || !shouldShowNtpHomeSurfaceOnStartup) {
++        if (isIncognito || !shouldShowNtpHomeSurfaceOnStartup || homeSurfaceTracker == null) {
+             return false;
+         }
+ 
 diff --git a/chrome/browser/preferences/android/java/src/org/chromium/chrome/browser/preferences/ChromePreferenceKeys.java b/chrome/browser/preferences/android/java/src/org/chromium/chrome/browser/preferences/ChromePreferenceKeys.java
 --- a/chrome/browser/preferences/android/java/src/org/chromium/chrome/browser/preferences/ChromePreferenceKeys.java
 +++ b/chrome/browser/preferences/android/java/src/org/chromium/chrome/browser/preferences/ChromePreferenceKeys.java
