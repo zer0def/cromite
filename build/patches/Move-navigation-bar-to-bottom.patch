@@ -1880,7 +1880,7 @@ diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browse
  #include "chrome/browser/browser_features.h"
  #include "chrome/browser/feature_guide/notifications/feature_notification_guide_service.h"
  #include "chrome/browser/flags/android/chrome_session_state.h"
-@@ -231,6 +232,7 @@ const base::Feature* const kFeaturesExposedToJava[] = {
+@@ -230,6 +231,7 @@ const base::Feature* const kFeaturesExposedToJava[] = {
      &kMagicStackAndroid,
      &kMultiInstanceApplicationStatusCleanup,
      &kNewTabSearchEngineUrlAndroid,
@@ -1891,7 +1891,7 @@ diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browse
 diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 --- a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 +++ b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
-@@ -336,6 +336,8 @@ public abstract class ChromeFeatureList {
+@@ -335,6 +335,8 @@ public abstract class ChromeFeatureList {
      public static final String MUlTI_INSTANCE_APPLICATION_STATUS_CLEANUP =
              "MultiInstanceApplicationStatusCleanup";
      public static final String NEW_TAB_SEARCH_ENGINE_URL_ANDROID = "NewTabSearchEngineUrlAndroid";
@@ -1900,7 +1900,7 @@ diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/f
      public static final String NOTIFICATION_PERMISSION_VARIANT = "NotificationPermissionVariant";
      public static final String NOTIFICATION_PERMISSION_BOTTOM_SHEET =
              "NotificationPermissionBottomSheet";
-@@ -602,6 +604,8 @@ public abstract class ChromeFeatureList {
+@@ -601,6 +603,8 @@ public abstract class ChromeFeatureList {
              newCachedFlag(QUERY_TILES_IN_ZPS_ON_NTP, false);
      public static final CachedFlag sOmniboxMatchToolbarAndStatusBarColor =
              newCachedFlag(OMNIBOX_MATCH_TOOLBAR_AND_STATUS_BAR_COLOR, false);
@@ -1909,7 +1909,7 @@ diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/f
      public static final CachedFlag sOmniboxModernizeVisualUpdate =
              newCachedFlag(OMNIBOX_MODERNIZE_VISUAL_UPDATE, true);
      public static final CachedFlag sOptimizationGuidePushNotifications =
-@@ -711,6 +715,7 @@ public abstract class ChromeFeatureList {
+@@ -710,6 +714,7 @@ public abstract class ChromeFeatureList {
                      sOmniboxMatchToolbarAndStatusBarColor,
                      sOmniboxModernizeVisualUpdate,
                      sOptimizationGuidePushNotifications,

@@ -25,7 +25,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../attribution_storage_sql.cc                |   8 +-
  content/browser/storage_partition_impl.cc     |   9 -
  content/public/android/BUILD.gn               |   2 -
- .../browser/AttributionOsLevelManager.java    | 296 +-----------------
+ .../browser/AttributionOsLevelManager.java    | 297 +-----------------
  .../public/browser/content_browser_client.cc  |   7 +-
  .../public/browser/navigation_controller.cc   |   1 -
  .../Disable-conversion-measurement-api.inc    |   1 +
@@ -36,7 +36,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../network/public/cpp/attribution_utils.cc   |   2 +
  third_party/blink/renderer/core/page/page.cc  |   2 +-
  ui/events/android/motion_event_android.cc     |   6 +-
- 25 files changed, 65 insertions(+), 323 deletions(-)
+ 25 files changed, 65 insertions(+), 324 deletions(-)
  create mode 100644 cromite_flags/content/common/features_cc/Disable-conversion-measurement-api.inc
  create mode 100644 cromite_flags/content/public/common/content_features_cc/Disable-conversion-measurement-api.inc
  create mode 100644 cromite_flags/services/network/public/cpp/features_cc/Disable-conversion-measurement-api.inc
@@ -298,7 +298,7 @@ diff --git a/content/public/android/java/src/org/chromium/content/browser/Attrib
      private static final String TAG = "AttributionManager";
      // TODO: replace with constant in android.Manifest.permission once it becomes available in U.
      private static final String PERMISSION_ACCESS_ADSERVICES_ATTRIBUTION =
-@@ -116,62 +107,11 @@ public class AttributionOsLevelManager {
+@@ -116,63 +107,11 @@ public class AttributionOsLevelManager {
      }
  
      private static boolean supportsAttribution() {
@@ -313,7 +313,8 @@ diff --git a/content/public/android/java/src/org/chromium/content/browser/Attrib
 -        } else if (thrown instanceof IllegalStateException) {
 -            // The Android API doesn't break out this error as a separate exception so we
 -            // are forced to inspect the message for now.
--            if (thrown.getMessage().toLowerCase(Locale.US).contains("background")) {
+-            if (thrown.getMessage() != null
+-                    && thrown.getMessage().toLowerCase(Locale.US).contains("background")) {
 -                return OperationResult.ERROR_BACKGROUND_CALLER;
 -            } else {
 -                return OperationResult.ERROR_ILLEGAL_STATE;
@@ -362,7 +363,7 @@ diff --git a/content/public/android/java/src/org/chromium/content/browser/Attrib
      }
  
      @CalledByNative
-@@ -180,22 +120,7 @@ public class AttributionOsLevelManager {
+@@ -181,22 +120,7 @@ public class AttributionOsLevelManager {
      }
  
      private MeasurementManagerFutures getManager() {
@@ -386,7 +387,7 @@ diff --git a/content/public/android/java/src/org/chromium/content/browser/Attrib
      }
  
      private void onRegistrationCompleted(
-@@ -209,28 +134,6 @@ public class AttributionOsLevelManager {
+@@ -210,28 +134,6 @@ public class AttributionOsLevelManager {
          }
      }
  
@@ -415,7 +416,7 @@ diff --git a/content/public/android/java/src/org/chromium/content/browser/Attrib
      /**
       * Registers a web attribution source with native, see `registerWebSourceAsync()`:
       * https://developer.android.com/reference/androidx/privacysandbox/ads/adservices/java/measurement/MeasurementManagerFutures.
-@@ -249,25 +152,6 @@ public class AttributionOsLevelManager {
+@@ -250,25 +152,6 @@ public class AttributionOsLevelManager {
                      OperationResult.ERROR_VERSION_UNSUPPORTED);
              return;
          }
@@ -441,7 +442,7 @@ diff --git a/content/public/android/java/src/org/chromium/content/browser/Attrib
      }
  
      /**
-@@ -283,15 +167,6 @@ public class AttributionOsLevelManager {
+@@ -284,15 +167,6 @@ public class AttributionOsLevelManager {
                      OperationResult.ERROR_VERSION_UNSUPPORTED);
              return;
          }
@@ -457,7 +458,7 @@ diff --git a/content/public/android/java/src/org/chromium/content/browser/Attrib
      }
  
      /**
-@@ -308,22 +183,6 @@ public class AttributionOsLevelManager {
+@@ -309,22 +183,6 @@ public class AttributionOsLevelManager {
                      OperationResult.ERROR_VERSION_UNSUPPORTED);
              return;
          }
@@ -480,7 +481,7 @@ diff --git a/content/public/android/java/src/org/chromium/content/browser/Attrib
      }
  
      /**
-@@ -339,15 +198,6 @@ public class AttributionOsLevelManager {
+@@ -340,15 +198,6 @@ public class AttributionOsLevelManager {
                      OperationResult.ERROR_VERSION_UNSUPPORTED);
              return;
          }
@@ -496,7 +497,7 @@ diff --git a/content/public/android/java/src/org/chromium/content/browser/Attrib
      }
  
      private void onDataDeletionCompleted(int requestId) {
-@@ -382,96 +232,7 @@ public class AttributionOsLevelManager {
+@@ -383,96 +232,7 @@ public class AttributionOsLevelManager {
              onDataDeletionCompleted(requestId);
              return;
          }
@@ -594,7 +595,7 @@ diff --git a/content/public/android/java/src/org/chromium/content/browser/Attrib
      }
  
      private static void onMeasurementStateReturned(int status, @OperationResult int result) {
-@@ -487,6 +248,10 @@ public class AttributionOsLevelManager {
+@@ -488,6 +248,10 @@ public class AttributionOsLevelManager {
      private static void getMeasurementApiStatus() {
          ThreadUtils.assertOnBackgroundThread();
  
@@ -605,7 +606,7 @@ diff --git a/content/public/android/java/src/org/chromium/content/browser/Attrib
          if (sManagerForTesting != null) {
              AttributionOsLevelManagerJni.get().onMeasurementStateReturned(1);
              return;
-@@ -506,49 +271,6 @@ public class AttributionOsLevelManager {
+@@ -507,49 +271,6 @@ public class AttributionOsLevelManager {
              onMeasurementStateReturned(/* status= */ 0, OperationResult.ERROR_PERMISSION_UNGRANTED);
              return;
          }

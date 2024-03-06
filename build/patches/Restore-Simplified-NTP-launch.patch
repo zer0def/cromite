@@ -346,7 +346,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/suggestions/Sug
 diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browser/flags/android/chrome_feature_list.cc
 --- a/chrome/browser/flags/android/chrome_feature_list.cc
 +++ b/chrome/browser/flags/android/chrome_feature_list.cc
-@@ -223,6 +223,7 @@ const base::Feature* const kFeaturesExposedToJava[] = {
+@@ -222,6 +222,7 @@ const base::Feature* const kFeaturesExposedToJava[] = {
      &kHideTabOnTabSwitcher,
      &kIncognitoReauthenticationForAndroid,
      &kIncognitoScreenshot,
@@ -357,7 +357,7 @@ diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browse
 diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 --- a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 +++ b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
-@@ -325,6 +325,7 @@ public abstract class ChromeFeatureList {
+@@ -324,6 +324,7 @@ public abstract class ChromeFeatureList {
              "LookalikeUrlNavigationSuggestionsUI";
      public static final String MAGIC_STACK_ANDROID = "MagicStackAndroid";
      public static final String MESSAGES_FOR_ANDROID_ADS_BLOCKED = "MessagesForAndroidAdsBlocked";

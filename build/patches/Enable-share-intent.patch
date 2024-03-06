@@ -468,7 +468,7 @@ new file mode 100644
 diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browser/flags/android/chrome_feature_list.cc
 --- a/chrome/browser/flags/android/chrome_feature_list.cc
 +++ b/chrome/browser/flags/android/chrome_feature_list.cc
-@@ -255,6 +255,7 @@ const base::Feature* const kFeaturesExposedToJava[] = {
+@@ -254,6 +254,7 @@ const base::Feature* const kFeaturesExposedToJava[] = {
      &kReengagementNotification,
      &kSearchReadyOmniboxFeature,
      &kRelatedSearchesAllLanguage,
@@ -479,7 +479,7 @@ diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browse
 diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 --- a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 +++ b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
-@@ -402,6 +402,7 @@ public abstract class ChromeFeatureList {
+@@ -401,6 +401,7 @@ public abstract class ChromeFeatureList {
      public static final String READALOUD_IN_MULTI_WINDOW = "ReadAloudInMultiWindow";
      public static final String READALOUD_PLAYBACK = "ReadAloudPlayback";
      public static final String READER_MODE_IN_CCT = "ReaderModeInCCT";

@@ -134,7 +134,7 @@ diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browse
      &kAdaptiveButtonInTopToolbarTranslate,
      &kAdaptiveButtonInTopToolbarAddToBookmarks,
      &kAdaptiveButtonInTopToolbarCustomizationV2,
-@@ -392,6 +393,10 @@ static jlong JNI_ChromeFeatureMap_GetNativeMap(JNIEnv* env) {
+@@ -391,6 +392,10 @@ static jlong JNI_ChromeFeatureMap_GetNativeMap(JNIEnv* env) {
  
  // Alphabetical:
  

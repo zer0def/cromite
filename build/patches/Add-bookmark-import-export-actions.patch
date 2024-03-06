@@ -1371,7 +1371,7 @@ diff --git a/chrome/browser/download/android/java/src/org/chromium/chrome/browse
 diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browser/flags/android/chrome_feature_list.cc
 --- a/chrome/browser/flags/android/chrome_feature_list.cc
 +++ b/chrome/browser/flags/android/chrome_feature_list.cc
-@@ -177,6 +177,7 @@ const base::Feature* const kFeaturesExposedToJava[] = {
+@@ -176,6 +176,7 @@ const base::Feature* const kFeaturesExposedToJava[] = {
      &kCacheActivityTaskID,
      &kCastDeviceFilter,
      &kClearOmniboxFocusAfterNavigation,
@@ -1382,7 +1382,7 @@ diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browse
 diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 --- a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 +++ b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
-@@ -494,6 +494,7 @@ public abstract class ChromeFeatureList {
+@@ -493,6 +493,7 @@ public abstract class ChromeFeatureList {
      public static final String USER_BYPASS_UI = "UserBypassUI";
      public static final String VERTICAL_AUTOMOTIVE_BACK_BUTTON_TOOLBAR =
              "VerticalAutomotiveBackButtonToolbar";
