@@ -1,14 +1,29 @@
 #!/bin/bash
 
-FILE_LIST=~/cromite/tools/under-control/file_list.txt
-OUTPUT_DIR=~/cromite/tools/under-control/src/
+# FILE_LIST=/home/lg/working_dir/file_list.txt
+# OUTPUT_DIR=~/cromite/tools/under-control/src/
 
 if [ -z "$CHR_SOURCE_DIR" ]; then
    echo "CHR_SOURCE_DIR is empty"
     exit 1
 fi
 
+if [ -z "$OUTPUT_DIR" ]; then
+   echo "OUTPUT_DIR is empty"
+    exit 1
+fi
+
+if [ -z "$FILE_LIST" ]; then
+   echo "FILE_LIST is empty"
+    exit 1
+fi
+
+mkdir -p $OUTPUT_DIR
+
 pushd $CHR_SOURCE_DIR > /dev/null
+
+echo Getting files
+cat $FILE_LIST
 
 cat $FILE_LIST | while read current_file
 do
@@ -36,5 +51,4 @@ do
 
 done
 
-cp ~/cromite/build/RELEASE $OUTPUT_DIR
 popd > /dev/null
