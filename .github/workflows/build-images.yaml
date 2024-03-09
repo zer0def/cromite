@@ -125,7 +125,7 @@ jobs:
           cd cromite
           RELEASE=$(cat build/RELEASE)
 
-          cd cromite/tools/under-control
+          cd tools/under-control
           test -f src/RELEASE || mkdir -p src && echo . >src/RELEASE
 
           DO_UPDATE=0
