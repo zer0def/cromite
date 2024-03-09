@@ -134,14 +134,14 @@ jobs:
               DO_UPDATE=1
             fi
 
-          elif [ "$RELEASE" != $(CAT src/RELEASE)" ]; then
+          elif [ "$RELEASE" != "$(CAT src/RELEASE)" ]; then
             DO_UPDATE=1
             NEW_VERSION=$RELEASE
           fi
 
           if [[ DO_UPDATE -eq 1 ]]; then
             test -d src && rm -rf src
-            docker build --no-cache --progress=plain -o . .
+            docker build --no-cache --progress=plain --build-arg "TAG=$NEW_VERSION" -o . .
             echo $NEW_VERSION >src/RELEASE
           fi
 

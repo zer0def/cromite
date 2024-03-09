@@ -1,4 +1,5 @@
-FROM uazo/chromium:122.0.6261.111 AS source
+ARG TAG=latest
+FROM uazo/chromium:${TAG} AS source
 
 ENV CHR_SOURCE_DIR=/home/lg/working_dir/chromium/src/
 ENV OUTPUT_DIR=/home/lg/working_dir/out/
