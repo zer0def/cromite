@@ -37,10 +37,10 @@ jobs:
       - name: Reclaiming disk space on / by removing dotnet/android/ghc
         #if: ${{ github.event.inputs.type == '' }}
         run: |
-          sudo rm -rf /usr/share/dotnet
-          sudo rm -rf /usr/local/lib/android
-          sudo rm -rf /opt/ghc
-          sudo rm -rf /opt/hostedtoolcache/CodeQL
+          test -d /usr/share/dotnet && sudo rm -rf /usr/share/dotnet
+          test -d /usr/local/lib/android && sudo rm -rf /usr/local/lib/android
+          test -d /opt/ghc && sudo rm -rf /opt/ghc
+          test -d /opt/hostedtoolcache/CodeQL && sudo rm -rf /opt/hostedtoolcache/CodeQL
           sudo apt-get remove google-cloud-cli azure-cli google-chrome-stable \
                        firefox mysql-server-core-8.0 mono-devel podman \
                        powershell
