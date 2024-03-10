@@ -141,7 +141,7 @@ jobs:
 
           if [[ DO_UPDATE -eq 1 ]]; then
             test -d src && rm -rf src
-            docker build --no-cache --progress=plain --build-arg "TAG=$NEW_VERSION" -o . .
+            docker build --progress=plain --build-arg "TAG=$NEW_VERSION" -o . .
             echo $NEW_VERSION >src/RELEASE
           fi
 
