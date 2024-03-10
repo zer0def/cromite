@@ -43,7 +43,7 @@ jobs:
           test -d /opt/hostedtoolcache/CodeQL && sudo rm -rf /opt/hostedtoolcache/CodeQL
           sudo apt-get remove google-cloud-cli azure-cli google-chrome-stable \
                        firefox mysql-server-core-8.0 mono-devel podman \
-                       powershell
+                       powershell || true
           sudo apt-get autoremove
 
       - name: Enable proxy on container
