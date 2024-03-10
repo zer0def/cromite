@@ -126,7 +126,6 @@ jobs:
           RELEASE=$(cat build/RELEASE)
 
           cd tools/under-control
-          test -f src/RELEASE || mkdir -p src && echo . >src/RELEASE
 
           DO_UPDATE=0
           if [ -n "$NEW_VERSION" ]; then
@@ -134,7 +133,7 @@ jobs:
               DO_UPDATE=1
             fi
 
-          elif [ "$RELEASE" != "$(CAT src/RELEASE)" ]; then
+          elif [ "$RELEASE" != "$(cat src/RELEASE)" ]; then
             DO_UPDATE=1
             NEW_VERSION=$RELEASE
           fi
