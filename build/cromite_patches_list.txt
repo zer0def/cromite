@@ -282,6 +282,7 @@ Disable-Compose-feature.patch
 Disable-offline-autofetch-flag.patch
 Enable-percent-based-scrolling-on-Windows.patch
 Show-NTP-at-startup.patch
+Enable-platform-aac-audio-and-h264-video.patch
 
 Temp-PerformanceNavigationTiming-privacy-fix.patch
 Temp-disable-predictive-back-gesture.patch
