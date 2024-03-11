@@ -76,7 +76,7 @@ jobs:
           add-paths: |
             build/patches/*.patch
           commit-message: 'AUTOMATED - update patch docs'
-          title: Git apply result for ${{ env.BRANCH }} branch
+          title: Generate patches doc for ${{ env.BRANCH }} branch
           body: ${{ env.MESSAGE }}
           delete-branch: true
           branch-suffix: short-commit-hash
