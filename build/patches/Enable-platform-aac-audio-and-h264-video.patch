@@ -2,6 +2,11 @@ From: uazo <uazo@users.noreply.github.com>
 Date: Wed, 6 Mar 2024 12:05:52 +0000
 Subject: Enable platform aac audio and h264 video
 
+Allows the activation in android and windows of aac and
+h264 decoding via the s.o. libraries, replacing ffmpeg which does
+not have the necessary licences.
+
+Context: https://github.com/uazo/cromite/pull/856
 License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
  media/BUILD.gn                                      |  2 ++
