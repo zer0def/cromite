@@ -93,37 +93,10 @@ you can activate the 'RendererAppContainer' flag from the command line with
   --enable-features=RendererAppContainer
 ```
 
-## (TODO) Integrity and authenticity
+# Docs
+- [How to build](https://github.com/uazo/cromite/blob/master/docs/HOW_TO_BUILD.md)
 
-You can verify the integrity of a downloaded APK file from this project with any `sha256sum`-compatible tool by downloading the corresponding `brm_X.Y.Z.sha256.txt` or `chr_X.Y.Z.sha256.txt` file, where X.Y.Z is the release version number. Example:
-```
-$ sha256sum --check brm_68.0.3440.54.sha256.txt
-arm64_SystemWebView.apk: OK
-arm64_ChromePublic.apk: OK
-arm64_ChromeModernPublic.apk: OK
-```
-
-You can verify authenticity, e.g. that the author ([csagan5](https://github.com/csagan5)) released the file, by using gpg2:
-```
-$ gpg2 --quiet --verify brm_68.0.3440.54.sha256.txt.asc
-gpg: assuming signed data in 'brm_68.0.3440.54.sha256.txt'
-gpg: Signature made Sun 08 Jul 2018 04:22:52 PM CEST using RSA key ID D85DC0C5
-gpg: Good signature from "csagan5 <32685696+csagan5@users.noreply.github.com>"
-```
-
-You can download csagan5's public GnuPG key from here: [csagan5.asc](./csagan5.asc).
-
-# (TODO) How to build
-
-The [Bromite main repository](https://github.com/bromite/bromite) contains tags for each corresponding Chromium release (see https://chromium.googlesource.com/chromium/src.git).
-
-Please refer to [official Chromium build documentation](https://www.chromium.org/developers/how-tos/get-the-code) to get started on how to build Chromium; if you can build Chromium for Android, you can build Bromite.
-
-The Chromium version tag used as base for the patches is available here: [RELEASE](./build/RELEASE); this is always corresponding to the git tag for every release.
-The GN args used to build Bromite are available here: [bromite.gn_args](./build/bromite.gn_args).
-The patches are to be applied second the order specified in the `bromite_patches_list.txt` file (you can use `git am`).
-
-# (TODO) Contributing
+# Contributing
 
 Please submit issues following the issue template; beware that GitHub does not display the templates from mobile.
 
