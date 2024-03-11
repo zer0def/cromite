@@ -31,13 +31,14 @@ Cromite's goal is to
 
 In addition, Cromite would like to promote greater integration with other non-profit, open source browsers, encouraging closer collaboration with others, and attempt to integrate them directly into Chromium once they have reached an appropriate level of maturity.
 
-# Features
-see [Features](https://github.com/uazo/cromite/blob/master/FEATURES.md)
-
 # Privacy limitations
 
 Cromite's privacy features, including anti-fingerprinting mitigations (which are not comprehensive), **are not to be considered useful for journalists and people living in countries with freedom limitations**, please look at [Tor Browser](https://www.torproject.org/download/) in such cases.
 Please note that this project is not free of bugs and that changing the behaviour of a browser can be risky and not without problems.
+
+# Docs
+- [Features](https://github.com/uazo/cromite/blob/master/docs/FEATURES.md)
+- [How to build](https://github.com/uazo/cromite/blob/master/docs/HOW_TO_BUILD.md)
 
 # Releases
 
@@ -92,9 +93,6 @@ you can activate the 'RendererAppContainer' flag from the command line with
 ```
   --enable-features=RendererAppContainer
 ```
-
-# Docs
-- [How to build](https://github.com/uazo/cromite/blob/master/docs/HOW_TO_BUILD.md)
 
 # Contributing
 
