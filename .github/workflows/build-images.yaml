@@ -123,7 +123,7 @@ jobs:
         shell: bash
         run: |
           cd cromite
-          RELEASE=$(cat build/RELEASE)
+          RELEASE=$(cat build/RELEASE | xargs)
 
           cd tools/under-control
 
@@ -133,7 +133,7 @@ jobs:
               DO_UPDATE=1
             fi
 
-          elif [ "$RELEASE" != "$(cat src/RELEASE)" ]; then
+          elif [ "$RELEASE" != "$(cat src/RELEASE | xargs)" ]; then
             DO_UPDATE=1
             NEW_VERSION=$RELEASE
           fi
