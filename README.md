@@ -12,8 +12,6 @@
 </a>
 <br>
 
-### **** the documentation is a Work in progress (not the browser :) ****
-
 Cromite is a [Chromium](https://www.chromium.org/Home) fork based on [Bromite](https://github.com/bromite/bromite) with built-in support for ad blocking and an eye for privacy.
 
 Cromite is available for Android arm64-v8a, arm32-v7a and x86_64, Nougat and above (Minimum v7.0, API level 24), Windows and Linux 64bit.
@@ -113,11 +111,9 @@ For any usage or development discussion please use GitHub Discussions: https://g
   * [Inox patchset](https://github.com/gcarq/inox-patchset) for some patches (via ungoogled-chromium)
   * [Brave Browser](https://github.com/brave/brave-core) for some patches
 
-# (TODO) License
+# License
 
-The patches published as part of the Bromite project are released under [GNU GPL v3](./LICENSE).
-
-[version-image]: https://img.shields.io/github/release/bromite/bromite.svg?style=flat-square
-[version-url]: https://github.com/bromite/bromite/releases/latest
-[license-image]: https://img.shields.io/github/license/bromite/bromite.svg
-[license-url]: https://github.com/bromite/bromite/blob/master/LICENSE
+Cromite is published under [GNU GPL v3](./LICENSE).
+The patches published as part of the Bromite project are released under GNU GPL v3 only.
+Cromite specific patches are under the GNU GPL-2+ licence.
+Each individual patch contains specific information on the licence used.
