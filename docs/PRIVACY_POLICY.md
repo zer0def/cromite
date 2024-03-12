@@ -104,6 +104,8 @@ Browser Sign In and sync is disabled and cannot be re-enabled. X-Chrome-Connecte
 #### AUTOFILL AND PASSWORD MANAGEMENT
 Autofill and Password Management are only local feature: Cromite does not send any information externally.
 
+In android, Cromite uses the native Autofill framework by default, effectively sending the url of the page you are browsing to the application you chose. Sending this information is mandatory to the protocol. You can turn off support through settings.
+
 #### PAYMENTS
 Cromite supports the PaymentRequest API (disabled by default) by allowing you to pay for purchases with credit cards. Information is not shared with the merchant until you agree.
 
