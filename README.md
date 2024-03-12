@@ -35,6 +35,7 @@ Cromite's privacy features, including anti-fingerprinting mitigations (which are
 Please note that this project is not free of bugs and that changing the behaviour of a browser can be risky and not without problems.
 
 # Docs
+- [Privacy Policy](https://github.com/uazo/cromite/blob/master/docs/PRIVACY_POLICY.md)
 - [Features](https://github.com/uazo/cromite/blob/master/docs/FEATURES.md)
 - [How to build](https://github.com/uazo/cromite/blob/master/docs/HOW_TO_BUILD.md)
 - [Patch list](https://github.com/uazo/cromite/blob/master/docs/PATCHES.md)
