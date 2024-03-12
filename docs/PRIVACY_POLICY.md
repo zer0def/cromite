@@ -99,7 +99,7 @@ Translate is disabled and cannot be re-enabled.
 Image Descriptions for screen reader users is disabled and cannot be re-enabled.
 
 #### BROWSER SIGN IN AND SYNC
-Browser Sign In and sync is disabled and cannot be re-enabled. X-Chrome-Connected header is never sent. Google FLOC and Privacy Sandbox are disabled and cannot be re-enabled.
+Browser Sign In and sync is disabled and cannot be re-enabled. X-Chrome-Connected header is never sent. Google FLOC and Privacy Sandbox are disabled and cannot be re-enabled. No special api is granted to account.google.com
 
 #### AUTOFILL AND PASSWORD MANAGEMENT
 Autofill and Password Management are only local feature: Cromite does not send any information externally.
