@@ -139,6 +139,10 @@ jobs:
           fi
 
           if [[ DO_UPDATE -eq 1 ]]; then
+            echo "Found new version $NEW_VERSION"
+            echo "Under control: $(cat src/RELEASE | xargs)"
+            echo "Current: $RELEASE"
+
             test -d src && rm -rf src
             docker build --progress=plain --build-arg "TAG=$NEW_VERSION" -o . .
             echo $NEW_VERSION >src/RELEASE
