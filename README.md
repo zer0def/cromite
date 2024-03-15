@@ -67,7 +67,7 @@ ChromiumUpdateUrl=https://github.com/uazo/cromite/releases/latest/download/updat
 # Command line for Chromium (string):
 # note --user-data-dir= works better if path is absolute
 # See here: http://peter.sh/experiments/chromium-command-line-switches/
-ChromiumCommandLine=--user-data-dir=".\User Data" --no-default-browser-check
+ChromiumCommandLine=--user-data-dir="C:\Users\<my user>\AppData\Local\Chromium\User Data" --no-default-browser-check
 
 # to enable full logging in c:\temp\log.txt (daily rotate, no automatic deletion)
 # ChromiumCommandLine=--enable-logging --v=0 --log-file=C:\temp\log.txt --user-data-dir=".\User Data" --no-default-browser-check
@@ -79,6 +79,7 @@ ChromiumBinary=chrome.exe
 # Relative (to chrlauncher directory) or full path (env. variables supported).
 ChromiumDirectory=.\bin
 ```
+To prevent deletion by Microsoft Defender each time the browser is updated, check the `user-data-dir` folder by modifying it accordingly.
 
 ### Enable network process sandbox in windows
 I don't include any setups because I don't like the experience of not knowing what they do, so you must manually run this command on first installation:
