@@ -194,7 +194,7 @@ diff --git a/chrome/browser/metrics/chrome_feature_list_creator.cc b/chrome/brow
 diff --git a/chrome/browser/policy/chrome_browser_policy_connector.cc b/chrome/browser/policy/chrome_browser_policy_connector.cc
 --- a/chrome/browser/policy/chrome_browser_policy_connector.cc
 +++ b/chrome/browser/policy/chrome_browser_policy_connector.cc
-@@ -158,9 +158,6 @@ bool ChromeBrowserPolicyConnector::HasMachineLevelPolicies() {
+@@ -161,9 +161,6 @@ bool ChromeBrowserPolicyConnector::HasMachineLevelPolicies() {
      return true;
    }
  #endif  // !BUILDFLAG(IS_CHROMEOS_ASH)
@@ -207,7 +207,7 @@ diff --git a/chrome/browser/policy/chrome_browser_policy_connector.cc b/chrome/b
 diff --git a/chrome/browser/policy/configuration_policy_handler_list_factory.cc b/chrome/browser/policy/configuration_policy_handler_list_factory.cc
 --- a/chrome/browser/policy/configuration_policy_handler_list_factory.cc
 +++ b/chrome/browser/policy/configuration_policy_handler_list_factory.cc
-@@ -2105,9 +2105,9 @@ bool AreFuturePoliciesEnabledByDefault() {
+@@ -2155,9 +2155,9 @@ bool AreFuturePoliciesEnabledByDefault() {
    if (base::CommandLine::ForCurrentProcess()->HasSwitch(switches::kTestType)) {
      return true;
    }
@@ -223,7 +223,7 @@ diff --git a/chrome/browser/policy/configuration_policy_handler_list_factory.cc 
 diff --git a/chrome/browser/signin/account_consistency_mode_manager.cc b/chrome/browser/signin/account_consistency_mode_manager.cc
 --- a/chrome/browser/signin/account_consistency_mode_manager.cc
 +++ b/chrome/browser/signin/account_consistency_mode_manager.cc
-@@ -164,7 +164,7 @@ void AccountConsistencyModeManager::SetIgnoreMissingOAuthClientForTesting() {
+@@ -167,7 +167,7 @@ void AccountConsistencyModeManager::SetIgnoreMissingOAuthClientForTesting() {
  // static
  bool AccountConsistencyModeManager::ShouldBuildServiceForProfile(
      Profile* profile) {
@@ -232,7 +232,7 @@ diff --git a/chrome/browser/signin/account_consistency_mode_manager.cc b/chrome/
  }
  
  AccountConsistencyMethod
-@@ -202,7 +202,8 @@ AccountConsistencyModeManager::ComputeAccountConsistencyMethod(
+@@ -205,7 +205,8 @@ AccountConsistencyModeManager::ComputeAccountConsistencyMethod(
  #endif
  
  #if BUILDFLAG(ENABLE_MIRROR)
@@ -242,7 +242,7 @@ diff --git a/chrome/browser/signin/account_consistency_mode_manager.cc b/chrome/
  #endif
  
  #if BUILDFLAG(ENABLE_DICE_SUPPORT)
-@@ -212,7 +213,7 @@ AccountConsistencyModeManager::ComputeAccountConsistencyMethod(
+@@ -215,7 +216,7 @@ AccountConsistencyModeManager::ComputeAccountConsistencyMethod(
      return AccountConsistencyMethod::kDisabled;
    }
  
@@ -264,7 +264,7 @@ diff --git a/chrome/browser/signin/account_consistency_mode_manager_factory.cc b
 diff --git a/chrome/browser/signin/bound_session_credentials/throttled_gaia_auth_fetcher.cc b/chrome/browser/signin/bound_session_credentials/throttled_gaia_auth_fetcher.cc
 --- a/chrome/browser/signin/bound_session_credentials/throttled_gaia_auth_fetcher.cc
 +++ b/chrome/browser/signin/bound_session_credentials/throttled_gaia_auth_fetcher.cc
-@@ -12,6 +12,7 @@
+@@ -13,6 +13,7 @@
  #include "net/cookies/cookie_util.h"
  #include "services/network/public/cpp/shared_url_loader_factory.h"
  #include "services/network/public/mojom/fetch_api.mojom-shared.h"
@@ -272,7 +272,7 @@ diff --git a/chrome/browser/signin/bound_session_credentials/throttled_gaia_auth
  
  ThrottledGaiaAuthFetcher::ThrottledGaiaAuthFetcher(
      GaiaAuthConsumer* consumer,
-@@ -38,6 +39,7 @@ void ThrottledGaiaAuthFetcher::CreateAndStartGaiaFetcher(
+@@ -39,6 +40,7 @@ void ThrottledGaiaAuthFetcher::CreateAndStartGaiaFetcher(
      const GURL& gaia_gurl,
      network::mojom::CredentialsMode credentials_mode,
      const net::NetworkTrafficAnnotationTag& traffic_annotation) {
@@ -280,7 +280,7 @@ diff --git a/chrome/browser/signin/bound_session_credentials/throttled_gaia_auth
    if ((IsListAccountsUrl(gaia_gurl) || IsMultiloginUrl(gaia_gurl)) &&
        credentials_mode == network::mojom::CredentialsMode::kInclude &&
        GoogleURLLoaderThrottle::ShouldDeferRequestForBoundSession(
-@@ -53,6 +55,7 @@ void ThrottledGaiaAuthFetcher::CreateAndStartGaiaFetcher(
+@@ -54,6 +56,7 @@ void ThrottledGaiaAuthFetcher::CreateAndStartGaiaFetcher(
    GaiaAuthFetcher::CreateAndStartGaiaFetcher(body, body_content_type, headers,
                                               gaia_gurl, credentials_mode,
                                               traffic_annotation);
@@ -288,15 +288,15 @@ diff --git a/chrome/browser/signin/bound_session_credentials/throttled_gaia_auth
  }
  
  void ThrottledGaiaAuthFetcher::OnGaiaFetcherResumedOrCancelled(
-@@ -63,6 +66,7 @@ void ThrottledGaiaAuthFetcher::OnGaiaFetcherResumedOrCancelled(
-     network::mojom::CredentialsMode credentials_mode,
+@@ -65,6 +68,7 @@ void ThrottledGaiaAuthFetcher::OnGaiaFetcherResumedOrCancelled(
      const net::NetworkTrafficAnnotationTag& traffic_annotation,
-     BoundSessionRequestThrottledHandler::UnblockAction unblock_action) {
+     BoundSessionRequestThrottledHandler::UnblockAction unblock_action,
+     chrome::mojom::ResumeBlockedRequestsTrigger resume_trigger) {
 +#if BUILDFLAG(ENABLE_BOUND_SESSION_CREDENTIALS)
    switch (unblock_action) {
      case BoundSessionRequestThrottledHandler::UnblockAction::kResume:
        GaiaAuthFetcher::CreateAndStartGaiaFetcher(
-@@ -74,4 +78,5 @@ void ThrottledGaiaAuthFetcher::OnGaiaFetcherResumedOrCancelled(
+@@ -76,4 +80,5 @@ void ThrottledGaiaAuthFetcher::OnGaiaFetcherResumedOrCancelled(
                               /*response_code=*/0);
        break;
    }
@@ -305,7 +305,7 @@ diff --git a/chrome/browser/signin/bound_session_credentials/throttled_gaia_auth
 diff --git a/chrome/browser/signin/chrome_signin_client.cc b/chrome/browser/signin/chrome_signin_client.cc
 --- a/chrome/browser/signin/chrome_signin_client.cc
 +++ b/chrome/browser/signin/chrome_signin_client.cc
-@@ -228,7 +228,9 @@ void ChromeSigninClient::DoFinalInit() {
+@@ -232,7 +232,9 @@ void ChromeSigninClient::DoFinalInit() {
  bool ChromeSigninClient::ProfileAllowsSigninCookies(Profile* profile) {
    scoped_refptr<content_settings::CookieSettings> cookie_settings =
        CookieSettingsFactory::GetForProfile(profile);
@@ -316,7 +316,7 @@ diff --git a/chrome/browser/signin/chrome_signin_client.cc b/chrome/browser/sign
  }
  
  PrefService* ChromeSigninClient::GetPrefs() {
-@@ -347,6 +349,9 @@ bool ChromeSigninClient::AreNetworkCallsDelayed() {
+@@ -355,6 +357,9 @@ bool ChromeSigninClient::AreNetworkCallsDelayed() {
  }
  
  void ChromeSigninClient::DelayNetworkCall(base::OnceClosure callback) {
@@ -329,7 +329,7 @@ diff --git a/chrome/browser/signin/chrome_signin_client.cc b/chrome/browser/sign
 diff --git a/chrome/browser/ui/webui/policy/policy_ui_handler.cc b/chrome/browser/ui/webui/policy/policy_ui_handler.cc
 --- a/chrome/browser/ui/webui/policy/policy_ui_handler.cc
 +++ b/chrome/browser/ui/webui/policy/policy_ui_handler.cc
-@@ -23,6 +23,7 @@
+@@ -24,6 +24,7 @@
  #include "base/memory/raw_ptr.h"
  #include "base/memory/weak_ptr.h"
  #include "base/notreached.h"
@@ -337,7 +337,7 @@ diff --git a/chrome/browser/ui/webui/policy/policy_ui_handler.cc b/chrome/browse
  #include "base/strings/utf_string_conversions.h"
  #include "base/task/task_traits.h"
  #include "base/task/thread_pool.h"
-@@ -65,6 +66,7 @@
+@@ -67,6 +68,7 @@
  #include "components/policy/core/common/policy_details.h"
  #include "components/policy/core/common/policy_logger.h"
  #include "components/policy/core/common/policy_pref_names.h"
@@ -345,7 +345,7 @@ diff --git a/chrome/browser/ui/webui/policy/policy_ui_handler.cc b/chrome/browse
  #include "components/policy/core/common/policy_scheduler.h"
  #include "components/policy/core/common/policy_types.h"
  #include "components/policy/core/common/remote_commands/remote_commands_service.h"
-@@ -177,6 +179,10 @@ void PolicyUIHandler::RegisterMessages() {
+@@ -183,6 +185,10 @@ void PolicyUIHandler::RegisterMessages() {
        "exportPoliciesJSON",
        base::BindRepeating(&PolicyUIHandler::HandleExportPoliciesJson,
                            base::Unretained(this)));
@@ -356,7 +356,7 @@ diff --git a/chrome/browser/ui/webui/policy/policy_ui_handler.cc b/chrome/browse
    web_ui()->RegisterMessageCallback(
        "listenPoliciesUpdates",
        base::BindRepeating(&PolicyUIHandler::HandleListenPoliciesUpdates,
-@@ -408,8 +414,102 @@ void PolicyUIHandler::SendPolicies() {
+@@ -427,8 +433,102 @@ void PolicyUIHandler::SendPolicies() {
        "policies-updated",
        base::Value(
            policy_value_and_status_aggregator_->GetAggregatedPolicyNames()),
@@ -464,7 +464,7 @@ diff --git a/chrome/browser/ui/webui/policy/policy_ui_handler.cc b/chrome/browse
 diff --git a/chrome/browser/ui/webui/policy/policy_ui_handler.h b/chrome/browser/ui/webui/policy/policy_ui_handler.h
 --- a/chrome/browser/ui/webui/policy/policy_ui_handler.h
 +++ b/chrome/browser/ui/webui/policy/policy_ui_handler.h
-@@ -50,6 +50,8 @@ class PolicyUIHandler
+@@ -54,6 +54,8 @@ class PolicyUIHandler : public content::WebUIMessageHandler,
  
   private:
    void HandleExportPoliciesJson(const base::Value::List& args);
@@ -476,7 +476,7 @@ diff --git a/chrome/browser/ui/webui/policy/policy_ui_handler.h b/chrome/browser
 diff --git a/components/browser_ui/strings/android/browser_ui_strings.grd b/components/browser_ui/strings/android/browser_ui_strings.grd
 --- a/components/browser_ui/strings/android/browser_ui_strings.grd
 +++ b/components/browser_ui/strings/android/browser_ui_strings.grd
-@@ -384,7 +384,7 @@
+@@ -381,7 +381,7 @@
  
        <!-- Settings UI -->
        <message name="IDS_MANAGED_BY_YOUR_ORGANIZATION" desc="Popup message when the user clicks a UI element that has been disabled by enterprise policy.">
@@ -488,7 +488,7 @@ diff --git a/components/browser_ui/strings/android/browser_ui_strings.grd b/comp
 diff --git a/components/commerce/core/commerce_feature_list.cc b/components/commerce/core/commerce_feature_list.cc
 --- a/components/commerce/core/commerce_feature_list.cc
 +++ b/components/commerce/core/commerce_feature_list.cc
-@@ -55,56 +55,6 @@ const CountryLocaleMap& GetAllowedCountryToLocaleMap() {
+@@ -56,56 +56,6 @@ const CountryLocaleMap& GetAllowedCountryToLocaleMap() {
    return *allowed_map;
  }
  
@@ -545,7 +545,7 @@ diff --git a/components/commerce/core/commerce_feature_list.cc b/components/comm
  }  // namespace
  
  namespace switches {
-@@ -304,6 +254,16 @@ const char kParcelTrackingTestDataParamDelivered[] = "Delivered";
+@@ -308,6 +258,16 @@ const char kParcelTrackingTestDataParamDelivered[] = "Delivered";
  const char kParcelTrackingTestDataParamInProgress[] = "InProgress";
  const char kParcelTrackingTestDataParamOutForDelivery[] = "OutForDelivery";
  
@@ -562,7 +562,7 @@ diff --git a/components/commerce/core/commerce_feature_list.cc b/components/comm
  // Params for Discount Consent V2 in the NTP Cart module.
  const char kNtpChromeCartModuleDiscountConsentNtpVariationParam[] =
      "discount-consent-ntp-variation";
-@@ -429,11 +389,11 @@ bool IsPartnerMerchant(const GURL& url) {
+@@ -433,11 +393,11 @@ bool IsPartnerMerchant(const GURL& url) {
  }
  
  bool IsRuleDiscountPartnerMerchant(const GURL& url) {
@@ -576,7 +576,7 @@ diff --git a/components/commerce/core/commerce_feature_list.cc b/components/comm
  }
  
  bool IsCartDiscountFeatureEnabled() {
-@@ -516,6 +476,7 @@ base::TimeDelta GetDiscountFetchDelay() {
+@@ -520,6 +480,7 @@ base::TimeDelta GetDiscountFetchDelay() {
  }
  
  bool IsNoDiscountMerchant(const GURL& url) {
@@ -773,7 +773,7 @@ diff --git a/components/policy/core/common/policy_loader_command_line.cc b/compo
 diff --git a/components/policy/core/common/policy_pref_names.cc b/components/policy/core/common/policy_pref_names.cc
 --- a/components/policy/core/common/policy_pref_names.cc
 +++ b/components/policy/core/common/policy_pref_names.cc
-@@ -97,6 +97,9 @@ const char kReadAloudEnabled[] = "policy.read_aloud_enabled";
+@@ -94,6 +94,9 @@ const char kReadAloudEnabled[] = "policy.read_aloud_enabled";
  const char kUserAgentClientHintsGREASEUpdateEnabled[] =
      "policy.user_agent_client_hints_grease_update_enabled";
  
@@ -786,7 +786,7 @@ diff --git a/components/policy/core/common/policy_pref_names.cc b/components/pol
 diff --git a/components/policy/core/common/policy_pref_names.h b/components/policy/core/common/policy_pref_names.h
 --- a/components/policy/core/common/policy_pref_names.h
 +++ b/components/policy/core/common/policy_pref_names.h
-@@ -51,6 +51,7 @@ extern const char kUrlAllowlist[];
+@@ -50,6 +50,7 @@ extern const char kUrlAllowlist[];
  extern const char kUserPolicyRefreshRate[];
  extern const char kIntensiveWakeUpThrottlingEnabled[];
  extern const char kUserAgentClientHintsGREASEUpdateEnabled[];
@@ -881,7 +881,7 @@ diff --git a/components/policy/resources/webui/policy_row.ts b/components/policy
      this.setAttribute('role', 'rowgroup');
      this.classList.add('policy-data');
    }
-@@ -94,6 +98,9 @@ export class PolicyRowElement extends CustomElement {
+@@ -93,6 +97,9 @@ export class PolicyRowElement extends CustomElement {
        this.toggleAttribute('no-help-link', true);
      }
  
@@ -891,7 +891,7 @@ diff --git a/components/policy/resources/webui/policy_row.ts b/components/policy
      // Populate the remaining columns with policy scope, level and value if a
      // value has been set. Otherwise, leave them blank.
      if (!this.unset_) {
-@@ -226,6 +233,11 @@ export class PolicyRowElement extends CustomElement {
+@@ -224,6 +231,11 @@ export class PolicyRowElement extends CustomElement {
      }
    }
  
@@ -906,7 +906,7 @@ diff --git a/components/policy/resources/webui/policy_row.ts b/components/policy
 diff --git a/components/policy_strings.grdp b/components/policy_strings.grdp
 --- a/components/policy_strings.grdp
 +++ b/components/policy_strings.grdp
-@@ -633,8 +633,8 @@ Additional details:
+@@ -636,8 +636,8 @@ Additional details:
    <message name="IDS_POLICY_SOURCE_DEFAULT" desc="Indicates that a policy is set by default and can be overridden.">
      Default
    </message>

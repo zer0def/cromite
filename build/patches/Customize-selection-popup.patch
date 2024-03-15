@@ -20,7 +20,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java b/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java
-@@ -723,10 +723,17 @@ public class ChromeTabbedActivity extends ChromeActivity<ChromeActivityComponent
+@@ -737,10 +737,17 @@ public class ChromeTabbedActivity extends ChromeActivity<ChromeActivityComponent
                                  @TabLaunchType int type,
                                  @TabCreationState int creationState,
                                  boolean markedForSelection) {
@@ -78,7 +78,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ui/RootUiCoordi
  import org.chromium.base.TraceEvent;
  import org.chromium.base.metrics.RecordUserAction;
  import org.chromium.base.supplier.ObservableSupplier;
-@@ -805,11 +806,16 @@ public class RootUiCoordinator
+@@ -814,11 +815,16 @@ public class RootUiCoordinator
                              TrackerFactory.getTrackerForProfile(tab.getProfile())
                                      .notifyEvent(EventConstants.WEB_SEARCH_PERFORMED);
  

@@ -435,7 +435,7 @@ diff --git a/DEPS b/DEPS
    # By default, do not check out WebKit for iOS, as it is not needed unless
    # running against ToT WebKit rather than system WebKit. This can be overridden
    # e.g. with custom_vars.
-@@ -290,6 +294,8 @@ vars = {
+@@ -292,6 +296,8 @@ vars = {
    'download_libaom_testdata': False,
  
    'android_git': 'https://android.googlesource.com',
@@ -444,7 +444,7 @@ diff --git a/DEPS b/DEPS
    'aomedia_git': 'https://aomedia.googlesource.com',
    'boringssl_git': 'https://boringssl.googlesource.com',
    'chrome_git': 'https://chrome-internal.googlesource.com',
-@@ -501,6 +507,11 @@ vars = {
+@@ -503,6 +509,11 @@ vars = {
    # and whatever else without interference from each other.
    'betocore_revision': '4d202dab960a0b6a6e4757ab4393945aca5a09db',
  
@@ -455,8 +455,8 @@ diff --git a/DEPS b/DEPS
 +
    # If you change this, also update the libc++ revision in
    # //buildtools/deps_revisions.gni.
-   'libcxx_revision':       '28aa23ffb4c7344914a5b4ac7169f12e5a12333f',
-@@ -831,6 +842,10 @@ deps = {
+   'libcxx_revision':       '834e97d73f13a166af65952fb681071eec87a2c4',
+@@ -833,6 +844,10 @@ deps = {
      'condition': 'checkout_android and checkout_src_internal',
    },
  
@@ -465,9 +465,9 @@ diff --git a/DEPS b/DEPS
 +  },
 +
    'src/docs/website': {
-     'url': Var('chromium_git') + '/website.git' + '@' + '7474472013397bdb177cda70099f6411a5bd8212',
+     'url': Var('chromium_git') + '/website.git' + '@' + '12d09e14812d8390213801bb31d08858a3378fcb',
    },
-@@ -936,6 +951,13 @@ deps = {
+@@ -938,6 +953,13 @@ deps = {
        'dep_type': 'cipd',
    },
  
@@ -596,10 +596,10 @@ diff --git a/components/BUILD.gn b/components/BUILD.gn
 +    "//components/adblock/core/converter/serializer:unit_tests",
 +    "//components/adblock/core/converter:unit_tests",
 +    "//components/adblock/core/subscription:unit_tests",
+     "//components/affiliations/core/browser:unit_tests",
      "//components/aggregation_service:unit_tests",
      "//components/apdu:unit_tests",
-     "//components/assist_ranker:unit_tests",
-@@ -416,6 +427,7 @@ test("components_unittests") {
+@@ -411,6 +422,7 @@ test("components_unittests") {
  
    if (use_blink) {
      deps += [
@@ -607,7 +607,7 @@ diff --git a/components/BUILD.gn b/components/BUILD.gn
        "//components/autofill/content/browser:unit_tests",
        "//components/autofill/content/renderer:unit_tests",
        "//components/autofill/core/common/mojom:unit_tests",
-@@ -1162,6 +1174,9 @@ if (use_blink) {
+@@ -1155,6 +1167,9 @@ if (use_blink) {
  
      deps = [
        "//base",
@@ -31368,7 +31368,7 @@ new file mode 100644
 diff --git a/components/resources/BUILD.gn b/components/resources/BUILD.gn
 --- a/components/resources/BUILD.gn
 +++ b/components/resources/BUILD.gn
-@@ -76,6 +76,11 @@ grit("components_resources") {
+@@ -78,6 +78,11 @@ grit("components_resources") {
    if (is_android && safe_browsing_mode == 2) {
      deps += [ "//components/safe_browsing/content/resources/real_time_url_checks_allowlist:make_real_time_url_allowlist_protobuf" ]
    }
@@ -52324,7 +52324,7 @@ diff --git a/content/browser/loader/navigation_url_loader_impl.cc b/content/brow
  #include "content/browser/loader/navigation_url_loader_impl.h"
  
  #include <map>
-@@ -978,7 +982,7 @@ void NavigationURLLoaderImpl::OnReceiveRedirect(
+@@ -999,7 +1003,7 @@ void NavigationURLLoaderImpl::OnReceiveRedirect(
    LogQueueTimeHistogram("Navigation.QueueTime.OnReceiveRedirect",
                          resource_request_->is_outermost_main_frame);
    net::Error error = net::OK;
@@ -52347,7 +52347,7 @@ diff --git a/content/browser/renderer_host/render_frame_host_impl.cc b/content/b
  
  #include "content/browser/renderer_host/render_frame_host_impl.h"
  
-@@ -2631,6 +2635,12 @@ void RenderFrameHostImpl::ExecuteJavaScriptMethod(
+@@ -2646,6 +2650,12 @@ void RenderFrameHostImpl::ExecuteJavaScriptMethod(
        std::move(callback));
  }
  
@@ -52374,7 +52374,7 @@ diff --git a/content/browser/renderer_host/render_frame_host_impl.h b/content/br
  
  #ifndef CONTENT_BROWSER_RENDERER_HOST_RENDER_FRAME_HOST_IMPL_H_
  #define CONTENT_BROWSER_RENDERER_HOST_RENDER_FRAME_HOST_IMPL_H_
-@@ -438,6 +442,10 @@ class CONTENT_EXPORT RenderFrameHostImpl
+@@ -435,6 +439,10 @@ class CONTENT_EXPORT RenderFrameHostImpl
                                 const std::u16string& method_name,
                                 base::Value::List arguments,
                                 JavaScriptResultCallback callback) override;
@@ -52448,7 +52448,7 @@ diff --git a/extensions/browser/api/web_request/web_request_proxying_url_loader_
  #include "extensions/browser/api/web_request/web_request_proxying_url_loader_factory.h"
  
  #include <memory>
-@@ -461,6 +465,7 @@ void WebRequestProxyingURLLoaderFactory::InProgressRequest::OnReceiveRedirect(
+@@ -463,6 +467,7 @@ void WebRequestProxyingURLLoaderFactory::InProgressRequest::OnReceiveRedirect(
        TRACE_EVENT_FLAG_FLOW_IN | TRACE_EVENT_FLAG_FLOW_OUT);
  
    if (redirect_url_ != redirect_info.new_url &&
@@ -52517,7 +52517,7 @@ diff --git a/third_party/blink/public/mojom/frame/frame.mojom b/third_party/blin
  
  module blink.mojom;
  
-@@ -896,6 +900,10 @@ interface LocalFrame {
+@@ -897,6 +901,10 @@ interface LocalFrame {
    // the given point in the view coordinate space.
    PluginActionAt(gfx.mojom.Point location, blink.mojom.PluginActionType action);
  
@@ -52542,7 +52542,7 @@ diff --git a/third_party/blink/public/web/web_document.h b/third_party/blink/pub
  #ifndef THIRD_PARTY_BLINK_PUBLIC_WEB_WEB_DOCUMENT_H_
  #define THIRD_PARTY_BLINK_PUBLIC_WEB_WEB_DOCUMENT_H_
  
-@@ -136,6 +140,14 @@ class BLINK_EXPORT WebDocument : public WebNode {
+@@ -141,6 +145,14 @@ class BLINK_EXPORT WebDocument : public WebNode {
        WebCssOrigin = WebCssOrigin::kAuthor,
        BackForwardCacheAware = BackForwardCacheAware::kAllow);
  
@@ -52571,7 +52571,7 @@ diff --git a/third_party/blink/renderer/core/exported/web_document.cc b/third_pa
  #include "third_party/blink/public/web/web_document.h"
  
  #include "base/memory/scoped_refptr.h"
-@@ -252,6 +256,54 @@ WebStyleSheetKey WebDocument::InsertStyleSheet(
+@@ -263,6 +267,54 @@ WebStyleSheetKey WebDocument::InsertStyleSheet(
    return injection_key;
  }
  
@@ -53149,7 +53149,7 @@ diff --git a/tools/gritsettings/resource_ids.spec b/tools/gritsettings/resource_
  # This file is used to assign starting resource ids for resources and strings
  # used by Chromium.  This is done to ensure that resource ids are unique
  # across all the grd files.  If you are adding a new grd file, please add
-@@ -701,6 +705,10 @@
+@@ -705,6 +709,10 @@
      "META": {"sizes": {"includes": [10]}},
      "includes": [5240],
    },

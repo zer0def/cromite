@@ -31,7 +31,7 @@ diff --git a/chrome/browser/file_system_access/chrome_file_system_access_permiss
 diff --git a/chrome/browser/file_system_access/file_system_access_features.cc b/chrome/browser/file_system_access/file_system_access_features.cc
 --- a/chrome/browser/file_system_access/file_system_access_features.cc
 +++ b/chrome/browser/file_system_access/file_system_access_features.cc
-@@ -26,4 +26,8 @@ BASE_FEATURE(kFileSystemAccessSymbolicLinkCheck,
+@@ -31,4 +31,8 @@ BASE_FEATURE(kFileSystemAccessSymbolicLinkCheck,
               "FileSystemAccessSymbolicLinkCheck",
               base::FEATURE_DISABLED_BY_DEFAULT);
  

@@ -41,7 +41,7 @@ new file mode 100644
 diff --git a/third_party/blink/renderer/core/dom/document.cc b/third_party/blink/renderer/core/dom/document.cc
 --- a/third_party/blink/renderer/core/dom/document.cc
 +++ b/third_party/blink/renderer/core/dom/document.cc
-@@ -4608,6 +4608,14 @@ void Document::ProcessBaseElement() {
+@@ -4745,6 +4745,14 @@ void Document::ProcessBaseElement() {
    KURL base_element_url;
    if (href) {
      String stripped_href = StripLeadingAndTrailingHTMLSpaces(*href);
@@ -56,7 +56,7 @@ diff --git a/third_party/blink/renderer/core/dom/document.cc b/third_party/blink
      if (!stripped_href.empty())
        base_element_url = KURL(FallbackBaseURL(), stripped_href);
    }
-@@ -4625,6 +4633,14 @@ void Document::ProcessBaseElement() {
+@@ -4762,6 +4770,14 @@ void Document::ProcessBaseElement() {
          !GetExecutionContext()->GetSecurityOrigin()->CanRequest(
              base_element_url)) {
        UseCounter::Count(*this, WebFeature::kBaseWithCrossOriginHref);
@@ -71,7 +71,7 @@ diff --git a/third_party/blink/renderer/core/dom/document.cc b/third_party/blink
      }
    }
  
-@@ -4644,6 +4660,8 @@ void Document::ProcessBaseElement() {
+@@ -4781,6 +4797,8 @@ void Document::ProcessBaseElement() {
      if (target->Contains('<'))
        UseCounter::Count(*this, WebFeature::kBaseWithOpenBracketInTarget);
      base_target_ = *target;
@@ -83,7 +83,7 @@ diff --git a/third_party/blink/renderer/core/dom/document.cc b/third_party/blink
 diff --git a/third_party/blink/renderer/core/dom/element.cc b/third_party/blink/renderer/core/dom/element.cc
 --- a/third_party/blink/renderer/core/dom/element.cc
 +++ b/third_party/blink/renderer/core/dom/element.cc
-@@ -2884,8 +2884,26 @@ void Element::StripScriptingAttributes(
+@@ -2794,8 +2794,26 @@ void Element::StripScriptingAttributes(
    attribute_vector.Shrink(destination);
  }
  
@@ -282,7 +282,7 @@ diff --git a/third_party/blink/renderer/core/page/frame_tree.cc b/third_party/bl
  #include "third_party/blink/renderer/core/frame/frame_client.h"
  #include "third_party/blink/renderer/core/frame/local_dom_window.h"
  #include "third_party/blink/renderer/core/frame/local_frame.h"
-@@ -40,6 +43,12 @@ namespace {
+@@ -41,6 +44,12 @@ namespace {
  
  const unsigned kInvalidChildCount = ~0U;
  
@@ -295,7 +295,7 @@ diff --git a/third_party/blink/renderer/core/page/frame_tree.cc b/third_party/bl
  }  // namespace
  
  FrameTree::FrameTree(Frame* this_frame)
-@@ -210,6 +219,19 @@ FrameTree::FindResult FrameTree::FindOrCreateFrameForNavigation(
+@@ -211,6 +220,19 @@ FrameTree::FindResult FrameTree::FindOrCreateFrameForNavigation(
    if (request.GetNavigationPolicy() != kNavigationPolicyCurrentTab)
      return FindResult(current_frame, false);
  
@@ -318,7 +318,7 @@ diff --git a/third_party/blink/renderer/core/page/frame_tree.cc b/third_party/bl
 diff --git a/third_party/blink/renderer/platform/runtime_enabled_features.json5 b/third_party/blink/renderer/platform/runtime_enabled_features.json5
 --- a/third_party/blink/renderer/platform/runtime_enabled_features.json5
 +++ b/third_party/blink/renderer/platform/runtime_enabled_features.json5
-@@ -1530,8 +1530,8 @@
+@@ -1513,8 +1513,8 @@
        // Experiment with preventing some instances of mutation XSS
        // by escaping "<" and ">" in attribute values.
        // See: crbug.com/1175016
@@ -329,7 +329,7 @@ diff --git a/third_party/blink/renderer/platform/runtime_enabled_features.json5 
      },
      {
        name: "EventTimingInteractionCount",
-@@ -2291,6 +2291,12 @@
+@@ -2241,6 +2241,12 @@
        name: "MacFontsDeprecateFontTraitsWorkaround",
        status: "stable",
      },

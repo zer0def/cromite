@@ -168,7 +168,7 @@ diff --git a/chrome/android/java/res/xml/main_preferences.xml b/chrome/android/j
 diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -156,8 +156,6 @@ static_library("browser") {
+@@ -160,8 +160,6 @@ static_library("browser") {
      "adblock/adblock_content_browser_client.h",
      "adblock/adblock_controller_factory.cc",
      "adblock/adblock_controller_factory.h",
@@ -470,7 +470,7 @@ diff --git a/chrome/browser/profiles/chrome_browser_main_extra_parts_profiles.cc
  #include "chrome/browser/adblock/content_security_policy_injector_factory.h"
  #include "chrome/browser/adblock/element_hider_factory.h"
  #include "chrome/browser/adblock/resource_classification_runner_factory.h"
-@@ -824,7 +823,6 @@ void ChromeBrowserMainExtraPartsProfiles::
+@@ -826,7 +825,6 @@ void ChromeBrowserMainExtraPartsProfiles::
    FakeSmartCardDeviceServiceFactory::GetInstance();
  #endif
    adblock::AdblockControllerFactory::GetInstance();
@@ -489,7 +489,7 @@ diff --git a/chrome/browser/resources/settings/BUILD.gn b/chrome/browser/resourc
      "appearance_page/appearance_fonts_page.ts",
      "appearance_page/appearance_page.ts",
      "appearance_page/home_url_input.ts",
-@@ -375,6 +376,7 @@ build_webui("build") {
+@@ -389,6 +390,7 @@ build_webui("build") {
    ts_composite = true
    ts_definitions = [
      "//tools/typescript/definitions/autofill_private.d.ts",
@@ -1026,8 +1026,8 @@ diff --git a/chrome/browser/resources/settings/basic_page/basic_page.ts b/chrome
  import '../ai_page/ai_page.js';
 +import '../adblock_page/adblock_page.js';
  import '../appearance_page/appearance_page.js';
- import '../privacy_page/preloading_page.js';
  import '../privacy_page/privacy_guide/privacy_guide_promo.js';
+ import '../privacy_page/privacy_page.js';
 diff --git a/chrome/browser/resources/settings/page_visibility.ts b/chrome/browser/resources/settings/page_visibility.ts
 --- a/chrome/browser/resources/settings/page_visibility.ts
 +++ b/chrome/browser/resources/settings/page_visibility.ts
@@ -1042,7 +1042,7 @@ diff --git a/chrome/browser/resources/settings/page_visibility.ts b/chrome/brows
 diff --git a/chrome/browser/resources/settings/route.ts b/chrome/browser/resources/settings/route.ts
 --- a/chrome/browser/resources/settings/route.ts
 +++ b/chrome/browser/resources/settings/route.ts
-@@ -196,6 +196,10 @@ function createBrowserSettingsRoutes(): SettingsRoutes {
+@@ -197,6 +197,10 @@ function createBrowserSettingsRoutes(): SettingsRoutes {
      r.FONTS = r.APPEARANCE.createChild('/fonts');
    }
  
@@ -1056,7 +1056,7 @@ diff --git a/chrome/browser/resources/settings/route.ts b/chrome/browser/resourc
 diff --git a/chrome/browser/resources/settings/router.ts b/chrome/browser/resources/settings/router.ts
 --- a/chrome/browser/resources/settings/router.ts
 +++ b/chrome/browser/resources/settings/router.ts
-@@ -13,6 +13,7 @@ import {dedupingMixin, PolymerElement} from 'chrome://resources/polymer/v3_0/pol
+@@ -14,6 +14,7 @@ import {dedupingMixin} from 'chrome://resources/polymer/v3_0/polymer/polymer_bun
   */
  export interface SettingsRoutes {
    ABOUT: Route;
@@ -1101,7 +1101,7 @@ diff --git a/chrome/browser/ui/tab_helpers.cc b/chrome/browser/ui/tab_helpers.cc
  #include "chrome/browser/bookmarks/bookmark_model_factory.h"
  #include "chrome/browser/breadcrumbs/breadcrumb_manager_tab_helper.h"
  #include "chrome/browser/browser_process.h"
-@@ -369,6 +370,8 @@ void TabHelpers::AttachTabHelpers(WebContents* web_contents) {
+@@ -373,6 +374,8 @@ void TabHelpers::AttachTabHelpers(WebContents* web_contents) {
      }
    }
  
@@ -1110,7 +1110,7 @@ diff --git a/chrome/browser/ui/tab_helpers.cc b/chrome/browser/ui/tab_helpers.cc
    AdblockWebContentObserver::CreateForWebContents(
        web_contents,
        adblock::SubscriptionServiceFactory::GetForBrowserContext(
-@@ -377,7 +380,8 @@ void TabHelpers::AttachTabHelpers(WebContents* web_contents) {
+@@ -381,7 +384,8 @@ void TabHelpers::AttachTabHelpers(WebContents* web_contents) {
            web_contents->GetBrowserContext()),
        adblock::SitekeyStorageFactory::GetForBrowserContext(
            web_contents->GetBrowserContext()),
@@ -4389,7 +4389,7 @@ new file mode 100644
 diff --git a/components/resources/BUILD.gn b/components/resources/BUILD.gn
 --- a/components/resources/BUILD.gn
 +++ b/components/resources/BUILD.gn
-@@ -79,7 +79,6 @@ grit("components_resources") {
+@@ -81,7 +81,6 @@ grit("components_resources") {
  
    deps += [
      "//components/resources/adblocking:copy_snippets_lib",
@@ -11986,7 +11986,7 @@ diff --git a/third_party/blink/renderer/core/css/style_engine.h b/third_party/bl
 diff --git a/third_party/blink/renderer/core/exported/web_document.cc b/third_party/blink/renderer/core/exported/web_document.cc
 --- a/third_party/blink/renderer/core/exported/web_document.cc
 +++ b/third_party/blink/renderer/core/exported/web_document.cc
-@@ -276,6 +276,16 @@ WebStyleSheetKey WebDocument::InsertAbpElemhideStylesheet(
+@@ -287,6 +287,16 @@ WebStyleSheetKey WebDocument::InsertAbpElemhideStylesheet(
    Document* document = Unwrap<Document>();
    DCHECK(document);
  
@@ -12003,7 +12003,7 @@ diff --git a/third_party/blink/renderer/core/exported/web_document.cc b/third_pa
    auto* parsed_sheet = MakeGarbageCollected<StyleSheetContents>(
        MakeGarbageCollected<CSSParserContext>(*document));
    parsed_sheet->ParseString(source_code);
-@@ -285,7 +295,7 @@ WebStyleSheetKey WebDocument::InsertAbpElemhideStylesheet(
+@@ -296,7 +306,7 @@ WebStyleSheetKey WebDocument::InsertAbpElemhideStylesheet(
      if (IsValidAbpRule(parsed_sheet->RuleAt(n)))
        ++n;
      else {
@@ -12012,7 +12012,7 @@ diff --git a/third_party/blink/renderer/core/exported/web_document.cc b/third_pa
        parsed_sheet->WrapperDeleteRule(n);
        LOG(WARNING) << "[eyeo] Broken rule";
      }
-@@ -297,9 +307,6 @@ WebStyleSheetKey WebDocument::InsertAbpElemhideStylesheet(
+@@ -308,9 +318,6 @@ WebStyleSheetKey WebDocument::InsertAbpElemhideStylesheet(
          {SchedulingPolicy::DisableBackForwardCache()});
    }
  

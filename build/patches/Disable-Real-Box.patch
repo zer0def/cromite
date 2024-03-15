@@ -13,7 +13,7 @@ Real-box is search box in ntp
 diff --git a/chrome/browser/prefs/browser_prefs.cc b/chrome/browser/prefs/browser_prefs.cc
 --- a/chrome/browser/prefs/browser_prefs.cc
 +++ b/chrome/browser/prefs/browser_prefs.cc
-@@ -2027,7 +2027,7 @@ void RegisterProfilePrefs(user_prefs::PrefRegistrySyncable* registry,
+@@ -2072,7 +2072,7 @@ void RegisterProfilePrefs(user_prefs::PrefRegistrySyncable* registry,
    registry->RegisterBooleanPref(
        prefs::kLensRegionSearchEnabled, true,
        user_prefs::PrefRegistrySyncable::SYNCABLE_PREF);
@@ -25,7 +25,7 @@ diff --git a/chrome/browser/prefs/browser_prefs.cc b/chrome/browser/prefs/browse
 diff --git a/chrome/browser/resources/new_tab_page/app.html b/chrome/browser/resources/new_tab_page/app.html
 --- a/chrome/browser/resources/new_tab_page/app.html
 +++ b/chrome/browser/resources/new_tab_page/app.html
-@@ -403,11 +403,6 @@
+@@ -498,11 +498,6 @@
        hidden$="[[!logoEnabled_]]">
    </ntp-logo>
    <div id="realboxContainer">
@@ -40,7 +40,7 @@ diff --git a/chrome/browser/resources/new_tab_page/app.html b/chrome/browser/res
 diff --git a/chrome/browser/ui/webui/realbox/realbox_handler.cc b/chrome/browser/ui/webui/realbox/realbox_handler.cc
 --- a/chrome/browser/ui/webui/realbox/realbox_handler.cc
 +++ b/chrome/browser/ui/webui/realbox/realbox_handler.cc
-@@ -670,7 +670,7 @@ void RealboxHandler::SetupWebUIDataSource(content::WebUIDataSource* source,
+@@ -672,7 +672,7 @@ void RealboxHandler::SetupWebUIDataSource(content::WebUIDataSource* source,
  
    source->AddBoolean(
        "realboxLensSearch",
@@ -52,7 +52,7 @@ diff --git a/chrome/browser/ui/webui/realbox/realbox_handler.cc b/chrome/browser
 diff --git a/components/search/ntp_features.cc b/components/search/ntp_features.cc
 --- a/components/search/ntp_features.cc
 +++ b/components/search/ntp_features.cc
-@@ -165,7 +165,7 @@ BASE_FEATURE(kNtpHandleMostVisitedNavigationExplicitly,
+@@ -171,7 +171,7 @@ BASE_FEATURE(kNtpHandleMostVisitedNavigationExplicitly,
               base::FEATURE_ENABLED_BY_DEFAULT);
  
  // If enabled, logo will be shown.
@@ -61,7 +61,7 @@ diff --git a/components/search/ntp_features.cc b/components/search/ntp_features.
  
  // If enabled, logo will fill up less vertical space.
  BASE_FEATURE(kNtpReducedLogoSpace,
-@@ -242,8 +242,8 @@ BASE_FEATURE(kNtpMostVisitedReflowOnOverflow,
+@@ -248,8 +248,8 @@ BASE_FEATURE(kNtpMostVisitedReflowOnOverflow,
  
  // If enabled, OneGoogleBar will be shown.
  BASE_FEATURE(kNtpOneGoogleBar,

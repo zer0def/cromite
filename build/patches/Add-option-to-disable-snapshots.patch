@@ -16,7 +16,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabGridViewBinder.java b/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabGridViewBinder.java
 --- a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabGridViewBinder.java
 +++ b/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabGridViewBinder.java
-@@ -323,9 +323,12 @@ class TabGridViewBinder {
+@@ -327,9 +327,12 @@ class TabGridViewBinder {
                          // Adjust bitmap to thumbnail.
                          TabUtils.setBitmapAndUpdateImageMatrix(thumbnail, result, thumbnailSize);
                      } else if (isMostRecentRequest) {
@@ -32,7 +32,7 @@ diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser
                      }
                  };
          if (sThumbnailFetcherForTesting != null) {
-@@ -364,6 +367,7 @@ class TabGridViewBinder {
+@@ -368,6 +371,7 @@ class TabGridViewBinder {
              ViewLookupCachingFrameLayout rootView,
              PropertyModel model,
              TabListFaviconProvider.TabFavicon favicon) {
@@ -53,15 +53,15 @@ diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser
      /** Property for lazily fetching favicons when required by an item in a UI. */
      public static final WritableObjectPropertyKey<TabListFaviconProvider.TabFaviconFetcher>
              FAVICON_FETCHER = new WritableObjectPropertyKey<>();
-@@ -157,6 +160,7 @@ public class TabProperties {
+@@ -160,6 +163,7 @@ public class TabProperties {
                  CARD_TYPE,
                  CONTENT_DESCRIPTION_STRING,
                  CLOSE_BUTTON_DESCRIPTION_STRING,
 +                FAVICON,
                  SHOPPING_PERSISTED_TAB_DATA_FETCHER,
-                 SHOULD_SHOW_PRICE_DROP_TOOLTIP
-             };
-@@ -168,6 +172,7 @@ public class TabProperties {
+                 SHOULD_SHOW_PRICE_DROP_TOOLTIP,
+                 QUICK_DELETE_ANIMATION_STATUS
+@@ -172,6 +176,7 @@ public class TabProperties {
                  TAB_CLOSED_LISTENER,
                  FAVICON_FETCHED,
                  FAVICON_FETCHER,
@@ -87,7 +87,7 @@ diff --git a/chrome/android/java/res/xml/privacy_preferences.xml b/chrome/androi
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActivity.java b/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActivity.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActivity.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActivity.java
-@@ -144,6 +144,7 @@ import org.chromium.chrome.browser.preferences.ChromePreferenceKeys;
+@@ -145,6 +145,7 @@ import org.chromium.chrome.browser.preferences.ChromePreferenceKeys;
  import org.chromium.chrome.browser.preferences.ChromeSharedPreferences;
  import org.chromium.chrome.browser.preferences.Pref;
  import org.chromium.chrome.browser.printing.TabPrinter;
@@ -95,7 +95,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActiv
  import org.chromium.chrome.browser.profiles.Profile;
  import org.chromium.chrome.browser.readaloud.ReadAloudController;
  import org.chromium.chrome.browser.selection.SelectionPopupBackPressHandler;
-@@ -743,7 +744,7 @@ public abstract class ChromeActivity<C extends ChromeActivityComponent>
+@@ -704,7 +705,7 @@ public abstract class ChromeActivity<C extends ChromeActivityComponent>
                      new TabContentManager(
                              this,
                              mBrowserControlsManagerSupplier.get(),
@@ -212,7 +212,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/privacy/setting
 diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chrome/browser/ui/android/strings/android_chrome_strings.grd
 --- a/chrome/browser/ui/android/strings/android_chrome_strings.grd
 +++ b/chrome/browser/ui/android/strings/android_chrome_strings.grd
-@@ -5290,6 +5290,14 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
+@@ -5371,6 +5371,14 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>clear the Chrome da
          Your <ph name="FQDN">%1$s<ex>www.amazon.com</ex></ph> timer ran out. It'll start again tomorrow.
        </message>
  

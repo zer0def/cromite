@@ -3472,7 +3472,7 @@ diff --git a/chrome/browser/extensions/api/settings_private/prefs_util.cc b/chro
  #include "chrome/browser/extensions/api/settings_private/prefs_util.h"
  
  #include <memory>
-@@ -27,6 +31,7 @@
+@@ -28,6 +32,7 @@
  #include "chrome/browser/ssl/generated_https_first_mode_pref.h"
  #include "chrome/common/chrome_features.h"
  #include "chrome/common/pref_names.h"
@@ -3480,8 +3480,8 @@ diff --git a/chrome/browser/extensions/api/settings_private/prefs_util.cc b/chro
  #include "components/autofill/core/common/autofill_prefs.h"
  #include "components/bookmarks/common/bookmark_pref_names.h"
  #include "components/browsing_data/core/pref_names.h"
-@@ -175,6 +180,20 @@ const PrefsUtil::TypedPrefMap& PrefsUtil::GetAllowlistedKeys() {
-     return *s_allowlist;
+@@ -182,6 +187,20 @@ const PrefsUtil::TypedPrefMap& PrefsUtil::GetAllowlistedKeys() {
+   }
    s_allowlist = new PrefsUtil::TypedPrefMap();
  
 +  // Adblock settings
@@ -4146,7 +4146,7 @@ diff --git a/extensions/common/mojom/api_permission_id.mojom b/extensions/common
 diff --git a/tools/metrics/histograms/metadata/extensions/enums.xml b/tools/metrics/histograms/metadata/extensions/enums.xml
 --- a/tools/metrics/histograms/metadata/extensions/enums.xml
 +++ b/tools/metrics/histograms/metadata/extensions/enums.xml
-@@ -750,6 +750,7 @@ Called by update_extension_histograms.py.-->
+@@ -751,6 +751,7 @@ Called by update_extension_histograms.py.-->
    <int value="553" label="PDF_VIEWER_PRIVATE_ON_SAVE"/>
    <int value="554"
        label="ACCESSIBILITY_PRIVATE_ON_SELECT_TO_SPEAK_FOCUS_CHANGED"/>
@@ -4154,7 +4154,7 @@ diff --git a/tools/metrics/histograms/metadata/extensions/enums.xml b/tools/metr
  </enum>
  
  <enum name="ExtensionForceInstalledPreInstalledDeprecatedSite">
-@@ -3093,6 +3094,8 @@ Called by update_extension_permission.py.-->
+@@ -3095,6 +3096,8 @@ Called by update_extension_permission.py.-->
    <int value="255" label="kEnterpriseKioskInput"/>
    <int value="256" label="kOdfsConfigPrivate"/>
    <int value="257" label="kChromeOSManagementAudio"/>

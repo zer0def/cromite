@@ -61,7 +61,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../cr_components/customize_themes/BUILD.gn   |   2 +-
  .../cr_components/help_bubble/BUILD.gn        |   2 +-
  .../cr_components/theme_color_picker/BUILD.gn |   2 +-
- .../cr_elements/cr_dialog/cr_dialog.html      |   2 +-
+ .../cr_elements/cr_dialog/cr_dialog.css       |   2 +-
  .../resources/cr_elements/cr_shared_vars.css  |   4 +
  ui/webui/resources/css/BUILD.gn               |   2 +-
  ui/webui/resources/images/BUILD.gn            |   2 +-
@@ -131,7 +131,7 @@ diff --git a/chrome/app/generated_resources.grd b/chrome/app/generated_resources
 diff --git a/chrome/app/settings_strings.grdp b/chrome/app/settings_strings.grdp
 --- a/chrome/app/settings_strings.grdp
 +++ b/chrome/app/settings_strings.grdp
-@@ -2425,6 +2425,9 @@
+@@ -2422,6 +2422,9 @@
    <message name="IDS_SETTINGS_SEARCH_ENGINES_QUERY_URL_EXPLANATION" desc="Label for explaining the format of the URL that should be entered by the user in the add/edit search engine dialog.">
      URL with <ph name="SPECIAL_SYMBOL">%s</ph> in place of query
    </message>
@@ -406,7 +406,7 @@ new file mode 100644
 diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -3636,6 +3636,9 @@ static_library("browser") {
+@@ -3655,6 +3655,9 @@ static_library("browser") {
          "//components/user_scripts/android",
        ]
      }
@@ -503,7 +503,7 @@ diff --git a/chrome/browser/resources/settings/search_engines_page/search_engine
 diff --git a/chrome/browser/resources/settings/search_engines_page/search_engine_edit_dialog.ts b/chrome/browser/resources/settings/search_engines_page/search_engine_edit_dialog.ts
 --- a/chrome/browser/resources/settings/search_engines_page/search_engine_edit_dialog.ts
 +++ b/chrome/browser/resources/settings/search_engines_page/search_engine_edit_dialog.ts
-@@ -63,6 +63,7 @@ export class SettingsSearchEngineEditDialogElement extends
+@@ -64,6 +64,7 @@ export class SettingsSearchEngineEditDialogElement extends
        searchEngine_: String,
        keyword_: String,
        queryUrl_: String,
@@ -511,7 +511,7 @@ diff --git a/chrome/browser/resources/settings/search_engines_page/search_engine
        dialogTitle_: String,
        actionButtonText_: String,
        cancelButtonHidden_: Boolean,
-@@ -78,6 +79,7 @@ export class SettingsSearchEngineEditDialogElement extends
+@@ -79,6 +80,7 @@ export class SettingsSearchEngineEditDialogElement extends
    private searchEngine_: string;
    private keyword_: string;
    private queryUrl_: string;
@@ -519,16 +519,16 @@ diff --git a/chrome/browser/resources/settings/search_engines_page/search_engine
    private dialogTitle_: string;
    private actionButtonText_: string;
    private cancelButtonHidden_: boolean;
-@@ -101,7 +103,7 @@ export class SettingsSearchEngineEditDialogElement extends
+@@ -108,7 +110,7 @@ export class SettingsSearchEngineEditDialogElement extends
        this.searchEngine_ = this.model.name;
        this.keyword_ = this.model.keyword;
        this.queryUrl_ = this.model.url;
 -      this.readonly_ = this.model.isManaged;
 +      this.suggestionUrl_ = this.model.suggestionurl;
      } else {
-       this.dialogTitle_ =
-           loadTimeData.getString('searchEnginesAddSearchEngine');
-@@ -148,7 +150,7 @@ export class SettingsSearchEngineEditDialogElement extends
+       this.dialogTitle_ = loadTimeData.getString('searchEnginesAddSiteSearch');
+       this.actionButtonText_ = loadTimeData.getString('add');
+@@ -154,7 +156,7 @@ export class SettingsSearchEngineEditDialogElement extends
  
    private onActionButtonClick_() {
      this.browserProxy_.searchEngineEditCompleted(
@@ -540,7 +540,7 @@ diff --git a/chrome/browser/resources/settings/search_engines_page/search_engine
 diff --git a/chrome/browser/resources/settings/search_engines_page/search_engines_browser_proxy.ts b/chrome/browser/resources/settings/search_engines_page/search_engines_browser_proxy.ts
 --- a/chrome/browser/resources/settings/search_engines_page/search_engines_browser_proxy.ts
 +++ b/chrome/browser/resources/settings/search_engines_page/search_engines_browser_proxy.ts
-@@ -33,6 +33,7 @@ export interface SearchEngine {
+@@ -35,6 +35,7 @@ export interface SearchEngine {
    name: string;
    shouldConfirmDeletion: boolean;
    url: string;
@@ -548,7 +548,7 @@ diff --git a/chrome/browser/resources/settings/search_engines_page/search_engine
    urlLocked: boolean;
  }
  
-@@ -97,7 +98,7 @@ export interface SearchEnginesBrowserProxy {
+@@ -99,7 +100,7 @@ export interface SearchEnginesBrowserProxy {
    searchEngineEditCancelled(): void;
  
    searchEngineEditCompleted(
@@ -557,7 +557,7 @@ diff --git a/chrome/browser/resources/settings/search_engines_page/search_engine
  
    getSearchEnginesList(): Promise<SearchEnginesInfo>;
  
-@@ -139,11 +140,12 @@ export class SearchEnginesBrowserProxyImpl implements
+@@ -141,11 +142,12 @@ export class SearchEnginesBrowserProxyImpl implements
    }
  
    searchEngineEditCompleted(
@@ -571,7 +571,7 @@ diff --git a/chrome/browser/resources/settings/search_engines_page/search_engine
      ]);
    }
  
-@@ -156,7 +158,7 @@ export class SearchEnginesBrowserProxyImpl implements
+@@ -158,7 +160,7 @@ export class SearchEnginesBrowserProxyImpl implements
    }
  
    recordSearchEnginesPageHistogram(interaction: SearchEnginesInteractions) {
@@ -611,7 +611,7 @@ diff --git a/chrome/browser/resources/settings/search_engines_page/search_engine
 diff --git a/chrome/browser/resources/settings/search_page/search_page.html b/chrome/browser/resources/settings/search_page/search_page.html
 --- a/chrome/browser/resources/settings/search_page/search_page.html
 +++ b/chrome/browser/resources/settings/search_page/search_page.html
-@@ -129,7 +129,11 @@
+@@ -133,7 +133,11 @@
          associated-control="[[$$('#enginesSubpageTrigger')]]"
          page-title="$i18n{searchEnginesManageSiteSearch}"
          search-label="$i18n{searchEnginesSearch}"
@@ -785,7 +785,7 @@ diff --git a/chrome/browser/search_engines/android/java/src/org/chromium/chrome/
 diff --git a/chrome/browser/ui/BUILD.gn b/chrome/browser/ui/BUILD.gn
 --- a/chrome/browser/ui/BUILD.gn
 +++ b/chrome/browser/ui/BUILD.gn
-@@ -1032,6 +1032,18 @@ static_library("ui") {
+@@ -1025,6 +1025,18 @@ static_library("ui") {
        "//ui/android",
        "//url",
      ]
@@ -927,7 +927,7 @@ diff --git a/chrome/browser/ui/search_engines/keyword_editor_controller.h b/chro
 diff --git a/chrome/browser/ui/search_engines/template_url_table_model.cc b/chrome/browser/ui/search_engines/template_url_table_model.cc
 --- a/chrome/browser/ui/search_engines/template_url_table_model.cc
 +++ b/chrome/browser/ui/search_engines/template_url_table_model.cc
-@@ -183,7 +183,8 @@ void TemplateURLTableModel::Remove(size_t index) {
+@@ -191,7 +191,8 @@ void TemplateURLTableModel::Remove(size_t index) {
  void TemplateURLTableModel::Add(size_t index,
                                  const std::u16string& short_name,
                                  const std::u16string& keyword,
@@ -937,7 +937,7 @@ diff --git a/chrome/browser/ui/search_engines/template_url_table_model.cc b/chro
    DCHECK(index <= RowCount());
    DCHECK(!url.empty());
    TemplateURLData data;
-@@ -191,13 +192,15 @@ void TemplateURLTableModel::Add(size_t index,
+@@ -199,13 +200,15 @@ void TemplateURLTableModel::Add(size_t index,
    data.SetKeyword(keyword);
    data.SetURL(url);
    data.is_active = TemplateURLData::ActiveStatus::kTrue;
@@ -954,7 +954,7 @@ diff --git a/chrome/browser/ui/search_engines/template_url_table_model.cc b/chro
    DCHECK(index <= RowCount());
    DCHECK(!url.empty());
    TemplateURL* template_url = GetTemplateURL(index);
-@@ -206,7 +209,7 @@ void TemplateURLTableModel::ModifyTemplateURL(size_t index,
+@@ -214,7 +217,7 @@ void TemplateURLTableModel::ModifyTemplateURL(size_t index,
    DCHECK(template_url_service_->GetDefaultSearchProvider() != template_url ||
           template_url->SupportsReplacement(
               template_url_service_->search_terms_data()));
@@ -987,7 +987,7 @@ diff --git a/chrome/browser/ui/search_engines/template_url_table_model.h b/chrom
 diff --git a/chrome/browser/ui/webui/chrome_web_ui_controller_factory.cc b/chrome/browser/ui/webui/chrome_web_ui_controller_factory.cc
 --- a/chrome/browser/ui/webui/chrome_web_ui_controller_factory.cc
 +++ b/chrome/browser/ui/webui/chrome_web_ui_controller_factory.cc
-@@ -130,6 +130,8 @@
+@@ -126,6 +126,8 @@
  #include "chrome/browser/ui/webui/webapks/webapks_ui.h"
  #include "components/feed/buildflags.h"
  #include "components/feed/feed_feature_list.h"
@@ -996,7 +996,7 @@ diff --git a/chrome/browser/ui/webui/chrome_web_ui_controller_factory.cc b/chrom
  #else  // BUILDFLAG(IS_ANDROID)
  #include "chrome/browser/media/router/discovery/access_code/access_code_cast_feature.h"
  #include "chrome/browser/media/router/media_router_feature.h"
-@@ -651,6 +653,10 @@ WebUIFactoryFunction GetWebUIFactoryFunction(WebUI* web_ui,
+@@ -622,6 +624,10 @@ WebUIFactoryFunction GetWebUIFactoryFunction(WebUI* web_ui,
      return &NewWebUI<WebAppInternalsUI>;
    }
  #endif  // !BUILDFLAG(IS_ANDROID)
@@ -1162,15 +1162,15 @@ diff --git a/chrome/browser/ui/webui/settings/search_engines_handler.cc b/chrome
  
    dict.Set("modelIndex", base::checked_cast<int>(index));
  
-@@ -266,6 +273,7 @@ base::Value::Dict SearchEnginesHandler::CreateDictionaryForEngine(
-   dict.Set("isManaged", list_controller_.IsManaged(template_url));
-   TemplateURL::Type type = template_url->type();
+@@ -268,6 +275,7 @@ base::Value::Dict SearchEnginesHandler::CreateDictionaryForEngine(
    dict.Set("isOmniboxExtension", type == TemplateURL::OMNIBOX_API_EXTENSION);
+   dict.Set("isPrepopulated", template_url->prepopulate_id() > 0);
+   dict.Set("isStarterPack", template_url->starter_pack_id() > 0);
 +#if !BUILDFLAG(IS_ANDROID)
    if (type == TemplateURL::NORMAL_CONTROLLED_BY_EXTENSION ||
        type == TemplateURL::OMNIBOX_API_EXTENSION) {
      const extensions::Extension* extension =
-@@ -282,6 +290,7 @@ base::Value::Dict SearchEnginesHandler::CreateDictionaryForEngine(
+@@ -284,6 +292,7 @@ base::Value::Dict SearchEnginesHandler::CreateDictionaryForEngine(
        dict.Set("extension", std::move(ext_info));
      }
    }
@@ -1178,7 +1178,7 @@ diff --git a/chrome/browser/ui/webui/settings/search_engines_handler.cc b/chrome
    return dict;
  }
  
-@@ -362,12 +371,13 @@ void SearchEnginesHandler::HandleSearchEngineEditStarted(
+@@ -364,12 +373,13 @@ void SearchEnginesHandler::HandleSearchEngineEditStarted(
  void SearchEnginesHandler::OnEditedKeyword(TemplateURL* template_url,
                                             const std::u16string& title,
                                             const std::u16string& keyword,
@@ -1195,7 +1195,7 @@ diff --git a/chrome/browser/ui/webui/settings/search_engines_handler.cc b/chrome
  
    edit_controller_.reset();
  }
-@@ -395,6 +405,8 @@ bool SearchEnginesHandler::CheckFieldValidity(const std::string& field_name,
+@@ -397,6 +407,8 @@ bool SearchEnginesHandler::CheckFieldValidity(const std::string& field_name,
      is_valid = edit_controller_->IsKeywordValid(base::UTF8ToUTF16(field_value));
    else if (field_name.compare(kQueryUrlField) == 0)
      is_valid = edit_controller_->IsURLValid(field_value);
@@ -1204,7 +1204,7 @@ diff --git a/chrome/browser/ui/webui/settings/search_engines_handler.cc b/chrome
    else
      NOTREACHED();
  
-@@ -414,18 +426,20 @@ void SearchEnginesHandler::HandleSearchEngineEditCompleted(
+@@ -416,18 +428,20 @@ void SearchEnginesHandler::HandleSearchEngineEditCompleted(
    if (!edit_controller_.get())
      return;
  
@@ -1244,7 +1244,7 @@ diff --git a/chrome/browser/ui/webui/settings/search_engines_handler.h b/chrome/
 diff --git a/chrome/browser/ui/webui/settings/settings_localized_strings_provider.cc b/chrome/browser/ui/webui/settings/settings_localized_strings_provider.cc
 --- a/chrome/browser/ui/webui/settings/settings_localized_strings_provider.cc
 +++ b/chrome/browser/ui/webui/settings/settings_localized_strings_provider.cc
-@@ -2521,6 +2521,8 @@ void AddSearchEnginesStrings(content::WebUIDataSource* html_source) {
+@@ -2564,6 +2564,8 @@ void AddSearchEnginesStrings(content::WebUIDataSource* html_source) {
        {"searchEnginesQueryURL", IDS_SETTINGS_SEARCH_ENGINES_QUERY_URL},
        {"searchEnginesQueryURLExplanation",
         IDS_SETTINGS_SEARCH_ENGINES_QUERY_URL_EXPLANATION},
@@ -1753,7 +1753,7 @@ new file mode 100644
 diff --git a/chrome/browser/ui/webui/webui_util.cc b/chrome/browser/ui/webui/webui_util.cc
 --- a/chrome/browser/ui/webui/webui_util.cc
 +++ b/chrome/browser/ui/webui/webui_util.cc
-@@ -93,6 +93,11 @@ void SetupChromeRefresh2023(content::WebUIDataSource* source) {
+@@ -101,6 +101,11 @@ void SetupChromeRefresh2023(content::WebUIDataSource* source) {
    source->AddString(
        "chromeRefresh2023Attribute",
        features::IsChromeWebuiRefresh2023() ? "chrome-refresh-2023" : "");
@@ -1949,15 +1949,15 @@ diff --git a/content/public/browser/web_ui.h b/content/public/browser/web_ui.h
 diff --git a/ui/base/template_expressions.cc b/ui/base/template_expressions.cc
 --- a/ui/base/template_expressions.cc
 +++ b/ui/base/template_expressions.cc
-@@ -13,6 +13,7 @@
+@@ -14,6 +14,7 @@
  #include "base/strings/escape.h"
  #include "base/strings/string_piece.h"
  #include "base/values.h"
 +#include "base/logging.h"
  #include "build/chromeos_buildflags.h"
- #include "third_party/abseil-cpp/absl/types/optional.h"
  
-@@ -165,11 +166,25 @@ bool ReplaceTemplateExpressionsInternal(
+ #if DCHECK_IS_ON()
+@@ -166,11 +167,25 @@ bool ReplaceTemplateExpressionsInternal(
      std::string key(source.substr(current_pos, key_end - current_pos));
      CHECK(!key.empty());
  
@@ -1985,7 +1985,7 @@ diff --git a/ui/base/template_expressions.cc b/ui/base/template_expressions.cc
 -    std::string replacement = value->second;
      if (is_javascript) {
        // Run JS escaping first.
-       absl::optional<char> last = formatted->empty()
+       std::optional<char> last = formatted->empty()
 diff --git a/ui/webui/BUILD.gn b/ui/webui/BUILD.gn
 --- a/ui/webui/BUILD.gn
 +++ b/ui/webui/BUILD.gn
@@ -2007,7 +2007,7 @@ diff --git a/ui/webui/BUILD.gn b/ui/webui/BUILD.gn
 diff --git a/ui/webui/resources/BUILD.gn b/ui/webui/resources/BUILD.gn
 --- a/ui/webui/resources/BUILD.gn
 +++ b/ui/webui/resources/BUILD.gn
-@@ -75,6 +75,16 @@ generate_grd("build_grd") {
+@@ -77,6 +77,16 @@ generate_grd("build_grd") {
        "$target_gen_dir/cr_components/most_visited/resources.grdp",
        "$target_gen_dir/cr_components/settings_prefs/resources.grdp",
      ]
@@ -2072,18 +2072,18 @@ diff --git a/ui/webui/resources/cr_components/theme_color_picker/BUILD.gn b/ui/w
  
  mojom("mojom") {
    sources = [ "theme_color_picker.mojom" ]
-diff --git a/ui/webui/resources/cr_elements/cr_dialog/cr_dialog.html b/ui/webui/resources/cr_elements/cr_dialog/cr_dialog.html
---- a/ui/webui/resources/cr_elements/cr_dialog/cr_dialog.html
-+++ b/ui/webui/resources/cr_elements/cr_dialog/cr_dialog.html
-@@ -10,7 +10,7 @@
-                     0 16px 16px rgba(0, 0, 0, 0.24);
-         color: inherit;
-         max-height: initial;
--        max-width: initial;
-+        max-width: 95%;
-         overflow-y: hidden;
-         padding: 0;
-         position: absolute;
+diff --git a/ui/webui/resources/cr_elements/cr_dialog/cr_dialog.css b/ui/webui/resources/cr_elements/cr_dialog/cr_dialog.css
+--- a/ui/webui/resources/cr_elements/cr_dialog/cr_dialog.css
++++ b/ui/webui/resources/cr_elements/cr_dialog/cr_dialog.css
+@@ -22,7 +22,7 @@ dialog {
+               0 16px 16px rgba(0, 0, 0, 0.24);
+   color: inherit;
+   max-height: initial;
+-  max-width: initial;
++  max-width: 95%;
+   overflow-y: hidden;
+   padding: 0;
+   position: absolute;
 diff --git a/ui/webui/resources/cr_elements/cr_shared_vars.css b/ui/webui/resources/cr_elements/cr_shared_vars.css
 --- a/ui/webui/resources/cr_elements/cr_shared_vars.css
 +++ b/ui/webui/resources/cr_elements/cr_shared_vars.css
@@ -2113,7 +2113,7 @@ diff --git a/ui/webui/resources/css/BUILD.gn b/ui/webui/resources/css/BUILD.gn
 diff --git a/ui/webui/resources/images/BUILD.gn b/ui/webui/resources/images/BUILD.gn
 --- a/ui/webui/resources/images/BUILD.gn
 +++ b/ui/webui/resources/images/BUILD.gn
-@@ -45,7 +45,7 @@ generate_grd("build_grdp") {
+@@ -46,7 +46,7 @@ generate_grd("build_grdp") {
      "2x/select.png",
    ]
  

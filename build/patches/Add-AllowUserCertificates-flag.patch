@@ -20,7 +20,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActivity.java b/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActivity.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActivity.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActivity.java
-@@ -227,6 +227,7 @@ import org.chromium.content_public.browser.ScreenOrientationProvider;
+@@ -230,6 +230,7 @@ import org.chromium.content_public.browser.ScreenOrientationProvider;
  import org.chromium.content_public.browser.SelectionPopupController;
  import org.chromium.content_public.browser.WebContents;
  import org.chromium.content_public.common.ContentSwitches;
@@ -28,7 +28,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActiv
  import org.chromium.printing.PrintManagerDelegateImpl;
  import org.chromium.printing.PrintingController;
  import org.chromium.printing.PrintingControllerImpl;
-@@ -1105,6 +1106,8 @@ public abstract class ChromeActivity<C extends ChromeActivityComponent>
+@@ -1064,6 +1065,8 @@ public abstract class ChromeActivity<C extends ChromeActivityComponent>
          super.onStartWithNative();
          ChromeActivitySessionTracker.getInstance().onStartWithNative();
          ChromeCachedFlags.getInstance().cacheNativeFlags();
@@ -59,16 +59,16 @@ diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/f
      public static final String ADAPTIVE_BUTTON_IN_TOP_TOOLBAR_TRANSLATE =
              "AdaptiveButtonInTopToolbarTranslate";
      public static final String ADAPTIVE_BUTTON_IN_TOP_TOOLBAR_ADD_TO_BOOKMARKS =
-@@ -522,6 +523,8 @@ public abstract class ChromeFeatureList {
-             newCachedFlag(ANDROID_ELEGANT_TEXT_HEIGHT, false);
- 
+@@ -533,6 +534,8 @@ public abstract class ChromeFeatureList {
      public static final CachedFlag sAndroidHub = newCachedFlag(ANDROID_HUB, false);
+     public static final CachedFlag sAndroidTabGroupStableIds =
+             newCachedFlag(ANDROID_TAB_GROUP_STABLE_IDS, false);
 +    public static final CachedFlag sAllowUserCertificates =
 +            newCachedFlag(ALLOW_USER_CERTIFICATES, false);
      public static final CachedFlag sArchiveTabService = newCachedFlag(ARCHIVE_TAB_SERVICE, false);
      public static final CachedFlag sBackGestureActivityTabProvider =
              newCachedFlag(BACK_GESTURE_ACTIVITY_TAB_PROVIDER, false);
-@@ -656,6 +659,7 @@ public abstract class ChromeFeatureList {
+@@ -679,6 +682,7 @@ public abstract class ChromeFeatureList {
  
      public static final List<CachedFlag> sFlagsCachedFullBrowser =
              List.of(

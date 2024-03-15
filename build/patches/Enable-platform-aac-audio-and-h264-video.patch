@@ -76,8 +76,8 @@ diff --git a/media/base/win/mf_helpers.cc b/media/base/win/mf_helpers.cc
 +#include "media/media_buildflags.h"
  #include "media/base/audio_codecs.h"
  #include "media/base/audio_decoder_config.h"
- #include "media/base/win/mf_helpers.h"
-@@ -452,7 +453,11 @@ HRESULT GetAacAudioType(const AudioDecoderConfig& decoder_config,
+ #include "media/base/channel_layout.h"
+@@ -463,7 +464,11 @@ HRESULT GetAacAudioType(const AudioDecoderConfig& decoder_config,
  
    size_t extra_size = wave_format_size - sizeof(WAVEFORMATEX);
    aac_wave_format->wfx.cbSize = static_cast<WORD>(extra_size);
@@ -151,7 +151,7 @@ diff --git a/media/filters/ffmpeg_video_decoder.cc b/media/filters/ffmpeg_video_
 diff --git a/media/filters/win/media_foundation_audio_decoder.cc b/media/filters/win/media_foundation_audio_decoder.cc
 --- a/media/filters/win/media_foundation_audio_decoder.cc
 +++ b/media/filters/win/media_foundation_audio_decoder.cc
-@@ -96,11 +96,15 @@ absl::optional<MFT_REGISTER_TYPE_INFO> GetTypeInfo(
+@@ -96,11 +96,15 @@ std::optional<MFT_REGISTER_TYPE_INFO> GetTypeInfo(
  #endif
  #if BUILDFLAG(USE_PROPRIETARY_CODECS)
      case AudioCodec::kAAC:
@@ -184,7 +184,7 @@ diff --git a/media/filters/win/media_foundation_audio_decoder.cc b/media/filters
 diff --git a/media/gpu/windows/supported_profile_helpers.cc b/media/gpu/windows/supported_profile_helpers.cc
 --- a/media/gpu/windows/supported_profile_helpers.cc
 +++ b/media/gpu/windows/supported_profile_helpers.cc
-@@ -173,7 +173,11 @@ SupportedResolutionRangeMap GetSupportedD3D11VideoDecoderResolutions(
+@@ -252,7 +252,11 @@ SupportedResolutionRangeMap GetSupportedD3DVideoDecoderResolutions(
    //
    // On Windows 7 the maximum resolution supported by media foundation is
    // 1920 x 1088. We use 1088 to account for 16x16 macro-blocks.
@@ -196,7 +196,7 @@ diff --git a/media/gpu/windows/supported_profile_helpers.cc b/media/gpu/windows/
    SupportedResolutionRange h264_profile;
    h264_profile.min_resolution = kMinResolution;
    h264_profile.max_landscape_resolution = kDefaultMaxH264Resolution;
-@@ -181,7 +185,14 @@ SupportedResolutionRangeMap GetSupportedD3D11VideoDecoderResolutions(
+@@ -260,7 +264,14 @@ SupportedResolutionRangeMap GetSupportedD3DVideoDecoderResolutions(
    // We don't have a way to map DXVA support to specific H.264 profiles, so just
    // mark all the common ones with the same level of support.
    constexpr VideoCodecProfile kSupportedH264Profiles[] = {
