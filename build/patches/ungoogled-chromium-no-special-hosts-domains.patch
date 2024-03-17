@@ -9,7 +9,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 ---
  chrome/browser/BUILD.gn                       |   8 -
  .../android/metrics/uma_session_stats.cc      |  10 -
- .../android/signin/signin_manager_android.cc  |   5 +
+ .../android/signin/signin_manager_android.cc  |  39 +--
  chrome/browser/browser_process_impl.cc        |   1 -
  chrome/browser/chrome_browser_main.cc         |  10 -
  .../browser/chrome_content_browser_client.cc  |  35 +-
@@ -59,7 +59,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  ...gled-chromium-no-special-hosts-domains.inc |   1 +
  net/base/url_util.cc                          |  25 +-
  services/network/network_context.cc           |   2 +-
- 52 files changed, 59 insertions(+), 775 deletions(-)
+ 52 files changed, 58 insertions(+), 810 deletions(-)
  create mode 100644 cromite_flags/content/common/features_cc/ungoogled-chromium-no-special-hosts-domains.inc
  create mode 100644 cromite_flags/content/public/common/content_features_cc/ungoogled-chromium-no-special-hosts-domains.inc
 
@@ -125,18 +125,52 @@ diff --git a/chrome/browser/android/metrics/uma_session_stats.cc b/chrome/browse
 diff --git a/chrome/browser/android/signin/signin_manager_android.cc b/chrome/browser/android/signin/signin_manager_android.cc
 --- a/chrome/browser/android/signin/signin_manager_android.cc
 +++ b/chrome/browser/android/signin/signin_manager_android.cc
-@@ -60,6 +60,11 @@ class ProfileDataRemover : public content::BrowsingDataRemover::Observer {
+@@ -60,41 +60,10 @@ class ProfileDataRemover : public content::BrowsingDataRemover::Observer {
          origin_runner_(base::SingleThreadTaskRunner::GetCurrentDefault()),
          remover_(profile->GetBrowsingDataRemover()) {
      remover_->AddObserver(this);
+-
+-    if (all_data) {
+-      chrome_browsing_data_remover::DataType removed_types =
+-          chrome_browsing_data_remover::ALL_DATA_TYPES;
+-      if (password_manager::UsesSplitStoresAndUPMForLocal(
+-              profile_->GetPrefs())) {
+-        // If usesSplitStoresAndUPMForLocal() is true, browser sign-in won't
+-        // upload existing passwords, so there's no reason to wipe them
+-        // immediately before. Similarly, on browser sign-out, account passwords
+-        // should survive (outside of the browser) to be used by other apps,
+-        // until system-level sign-out. In other words, the browser has no
+-        // business deleting any passwords here.
+-        removed_types &= ~chrome_browsing_data_remover::DATA_TYPE_PASSWORDS;
+-      }
+-      remover_->RemoveAndReply(base::Time(), base::Time::Max(), removed_types,
+-                               chrome_browsing_data_remover::ALL_ORIGIN_TYPES,
+-                               this);
+-    } else {
+-      std::unique_ptr<content::BrowsingDataFilterBuilder> google_tld_filter =
+-          content::BrowsingDataFilterBuilder::Create(
+-              content::BrowsingDataFilterBuilder::Mode::kDelete);
+-
+-      // TODO(msramek): BrowsingDataFilterBuilder was not designed for
+-      // large filters. Optimize it.
+-      for (const std::string& domain :
+-           google_util::GetGoogleRegistrableDomains()) {
+-        google_tld_filter->AddRegisterableDomain(domain);
+-      }
+-
+-      remover_->RemoveWithFilterAndReply(
+-          base::Time(), base::Time::Max(),
+-          content::BrowsingDataRemover::DATA_TYPE_CACHE_STORAGE,
+-          chrome_browsing_data_remover::ALL_ORIGIN_TYPES,
+-          std::move(google_tld_filter), this);
+-    }
 +    remover_->RemoveAndReply(base::Time(), base::Time::Max(),
 +                            chrome_browsing_data_remover::ALL_DATA_TYPES,
 +                            chrome_browsing_data_remover::ALL_ORIGIN_TYPES,
 +                            this);
-+    if ((true)) return;
+   }
  
-     if (all_data) {
-       chrome_browsing_data_remover::DataType removed_types =
+   ProfileDataRemover(const ProfileDataRemover&) = delete;
 diff --git a/chrome/browser/browser_process_impl.cc b/chrome/browser/browser_process_impl.cc
 --- a/chrome/browser/browser_process_impl.cc
 +++ b/chrome/browser/browser_process_impl.cc

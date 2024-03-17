@@ -74,7 +74,7 @@ diff --git a/components/search_engines/search_engine_type.h b/components/search_
    SEARCH_ENGINE_MAX  // Bounding value needed for UMA histogram macro.
  };
  
-+static_assert(SEARCH_ENGINE_DUCKDUCKGOLIGHT != (SEARCH_ENGINE_MAX - 1),
++static_assert(SEARCH_ENGINE_DUCKDUCKGOLIGHT == (SEARCH_ENGINE_MAX - 1),
 +              "Please check this patch");
 +
  // Enum to record the type of search engine a user used in keyword mode. This

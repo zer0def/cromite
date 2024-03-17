@@ -74,7 +74,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../user-script-ui/user-scripts-ui.js         |   9 +
  .../browser/ui/user_scripts_ui.cc             | 146 ++++
  .../user_scripts/browser/ui/user_scripts_ui.h |  37 +
- .../browser/user_script_loader.cc             | 717 ++++++++++++++++
+ .../browser/user_script_loader.cc             | 716 ++++++++++++++++
  .../user_scripts/browser/user_script_loader.h | 168 ++++
  .../browser/user_script_pref_info.cc          |  34 +
  .../browser/user_script_pref_info.h           |  72 ++
@@ -133,8 +133,9 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../renderer/web_ui_injection_host.h          |  27 +
  .../strings/userscripts_strings.grdp          |  54 ++
  .../Experimental-user-scripts-support.inc     |  13 +
+ ipc/ipc_message_start.h                       |   1 +
  tools/gritsettings/resource_ids.spec          |   6 +
- 107 files changed, 9496 insertions(+), 2 deletions(-)
+ 108 files changed, 9496 insertions(+), 2 deletions(-)
  create mode 100644 components/user_scripts/README.md
  create mode 100755 components/user_scripts/android/BUILD.gn
  create mode 100644 components/user_scripts/android/java/res/layout/accept_script_item.xml
@@ -1963,7 +1964,7 @@ new file mode 100644
 +
 +        AlertDialog.Builder builder = new AlertDialog.Builder(context);
 +        builder.setMessage(message)
-+            .setPositiveButton(context.getString(R.string.yes), dialogClickListener)
++            .setPositiveButton(context.getString(R.string.ok), dialogClickListener)
 +            .setNegativeButton(context.getString(R.string.no), dialogClickListener)
 +            .show();
 +    }
@@ -2832,7 +2833,7 @@ diff --git a/components/user_scripts/browser/user_script_loader.cc b/components/
 new file mode 100755
 --- /dev/null
 +++ b/components/user_scripts/browser/user_script_loader.cc
-@@ -0,0 +1,717 @@
+@@ -0,0 +1,716 @@
 +/*
 +    This file is part of Bromite.
 +
@@ -3101,9 +3102,8 @@ new file mode 100755
 +
 +    // create SHA256 of file
 +    char raw[crypto::kSHA256Length] = {0};
-+    std::string key;
 +    crypto::SHA256HashString(content, raw, crypto::kSHA256Length);
-+    base::Base64Encode(base::StringPiece(raw, crypto::kSHA256Length), &key);
++    std::string key = base::Base64Encode(base::StringPiece(raw, crypto::kSHA256Length));
 +    file->set_key(key);
 +
 +    file->set_url(GURL(base::StrCat({"https://userscripts/file/", key, ".js"})));
@@ -10472,6 +10472,17 @@ new file mode 100644
 +#endif
 +
 +#endif
+diff --git a/ipc/ipc_message_start.h b/ipc/ipc_message_start.h
+--- a/ipc/ipc_message_start.h
++++ b/ipc/ipc_message_start.h
+@@ -17,6 +17,7 @@ enum IPCMessageStart {
+   WorkerMsgStart,
+   NaClMsgStart,
+   PpapiMsgStart,
++  ExtensionMsgStart,
+   NaClHostMsgStart,
+   GinJavaBridgeMsgStart,
+   LastIPCMsgStart  // Must come last.
 diff --git a/tools/gritsettings/resource_ids.spec b/tools/gritsettings/resource_ids.spec
 --- a/tools/gritsettings/resource_ids.spec
 +++ b/tools/gritsettings/resource_ids.spec

@@ -9,7 +9,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../preloading_model_keyed_service.cc         |  1 +
  .../preloading_model_keyed_service_factory.cc |  4 +--
  .../chrome_hints_manager.cc                   |  1 +
- .../model_validator_keyed_service.cc          |  4 ++-
+ .../model_validator_keyed_service.cc          |  7 +++++-
  .../optimization_guide_keyed_service.cc       |  1 -
  .../predictors/loading_predictor_config.cc    |  4 +--
  .../browser/predictors/predictors_features.cc | 11 ++------
@@ -32,7 +32,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../Disable-all-predictors-code.inc           |  2 ++
  .../document_speculation_rules.cc             |  1 +
  .../platform/runtime_enabled_features.json5   |  2 +-
- 27 files changed, 80 insertions(+), 38 deletions(-)
+ 27 files changed, 83 insertions(+), 38 deletions(-)
  create mode 100644 cromite_flags/chrome/browser/browser_features_cc/Disable-all-predictors-code.inc
  create mode 100644 cromite_flags/chrome/common/chrome_features_cc/Disable-all-predictors-code.inc
  create mode 100644 cromite_flags/components/permissions/features_cc/Disable-all-predictors-code.inc
@@ -87,7 +87,15 @@ diff --git a/chrome/browser/optimization_guide/chrome_hints_manager.cc b/chrome/
 diff --git a/chrome/browser/optimization_guide/model_validator_keyed_service.cc b/chrome/browser/optimization_guide/model_validator_keyed_service.cc
 --- a/chrome/browser/optimization_guide/model_validator_keyed_service.cc
 +++ b/chrome/browser/optimization_guide/model_validator_keyed_service.cc
-@@ -55,13 +55,13 @@ namespace optimization_guide {
+@@ -8,6 +8,7 @@
+ #include "base/files/file_util.h"
+ #include "base/task/sequenced_task_runner.h"
+ #include "base/task/task_traits.h"
++#include "base/task/thread_pool.h"
+ #include "build/build_config.h"
+ #include "chrome/browser/profiles/profile.h"
+ #include "chrome/browser/signin/identity_manager_factory.h"
+@@ -55,13 +56,13 @@ namespace optimization_guide {
  ModelValidatorKeyedService::ModelValidatorKeyedService(Profile* profile)
      : profile_(profile) {
    DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
@@ -102,7 +110,7 @@ diff --git a/chrome/browser/optimization_guide/model_validator_keyed_service.cc 
    if (switches::ShouldValidateModel()) {
      // Create the validator object which will get destroyed when the model
      // load is complete.
-@@ -122,6 +122,7 @@ void ModelValidatorKeyedService::OnPrimaryAccountChanged(
+@@ -122,6 +123,7 @@ void ModelValidatorKeyedService::OnPrimaryAccountChanged(
  
  void ModelValidatorKeyedService::StartModelExecutionValidation() {
    DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
@@ -110,7 +118,7 @@ diff --git a/chrome/browser/optimization_guide/model_validator_keyed_service.cc 
    auto* opt_guide_service =
        OptimizationGuideKeyedServiceFactory::GetForProfile(profile_);
    if (!opt_guide_service) {
-@@ -139,6 +140,7 @@ void ModelValidatorKeyedService::StartModelExecutionValidation() {
+@@ -139,6 +141,7 @@ void ModelValidatorKeyedService::StartModelExecutionValidation() {
        proto::ModelExecutionFeature::MODEL_EXECUTION_FEATURE_TEST, request,
        base::BindOnce(&ModelValidatorKeyedService::OnModelExecuteResponse,
                       weak_ptr_factory_.GetWeakPtr()));
@@ -118,6 +126,22 @@ diff --git a/chrome/browser/optimization_guide/model_validator_keyed_service.cc 
  }
  
  void ModelValidatorKeyedService::StartOnDeviceModelExecutionValidation(
+@@ -156,6 +159,7 @@ void ModelValidatorKeyedService::StartOnDeviceModelExecutionValidation(
+ 
+ void ModelValidatorKeyedService::PerformOnDeviceModelExecutionValidation(
+     std::unique_ptr<optimization_guide::proto::ComposeRequest> request) {
++#if BUILDFLAG(BUILD_WITH_TFLITE_LIB)
+   DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
+   auto* opt_guide_service =
+       OptimizationGuideKeyedServiceFactory::GetForProfile(profile_);
+@@ -168,6 +172,7 @@ void ModelValidatorKeyedService::PerformOnDeviceModelExecutionValidation(
+       *request, base::RepeatingCallback(base::BindRepeating(
+                     &ModelValidatorKeyedService::OnDeviceModelExecuteResponse,
+                     weak_ptr_factory_.GetWeakPtr())));
++#endif
+ }
+ 
+ void ModelValidatorKeyedService::OnDeviceModelExecuteResponse(
 diff --git a/chrome/browser/optimization_guide/optimization_guide_keyed_service.cc b/chrome/browser/optimization_guide/optimization_guide_keyed_service.cc
 --- a/chrome/browser/optimization_guide/optimization_guide_keyed_service.cc
 +++ b/chrome/browser/optimization_guide/optimization_guide_keyed_service.cc

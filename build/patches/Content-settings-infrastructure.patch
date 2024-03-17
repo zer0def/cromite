@@ -32,6 +32,7 @@ Require: bromite-build-utils.patch
  .../views/page_info/page_info_view_factory.h  |   3 +
  .../page_info/permission_toggle_row_view.cc   | 163 ++++++-
  .../page_info/permission_toggle_row_view.h    |  18 +-
+ .../privacy_sandbox_internals_handler.cc      |   2 +-
  .../settings_localized_strings_provider.cc    |  54 +++
  .../ui/webui/settings/site_settings_helper.cc |  34 +-
  .../browser_ui/settings/android/BUILD.gn      |   1 +
@@ -84,7 +85,7 @@ Require: bromite-build-utils.patch
  .../platform/web_content_settings_client.h    |   5 +
  .../execution_context/execution_context.cc    |  16 +
  .../execution_context/execution_context.h     |   5 +
- 73 files changed, 1832 insertions(+), 85 deletions(-)
+ 74 files changed, 1833 insertions(+), 86 deletions(-)
  create mode 100644 components/browser_ui/settings/android/java/res/layout/preference_spinner_single_widget.xml
  create mode 100644 components/browser_ui/site_settings/android/java/src/org/chromium/components/browser_ui/site_settings/BromiteCustomContentSetting.java
  create mode 100644 components/browser_ui/site_settings/android/java/src/org/chromium/components/browser_ui/site_settings/BromiteCustomContentSettingImpl.java
@@ -1129,6 +1130,18 @@ diff --git a/chrome/browser/ui/views/page_info/permission_toggle_row_view.h b/ch
    raw_ptr<ChromePageInfoUiDelegate, DanglingUntriaged> delegate_ = nullptr;
    raw_ptr<PageInfoNavigationHandler, DanglingUntriaged> navigation_handler_ =
        nullptr;
+diff --git a/chrome/browser/ui/webui/privacy_sandbox/privacy_sandbox_internals_handler.cc b/chrome/browser/ui/webui/privacy_sandbox/privacy_sandbox_internals_handler.cc
+--- a/chrome/browser/ui/webui/privacy_sandbox/privacy_sandbox_internals_handler.cc
++++ b/chrome/browser/ui/webui/privacy_sandbox/privacy_sandbox_internals_handler.cc
+@@ -41,7 +41,7 @@ void PrivacySandboxInternalsHandler::ReadPref(const std::string& pref_name,
+ void PrivacySandboxInternalsHandler::ReadContentSettings(
+     const ContentSettingsType type,
+     ReadContentSettingsCallback callback) {
+-  if (!IsKnownEnumValue(type) || type == ContentSettingsType::NUM_TYPES) {
++  if (!IsKnownEnumValue(type) || type == ContentSettingsType::NUM_TYPES_BROMITE) {
+     mojo::ReportBadMessage(
+         "ReadContentSettings received invalid ContentSettingsType");
+     return;
 diff --git a/chrome/browser/ui/webui/settings/settings_localized_strings_provider.cc b/chrome/browser/ui/webui/settings/settings_localized_strings_provider.cc
 --- a/chrome/browser/ui/webui/settings/settings_localized_strings_provider.cc
 +++ b/chrome/browser/ui/webui/settings/settings_localized_strings_provider.cc

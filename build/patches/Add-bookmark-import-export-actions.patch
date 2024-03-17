@@ -15,7 +15,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../menu/bookmark_toolbar_menu_improved.xml   |  14 +
  .../browser/TabbedModeTabDelegateFactory.java |   5 +-
  .../app/bookmarks/BookmarkActivity.java       |  32 ++
- .../browser/bookmarks/BookmarkBridge.java     | 280 +++++++++++++++++
+ .../browser/bookmarks/BookmarkBridge.java     | 285 +++++++++++++++++
  .../browser/bookmarks/BookmarkDelegate.java   |  10 +
  .../bookmarks/BookmarkManagerCoordinator.java |   9 +
  .../bookmarks/BookmarkManagerMediator.java    |  23 ++
@@ -30,7 +30,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../bookmarks/android/bookmark_bridge.h       |  30 +-
  .../browser/bookmarks/bookmark_html_writer.cc |  11 +
  .../dialogs/DownloadLocationCustomView.java   |   8 +-
- .../DownloadLocationDialogCoordinator.java    |   8 +-
+ .../DownloadLocationDialogCoordinator.java    |  10 +-
  .../flags/android/chrome_feature_list.cc      |   1 +
  .../browser/flags/ChromeFeatureList.java      |   1 +
  chrome/browser/importer/profile_writer.cc     |  10 +
@@ -53,7 +53,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  ui/shell_dialogs/select_file_dialog_linux.cc  |   4 +
  ui/shell_dialogs/select_file_dialog_linux.h   |   2 +
  ui/shell_dialogs/select_file_dialog_win.cc    |   5 +
- 43 files changed, 922 insertions(+), 29 deletions(-)
+ 43 files changed, 928 insertions(+), 30 deletions(-)
  create mode 100644 cromite_flags/chrome/browser/about_flags_cc/add-bookmark-import-export-actions.inc
  create mode 100644 cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/add-bookmark-import-export-actions.inc
  create mode 100644 cromite_flags/chrome/browser/flags/android/chrome_feature_list_h/add-bookmark-import-export-actions.inc
@@ -221,7 +221,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/app/bookmarks/B
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/bookmarks/BookmarkBridge.java b/chrome/android/java/src/org/chromium/chrome/browser/bookmarks/BookmarkBridge.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/bookmarks/BookmarkBridge.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/bookmarks/BookmarkBridge.java
-@@ -33,6 +33,46 @@ import org.chromium.url.GURL;
+@@ -33,6 +33,48 @@ import org.chromium.url.GURL;
  import java.util.ArrayList;
  import java.util.List;
  
@@ -252,10 +252,12 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/bookmarks/Bookm
 +import org.chromium.chrome.browser.IntentHandler;
 +import org.chromium.chrome.browser.preferences.ChromePreferenceKeys;
 +import org.chromium.chrome.browser.download.DownloadLocationDialogType;
++import org.chromium.chrome.browser.download.settings.DownloadLocationHelperImpl;
 +import org.chromium.chrome.browser.download.dialogs.DownloadLocationDialogController;
 +import org.chromium.chrome.browser.download.dialogs.DownloadLocationDialogCoordinator;
 +import org.chromium.chrome.browser.download.dialogs.DownloadLocationCustomView;
 +import org.chromium.chrome.browser.download.DirectoryOption;
++import org.chromium.chrome.browser.profiles.ProfileManager;
 +import org.chromium.chrome.browser.preferences.ChromeSharedPreferences;
 +import org.chromium.chrome.browser.flags.ChromeFeatureList;
 +import org.chromium.ui.base.PageTransition;
@@ -268,7 +270,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/bookmarks/Bookm
  /**
   * Provides the communication channel for Android to fetch and manipulate the bookmark model stored
   * in native.
-@@ -483,6 +523,209 @@ class BookmarkBridge {
+@@ -483,6 +525,212 @@ class BookmarkBridge {
                  .getTotalBookmarkCount(mNativeBookmarkBridge, id.getId(), id.getType());
      }
  
@@ -422,7 +424,9 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/bookmarks/Bookm
 +                // Actually show the dialog.
 +                mCustomView = (DownloadLocationCustomView) LayoutInflater.from(context).inflate(
 +                        R.layout.download_location_dialog, null);
-+                mCustomView.initialize(DownloadLocationDialogType.DEFAULT, /*totalBytes*/ 0);
++                mCustomView.initialize(DownloadLocationDialogType.DEFAULT, /*totalBytes*/ 0,
++                    (isChecked) -> {},
++                    new DownloadLocationHelperImpl(mProfile));
 +                mCustomView.setTitle(context.getString(R.string.export_bookmarks_alert_title));
 +                mCustomView.setFileName(standardBoorkmarkName);
 +                mCustomView.mDontShowAgain.setVisibility(View.GONE);
@@ -472,13 +476,14 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/bookmarks/Bookm
 +        };
 +        dialog.initialize(controller);
 +        dialog.showDialog(context, modalDialogManager, /*totalBytes*/ 0,
-+            DownloadLocationDialogType.DEFAULT, /*suggestedPath*/ "", /*isIncognito*/ false);
++            DownloadLocationDialogType.DEFAULT, /*suggestedPath*/ "",
++            ProfileManager.getLastUsedRegularProfile());
 +    }
 +
      /**
       * Synchronously gets a list of bookmarks that match the specified search query.
       *
-@@ -1036,6 +1279,39 @@ class BookmarkBridge {
+@@ -1036,6 +1284,39 @@ class BookmarkBridge {
          depthList.add(depth);
      }
  
@@ -518,7 +523,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/bookmarks/Bookm
      private static List<Pair<Integer, Integer>> createPairsList(int[] left, int[] right) {
          List<Pair<Integer, Integer>> pairList = new ArrayList<>();
          for (int i = 0; i < left.length; i++) {
-@@ -1094,6 +1370,10 @@ class BookmarkBridge {
+@@ -1094,6 +1375,10 @@ class BookmarkBridge {
          void getChildIds(
                  long nativeBookmarkBridge, long id, int type, List<BookmarkId> bookmarksList);
  
@@ -1343,7 +1348,7 @@ diff --git a/chrome/browser/download/android/java/src/org/chromium/chrome/browse
 diff --git a/chrome/browser/download/android/java/src/org/chromium/chrome/browser/download/dialogs/DownloadLocationDialogCoordinator.java b/chrome/browser/download/android/java/src/org/chromium/chrome/browser/download/dialogs/DownloadLocationDialogCoordinator.java
 --- a/chrome/browser/download/android/java/src/org/chromium/chrome/browser/download/dialogs/DownloadLocationDialogCoordinator.java
 +++ b/chrome/browser/download/android/java/src/org/chromium/chrome/browser/download/dialogs/DownloadLocationDialogCoordinator.java
-@@ -37,12 +37,12 @@ import java.util.ArrayList;
+@@ -37,18 +37,18 @@ import java.util.ArrayList;
   */
  public class DownloadLocationDialogCoordinator implements ModalDialogProperties.Controller {
      @NonNull private DownloadLocationDialogController mController;
@@ -1359,6 +1364,13 @@ diff --git a/chrome/browser/download/android/java/src/org/chromium/chrome/browse
      private long mTotalBytes;
      private @DownloadLocationDialogType int mDialogType;
      private String mSuggestedPath;
+     private Context mContext;
+     private boolean mHasMultipleDownloadLocations;
+-    private Profile mProfile;
++    protected Profile mProfile;
+     private boolean mLocationDialogManaged;
+ 
+     /**
 @@ -140,7 +140,7 @@ public class DownloadLocationDialogCoordinator implements ModalDialogProperties.
       * Called after retrieved the download directory options.
       * @param dirs An list of available download directories.

@@ -89,10 +89,9 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  components/module_installer/android/BUILD.gn  |   4 -
  components/signin/public/android/BUILD.gn     |   3 -
  .../signin/AccountRenameChecker.java          |  16 -
- components/webauthn/android/BUILD.gn          |  13 +-
- .../webauthn/AuthenticatorImpl.java           |  83 +--
+ components/webauthn/android/BUILD.gn          |  14 +-
+ .../webauthn/AuthenticatorImpl.java           |  72 --
  .../webauthn/ConditionalUiState.java          |  15 +
- .../webauthn/Fido2ApiCallHelper.java          |  10 -
  .../components/webauthn/GmsCoreUtils.java     |  21 +-
  .../webauthn/WebauthnModeProvider.java        |  12 -
  .../webauthn/cred_man/CredManHelper.java      |  16 +-
@@ -109,7 +108,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../preconditions/javatests/BUILD.gn          |   1 -
  .../gms/ChromiumPlayServicesAvailability.java |  10 +-
  third_party/cardboard/BUILD.gn                |   4 -
- 85 files changed, 115 insertions(+), 2193 deletions(-)
+ 84 files changed, 114 insertions(+), 2174 deletions(-)
  create mode 100644 components/webauthn/android/java/src/org/chromium/components/webauthn/ConditionalUiState.java
 
 diff --git a/android_webview/expectations/system_webview_bundle.AndroidManifest.expected b/android_webview/expectations/system_webview_bundle.AndroidManifest.expected
@@ -3158,20 +3157,20 @@ diff --git a/components/webauthn/android/BUILD.gn b/components/webauthn/android/
      "java/src/org/chromium/components/webauthn/InternalAuthenticator.java",
      "java/src/org/chromium/components/webauthn/WebauthnBrowserBridge.java",
      "java/src/org/chromium/components/webauthn/cred_man/CredManSupportProvider.java",
-@@ -30,11 +28,8 @@ android_library("java") {
+@@ -30,11 +28,7 @@ android_library("java") {
      "java/src/org/chromium/components/webauthn/AuthenticatorImpl.java",
      "java/src/org/chromium/components/webauthn/Barrier.java",
      "java/src/org/chromium/components/webauthn/CreateConfirmationUiDelegate.java",
 -    "java/src/org/chromium/components/webauthn/Fido2Api.java",
 -    "java/src/org/chromium/components/webauthn/Fido2ApiCall.java",
-     "java/src/org/chromium/components/webauthn/Fido2ApiCallHelper.java",
+-    "java/src/org/chromium/components/webauthn/Fido2ApiCallHelper.java",
 -    "java/src/org/chromium/components/webauthn/Fido2CredentialRequest.java",
 -    "java/src/org/chromium/components/webauthn/FidoErrorResponseCallback.java",
 +    "java/src/org/chromium/components/webauthn/ConditionalUiState.java",
      "java/src/org/chromium/components/webauthn/FidoIntentSender.java",
      "java/src/org/chromium/components/webauthn/GetAssertionResponseCallback.java",
      "java/src/org/chromium/components/webauthn/GetMatchingCredentialIdsResponseCallback.java",
-@@ -60,9 +55,6 @@ android_library("java") {
+@@ -60,9 +54,6 @@ android_library("java") {
    jar_excluded_patterns = [ "*/cred_man/CredManUiModeRecommender.class" ]
  
    deps = [
@@ -3181,7 +3180,7 @@ diff --git a/components/webauthn/android/BUILD.gn b/components/webauthn/android/
      "//base:base_java",
      "//base/version_info/android:version_constants_java",
      "//build/android:build_java",
-@@ -119,8 +111,6 @@ android_library("test_support_java") {
+@@ -119,8 +110,6 @@ android_library("test_support_java") {
  source_set("android") {
    sources = [
      "cred_man_support.h",
@@ -3190,7 +3189,7 @@ diff --git a/components/webauthn/android/BUILD.gn b/components/webauthn/android/
      "internal_authenticator_android.cc",
      "internal_authenticator_android.h",
      "webauthn_browser_bridge.cc",
-@@ -187,7 +177,6 @@ robolectric_library("junit") {
+@@ -187,7 +176,6 @@ robolectric_library("junit") {
      ":delegate_public_java",
      ":java",
      ":test_support_java",
@@ -3236,21 +3235,7 @@ diff --git a/components/webauthn/android/java/src/org/chromium/components/webaut
      /**
       * Called by InternalAuthenticatorAndroid, which facilitates WebAuthn for processes that
       * originate from the browser process. Since the request is from the browser process, the
-@@ -144,12 +123,10 @@ public final class AuthenticatorImpl implements Authenticator {
- 
-         mMakeCredentialCallback = callback;
-         mIsOperationPending = true;
-+
-         if (!GmsCoreUtils.isWebauthnSupported()
-                 || (!isChrome() && !GmsCoreUtils.isResultReceiverSupported())) {
-             onError(AuthenticatorStatus.NOT_IMPLEMENTED);
--            return;
--        }
--
-         if (mCreateConfirmationUiDelegate != null) {
-             if (!mCreateConfirmationUiDelegate.show(
-                     () -> continueMakeCredential(options, callback),
-@@ -163,15 +140,6 @@ public final class AuthenticatorImpl implements Authenticator {
+@@ -163,15 +142,6 @@ public final class AuthenticatorImpl implements Authenticator {
  
      private void continueMakeCredential(
              PublicKeyCredentialCreationOptions options, MakeCredential_Response callback) {
@@ -3266,12 +3251,10 @@ diff --git a/components/webauthn/android/java/src/org/chromium/components/webaut
      }
  
      @Override
-@@ -188,20 +156,6 @@ public final class AuthenticatorImpl implements Authenticator {
-         if (!GmsCoreUtils.isWebauthnSupported()
-                 || (!isChrome() && !GmsCoreUtils.isResultReceiverSupported())) {
+@@ -190,18 +160,6 @@ public final class AuthenticatorImpl implements Authenticator {
              onError(AuthenticatorStatus.NOT_IMPLEMENTED);
--            return;
--        }
+             return;
+         }
 -
 -        mPendingFido2CredentialRequest = getFido2CredentialRequest();
 -        mPendingFido2CredentialRequest.handleGetAssertionRequest(
@@ -3287,11 +3270,10 @@ diff --git a/components/webauthn/android/java/src/org/chromium/components/webaut
      }
  
      @Override
-@@ -217,14 +171,6 @@ public final class AuthenticatorImpl implements Authenticator {
-         if (!GmsCoreUtils.isWebauthnSupported()) {
+@@ -218,13 +176,6 @@ public final class AuthenticatorImpl implements Authenticator {
              decoratedCallback.call(false);
              return;
--        }
+         }
 -
 -        mIsUserVerifyingPlatformAuthenticatorAvailableCallbackQueue.add(decoratedCallback);
 -        getFido2CredentialRequest()
@@ -3302,12 +3284,10 @@ diff --git a/components/webauthn/android/java/src/org/chromium/components/webaut
      }
  
      /**
-@@ -243,17 +189,6 @@ public final class AuthenticatorImpl implements Authenticator {
-             GetMatchingCredentialIdsResponseCallback callback) {
-         if (!GmsCoreUtils.isGetMatchingCredentialIdsSupported()) {
+@@ -245,15 +196,6 @@ public final class AuthenticatorImpl implements Authenticator {
              callback.onResponse(new ArrayList<byte[]>());
--            return;
--        }
+             return;
+         }
 -
 -        getFido2CredentialRequest()
 -                .handleGetMatchingCredentialIdsRequest(
@@ -3320,12 +3300,10 @@ diff --git a/components/webauthn/android/java/src/org/chromium/components/webaut
      }
  
      @Override
-@@ -263,16 +198,6 @@ public final class AuthenticatorImpl implements Authenticator {
-                 || Build.VERSION.SDK_INT < Build.VERSION_CODES.P
-                 || !isChrome()) {
+@@ -265,14 +207,6 @@ public final class AuthenticatorImpl implements Authenticator {
              callback.call(false);
--            return;
--        }
+             return;
+         }
 -
 -        // If the gmscore and chromium versions are out of sync for some reason, this method will
 -        // return true but chrome will ignore conditional requests. Android surfaces only platform
@@ -3337,7 +3315,7 @@ diff --git a/components/webauthn/android/java/src/org/chromium/components/webaut
      }
  
      @Override
-@@ -284,8 +209,6 @@ public final class AuthenticatorImpl implements Authenticator {
+@@ -284,8 +218,6 @@ public final class AuthenticatorImpl implements Authenticator {
          if (!mIsOperationPending || mGetAssertionCallback == null) {
              return;
          }
@@ -3346,7 +3324,7 @@ diff --git a/components/webauthn/android/java/src/org/chromium/components/webaut
      }
  
      /** Callbacks for receiving responses from the internal handlers. */
-@@ -330,7 +253,6 @@ public final class AuthenticatorImpl implements Authenticator {
+@@ -330,7 +262,6 @@ public final class AuthenticatorImpl implements Authenticator {
          } else if (mGetAssertionCallback != null) {
              mGetAssertionCallback.call(status, null, null);
          }
@@ -3354,7 +3332,7 @@ diff --git a/components/webauthn/android/java/src/org/chromium/components/webaut
          cleanupRequest();
      }
  
-@@ -338,13 +260,10 @@ public final class AuthenticatorImpl implements Authenticator {
+@@ -338,13 +269,10 @@ public final class AuthenticatorImpl implements Authenticator {
          mIsOperationPending = false;
          mMakeCredentialCallback = null;
          mGetAssertionCallback = null;
@@ -3388,36 +3366,6 @@ new file mode 100644
 +    CANCEL_PENDING,
 +    CANCEL_PENDING_RP_ID_VALIDATION_COMPLETE,
 +}
-diff --git a/components/webauthn/android/java/src/org/chromium/components/webauthn/Fido2ApiCallHelper.java b/components/webauthn/android/java/src/org/chromium/components/webauthn/Fido2ApiCallHelper.java
---- a/components/webauthn/android/java/src/org/chromium/components/webauthn/Fido2ApiCallHelper.java
-+++ b/components/webauthn/android/java/src/org/chromium/components/webauthn/Fido2ApiCallHelper.java
-@@ -9,16 +9,11 @@ import android.net.Uri;
- import android.os.Parcel;
- import android.os.ResultReceiver;
- 
--import com.google.android.gms.tasks.OnFailureListener;
--import com.google.android.gms.tasks.OnSuccessListener;
--import com.google.android.gms.tasks.Task;
--
- import org.chromium.base.ContextUtils;
- import org.chromium.blink.mojom.PublicKeyCredentialCreationOptions;
- import org.chromium.blink.mojom.PublicKeyCredentialRequestOptions;
- import org.chromium.components.externalauth.ExternalAuthUtils;
- import org.chromium.components.externalauth.UserRecoverableErrorHandler;
--import org.chromium.components.webauthn.Fido2ApiCall.Fido2ApiCallParams;
- 
- import java.security.NoSuchAlgorithmException;
- import java.util.List;
-@@ -110,9 +105,4 @@ public class Fido2ApiCallHelper {
-         Fido2ApiCallParams params = WebauthnModeProvider.getInstance().getFido2ApiCallParams();
-         params.mMethodInterfaces.getAssertion(
-                 options, uri, clientDataHash, /* tunnelId= */ null, resultReceiver, args);
--        Task<PendingIntent> task =
--                call.run(params.mSignMethodId, Fido2ApiCall.TRANSACTION_SIGN, args, result);
--        task.addOnSuccessListener(successCallback);
--        task.addOnFailureListener(failureCallback);
--    }
- }
 diff --git a/components/webauthn/android/java/src/org/chromium/components/webauthn/GmsCoreUtils.java b/components/webauthn/android/java/src/org/chromium/components/webauthn/GmsCoreUtils.java
 --- a/components/webauthn/android/java/src/org/chromium/components/webauthn/GmsCoreUtils.java
 +++ b/components/webauthn/android/java/src/org/chromium/components/webauthn/GmsCoreUtils.java

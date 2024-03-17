@@ -1265,7 +1265,7 @@ diff --git a/chrome/browser/locale/java/src/org/chromium/chrome/browser/locale/L
 -        throw new IllegalStateException(
 -                "Not applicable unless existing or new promos are required");
 +        TemplateUrlService templateUrlService =
-+            TemplateUrlServiceFactory.getForProfile(Profile.getLastUsedRegularProfile());
++            TemplateUrlServiceFactory.getForProfile(ProfileManager.getLastUsedRegularProfile());
 +        return templateUrlService.getTemplateUrls();
      }
  
