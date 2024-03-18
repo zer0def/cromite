@@ -30,3 +30,5 @@ services/network/network_context.cc
 gin/v8_initializer.cc
 
 media/base/video_codecs.h
+
+testing/variations/fieldtrial_testing_config.json
