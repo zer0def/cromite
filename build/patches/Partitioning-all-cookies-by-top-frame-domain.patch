@@ -24,12 +24,13 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  net/cookies/parsed_cookie.h                   |  7 ++-
  .../sqlite/sqlite_persistent_cookie_store.cc  | 10 ++++
  net/url_request/url_request_http_job.cc       | 10 ++--
+ services/network/cookie_settings.cc           |  5 +-
  services/network/restricted_cookie_manager.cc |  6 +++
  .../modules/cookie_store/cookie_init.idl      |  2 +-
  .../modules/cookie_store/cookie_store.cc      | 12 +++++
  .../cookie_store_delete_options.idl           |  2 +-
  ui/webui/webui_allowlist.cc                   |  1 +
- 20 files changed, 70 insertions(+), 76 deletions(-)
+ 21 files changed, 72 insertions(+), 79 deletions(-)
  create mode 100644 cromite_flags/components/content_settings/core/common/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
  create mode 100644 cromite_flags/components/permissions/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
  create mode 100644 cromite_flags/content/public/common/content_features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
@@ -325,6 +326,28 @@ diff --git a/net/url_request/url_request_http_job.cc b/net/url_request/url_reque
  
    if (!maybe_included_cookies.empty()) {
      std::string cookie_line =
+diff --git a/services/network/cookie_settings.cc b/services/network/cookie_settings.cc
+--- a/services/network/cookie_settings.cc
++++ b/services/network/cookie_settings.cc
+@@ -43,7 +43,7 @@ bool AffectedByThirdPartyCookiePhaseout(
+     const bool is_third_party_request,
+     const bool is_cookie_partitioned) {
+   return cookie_same_site == net::CookieSameSite::NO_RESTRICTION &&
+-         is_third_party_request && !is_cookie_partitioned;
++         is_third_party_request;
+ }
+ 
+ bool IsValidType(ContentSettingsType type) {
+@@ -117,8 +117,7 @@ bool IsOriginOpaqueHttpOrHttps(const url::Origin* top_frame_origin) {
+ // static
+ bool CookieSettings::IsCookieAllowed(const net::CanonicalCookie& cookie,
+                                      const CookieSettingWithMetadata& setting) {
+-  return IsAllowed(setting.cookie_setting()) ||
+-         (cookie.IsPartitioned() && setting.allow_partitioned_cookies());
++  return IsAllowed(setting.cookie_setting());
+ }
+ 
+ // static
 diff --git a/services/network/restricted_cookie_manager.cc b/services/network/restricted_cookie_manager.cc
 --- a/services/network/restricted_cookie_manager.cc
 +++ b/services/network/restricted_cookie_manager.cc
