@@ -23,25 +23,25 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browser/flags/android/chrome_feature_list.cc
 --- a/chrome/browser/flags/android/chrome_feature_list.cc
 +++ b/chrome/browser/flags/android/chrome_feature_list.cc
-@@ -247,6 +247,7 @@ const base::Feature* const kFeaturesExposedToJava[] = {
+@@ -250,6 +250,7 @@ const base::Feature* const kFeaturesExposedToJava[] = {
      &kReaderModeInCCT,
      &kRecordSuppressionMetrics,
      &kReengagementNotification,
 +    &kSearchReadyOmniboxFeature,
      &kRelatedSearchesAllLanguage,
      &kReportParentalControlSitesChild,
-     &kRequestDesktopSiteDefaults,
+     &kSearchEnginesPromoV3,
 diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 --- a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 +++ b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
-@@ -324,6 +324,7 @@ public abstract class ChromeFeatureList {
+@@ -325,6 +325,7 @@ public abstract class ChromeFeatureList {
      public static final String MESSAGES_FOR_ANDROID_ADS_BLOCKED = "MessagesForAndroidAdsBlocked";
      public static final String MESSAGES_FOR_ANDROID_INFRASTRUCTURE =
              "MessagesForAndroidInfrastructure";
 +    public static final String SEARCH_READY_OMNIBOX = "SearchReadyOmnibox";
      public static final String MESSAGES_FOR_ANDROID_PERMISSION_UPDATE =
              "MessagesForAndroidPermissionUpdate";
-     public static final String MUlTI_INSTANCE_APPLICATION_STATUS_CLEANUP =
+     public static final String MIGRATE_ACCOUNT_MANAGEMENT_SETTINGS_TO_CAPABILITIES =
 diff --git a/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/browser/omnibox/suggestions/DropdownItemViewInfoListBuilder.java b/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/browser/omnibox/suggestions/DropdownItemViewInfoListBuilder.java
 --- a/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/browser/omnibox/suggestions/DropdownItemViewInfoListBuilder.java
 +++ b/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/browser/omnibox/suggestions/DropdownItemViewInfoListBuilder.java

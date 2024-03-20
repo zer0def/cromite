@@ -91,14 +91,14 @@ diff --git a/net/quic/quic_session_pool.cc b/net/quic/quic_session_pool.cc
 --- a/net/quic/quic_session_pool.cc
 +++ b/net/quic/quic_session_pool.cc
 @@ -69,6 +69,7 @@
- #include "net/third_party/quiche/src/quiche/quic/core/quic_utils.h"
  #include "net/third_party/quiche/src/quiche/quic/platform/api/quic_flags.h"
+ #include "net/traffic_annotation/network_traffic_annotation.h"
  #include "third_party/boringssl/src/include/openssl/aead.h"
 +#include "third_party/boringssl/src/include/openssl/ssl.h"
  #include "url/gurl.h"
  #include "url/scheme_host_port.h"
  #include "url/url_constants.h"
-@@ -196,6 +197,38 @@ std::set<std::string> HostsFromOrigins(std::set<HostPortPair> origins) {
+@@ -156,6 +157,38 @@ std::set<std::string> HostsFromOrigins(std::set<HostPortPair> origins) {
  
  }  // namespace
  
@@ -134,10 +134,10 @@ diff --git a/net/quic/quic_session_pool.cc b/net/quic/quic_session_pool.cc
 +  }
 +};
 +
- // Refcounted class that owns quic::QuicCryptoClientConfig and tracks how many
- // consumers are using it currently. When the last reference is freed, the
- // QuicCryptoClientConfigHandle informs the owning QuicSessionPool, moves it
-@@ -2409,7 +2442,7 @@ QuicSessionPool::CreateCryptoConfigHandle(
+ QuicSessionRequest::QuicSessionRequest(QuicSessionPool* pool) : pool_(pool) {}
+ 
+ QuicSessionRequest::~QuicSessionRequest() {
+@@ -1716,7 +1749,7 @@ QuicSessionPool::CreateCryptoConfigHandle(
                cert_verifier_, transport_security_state_, sct_auditing_delegate_,
                HostsFromOrigins(params_.origins_to_force_quic_on),
                actual_network_anonymization_key),

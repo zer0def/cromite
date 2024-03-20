@@ -9,9 +9,9 @@ Add DuckDuckGo Lite
 License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
  .../search_engines/prepopulated_engines.json  | 31 +++++++++++++++++++
- .../search_engines/search_engine_type.h       |  2 ++
+ .../search_engines/search_engine_type.h       |  5 +++
  .../template_url_prepopulate_data.cc          |  3 ++
- 3 files changed, 36 insertions(+)
+ 3 files changed, 39 insertions(+)
 
 diff --git a/components/search_engines/prepopulated_engines.json b/components/search_engines/prepopulated_engines.json
 --- a/components/search_engines/prepopulated_engines.json
@@ -33,7 +33,7 @@ diff --git a/components/search_engines/prepopulated_engines.json b/components/se
      "ecosia": {
        "name": "Ecosia",
        "keyword": "ecosia.org",
-@@ -172,6 +182,27 @@
+@@ -171,6 +181,27 @@
        "id": 111
      },
  
@@ -64,15 +64,22 @@ diff --git a/components/search_engines/prepopulated_engines.json b/components/se
 diff --git a/components/search_engines/search_engine_type.h b/components/search_engines/search_engine_type.h
 --- a/components/search_engines/search_engine_type.h
 +++ b/components/search_engines/search_engine_type.h
-@@ -89,6 +89,8 @@ enum SearchEngineType {
-   SEARCH_ENGINE_BRAVE = 70,
+@@ -90,10 +90,15 @@ enum SearchEngineType {
    SEARCH_ENGINE_KARMA = 71,
    SEARCH_ENGINE_YOU = 72,
-+  SEARCH_ENGINE_GOOGLE_EN = 73,
-+  SEARCH_ENGINE_DUCKDUCKGOLIGHT = 74,
+   SEARCH_ENGINE_STARTER_PACK_ASK_GOOGLE = 73,
++  SEARCH_ENGINE_GOOGLE_EN = 74,
++  SEARCH_ENGINE_DUCKDUCKGOLIGHT = 75,
  
    SEARCH_ENGINE_MAX  // Bounding value needed for UMA histogram macro.
  };
+ 
++static_assert(SEARCH_ENGINE_DUCKDUCKGOLIGHT == (SEARCH_ENGINE_MAX - 1),
++              "Please check this patch");
++
+ // Enum to record the type of search engine a user used in keyword mode. This
+ // should be kept aligned with the `OmniboxBuiltinEngineType` enum in enums.xml.
+ // Entries should not be renumbered and numeric values should never be reused.
 diff --git a/components/search_engines/template_url_prepopulate_data.cc b/components/search_engines/template_url_prepopulate_data.cc
 --- a/components/search_engines/template_url_prepopulate_data.cc
 +++ b/components/search_engines/template_url_prepopulate_data.cc

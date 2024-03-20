@@ -10,7 +10,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 diff --git a/components/performance_manager/user_tuning/prefs.cc b/components/performance_manager/user_tuning/prefs.cc
 --- a/components/performance_manager/user_tuning/prefs.cc
 +++ b/components/performance_manager/user_tuning/prefs.cc
-@@ -13,12 +13,12 @@
+@@ -23,12 +23,12 @@
  namespace performance_manager::user_tuning::prefs {
  
  void RegisterLocalStatePrefs(PrefRegistrySimple* registry) {

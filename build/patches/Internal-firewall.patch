@@ -58,7 +58,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -2522,6 +2522,7 @@ static_library("browser") {
+@@ -2537,6 +2537,7 @@ static_library("browser") {
      "//third_party/ungoogled:switches",
      "//services/device/public/mojom",
      "//services/device/public/mojom:usb",
@@ -239,7 +239,7 @@ new file mode 100644
 diff --git a/net/BUILD.gn b/net/BUILD.gn
 --- a/net/BUILD.gn
 +++ b/net/BUILD.gn
-@@ -1030,6 +1030,7 @@ component("net") {
+@@ -1032,6 +1032,7 @@ component("net") {
      "//build:chromeos_buildflags",
      "//components/miracle_parameter/common",
      "//net/http:transport_security_state_generated_files",
@@ -264,9 +264,9 @@ diff --git a/net/traffic_annotation/network_traffic_annotation.h b/net/traffic_a
 diff --git a/net/url_request/url_request_http_job.cc b/net/url_request/url_request_http_job.cc
 --- a/net/url_request/url_request_http_job.cc
 +++ b/net/url_request/url_request_http_job.cc
-@@ -336,6 +336,9 @@ URLRequestHttpJob::URLRequestHttpJob(
-     throttling_entry_ = manager->RegisterRequestUrl(request->url());
- 
+@@ -331,6 +331,9 @@ URLRequestHttpJob::URLRequestHttpJob(
+     : URLRequestJob(request),
+       http_user_agent_settings_(http_user_agent_settings) {
    ResetTimer();
 +
 +  if (base::FeatureList::IsEnabled(firewall::features::kEnableFirewall))
@@ -274,7 +274,7 @@ diff --git a/net/url_request/url_request_http_job.cc b/net/url_request/url_reque
  }
  
  URLRequestHttpJob::~URLRequestHttpJob() {
-@@ -625,6 +628,18 @@ void URLRequestHttpJob::MaybeStartTransactionInternal(int result) {
+@@ -617,6 +620,18 @@ void URLRequestHttpJob::MaybeStartTransactionInternal(int result) {
  void URLRequestHttpJob::StartTransactionInternal() {
    DCHECK(!override_response_headers_);
  
@@ -296,15 +296,15 @@ diff --git a/net/url_request/url_request_http_job.cc b/net/url_request/url_reque
 diff --git a/net/url_request/url_request_http_job.h b/net/url_request/url_request_http_job.h
 --- a/net/url_request/url_request_http_job.h
 +++ b/net/url_request/url_request_http_job.h
-@@ -30,6 +30,7 @@
+@@ -29,6 +29,7 @@
+ #include "net/http/http_request_info.h"
+ #include "net/socket/connection_attempts.h"
  #include "net/url_request/url_request_job.h"
- #include "net/url_request/url_request_throttler_entry_interface.h"
- #include "third_party/abseil-cpp/absl/types/optional.h"
 +#include "services/firewall/public/firewall_service.h"
  
  namespace net {
  
-@@ -80,6 +81,8 @@ class NET_EXPORT_PRIVATE URLRequestHttpJob : public URLRequestJob {
+@@ -79,6 +80,8 @@ class NET_EXPORT_PRIVATE URLRequestHttpJob : public URLRequestJob {
      return priority_;
    }
  
@@ -1554,7 +1554,7 @@ new file mode 100644
 diff --git a/services/network/network_context.cc b/services/network/network_context.cc
 --- a/services/network/network_context.cc
 +++ b/services/network/network_context.cc
-@@ -90,6 +90,7 @@
+@@ -91,6 +91,7 @@
  #include "net/url_request/url_request.h"
  #include "net/url_request/url_request_context.h"
  #include "net/url_request/url_request_context_builder.h"
@@ -1654,7 +1654,7 @@ diff --git a/services/network/network_context.cc b/services/network/network_cont
 @@ -1725,6 +1780,24 @@ void NetworkContext::CreateWebSocket(
      mojo::PendingRemote<mojom::WebSocketAuthenticationHandler> auth_handler,
      mojo::PendingRemote<mojom::TrustedHeaderClient> header_client,
-     const absl::optional<base::UnguessableToken>& throttling_profile_id) {
+     const std::optional<base::UnguessableToken>& throttling_profile_id) {
 +  if (base::FeatureList::IsEnabled(firewall::features::kEnableFirewall)) {
 +    auto firewall_service = std::make_unique<firewall::FirewallService>(nullptr);
 +    if (!firewall_service->IsAllowed(traffic_annotation.unique_id_hash_code)) {
@@ -1715,9 +1715,9 @@ diff --git a/services/network/public/cpp/simple_url_loader.h b/services/network/
 --- a/services/network/public/cpp/simple_url_loader.h
 +++ b/services/network/public/cpp/simple_url_loader.h
 @@ -17,6 +17,7 @@
+ #include "base/functional/callback_forward.h"
  #include "services/network/public/cpp/url_loader_completion_status.h"
  #include "services/network/public/mojom/url_response_head.mojom-forward.h"
- #include "third_party/abseil-cpp/absl/types/optional.h"
 +#include "services/firewall/public/firewall_service.h"
  
  class GURL;
@@ -1980,7 +1980,7 @@ diff --git a/third_party/blink/renderer/platform/loader/fetch/url_loader/url_loa
 diff --git a/tools/traffic_annotation/scripts/auditor/auditor.py b/tools/traffic_annotation/scripts/auditor/auditor.py
 --- a/tools/traffic_annotation/scripts/auditor/auditor.py
 +++ b/tools/traffic_annotation/scripts/auditor/auditor.py
-@@ -835,6 +835,7 @@ class ArchivedAnnotation:
+@@ -856,6 +856,7 @@ class ArchivedAnnotation:
    # the XML. This is used to serialize/deserialize the XML.
    FIELDS = [
        "id", "added_in_milestone", "type", "second_id", "reserved",

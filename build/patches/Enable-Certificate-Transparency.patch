@@ -24,7 +24,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 diff --git a/chrome/browser/browser_features.h b/chrome/browser/browser_features.h
 --- a/chrome/browser/browser_features.h
 +++ b/chrome/browser/browser_features.h
-@@ -63,6 +63,7 @@ BASE_DECLARE_FEATURE(kTabCaptureBlueBorderCrOS);
+@@ -72,6 +72,7 @@ BASE_DECLARE_FEATURE(kTabCaptureBlueBorderCrOS);
  
  BASE_DECLARE_FEATURE(kWebUsbDeviceDetection);
  
@@ -35,7 +35,7 @@ diff --git a/chrome/browser/browser_features.h b/chrome/browser/browser_features
 diff --git a/chrome/browser/net/system_network_context_manager.cc b/chrome/browser/net/system_network_context_manager.cc
 --- a/chrome/browser/net/system_network_context_manager.cc
 +++ b/chrome/browser/net/system_network_context_manager.cc
-@@ -1012,7 +1012,7 @@ bool SystemNetworkContextManager::IsCertificateTransparencyEnabled() {
+@@ -1034,7 +1034,7 @@ bool SystemNetworkContextManager::IsCertificateTransparencyEnabled() {
    //   - on an opt-in basis for other builds and embedders, controlled with the
    //     kCertificateTransparencyAskBeforeEnabling flag
    return base::FeatureList::IsEnabled(
