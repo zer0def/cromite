@@ -4,10 +4,23 @@ Subject: Disable WebGPU
 
 License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
+ content/child/runtime_features.cc                | 2 ++
  gpu/config/gpu_finch_features.cc                 | 2 +-
  third_party/blink/renderer/modules/webgpu/gpu.cc | 1 +
- 2 files changed, 2 insertions(+), 1 deletion(-)
+ 3 files changed, 4 insertions(+), 1 deletion(-)
 
+diff --git a/content/child/runtime_features.cc b/content/child/runtime_features.cc
+--- a/content/child/runtime_features.cc
++++ b/content/child/runtime_features.cc
+@@ -586,6 +586,8 @@ void SetCustomizedRuntimeFeaturesFromCombinedArgs(
+     WebRuntimeFeatures::EnableV8IdleTasks(true);
+   }
+ 
++  WebRuntimeFeatures::EnableFeatureFromString("WebGpu", false);
++
+   WebRuntimeFeatures::EnableBackForwardCache(
+       content::IsBackForwardCacheEnabled());
+ 
 diff --git a/gpu/config/gpu_finch_features.cc b/gpu/config/gpu_finch_features.cc
 --- a/gpu/config/gpu_finch_features.cc
 +++ b/gpu/config/gpu_finch_features.cc
