@@ -5,7 +5,8 @@ Subject: Disable Compose feature
 License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
  components/compose/core/browser/compose_features.cc | 3 +++
- 1 file changed, 3 insertions(+)
+ components/compose/features.gni                     | 2 +-
+ 2 files changed, 4 insertions(+), 1 deletion(-)
 
 diff --git a/components/compose/core/browser/compose_features.cc b/components/compose/core/browser/compose_features.cc
 --- a/components/compose/core/browser/compose_features.cc
@@ -18,4 +19,14 @@ diff --git a/components/compose/core/browser/compose_features.cc b/components/co
 +SET_CROMITE_FEATURE_DISABLED(kEnableCompose);
 +SET_CROMITE_FEATURE_DISABLED(kComposeEligible);
  }  // namespace compose::features
+diff --git a/components/compose/features.gni b/components/compose/features.gni
+--- a/components/compose/features.gni
++++ b/components/compose/features.gni
+@@ -4,5 +4,5 @@
+ 
+ declare_args() {
+   # Whether Compose is enabled in the build.
+-  enable_compose = is_mac || is_win || is_linux
++  enable_compose = false
+ }
 --
