@@ -16,10 +16,6 @@ Cromite is a [Chromium](https://www.chromium.org/Home) fork based on [Bromite](h
 
 Cromite is available for Android arm64-v8a, arm32-v7a and x86_64, Nougat and above (Minimum v7.0, API level 24), Windows and Linux 64bit.
 
-For the Frequently Asked Questions see [F.A.Q.](./FAQ.md).
-
-For documentation see the [wiki](https://github.com/bromite/bromite/wiki).
-
 # Goals
 
 Cromite's goal is to
@@ -100,6 +96,8 @@ you can activate the 'RendererAppContainer' flag from the command line with
 Please submit issues following the issue template; beware that GitHub does not display the templates from mobile.
 
 Patches are welcome and accepted if they match the project goals.
+
+If you want to help me, [here](https://github.com/uazo/cromite/blob/master/docs/HELP_ME_PLEASE.md) is the list of things I would need.
 
 For any usage or development discussion please use GitHub Discussions: https://github.com/uazo/cromite/discussions
 
