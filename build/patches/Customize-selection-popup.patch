@@ -7,6 +7,7 @@ Opens tabs in foreground,  Move web search to the top of items,
 Web search in tab group and Enable smart text selection
 License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
+ .../browser/ChromeActionModeHandler.java      |   4 +-
  .../chrome/browser/ChromeTabbedActivity.java  |  15 +-
  .../compositor/layouts/LayoutManagerImpl.java |   8 ++
  .../chrome/browser/ui/RootUiCoordinator.java  |   8 +-
@@ -14,9 +15,23 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../res/xml/accessibility_preferences.xml     |  24 ++++
  .../selection/SelectActionMenuHelper.java     | 131 ++++++++++++------
  .../selection/SmartSelectionClient.java       |   4 +
- 7 files changed, 177 insertions(+), 47 deletions(-)
+ 8 files changed, 178 insertions(+), 50 deletions(-)
  create mode 100644 chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Customize-selection-popup.grdp
 
+diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ChromeActionModeHandler.java b/chrome/android/java/src/org/chromium/chrome/browser/ChromeActionModeHandler.java
+--- a/chrome/android/java/src/org/chromium/chrome/browser/ChromeActionModeHandler.java
++++ b/chrome/android/java/src/org/chromium/chrome/browser/ChromeActionModeHandler.java
+@@ -148,9 +148,7 @@ public class ChromeActionModeHandler {
+                             | ActionModeCallbackHelper.MENU_ITEM_SHARE;
+             // Disable options that expose additional Chrome functionality prior to the FRE being
+             // completed (i.e. creation of a new tab).
+-            if (FirstRunStatus.getFirstRunFlowComplete()) {
+-                allowedActionModes |= ActionModeCallbackHelper.MENU_ITEM_WEB_SEARCH;
+-            }
++            allowedActionModes |= ActionModeCallbackHelper.MENU_ITEM_WEB_SEARCH;
+             mHelper.setAllowedMenuItems(allowedActionModes);
+ 
+             mHelper.onCreateActionMode(mode, menu);
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java b/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java
