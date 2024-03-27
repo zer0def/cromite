@@ -25,7 +25,7 @@ diff --git a/chrome/browser/prefs/browser_prefs.cc b/chrome/browser/prefs/browse
 diff --git a/chrome/browser/resources/new_tab_page/app.html b/chrome/browser/resources/new_tab_page/app.html
 --- a/chrome/browser/resources/new_tab_page/app.html
 +++ b/chrome/browser/resources/new_tab_page/app.html
-@@ -498,11 +498,6 @@
+@@ -504,11 +504,6 @@
        hidden$="[[!logoEnabled_]]">
    </ntp-logo>
    <div id="realboxContainer">

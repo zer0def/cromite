@@ -2238,7 +2238,7 @@ diff --git a/third_party/blink/web_tests/TestExpectations b/third_party/blink/we
 diff --git a/third_party/blink/web_tests/VirtualTestSuites b/third_party/blink/web_tests/VirtualTestSuites
 --- a/third_party/blink/web_tests/VirtualTestSuites
 +++ b/third_party/blink/web_tests/VirtualTestSuites
-@@ -103,6 +103,15 @@
+@@ -102,6 +102,15 @@
               "--disable-threaded-compositing", "--disable-threaded-animation"],
      "expires": "Jul 1, 2023"
    },
