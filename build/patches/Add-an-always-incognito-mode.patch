@@ -1098,7 +1098,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tabmodel/TabMod
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tabmodel/TabPersistentStore.java b/chrome/android/java/src/org/chromium/chrome/browser/tabmodel/TabPersistentStore.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/tabmodel/TabPersistentStore.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/tabmodel/TabPersistentStore.java
-@@ -50,6 +50,8 @@ import org.chromium.chrome.features.start_surface.StartSurfaceUserData;
+@@ -49,6 +49,8 @@ import org.chromium.chrome.features.start_surface.StartSurfaceUserData;
  import org.chromium.components.embedder_support.util.UrlUtilities;
  import org.chromium.content_public.browser.LoadUrlParams;
  
@@ -1107,7 +1107,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tabmodel/TabPer
  import java.io.BufferedInputStream;
  import java.io.ByteArrayInputStream;
  import java.io.ByteArrayOutputStream;
-@@ -671,6 +673,13 @@ public class TabPersistentStore {
+@@ -670,6 +672,13 @@ public class TabPersistentStore {
                  }
              }
          }
