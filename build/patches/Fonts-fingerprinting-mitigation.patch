@@ -444,16 +444,16 @@ diff --git a/third_party/blink/renderer/platform/fonts/skia/font_cache_skia.cc b
    return AtomicString::FromUTF8(str.c_str(), str.size());
  }
  
-+sk_sp<SkTypeface> ReturnIfAllowed(sk_sp<SkTypeface> typeface, bool check_fonts) {
++sk_sp<SkTypeface> ReturnIfAllowed(sk_sp<SkTypeface> typeface, const std::string& name, bool check_fonts) {
 +  if (!check_fonts) return typeface;
-+#if BUILDFLAG(IS_WIN)
 +  if (!typeface) return nullptr;
 +
++#if BUILDFLAG(IS_WIN)
 +  SkString skia_family_name;
 +  skia::DWriteFontTypeface_GetGDIFamilyName(typeface.get(), &skia_family_name);
 +  const AtomicString& family = ToAtomicString(skia_family_name);
-+  std::string name = family.Utf8();
-+  if (!IsFontAllowed(base::UTF8ToUTF16(name)))
++  std::string family_name = family.Utf8();
++  if (!IsFontAllowed(base::UTF8ToUTF16(family_name)))
 +    return nullptr;
 +#endif // BUILDFLAG(IS_WIN)
 +  return typeface;
@@ -493,7 +493,7 @@ diff --git a/third_party/blink/renderer/platform/fonts/skia/font_cache_skia.cc b
      if (sk_sp<SkTypeface> typeface =
              CreateLocaleSpecificTypeface(font_description, locale_family))
 -      return typeface;
-+      return ReturnIfAllowed(typeface, check_fonts);
++      return ReturnIfAllowed(typeface, name, check_fonts);
    }
  #endif  // BUILDFLAG(IS_ANDROID)
  
@@ -503,7 +503,7 @@ diff --git a/third_party/blink/renderer/platform/fonts/skia/font_cache_skia.cc b
 -  return sk_sp<SkTypeface>(font_manager->matchFamilyStyle(
 -      name.empty() ? nullptr : name.c_str(), font_description.SkiaFontStyle()));
 +  return ReturnIfAllowed(sk_sp<SkTypeface>(font_manager->matchFamilyStyle(
-+      name.empty() ? nullptr : name.c_str(), font_description.SkiaFontStyle())), check_fonts);
++      name.empty() ? nullptr : name.c_str(), font_description.SkiaFontStyle())), name, check_fonts);
  }
  
  #if !BUILDFLAG(IS_WIN)
