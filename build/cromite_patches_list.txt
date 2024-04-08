@@ -284,8 +284,6 @@ Enable-percent-based-scrolling-on-Windows.patch
 Show-NTP-at-startup.patch
 Enable-platform-aac-audio-and-h264-video.patch
 Disable-Paint-Preview-by-default.patch
-Emoji-Fonts-fingerprinting-mitigation-02-02.patch
-Emoji-Fonts-fingerprinting-mitigation-01-02.patch
 
 Temp-PerformanceNavigationTiming-privacy-fix.patch
 Temp-disable-predictive-back-gesture.patch
