@@ -13,8 +13,8 @@ permissions:
 
 on:
   push:
-    branches-ignore:
-      - 'ci'
+    branches:
+      - 'master'
     paths:
       - 'build/**'
 
