@@ -91,6 +91,9 @@ you can activate the 'RendererAppContainer' flag from the command line with
   --enable-features=RendererAppContainer
 ```
 
+### Auto-update setup for linux
+working in progress in https://github.com/uazo/cromite/issues/771
+
 # Contributing
 
 Please submit issues following the issue template; beware that GitHub does not display the templates from mobile.
