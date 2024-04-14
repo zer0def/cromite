@@ -35,7 +35,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ChromeActionMod
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java b/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java
-@@ -737,10 +737,17 @@ public class ChromeTabbedActivity extends ChromeActivity<ChromeActivityComponent
+@@ -748,10 +748,17 @@ public class ChromeTabbedActivity extends ChromeActivity<ChromeActivityComponent
                                  @TabLaunchType int type,
                                  @TabCreationState int creationState,
                                  boolean markedForSelection) {
@@ -93,7 +93,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ui/RootUiCoordi
  import org.chromium.base.TraceEvent;
  import org.chromium.base.metrics.RecordUserAction;
  import org.chromium.base.supplier.ObservableSupplier;
-@@ -814,11 +815,16 @@ public class RootUiCoordinator
+@@ -813,11 +814,16 @@ public class RootUiCoordinator
                              TrackerFactory.getTrackerForProfile(tab.getProfile())
                                      .notifyEvent(EventConstants.WEB_SEARCH_PERFORMED);
  
@@ -153,7 +153,7 @@ new file mode 100644
 diff --git a/components/browser_ui/accessibility/android/java/res/xml/accessibility_preferences.xml b/components/browser_ui/accessibility/android/java/res/xml/accessibility_preferences.xml
 --- a/components/browser_ui/accessibility/android/java/res/xml/accessibility_preferences.xml
 +++ b/components/browser_ui/accessibility/android/java/res/xml/accessibility_preferences.xml
-@@ -63,4 +63,28 @@ found in the LICENSE file.
+@@ -68,4 +68,28 @@ found in the LICENSE file.
          android:key="move_toolbar_bottom"
          android:summary="@string/move_toolbar_bottom_summary"
          android:title="@string/move_toolbar_bottom_title" />
@@ -353,7 +353,7 @@ diff --git a/content/public/android/java/src/org/chromium/content/browser/select
          if (isSelectionPassword || intentHandler == null) {
              addAdditionalTextProcessingItems(textProcessingItems, selectionActionMenuDelegate);
              return textProcessingItems;
-@@ -431,7 +478,7 @@ public class SelectActionMenuHelper {
+@@ -432,7 +479,7 @@ public class SelectActionMenuHelper {
                  .setId(R.id.select_action_menu_cut)
                  .setIconAttr(android.R.attr.actionModeCutDrawable)
                  .setAlphabeticShortcut(ItemKeyShortcuts.CUT)
@@ -362,7 +362,7 @@ diff --git a/content/public/android/java/src/org/chromium/content/browser/select
                  .setShowAsActionFlags(
                          MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_WITH_TEXT)
                  .setIsEnabled(isEnabled)
-@@ -443,7 +490,7 @@ public class SelectActionMenuHelper {
+@@ -444,7 +491,7 @@ public class SelectActionMenuHelper {
                  .setId(R.id.select_action_menu_copy)
                  .setIconAttr(android.R.attr.actionModeCopyDrawable)
                  .setAlphabeticShortcut(ItemKeyShortcuts.COPY)
@@ -371,7 +371,7 @@ diff --git a/content/public/android/java/src/org/chromium/content/browser/select
                  .setShowAsActionFlags(
                          MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_WITH_TEXT)
                  .setIsEnabled(isEnabled)
-@@ -455,7 +502,7 @@ public class SelectActionMenuHelper {
+@@ -456,7 +503,7 @@ public class SelectActionMenuHelper {
                  .setId(R.id.select_action_menu_paste)
                  .setIconAttr(android.R.attr.actionModePasteDrawable)
                  .setAlphabeticShortcut(ItemKeyShortcuts.PASTE)
@@ -380,7 +380,7 @@ diff --git a/content/public/android/java/src/org/chromium/content/browser/select
                  .setShowAsActionFlags(
                          MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_WITH_TEXT)
                  .setIsEnabled(isEnabled)
-@@ -469,7 +516,7 @@ public class SelectActionMenuHelper {
+@@ -470,7 +517,7 @@ public class SelectActionMenuHelper {
          return new SelectionMenuItem.Builder(context.getString(R.string.actionbar_share))
                  .setId(R.id.select_action_menu_share)
                  .setIconAttr(android.R.attr.actionModeShareDrawable)
@@ -389,7 +389,7 @@ diff --git a/content/public/android/java/src/org/chromium/content/browser/select
                  .setShowAsActionFlags(
                          MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_WITH_TEXT)
                  .setIsEnabled(isEnabled)
-@@ -481,7 +528,7 @@ public class SelectActionMenuHelper {
+@@ -482,7 +529,7 @@ public class SelectActionMenuHelper {
                  .setId(R.id.select_action_menu_select_all)
                  .setIconAttr(android.R.attr.actionModeSelectAllDrawable)
                  .setAlphabeticShortcut(ItemKeyShortcuts.SELECT_ALL)
@@ -398,7 +398,7 @@ diff --git a/content/public/android/java/src/org/chromium/content/browser/select
                  .setShowAsActionFlags(
                          MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_WITH_TEXT)
                  .setIsEnabled(isEnabled)
-@@ -494,7 +541,7 @@ public class SelectActionMenuHelper {
+@@ -495,7 +542,7 @@ public class SelectActionMenuHelper {
          SelectionMenuItem.Builder builder =
                  new SelectionMenuItem.Builder(android.R.string.paste_as_plain_text)
                          .setId(R.id.select_action_menu_paste_as_plain_text)
@@ -407,7 +407,7 @@ diff --git a/content/public/android/java/src/org/chromium/content/browser/select
                          .setShowAsActionFlags(
                                  MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_WITH_TEXT)
                          .setIsEnabled(isEnabled);
-@@ -514,7 +561,7 @@ public class SelectActionMenuHelper {
+@@ -515,7 +562,7 @@ public class SelectActionMenuHelper {
          return new SelectionMenuItem.Builder(context.getString(R.string.actionbar_web_search))
                  .setId(R.id.select_action_menu_web_search)
                  .setIconAttr(android.R.attr.actionModeWebSearchDrawable)

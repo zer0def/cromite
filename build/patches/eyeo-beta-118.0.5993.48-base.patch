@@ -9,7 +9,7 @@ Based on Chromium 118.0.5993.48
  README.md                                     |   12 +
  base/trace_event/builtin_categories.h         |    5 +
  build/install-build-deps.py                   |   10 +-
- components/BUILD.gn                           |   15 +
+ components/BUILD.gn                           |   12 +
  components/adblock/CHANGELOG.md               |  635 ++++++++
  components/adblock/LICENSE                    |  674 ++++++++
  components/adblock/README.md                  |   80 +
@@ -223,7 +223,7 @@ Based on Chromium 118.0.5993.48
  tools/eyeo/generate_modules.sh                |  209 +++
  tools/eyeo/snippets_deps.py                   |   61 +
  tools/gritsettings/resource_ids.spec          |    8 +
- 219 files changed, 22061 insertions(+), 3 deletions(-)
+ 219 files changed, 22058 insertions(+), 3 deletions(-)
  create mode 100644 components/adblock/CHANGELOG.md
  create mode 100644 components/adblock/LICENSE
  create mode 100644 components/adblock/README.md
@@ -435,7 +435,7 @@ diff --git a/DEPS b/DEPS
    # By default, do not check out WebKit for iOS, as it is not needed unless
    # running against ToT WebKit rather than system WebKit. This can be overridden
    # e.g. with custom_vars.
-@@ -292,6 +296,8 @@ vars = {
+@@ -294,6 +298,8 @@ vars = {
    'download_libaom_testdata': False,
  
    'android_git': 'https://android.googlesource.com',
@@ -444,9 +444,9 @@ diff --git a/DEPS b/DEPS
    'aomedia_git': 'https://aomedia.googlesource.com',
    'boringssl_git': 'https://boringssl.googlesource.com',
    'chrome_git': 'https://chrome-internal.googlesource.com',
-@@ -503,6 +509,11 @@ vars = {
+@@ -505,6 +511,11 @@ vars = {
    # and whatever else without interference from each other.
-   'betocore_revision': '4d202dab960a0b6a6e4757ab4393945aca5a09db',
+   'betocore_revision': '8bd72cfb219344308ee857bcbe65a27fe91acfe8',
  
 +  # Three lines of non-changing comments so that
 +  # the commit queue can handle CLs rolling feed
@@ -455,8 +455,8 @@ diff --git a/DEPS b/DEPS
 +
    # If you change this, also update the libc++ revision in
    # //buildtools/deps_revisions.gni.
-   'libcxx_revision':       '834e97d73f13a166af65952fb681071eec87a2c4',
-@@ -833,6 +844,10 @@ deps = {
+   'libcxx_revision':       '80307e66e74bae927fb8709a549859e777e3bf0b',
+@@ -835,6 +846,10 @@ deps = {
      'condition': 'checkout_android and checkout_src_internal',
    },
  
@@ -465,9 +465,9 @@ diff --git a/DEPS b/DEPS
 +  },
 +
    'src/docs/website': {
-     'url': Var('chromium_git') + '/website.git' + '@' + '12d09e14812d8390213801bb31d08858a3378fcb',
+     'url': Var('chromium_git') + '/website.git' + '@' + '02057aa20e0dd4598967e3daf2f25c815962ef1c',
    },
-@@ -938,6 +953,13 @@ deps = {
+@@ -960,6 +975,13 @@ deps = {
        'dep_type': 'cipd',
    },
  
@@ -478,9 +478,9 @@ diff --git a/DEPS b/DEPS
 +      Var('eyeo_distpartners_gitlab') + '/web-page-recordings.git@69fd10f2076334d10b2dd938ae84f8cc7c0c9018',
 +  },
 +
-   'src/third_party/accessibility_test_framework': {
+   'src/third_party/android_toolchain/ndk': {
        'packages': [
-           {
+             {
 diff --git a/LICENSE b/LICENSE
 --- a/LICENSE
 +++ b/LICENSE
@@ -562,7 +562,7 @@ diff --git a/build/install-build-deps.py b/build/install-build-deps.py
  import argparse
  import functools
  import os
-@@ -546,7 +554,7 @@ def backwards_compatible_list(options):
+@@ -554,7 +562,7 @@ def backwards_compatible_list(options):
        "msttcorefonts",
        "python-dev",
        "python-setuptools",
@@ -599,7 +599,7 @@ diff --git a/components/BUILD.gn b/components/BUILD.gn
      "//components/affiliations/core/browser:unit_tests",
      "//components/aggregation_service:unit_tests",
      "//components/apdu:unit_tests",
-@@ -411,6 +422,7 @@ test("components_unittests") {
+@@ -409,6 +420,7 @@ test("components_unittests") {
  
    if (use_blink) {
      deps += [
@@ -607,16 +607,6 @@ diff --git a/components/BUILD.gn b/components/BUILD.gn
        "//components/autofill/content/browser:unit_tests",
        "//components/autofill/content/renderer:unit_tests",
        "//components/autofill/core/common/mojom:unit_tests",
-@@ -1155,6 +1167,9 @@ if (use_blink) {
- 
-     deps = [
-       "//base",
-+      "//components/adblock/core/classifier:perf_tests",
-+      "//components/adblock/core/converter:perf_tests",
-+      "//components/adblock/core/subscription:perf_tests",
-       "//components/bookmarks/test",
-       "//components/discardable_memory/common",
-       "//components/history/core/test",
 diff --git a/components/adblock/CHANGELOG.md b/components/adblock/CHANGELOG.md
 new file mode 100644
 --- /dev/null
@@ -52324,7 +52314,7 @@ diff --git a/content/browser/loader/navigation_url_loader_impl.cc b/content/brow
  #include "content/browser/loader/navigation_url_loader_impl.h"
  
  #include <map>
-@@ -999,7 +1003,7 @@ void NavigationURLLoaderImpl::OnReceiveRedirect(
+@@ -1087,7 +1091,7 @@ void NavigationURLLoaderImpl::OnReceiveRedirect(
    LogQueueTimeHistogram("Navigation.QueueTime.OnReceiveRedirect",
                          resource_request_->is_outermost_main_frame);
    net::Error error = net::OK;
@@ -52347,7 +52337,7 @@ diff --git a/content/browser/renderer_host/render_frame_host_impl.cc b/content/b
  
  #include "content/browser/renderer_host/render_frame_host_impl.h"
  
-@@ -2646,6 +2650,12 @@ void RenderFrameHostImpl::ExecuteJavaScriptMethod(
+@@ -2667,6 +2671,12 @@ void RenderFrameHostImpl::ExecuteJavaScriptMethod(
        std::move(callback));
  }
  
@@ -52374,7 +52364,7 @@ diff --git a/content/browser/renderer_host/render_frame_host_impl.h b/content/br
  
  #ifndef CONTENT_BROWSER_RENDERER_HOST_RENDER_FRAME_HOST_IMPL_H_
  #define CONTENT_BROWSER_RENDERER_HOST_RENDER_FRAME_HOST_IMPL_H_
-@@ -435,6 +439,10 @@ class CONTENT_EXPORT RenderFrameHostImpl
+@@ -438,6 +442,10 @@ class CONTENT_EXPORT RenderFrameHostImpl
                                 const std::u16string& method_name,
                                 base::Value::List arguments,
                                 JavaScriptResultCallback callback) override;
@@ -52517,7 +52507,7 @@ diff --git a/third_party/blink/public/mojom/frame/frame.mojom b/third_party/blin
  
  module blink.mojom;
  
-@@ -897,6 +901,10 @@ interface LocalFrame {
+@@ -914,6 +918,10 @@ interface LocalFrame {
    // the given point in the view coordinate space.
    PluginActionAt(gfx.mojom.Point location, blink.mojom.PluginActionType action);
  
@@ -52571,7 +52561,7 @@ diff --git a/third_party/blink/renderer/core/exported/web_document.cc b/third_pa
  #include "third_party/blink/public/web/web_document.h"
  
  #include "base/memory/scoped_refptr.h"
-@@ -263,6 +267,54 @@ WebStyleSheetKey WebDocument::InsertStyleSheet(
+@@ -264,6 +268,54 @@ WebStyleSheetKey WebDocument::InsertStyleSheet(
    return injection_key;
  }
  
@@ -52640,7 +52630,7 @@ diff --git a/third_party/blink/renderer/core/frame/local_frame_mojo_handler.cc b
  
  #include "third_party/blink/renderer/core/frame/local_frame_mojo_handler.h"
  
-@@ -357,6 +361,14 @@ LocalFrameMojoHandler::LocalFrameMojoHandler(blink::LocalFrame& frame)
+@@ -358,6 +362,14 @@ LocalFrameMojoHandler::LocalFrameMojoHandler(blink::LocalFrame& frame)
        WrapWeakPersistent(this)));
  }
  
@@ -52669,7 +52659,7 @@ diff --git a/third_party/blink/renderer/core/frame/local_frame_mojo_handler.h b/
  
  #ifndef THIRD_PARTY_BLINK_RENDERER_CORE_FRAME_LOCAL_FRAME_MOJO_HANDLER_H_
  #define THIRD_PARTY_BLINK_RENDERER_CORE_FRAME_LOCAL_FRAME_MOJO_HANDLER_H_
-@@ -111,6 +115,7 @@ class LocalFrameMojoHandler
+@@ -112,6 +116,7 @@ class LocalFrameMojoHandler
    void AddMessageToConsole(mojom::blink::ConsoleMessageLevel level,
                             const WTF::String& message,
                             bool discard_duplicates) final;
@@ -52691,7 +52681,7 @@ diff --git a/third_party/blink/renderer/platform/loader/fetch/url_loader/mojo_ur
  #include "third_party/blink/renderer/platform/loader/fetch/url_loader/mojo_url_loader_client.h"
  
  #include <iterator>
-@@ -395,7 +399,7 @@ void MojoURLLoaderClient::OnReceiveRedirect(
+@@ -389,7 +393,7 @@ void MojoURLLoaderClient::OnReceiveRedirect(
      OnComplete(network::URLLoaderCompletionStatus(net::ERR_ABORTED));
      return;
    }
@@ -53149,7 +53139,7 @@ diff --git a/tools/gritsettings/resource_ids.spec b/tools/gritsettings/resource_
  # This file is used to assign starting resource ids for resources and strings
  # used by Chromium.  This is done to ensure that resource ids are unique
  # across all the grd files.  If you are adding a new grd file, please add
-@@ -705,6 +709,10 @@
+@@ -708,6 +712,10 @@
      "META": {"sizes": {"includes": [10]}},
      "includes": [5240],
    },

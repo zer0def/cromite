@@ -70,7 +70,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/bookmarks/Bookm
  import org.chromium.chrome.browser.bookmarks.BookmarkUiPrefs.BookmarkRowDisplayPref;
  import org.chromium.chrome.browser.commerce.ShoppingServiceFactory;
  import org.chromium.chrome.browser.document.ChromeLauncherActivity;
-@@ -526,7 +527,7 @@ public class BookmarkUtils {
+@@ -528,7 +529,7 @@ public class BookmarkUtils {
              RecordUserAction.record("MobileBookmarkManagerReopenBookmarksInSameSession");
          }
  
@@ -82,15 +82,15 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/bookmarks/Bookm
 diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 --- a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 +++ b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
-@@ -797,7 +797,7 @@ public abstract class ChromeFeatureList {
+@@ -802,7 +802,7 @@ public abstract class ChromeFeatureList {
      public static final MutableFlagWithSafeDefault sAdvancedPeripheralsSupportTabStrip =
              newMutableFlagWithSafeDefault(ADVANCED_PERIPHERALS_SUPPORT_TAB_STRIP, true);
      public static final MutableFlagWithSafeDefault sAndroidImprovedBookmarks =
 -            newMutableFlagWithSafeDefault(ANDROID_IMPROVED_BOOKMARKS, false);
 +            newMutableFlagWithSafeDefault(ANDROID_IMPROVED_BOOKMARKS, true);
-     public static final MutableFlagWithSafeDefault sDeferKeepScreenOnDuringGesture =
-             newMutableFlagWithSafeDefault(DEFER_KEEP_SCREEN_ON_DURING_GESTURE, false);
-     public static final MutableFlagWithSafeDefault sDeferNotifyInMotion =
+     public static final MutableFlagWithSafeDefault sBrowserControlsEarlyResize =
+             newMutableFlagWithSafeDefault(BROWSER_CONTROLS_EARLY_RESIZE, false);
+     public static final MutableFlagWithSafeDefault sIncognitoNtpRevamp =
 diff --git a/components/bookmarks/browser/bookmark_node.cc b/components/bookmarks/browser/bookmark_node.cc
 --- a/components/bookmarks/browser/bookmark_node.cc
 +++ b/components/bookmarks/browser/bookmark_node.cc

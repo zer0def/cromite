@@ -88,8 +88,8 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/settings/Settin
 +import org.chromium.chrome.browser.customtabs.CustomTabActivity;
 +
  import org.chromium.base.IntentUtils;
+ import org.chromium.chrome.browser.accessibility.settings.AccessibilitySettings;
  import org.chromium.chrome.browser.autofill.settings.AutofillPaymentMethodsFragment;
- import org.chromium.chrome.browser.browsing_data.ClearBrowsingDataFragment;
 @@ -25,6 +28,13 @@ import org.chromium.components.browser_ui.site_settings.SiteSettings;
  public class SettingsLauncherImpl implements SettingsLauncher {
      public SettingsLauncherImpl() {}
@@ -131,7 +131,7 @@ diff --git a/chrome/app/generated_resources.grd b/chrome/app/generated_resources
 diff --git a/chrome/app/settings_strings.grdp b/chrome/app/settings_strings.grdp
 --- a/chrome/app/settings_strings.grdp
 +++ b/chrome/app/settings_strings.grdp
-@@ -2422,6 +2422,9 @@
+@@ -2413,6 +2413,9 @@
    <message name="IDS_SETTINGS_SEARCH_ENGINES_QUERY_URL_EXPLANATION" desc="Label for explaining the format of the URL that should be entered by the user in the add/edit search engine dialog.">
      URL with <ph name="SPECIAL_SYMBOL">%s</ph> in place of query
    </message>
@@ -406,7 +406,7 @@ new file mode 100644
 diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -3655,6 +3655,9 @@ static_library("browser") {
+@@ -3661,6 +3661,9 @@ static_library("browser") {
          "//components/user_scripts/android",
        ]
      }
@@ -694,8 +694,8 @@ diff --git a/chrome/browser/resources/settings_shared/BUILD.gn b/chrome/browser/
 diff --git a/chrome/browser/search_engines/android/BUILD.gn b/chrome/browser/search_engines/android/BUILD.gn
 --- a/chrome/browser/search_engines/android/BUILD.gn
 +++ b/chrome/browser/search_engines/android/BUILD.gn
-@@ -76,6 +76,7 @@ android_resources("java_resources") {
-     "java/res/drawable/search_sogou.xml",
+@@ -78,6 +78,7 @@ android_resources("java_resources") {
+     "java/res/layout/default_search_engine_dialog_view.xml",
      "java/res/layout/search_engine.xml",
      "java/res/layout/search_engine_choice_header.xml",
 +    "java/res/layout/search_engine_layout.xml",
@@ -785,7 +785,7 @@ diff --git a/chrome/browser/search_engines/android/java/src/org/chromium/chrome/
 diff --git a/chrome/browser/ui/BUILD.gn b/chrome/browser/ui/BUILD.gn
 --- a/chrome/browser/ui/BUILD.gn
 +++ b/chrome/browser/ui/BUILD.gn
-@@ -1025,6 +1025,18 @@ static_library("ui") {
+@@ -1038,6 +1038,18 @@ static_library("ui") {
        "//ui/android",
        "//url",
      ]
@@ -987,7 +987,7 @@ diff --git a/chrome/browser/ui/search_engines/template_url_table_model.h b/chrom
 diff --git a/chrome/browser/ui/webui/chrome_web_ui_controller_factory.cc b/chrome/browser/ui/webui/chrome_web_ui_controller_factory.cc
 --- a/chrome/browser/ui/webui/chrome_web_ui_controller_factory.cc
 +++ b/chrome/browser/ui/webui/chrome_web_ui_controller_factory.cc
-@@ -126,6 +126,8 @@
+@@ -127,6 +127,8 @@
  #include "chrome/browser/ui/webui/webapks/webapks_ui.h"
  #include "components/feed/buildflags.h"
  #include "components/feed/feed_feature_list.h"
@@ -996,7 +996,7 @@ diff --git a/chrome/browser/ui/webui/chrome_web_ui_controller_factory.cc b/chrom
  #else  // BUILDFLAG(IS_ANDROID)
  #include "chrome/browser/media/router/discovery/access_code/access_code_cast_feature.h"
  #include "chrome/browser/media/router/media_router_feature.h"
-@@ -622,6 +624,10 @@ WebUIFactoryFunction GetWebUIFactoryFunction(WebUI* web_ui,
+@@ -624,6 +626,10 @@ WebUIFactoryFunction GetWebUIFactoryFunction(WebUI* web_ui,
      return &NewWebUI<WebAppInternalsUI>;
    }
  #endif  // !BUILDFLAG(IS_ANDROID)
@@ -1244,7 +1244,7 @@ diff --git a/chrome/browser/ui/webui/settings/search_engines_handler.h b/chrome/
 diff --git a/chrome/browser/ui/webui/settings/settings_localized_strings_provider.cc b/chrome/browser/ui/webui/settings/settings_localized_strings_provider.cc
 --- a/chrome/browser/ui/webui/settings/settings_localized_strings_provider.cc
 +++ b/chrome/browser/ui/webui/settings/settings_localized_strings_provider.cc
-@@ -2564,6 +2564,8 @@ void AddSearchEnginesStrings(content::WebUIDataSource* html_source) {
+@@ -2548,6 +2548,8 @@ void AddSearchEnginesStrings(content::WebUIDataSource* html_source) {
        {"searchEnginesQueryURL", IDS_SETTINGS_SEARCH_ENGINES_QUERY_URL},
        {"searchEnginesQueryURLExplanation",
         IDS_SETTINGS_SEARCH_ENGINES_QUERY_URL_EXPLANATION},
@@ -1753,7 +1753,7 @@ new file mode 100644
 diff --git a/chrome/browser/ui/webui/webui_util.cc b/chrome/browser/ui/webui/webui_util.cc
 --- a/chrome/browser/ui/webui/webui_util.cc
 +++ b/chrome/browser/ui/webui/webui_util.cc
-@@ -101,6 +101,11 @@ void SetupChromeRefresh2023(content::WebUIDataSource* source) {
+@@ -139,6 +139,11 @@ void SetupChromeRefresh2023(content::WebUIDataSource* source) {
    source->AddString(
        "chromeRefresh2023Attribute",
        features::IsChromeWebuiRefresh2023() ? "chrome-refresh-2023" : "");
@@ -2087,7 +2087,7 @@ diff --git a/ui/webui/resources/cr_elements/cr_dialog/cr_dialog.css b/ui/webui/r
 diff --git a/ui/webui/resources/cr_elements/cr_shared_vars.css b/ui/webui/resources/cr_elements/cr_shared_vars.css
 --- a/ui/webui/resources/cr_elements/cr_shared_vars.css
 +++ b/ui/webui/resources/cr_elements/cr_shared_vars.css
-@@ -246,6 +246,10 @@ html {
+@@ -225,6 +225,10 @@ html {
    --cr-form-field-label-line-height: 1;
  }
  
@@ -2095,7 +2095,7 @@ diff --git a/ui/webui/resources/cr_elements/cr_shared_vars.css b/ui/webui/resour
 +  --cr-section-indent-width: 0px;
 +}
 +
- html[chrome-refresh-2023] {
+ html {
    /* Colors: These variables should never be overridden and should only be used
       as fallback values for shared cr_elements or in UIs that do not have
 diff --git a/ui/webui/resources/css/BUILD.gn b/ui/webui/resources/css/BUILD.gn
@@ -2113,7 +2113,7 @@ diff --git a/ui/webui/resources/css/BUILD.gn b/ui/webui/resources/css/BUILD.gn
 diff --git a/ui/webui/resources/images/BUILD.gn b/ui/webui/resources/images/BUILD.gn
 --- a/ui/webui/resources/images/BUILD.gn
 +++ b/ui/webui/resources/images/BUILD.gn
-@@ -46,7 +46,7 @@ generate_grd("build_grdp") {
+@@ -48,7 +48,7 @@ generate_grd("build_grdp") {
      "2x/select.png",
    ]
  

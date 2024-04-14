@@ -122,7 +122,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tracing/setting
 diff --git a/chrome/app/chrome_main_delegate.cc b/chrome/app/chrome_main_delegate.cc
 --- a/chrome/app/chrome_main_delegate.cc
 +++ b/chrome/app/chrome_main_delegate.cc
-@@ -1982,7 +1982,7 @@ void ChromeMainDelegate::InitializeMemorySystem() {
+@@ -2029,7 +2029,7 @@ void ChromeMainDelegate::InitializeMemorySystem() {
    const version_info::Channel channel = chrome::GetChannel();
    const bool is_canary_dev = (channel == version_info::Channel::CANARY ||
                                channel == version_info::Channel::DEV);
@@ -198,7 +198,7 @@ diff --git a/chrome/browser/util/android/java/src/org/chromium/chrome/browser/ut
 diff --git a/components/gwp_asan/client/gwp_asan.cc b/components/gwp_asan/client/gwp_asan.cc
 --- a/components/gwp_asan/client/gwp_asan.cc
 +++ b/components/gwp_asan/client/gwp_asan.cc
-@@ -77,21 +77,21 @@ constexpr int kDefaultMaxMetadata = 210;
+@@ -78,21 +78,21 @@ constexpr int kDefaultMaxMetadata = 210;
  constexpr int kDefaultTotalPages = kCpuIs64Bit ? 2048 : kDefaultMaxMetadata * 2;
  constexpr int kDefaultAllocationSamplingMultiplier = 1500;
  constexpr int kDefaultAllocationSamplingRange = 16;
@@ -223,7 +223,7 @@ diff --git a/components/gwp_asan/client/gwp_asan.cc b/components/gwp_asan/client
  #endif  // BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS) ||
          // BUILDFLAG(IS_FUCHSIA)
  constexpr int kDefaultProcessSamplingBoost2 = 10;
-@@ -458,7 +458,7 @@ void EnableForMalloc(bool boost_sampling, const char* process_type) {
+@@ -459,7 +459,7 @@ void EnableForMalloc(bool boost_sampling, const char* process_type) {
    std::ignore = init_once;
  #else
    std::ignore = internal::kGwpAsanMalloc;
@@ -232,7 +232,7 @@ diff --git a/components/gwp_asan/client/gwp_asan.cc b/components/gwp_asan/client
  #endif  // BUILDFLAG(USE_ALLOCATOR_SHIM)
  }
  
-@@ -478,7 +478,7 @@ void EnableForPartitionAlloc(bool boost_sampling, const char* process_type) {
+@@ -479,7 +479,7 @@ void EnableForPartitionAlloc(bool boost_sampling, const char* process_type) {
    std::ignore = init_once;
  #else
    std::ignore = internal::kGwpAsanPartitionAlloc;

@@ -59,27 +59,27 @@ diff --git a/content/browser/loader/keep_alive_url_loader.cc b/content/browser/l
  namespace content {
  namespace {
  
-@@ -358,7 +388,6 @@ KeepAliveURLLoader::KeepAliveURLLoader(
-       options_(options),
-       resource_request_(resource_request),
-       forwarding_client_(std::move(forwarding_client)),
+@@ -301,7 +331,6 @@ KeepAliveURLLoader::KeepAliveURLLoader(
+       forwarding_client_(
+           std::make_unique<ForwardingClient>(this,
+                                              std::move(forwarding_client))),
 -      traffic_annotation_(traffic_annotation),
        network_loader_factory_(std::move(network_loader_factory)),
        stored_url_load_(std::make_unique<StoredURLLoad>()),
        policy_container_host_(std::move(policy_container_host)),
-@@ -410,7 +439,7 @@ void KeepAliveURLLoader::Start() {
-   network_loader_factory_->CreateLoaderAndStart(
-       loader_.BindNewPipeAndPassReceiver(), request_id_, options_,
-       resource_request_, loader_receiver_.BindNewPipeAndPassRemote(),
--      traffic_annotation_);
-+      net::MutableNetworkTrafficAnnotationTag(kTrafficAnnotation));
-   loader_receiver_.set_disconnect_handler(base::BindOnce(
-       &KeepAliveURLLoader::OnNetworkConnectionError, base::Unretained(this)));
-   // For FetchLater requests, `forwarding_client_` is not bound to renderer.
+@@ -348,7 +377,7 @@ void KeepAliveURLLoader::Start() {
+   url_loader_ = blink::ThrottlingURLLoader::CreateLoaderAndStart(
+       network_loader_factory_, throttles_getter_.Run(), request_id_, options_,
+       &resource_request_, forwarding_client_.get(),
+-      net::NetworkTrafficAnnotationTag(traffic_annotation_),
++      net::NetworkTrafficAnnotationTag(kTrafficAnnotation),
+       base::SingleThreadTaskRunner::GetCurrentDefault(),
+       /*cors_exempt_header_list=*/std::nullopt,
+       // `this`'s lifetime is at least the same as `url_loader_`.
 diff --git a/content/browser/loader/keep_alive_url_loader.h b/content/browser/loader/keep_alive_url_loader.h
 --- a/content/browser/loader/keep_alive_url_loader.h
 +++ b/content/browser/loader/keep_alive_url_loader.h
-@@ -297,9 +297,6 @@ class CONTENT_EXPORT KeepAliveURLLoader
+@@ -312,9 +312,6 @@ class CONTENT_EXPORT KeepAliveURLLoader
    // disconnected from the remote of URLLoader in the renderer.
    base::OneShotTimer disconnected_loader_timer_;
  
@@ -100,7 +100,7 @@ new file mode 100644
 diff --git a/third_party/blink/renderer/core/fetch/fetch_manager.cc b/third_party/blink/renderer/core/fetch/fetch_manager.cc
 --- a/third_party/blink/renderer/core/fetch/fetch_manager.cc
 +++ b/third_party/blink/renderer/core/fetch/fetch_manager.cc
-@@ -1168,7 +1168,9 @@ void FetchManager::Loader::Failed(
+@@ -1175,7 +1175,9 @@ void FetchManager::Loader::Failed(
    if (resolver_) {
      ScriptState::Scope scope(GetScriptState());
      if (dom_exception) {
@@ -111,7 +111,7 @@ diff --git a/third_party/blink/renderer/core/fetch/fetch_manager.cc b/third_part
      } else {
        v8::Local<v8::Value> value =
            exception_.Get(GetScriptState()->GetIsolate());
-@@ -1188,7 +1190,9 @@ void FetchManager::Loader::Failed(
+@@ -1195,7 +1197,9 @@ void FetchManager::Loader::Failed(
              V8String(GetScriptState()->GetIsolate(),
                       IdentifiersFactory::IdFromToken(*issue_id)));
        }
@@ -120,7 +120,7 @@ diff --git a/third_party/blink/renderer/core/fetch/fetch_manager.cc b/third_part
 +        resolver_->Reject(value);;
 +      }
        SendHistogram(FetchManagerLoaderCheckPoint::kFailed);
-       LogIfKeepalive(FetchKeepAliveRendererMetricType::kLoadingFailed);
+       LogIfKeepalive("Failed");
      }
 diff --git a/third_party/blink/renderer/platform/loader/child_url_loader_factory_bundle.cc b/third_party/blink/renderer/platform/loader/child_url_loader_factory_bundle.cc
 --- a/third_party/blink/renderer/platform/loader/child_url_loader_factory_bundle.cc
@@ -154,7 +154,7 @@ diff --git a/third_party/blink/renderer/platform/loader/child_url_loader_factory
 diff --git a/third_party/blink/renderer/platform/loader/fetch/resource_fetcher.cc b/third_party/blink/renderer/platform/loader/fetch/resource_fetcher.cc
 --- a/third_party/blink/renderer/platform/loader/fetch/resource_fetcher.cc
 +++ b/third_party/blink/renderer/platform/loader/fetch/resource_fetcher.cc
-@@ -2619,7 +2619,7 @@ void ResourceFetcher::PrepareForLeakDetection() {
+@@ -2616,7 +2616,7 @@ void ResourceFetcher::PrepareForLeakDetection() {
  void ResourceFetcher::StopFetchingInternal(StopFetchingTarget target) {
    // TODO(toyoshim): May want to suspend scheduler while canceling loaders so
    // that the cancellations below do not awake unnecessary scheduling.
@@ -166,7 +166,7 @@ diff --git a/third_party/blink/renderer/platform/loader/fetch/resource_fetcher.c
 diff --git a/third_party/blink/renderer/platform/runtime_enabled_features.json5 b/third_party/blink/renderer/platform/runtime_enabled_features.json5
 --- a/third_party/blink/renderer/platform/runtime_enabled_features.json5
 +++ b/third_party/blink/renderer/platform/runtime_enabled_features.json5
-@@ -1683,10 +1683,9 @@
+@@ -1719,10 +1719,9 @@
      },
      {
        // The Blink runtime-enabled feature name for the API's IDL.

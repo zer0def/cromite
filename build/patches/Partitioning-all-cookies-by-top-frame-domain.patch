@@ -14,12 +14,12 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../privacy_sandbox_settings_delegate.cc      |  1 +
  .../experiment/experiment_manager_impl.cc     |  1 +
  .../core/browser/cookie_settings.cc           |  2 +
- .../core/common/cookie_settings_base.cc       | 47 -------------------
+ .../core/common/cookie_settings_base.cc       | 48 -------------------
  ...ioning-all-cookies-by-top-frame-domain.inc |  3 ++
  ...ioning-all-cookies-by-top-frame-domain.inc |  2 +
  ...ioning-all-cookies-by-top-frame-domain.inc |  1 +
  ...ioning-all-cookies-by-top-frame-domain.inc | 10 ++++
- net/cookies/canonical_cookie.cc               | 12 +----
+ net/cookies/canonical_cookie.cc               | 13 +----
  net/cookies/cookie_deletion_info.cc           |  3 +-
  net/cookies/parsed_cookie.h                   |  7 ++-
  .../sqlite/sqlite_persistent_cookie_store.cc  | 10 ++++
@@ -30,7 +30,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../modules/cookie_store/cookie_store.cc      | 12 +++++
  .../cookie_store_delete_options.idl           |  2 +-
  ui/webui/webui_allowlist.cc                   |  1 +
- 21 files changed, 72 insertions(+), 79 deletions(-)
+ 21 files changed, 72 insertions(+), 81 deletions(-)
  create mode 100644 cromite_flags/components/content_settings/core/common/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
  create mode 100644 cromite_flags/components/permissions/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
  create mode 100644 cromite_flags/content/public/common/content_features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
@@ -39,7 +39,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 diff --git a/chrome/browser/chrome_content_browser_client.cc b/chrome/browser/chrome_content_browser_client.cc
 --- a/chrome/browser/chrome_content_browser_client.cc
 +++ b/chrome/browser/chrome_content_browser_client.cc
-@@ -3399,7 +3399,7 @@ bool ChromeContentBrowserClient::IsFullCookieAccessAllowed(
+@@ -3440,7 +3440,7 @@ bool ChromeContentBrowserClient::IsFullCookieAccessAllowed(
    scoped_refptr<content_settings::CookieSettings> cookie_settings =
        CookieSettingsFactory::GetForProfile(profile);
    if (!cookie_settings) {
@@ -51,7 +51,7 @@ diff --git a/chrome/browser/chrome_content_browser_client.cc b/chrome/browser/ch
 diff --git a/chrome/browser/net/profile_network_context_service.cc b/chrome/browser/net/profile_network_context_service.cc
 --- a/chrome/browser/net/profile_network_context_service.cc
 +++ b/chrome/browser/net/profile_network_context_service.cc
-@@ -659,16 +659,16 @@ ProfileNetworkContextService::CreateCookieManagerParams(
+@@ -759,16 +759,16 @@ ProfileNetworkContextService::CreateCookieManagerParams(
    // UI to interact with SameSite cookies on accounts.google.com, which is used
    // for displaying a list of available accounts on the NTP
    // (chrome://new-tab-page), etc.
@@ -77,7 +77,7 @@ diff --git a/chrome/browser/net/profile_network_context_service.cc b/chrome/brow
 diff --git a/chrome/browser/privacy_sandbox/privacy_sandbox_settings_delegate.cc b/chrome/browser/privacy_sandbox/privacy_sandbox_settings_delegate.cc
 --- a/chrome/browser/privacy_sandbox/privacy_sandbox_settings_delegate.cc
 +++ b/chrome/browser/privacy_sandbox/privacy_sandbox_settings_delegate.cc
-@@ -358,6 +358,7 @@ bool PrivacySandboxSettingsDelegate::IsCookieDeprecationLabelAllowed() const {
+@@ -359,6 +359,7 @@ bool PrivacySandboxSettingsDelegate::IsCookieDeprecationLabelAllowed() const {
  
  bool PrivacySandboxSettingsDelegate::
      AreThirdPartyCookiesBlockedByCookieDeprecationExperiment() const {
@@ -135,23 +135,24 @@ diff --git a/components/content_settings/core/common/cookie_settings_base.cc b/c
  constexpr StorageAccessResult GetStorageAccessResult(
      ThirdPartyCookieAllowMechanism mechanism) {
    switch (mechanism) {
-@@ -473,48 +463,11 @@ CookieSettingsBase::DecideAccess(const GURL& url,
+@@ -523,49 +513,11 @@ CookieSettingsBase::DecideAccess(const GURL& url,
    if (!is_third_party_request) {
      return AllowAllCookies{ThirdPartyCookieAllowMechanism::kNone};
    }
--  if (!ShouldBlockThirdPartyCookies()) {
+-  if (!ShouldBlockThirdPartyCookies() &&
+-      !Are3pcsForceDisabledByOverride(overrides)) {
 -    return AllowAllCookies{
 -        ThirdPartyCookieAllowMechanism::kAllowByGlobalSetting};
 -  }
 -  if (IsThirdPartyCookiesAllowedScheme(first_party_url.scheme())) {
 -    return AllowAllCookies{ThirdPartyCookieAllowMechanism::kNone};
 -  }
--  if (IsAllowedBy3pcdTrialSettings(url, first_party_url, overrides)) {
--    return AllowAllCookies{ThirdPartyCookieAllowMechanism::kAllowBy3PCD};
--  }
 -  if (IsAllowedByTopLevel3pcdTrialSettings(first_party_url, overrides)) {
 -    return AllowAllCookies{
 -        ThirdPartyCookieAllowMechanism::kAllowByTopLevel3PCD};
+-  }
+-  if (IsAllowedBy3pcdTrialSettings(url, first_party_url, overrides)) {
+-    return AllowAllCookies{ThirdPartyCookieAllowMechanism::kAllowBy3PCD};
 -  }
 -  if (IsAllowedBy3pcdHeuristicsGrantsSettings(url, first_party_url,
 -                                              overrides)) {
@@ -223,16 +224,17 @@ new file mode 100644
 diff --git a/net/cookies/canonical_cookie.cc b/net/cookies/canonical_cookie.cc
 --- a/net/cookies/canonical_cookie.cc
 +++ b/net/cookies/canonical_cookie.cc
-@@ -1542,8 +1542,6 @@ bool CanonicalCookie::IsCanonicalForFromStorage() const {
-   if (IsPartitioned()) {
-     if (CookiePartitionKey::HasNonce(partition_key_))
+@@ -1030,9 +1030,6 @@ bool CanonicalCookie::IsCanonicalForFromStorage() const {
+     if (CookiePartitionKey::HasNonce(PartitionKey())) {
        return true;
--    if (!secure_)
+     }
+-    if (!SecureAttribute()) {
 -      return false;
+-    }
    }
  
    return true;
-@@ -1801,15 +1799,7 @@ bool CanonicalCookie::IsCookiePartitionedValid(const GURL& url,
+@@ -1256,15 +1253,7 @@ bool CanonicalCookie::IsCookiePartitionedValid(const GURL& url,
                                                 bool secure,
                                                 bool is_partitioned,
                                                 bool partition_has_nonce) {
@@ -289,7 +291,7 @@ diff --git a/net/cookies/parsed_cookie.h b/net/cookies/parsed_cookie.h
 diff --git a/net/extras/sqlite/sqlite_persistent_cookie_store.cc b/net/extras/sqlite/sqlite_persistent_cookie_store.cc
 --- a/net/extras/sqlite/sqlite_persistent_cookie_store.cc
 +++ b/net/extras/sqlite/sqlite_persistent_cookie_store.cc
-@@ -750,6 +750,16 @@ bool SQLitePersistentCookieStore::Backend::DoInitializeDatabase() {
+@@ -694,6 +694,16 @@ bool SQLitePersistentCookieStore::Backend::DoInitializeDatabase() {
    if (!restore_old_session_cookies_)
      DeleteSessionCookiesOnStartup();
  
@@ -351,7 +353,7 @@ diff --git a/services/network/cookie_settings.cc b/services/network/cookie_setti
 diff --git a/services/network/restricted_cookie_manager.cc b/services/network/restricted_cookie_manager.cc
 --- a/services/network/restricted_cookie_manager.cc
 +++ b/services/network/restricted_cookie_manager.cc
-@@ -961,6 +961,12 @@ void RestrictedCookieManager::SetCookieFromString(
+@@ -939,6 +939,12 @@ void RestrictedCookieManager::SetCookieFromString(
  
    std::move(callback).Run();
  
@@ -371,13 +373,13 @@ diff --git a/third_party/blink/renderer/modules/cookie_store/cookie_init.idl b/t
    USVString path = "/";
    DOMHighResTimeStamp? expires = null;
    CookieSameSite sameSite = "strict";
--  [RuntimeEnabled=PartitionedCookies] boolean partitioned = false;
-+  [RuntimeEnabled=PartitionedCookies] boolean partitioned = true;
+-  boolean partitioned = false;
++  boolean partitioned = true;
  };
 diff --git a/third_party/blink/renderer/modules/cookie_store/cookie_store.cc b/third_party/blink/renderer/modules/cookie_store/cookie_store.cc
 --- a/third_party/blink/renderer/modules/cookie_store/cookie_store.cc
 +++ b/third_party/blink/renderer/modules/cookie_store/cookie_store.cc
-@@ -340,6 +340,10 @@ ScriptPromise CookieStore::set(ScriptState* script_state,
+@@ -341,6 +341,10 @@ ScriptPromiseTyped<IDLUndefined> CookieStore::set(
    CookieInit* set_options = CookieInit::Create();
    set_options->setName(name);
    set_options->setValue(value);
@@ -388,7 +390,7 @@ diff --git a/third_party/blink/renderer/modules/cookie_store/cookie_store.cc b/t
    return set(script_state, set_options, exception_state);
  }
  
-@@ -362,6 +366,10 @@ ScriptPromise CookieStore::Delete(ScriptState* script_state,
+@@ -365,6 +369,10 @@ ScriptPromiseTyped<IDLUndefined> CookieStore::Delete(
    set_options->setName(name);
    set_options->setValue("deleted");
    set_options->setExpires(0);
@@ -399,7 +401,7 @@ diff --git a/third_party/blink/renderer/modules/cookie_store/cookie_store.cc b/t
    return DoWrite(script_state, set_options, exception_state);
  }
  
-@@ -376,6 +384,10 @@ ScriptPromise CookieStore::Delete(ScriptState* script_state,
+@@ -380,6 +388,10 @@ ScriptPromiseTyped<IDLUndefined> CookieStore::Delete(
    set_options->setPath(options->path());
    set_options->setSameSite("strict");
    set_options->setPartitioned(options->partitioned());
@@ -417,8 +419,8 @@ diff --git a/third_party/blink/renderer/modules/cookie_store/cookie_store_delete
    required USVString name;
    USVString? domain = null;
    USVString path = "/";
--  [RuntimeEnabled=PartitionedCookies] boolean partitioned = false;
-+  [RuntimeEnabled=PartitionedCookies] boolean partitioned = true;
+-  boolean partitioned = false;
++  boolean partitioned = true;
  };
 diff --git a/ui/webui/webui_allowlist.cc b/ui/webui/webui_allowlist.cc
 --- a/ui/webui/webui_allowlist.cc

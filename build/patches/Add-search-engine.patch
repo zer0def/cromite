@@ -9,9 +9,10 @@ Add DuckDuckGo Lite
 License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
  .../search_engines/prepopulated_engines.json  | 31 +++++++++++++++++++
+ .../search_engine_countries-inc.cc            |  2 ++
  .../search_engines/search_engine_type.h       |  5 +++
- .../template_url_prepopulate_data.cc          |  3 ++
- 3 files changed, 39 insertions(+)
+ .../template_url_prepopulate_data.cc          |  1 +
+ 4 files changed, 39 insertions(+)
 
 diff --git a/components/search_engines/prepopulated_engines.json b/components/search_engines/prepopulated_engines.json
 --- a/components/search_engines/prepopulated_engines.json
@@ -33,7 +34,7 @@ diff --git a/components/search_engines/prepopulated_engines.json b/components/se
      "ecosia": {
        "name": "Ecosia",
        "keyword": "ecosia.org",
-@@ -171,6 +181,27 @@
+@@ -172,6 +182,27 @@
        "id": 111
      },
  
@@ -61,15 +62,26 @@ diff --git a/components/search_engines/prepopulated_engines.json b/components/se
      "mail_ru": {
        "name": "@MAIL.RU",
        "keyword": "mail.ru",
+diff --git a/components/search_engines/search_engine_countries-inc.cc b/components/search_engines/search_engine_countries-inc.cc
+--- a/components/search_engines/search_engine_countries-inc.cc
++++ b/components/search_engines/search_engine_countries-inc.cc
+@@ -1443,5 +1443,7 @@ const std::vector<EngineAndTier> GetPrepopulationSetFromCountryID(
+   for (size_t i = 0; i < num_engines; i++) {
+     t_url.push_back(engines[i]);
+   }
++  t_url.push_back({SearchEngineTier::kTopEngines, &googleen});
++  t_url.push_back({SearchEngineTier::kTopEngines, &duckduckgo_light});
+   return t_url;
+ }
 diff --git a/components/search_engines/search_engine_type.h b/components/search_engines/search_engine_type.h
 --- a/components/search_engines/search_engine_type.h
 +++ b/components/search_engines/search_engine_type.h
-@@ -90,10 +90,15 @@ enum SearchEngineType {
-   SEARCH_ENGINE_KARMA = 71,
+@@ -91,10 +91,15 @@ enum SearchEngineType {
    SEARCH_ENGINE_YOU = 72,
    SEARCH_ENGINE_STARTER_PACK_ASK_GOOGLE = 73,
-+  SEARCH_ENGINE_GOOGLE_EN = 74,
-+  SEARCH_ENGINE_DUCKDUCKGOLIGHT = 75,
+   SEARCH_ENGINE_LILO = 74,
++  SEARCH_ENGINE_GOOGLE_EN = 75,
++  SEARCH_ENGINE_DUCKDUCKGOLIGHT = 76,
  
    SEARCH_ENGINE_MAX  // Bounding value needed for UMA histogram macro.
  };
@@ -83,21 +95,12 @@ diff --git a/components/search_engines/search_engine_type.h b/components/search_
 diff --git a/components/search_engines/template_url_prepopulate_data.cc b/components/search_engines/template_url_prepopulate_data.cc
 --- a/components/search_engines/template_url_prepopulate_data.cc
 +++ b/components/search_engines/template_url_prepopulate_data.cc
-@@ -63,6 +63,7 @@ struct EngineAndTier {
- 
- // Default (for countries with no better engine set)
- constexpr EngineAndTier engines_default[] = {
+@@ -100,6 +100,7 @@ std::vector<std::unique_ptr<TemplateURLData>> GetPrepopulatedTemplateURLData(
+   std::vector<EngineAndTier> engines =
+       GetPrepopulationSetFromCountryID(country_id);
+   for (const EngineAndTier& engine : engines) {
 +    {SearchEngineTier::kTopEngines, &googleen},
-     {SearchEngineTier::kTopEngines, &google},
-     {SearchEngineTier::kTopEngines, &bing},
-     {SearchEngineTier::kTopEngines, &yahoo},
-@@ -1683,6 +1684,8 @@ const std::vector<EngineAndTier> GetPrepopulationSetFromCountryID(
-   for (size_t i = 0; i < num_engines; i++) {
-     t_url.push_back(engines[i]);
-   }
-+  t_url.push_back({SearchEngineTier::kTopEngines, &googleen});
-+  t_url.push_back({SearchEngineTier::kTopEngines, &duckduckgo_light});
-   return t_url;
- }
- 
+     if (engine.tier == SearchEngineTier::kTopEngines) {
+       t_urls.push_back(
+           TemplateURLDataFromPrepopulatedEngine(*engine.search_engine));
 --
