@@ -24,12 +24,12 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../settings_localized_strings_provider.cc    |  1 +
  .../core/browsing_data_policies_utils.cc      | 20 ++---
  .../core/browsing_data_policies_utils.h       | 11 +++
- .../browsing_data/core/browsing_data_utils.cc | 34 +++++++++
+ .../browsing_data/core/browsing_data_utils.cc | 31 ++++++++
  .../core/clear_browsing_data_tab.h            |  2 +-
  components/browsing_data/core/pref_names.cc   | 17 +++++
  components/browsing_data/core/pref_names.h    | 10 +++
  content/browser/storage_partition_impl.cc     |  1 +
- 25 files changed, 312 insertions(+), 17 deletions(-)
+ 25 files changed, 309 insertions(+), 17 deletions(-)
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/browsing_data/ClearBrowsingDataFragmentAtStart.java
 
 diff --git a/chrome/android/chrome_java_sources.gni b/chrome/android/chrome_java_sources.gni
@@ -496,7 +496,7 @@ diff --git a/chrome/browser/resources/settings/clear_browsing_data_dialog/clear_
      }
      this.clearButtonDisabled_ =
          this.getSelectedDataTypes_(page as HTMLElement).length === 0;
-+    if ((tab as HTMLElement).id == "atstart-tab") this.clearButtonDisabled_ = true;
++    if ((page as HTMLElement).id == "atstart-tab") this.clearButtonDisabled_ = true;
    }
  
    /**
@@ -583,7 +583,7 @@ diff --git a/components/browsing_data/core/browsing_data_policies_utils.h b/comp
 diff --git a/components/browsing_data/core/browsing_data_utils.cc b/components/browsing_data/core/browsing_data_utils.cc
 --- a/components/browsing_data/core/browsing_data_utils.cc
 +++ b/components/browsing_data/core/browsing_data_utils.cc
-@@ -318,6 +318,40 @@ bool GetDeletionPreferenceFromDataType(
+@@ -318,6 +318,37 @@ bool GetDeletionPreferenceFromDataType(
      BrowsingDataType data_type,
      ClearBrowsingDataTab clear_browsing_data_tab,
      std::string* out_pref) {
@@ -595,7 +595,7 @@ diff --git a/components/browsing_data/core/browsing_data_utils.cc b/components/b
 +      case BrowsingDataType::CACHE:
 +        *out_pref = prefs::kDeleteCacheAtStart;
 +        return true;
-+      case BrowsingDataType::COOKIES:
++      case BrowsingDataType::SITE_DATA:
 +        *out_pref = prefs::kDeleteCookiesAtStart;
 +        return true;
 +      case BrowsingDataType::PASSWORDS:
@@ -604,8 +604,6 @@ diff --git a/components/browsing_data/core/browsing_data_utils.cc b/components/b
 +      case BrowsingDataType::FORM_DATA:
 +        *out_pref = prefs::kDeleteFormDataAtStart;
 +        return true;
-+      case BrowsingDataType::BOOKMARKS:
-+        return false;
 +      case BrowsingDataType::SITE_SETTINGS:
 +        *out_pref = prefs::kDeleteSiteSettingsAtStart;
 +        return true;
@@ -615,8 +613,7 @@ diff --git a/components/browsing_data/core/browsing_data_utils.cc b/components/b
 +      case BrowsingDataType::HOSTED_APPS_DATA:
 +        *out_pref = prefs::kDeleteHostedAppsDataAtStart;
 +        return true;
-+      case BrowsingDataType::NUM_TYPES:
-+        NOTREACHED();  // This is not an actual type.
++      case BrowsingDataType::TABS:
 +        return false;
 +    }
 +  }

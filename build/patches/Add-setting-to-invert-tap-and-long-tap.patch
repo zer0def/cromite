@@ -48,7 +48,7 @@ diff --git a/chrome/android/java/res/values/ids.xml b/chrome/android/java/res/va
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/AccessibilitySettings.java b/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/AccessibilitySettings.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/AccessibilitySettings.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/AccessibilitySettings.java
-@@ -52,6 +52,9 @@ public class AccessibilitySettings extends PreferenceFragmentCompat
+@@ -53,6 +53,9 @@ public class AccessibilitySettings extends PreferenceFragmentCompat
      static final String PREF_MOVE_TOOLBAR_TO_BOTTOM = "move_toolbar_bottom";
      private BooleanPreferenceDelegate mMoveTopToolbarToBottomDelegate;
  
@@ -58,7 +58,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/accessibility/s
      private TextScalePreference mTextScalePref;
      private PageZoomPreference mPageZoomDefaultZoomPref;
      private ChromeSwitchPreference mPageZoomIncludeOSAdjustment;
-@@ -165,6 +168,12 @@ public class AccessibilitySettings extends PreferenceFragmentCompat
+@@ -166,6 +169,12 @@ public class AccessibilitySettings extends PreferenceFragmentCompat
          mMoveToolbarToBottomPref.setChecked(mMoveTopToolbarToBottomDelegate.isEnabled());
          mMoveToolbarToBottomPref.setOnPreferenceChangeListener(this);
  
@@ -71,7 +71,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/accessibility/s
          Preference captions = findPreference(PREF_CAPTIONS);
          captions.setOnPreferenceClickListener(
                  preference -> {
-@@ -250,6 +259,9 @@ public class AccessibilitySettings extends PreferenceFragmentCompat
+@@ -251,6 +260,9 @@ public class AccessibilitySettings extends PreferenceFragmentCompat
          } else if (PREF_MOVE_TOOLBAR_TO_BOTTOM.equals(preference.getKey())) {
              mMoveTopToolbarToBottomDelegate.setEnabled((Boolean) newValue);
              mDelegate.requestRestart(getActivity());
@@ -84,7 +84,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/accessibility/s
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/ChromeAccessibilitySettingsDelegate.java b/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/ChromeAccessibilitySettingsDelegate.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/ChromeAccessibilitySettingsDelegate.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/ChromeAccessibilitySettingsDelegate.java
-@@ -117,6 +117,24 @@ public class ChromeAccessibilitySettingsDelegate implements AccessibilitySetting
+@@ -118,6 +118,24 @@ public class ChromeAccessibilitySettingsDelegate implements AccessibilitySetting
              mSnackbarManager.showSnackbar(mSnackbar);
      }
  
@@ -275,7 +275,7 @@ diff --git a/components/browser_ui/accessibility/android/java/res/xml/accessibil
 diff --git a/components/browser_ui/accessibility/android/java/src/org/chromium/components/browser_ui/accessibility/AccessibilitySettingsDelegate.java b/components/browser_ui/accessibility/android/java/src/org/chromium/components/browser_ui/accessibility/AccessibilitySettingsDelegate.java
 --- a/components/browser_ui/accessibility/android/java/src/org/chromium/components/browser_ui/accessibility/AccessibilitySettingsDelegate.java
 +++ b/components/browser_ui/accessibility/android/java/src/org/chromium/components/browser_ui/accessibility/AccessibilitySettingsDelegate.java
-@@ -29,6 +29,8 @@ public interface AccessibilitySettingsDelegate {
+@@ -38,6 +38,8 @@ public interface AccessibilitySettingsDelegate {
  
      BooleanPreferenceDelegate getMoveTopToolbarToBottomDelegate();
  

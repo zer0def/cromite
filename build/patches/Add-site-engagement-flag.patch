@@ -101,7 +101,7 @@ diff --git a/components/feature_engagement/public/feature_configurations.cc b/co
  
  #endif  // BUILDFLAG(IS_MAC) || BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_WIN)
 +  if (!base::FeatureList::IsEnabled(site_engagement::features::kSiteEngagement)) {
-+    absl::optional<FeatureConfig> config = FeatureConfig();
++    std::optional<FeatureConfig> config = FeatureConfig();
 +    config->valid = false;
 +    return config;
 +  }

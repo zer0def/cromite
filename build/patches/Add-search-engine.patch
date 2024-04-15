@@ -9,10 +9,9 @@ Add DuckDuckGo Lite
 License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
  .../search_engines/prepopulated_engines.json  | 31 +++++++++++++++++++
- .../search_engine_countries-inc.cc            |  2 ++
+ .../search_engine_countries-inc.cc            |  3 ++
  .../search_engines/search_engine_type.h       |  5 +++
- .../template_url_prepopulate_data.cc          |  1 +
- 4 files changed, 39 insertions(+)
+ 3 files changed, 39 insertions(+)
 
 diff --git a/components/search_engines/prepopulated_engines.json b/components/search_engines/prepopulated_engines.json
 --- a/components/search_engines/prepopulated_engines.json
@@ -65,7 +64,15 @@ diff --git a/components/search_engines/prepopulated_engines.json b/components/se
 diff --git a/components/search_engines/search_engine_countries-inc.cc b/components/search_engines/search_engine_countries-inc.cc
 --- a/components/search_engines/search_engine_countries-inc.cc
 +++ b/components/search_engines/search_engine_countries-inc.cc
-@@ -1443,5 +1443,7 @@ const std::vector<EngineAndTier> GetPrepopulationSetFromCountryID(
+@@ -33,6 +33,7 @@ struct EngineAndTier {
+ 
+ // Default (for countries with no better engine set)
+ constexpr EngineAndTier engines_default[] = {
++    {SearchEngineTier::kTopEngines, &googleen},
+     {SearchEngineTier::kTopEngines, &google},
+     {SearchEngineTier::kTopEngines, &bing},
+     {SearchEngineTier::kTopEngines, &yahoo},
+@@ -1443,5 +1444,7 @@ const std::vector<EngineAndTier> GetPrepopulationSetFromCountryID(
    for (size_t i = 0; i < num_engines; i++) {
      t_url.push_back(engines[i]);
    }
@@ -92,15 +99,4 @@ diff --git a/components/search_engines/search_engine_type.h b/components/search_
  // Enum to record the type of search engine a user used in keyword mode. This
  // should be kept aligned with the `OmniboxBuiltinEngineType` enum in enums.xml.
  // Entries should not be renumbered and numeric values should never be reused.
-diff --git a/components/search_engines/template_url_prepopulate_data.cc b/components/search_engines/template_url_prepopulate_data.cc
---- a/components/search_engines/template_url_prepopulate_data.cc
-+++ b/components/search_engines/template_url_prepopulate_data.cc
-@@ -100,6 +100,7 @@ std::vector<std::unique_ptr<TemplateURLData>> GetPrepopulatedTemplateURLData(
-   std::vector<EngineAndTier> engines =
-       GetPrepopulationSetFromCountryID(country_id);
-   for (const EngineAndTier& engine : engines) {
-+    {SearchEngineTier::kTopEngines, &googleen},
-     if (engine.tier == SearchEngineTier::kTopEngines) {
-       t_urls.push_back(
-           TemplateURLDataFromPrepopulatedEngine(*engine.search_engine));
 --

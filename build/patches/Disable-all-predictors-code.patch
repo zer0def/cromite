@@ -5,32 +5,33 @@ Subject: Disable all predictors code
 Original License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 ---
- chrome/browser/BUILD.gn                       |  2 --
- .../preloading_model_keyed_service.cc         |  1 +
- .../preloading_model_keyed_service_factory.cc |  4 +---
- .../chrome_hints_manager.cc                   |  1 +
- .../model_validator_keyed_service.cc          |  6 +++++-
- .../optimization_guide_keyed_service.cc       |  1 -
- .../predictors/loading_predictor_config.cc    |  4 ++--
- .../browser/predictors/predictors_features.cc | 11 ++--------
- chrome/browser/ui/tab_helpers.cc              |  1 -
- .../ui/webui/omnibox/omnibox_page_handler.cc  |  2 ++
- .../browser/autofill_optimization_guide.cc    |  5 +++--
- .../browser/autocomplete_controller.cc        |  2 ++
- .../optimization_guide/core/hints_fetcher.cc  |  1 +
- .../optimization_guide/core/hints_manager.cc  |  5 +++++
- .../core/optimization_guide_features.cc       | 21 +++++++++++++------
- .../core/prediction_model_download_manager.cc |  6 ++++--
- .../core/prediction_model_fetcher_impl.cc     |  1 +
- components/optimization_guide/features.gni    |  3 +--
- components/search/ntp_features.cc             |  3 +++
- .../Disable-all-predictors-code.inc           |  4 ++++
- .../Disable-all-predictors-code.inc           |  7 +++++++
- .../Disable-all-predictors-code.inc           |  4 ++++
- .../Disable-all-predictors-code.inc           |  2 ++
- .../document_speculation_rules.cc             |  1 +
- .../platform/runtime_enabled_features.json5   |  2 +-
- 25 files changed, 68 insertions(+), 32 deletions(-)
+ chrome/browser/BUILD.gn                           |  2 --
+ .../preloading_model_keyed_service.cc             |  1 +
+ .../preloading_model_keyed_service_factory.cc     |  4 +---
+ .../optimization_guide/chrome_hints_manager.cc    |  1 +
+ .../model_validator_keyed_service.cc              |  6 +++++-
+ .../optimization_guide_keyed_service.cc           |  1 -
+ .../predictors/loading_predictor_config.cc        |  4 ++--
+ chrome/browser/predictors/predictors_features.cc  | 11 ++---------
+ chrome/browser/ui/tab_helpers.cc                  |  1 -
+ .../ui/webui/omnibox/omnibox_page_handler.cc      |  2 ++
+ .../core/browser/autofill_optimization_guide.cc   |  5 +++--
+ .../omnibox/browser/autocomplete_controller.cc    |  2 ++
+ .../optimization_guide/core/hints_fetcher.cc      |  1 +
+ .../optimization_guide/core/hints_manager.cc      |  5 +++++
+ .../core/optimization_guide_features.cc           | 15 +++++++++------
+ .../core/prediction_model_download_manager.cc     |  6 ++++--
+ .../core/prediction_model_fetcher_impl.cc         |  1 +
+ components/optimization_guide/features.gni        |  3 +--
+ .../core/page_content_annotations_features.cc     |  5 +++++
+ components/search/ntp_features.cc                 |  3 +++
+ .../Disable-all-predictors-code.inc               |  4 ++++
+ .../Disable-all-predictors-code.inc               |  1 +
+ .../features_cc/Disable-all-predictors-code.inc   |  4 ++++
+ .../features_cc/Disable-all-predictors-code.inc   |  2 ++
+ .../document_speculation_rules.cc                 |  1 +
+ .../platform/runtime_enabled_features.json5       |  2 +-
+ 26 files changed, 61 insertions(+), 32 deletions(-)
  create mode 100644 cromite_flags/chrome/browser/browser_features_cc/Disable-all-predictors-code.inc
  create mode 100644 cromite_flags/chrome/common/chrome_features_cc/Disable-all-predictors-code.inc
  create mode 100644 cromite_flags/components/permissions/features_cc/Disable-all-predictors-code.inc
@@ -322,7 +323,7 @@ diff --git a/components/optimization_guide/core/optimization_guide_features.cc b
  }
  
  RequestContextSet GetAllowedContextsForPersonalizedMetadata() {
-@@ -817,5 +812,19 @@ double GetOnDeviceModelDefaultTemperature() {
+@@ -817,5 +812,13 @@ double GetOnDeviceModelDefaultTemperature() {
    return kTemperature.Get();
  }
  
@@ -331,14 +332,8 @@ diff --git a/components/optimization_guide/core/optimization_guide_features.cc b
 +SET_CROMITE_FEATURE_DISABLED(kRemoteOptimizationGuideFetchingAnonymousDataConsent);
 +SET_CROMITE_FEATURE_DISABLED(kOptimizationTargetPrediction);
 +SET_CROMITE_FEATURE_DISABLED(kOptimizationGuideModelDownloading);
-+SET_CROMITE_FEATURE_DISABLED(kPageContentAnnotations);
-+SET_CROMITE_FEATURE_DISABLED(kRemotePageMetadata);
-+SET_CROMITE_FEATURE_DISABLED(kPageEntitiesPageContentAnnotations);
 +SET_CROMITE_FEATURE_DISABLED(kPushNotifications);
-+SET_CROMITE_FEATURE_DISABLED(kPageVisibilityBatchAnnotations);
-+SET_CROMITE_FEATURE_DISABLED(kPageContentAnnotationsValidation);
 +SET_CROMITE_FEATURE_DISABLED(kPreventLongRunningPredictionModels);
-+SET_CROMITE_FEATURE_DISABLED(kPageContentAnnotationsPersistSalientImageMetadata);
 +SET_CROMITE_FEATURE_DISABLED(kOptimizationGuideFetchingForSRP);
  }  // namespace features
  }  // namespace optimization_guide
@@ -403,6 +398,19 @@ diff --git a/components/optimization_guide/features.gni b/components/optimizatio
  }
  
  declare_args() {
+diff --git a/components/page_content_annotations/core/page_content_annotations_features.cc b/components/page_content_annotations/core/page_content_annotations_features.cc
+--- a/components/page_content_annotations/core/page_content_annotations_features.cc
++++ b/components/page_content_annotations/core/page_content_annotations_features.cc
+@@ -264,4 +264,9 @@ size_t MaxRelatedSearchesCacheSize() {
+       "max_related_searches_cache_size", 10);
+ }
+ 
++SET_CROMITE_FEATURE_DISABLED(kPageContentAnnotations);
++SET_CROMITE_FEATURE_DISABLED(kRemotePageMetadata);
++SET_CROMITE_FEATURE_DISABLED(kPageVisibilityBatchAnnotations);
++SET_CROMITE_FEATURE_DISABLED(kPageContentAnnotationsValidation);
++SET_CROMITE_FEATURE_DISABLED(kPageContentAnnotationsPersistSalientImageMetadata);
+ }  // namespace page_content_annotations::features
 diff --git a/components/search/ntp_features.cc b/components/search/ntp_features.cc
 --- a/components/search/ntp_features.cc
 +++ b/components/search/ntp_features.cc
@@ -427,14 +435,8 @@ diff --git a/cromite_flags/chrome/common/chrome_features_cc/Disable-all-predicto
 new file mode 100644
 --- /dev/null
 +++ b/cromite_flags/chrome/common/chrome_features_cc/Disable-all-predictors-code.inc
-@@ -0,0 +1,7 @@
+@@ -0,0 +1 @@
 +SET_CROMITE_FEATURE_DISABLED(kPrerenderFallbackToPreconnect);
-+
-+#if !BUILDFLAG(IS_ANDROID)
-+
-+SET_CROMITE_FEATURE_DISABLED(kSafetyCheckNotificationPermissions);
-+
-+#endif
 diff --git a/cromite_flags/components/permissions/features_cc/Disable-all-predictors-code.inc b/cromite_flags/components/permissions/features_cc/Disable-all-predictors-code.inc
 new file mode 100644
 --- /dev/null

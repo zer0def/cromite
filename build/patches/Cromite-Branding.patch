@@ -9122,7 +9122,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/omaha/UpdateCon
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/omaha/inline/BromiteInlineUpdateController.java b/chrome/android/java/src/org/chromium/chrome/browser/omaha/inline/BromiteInlineUpdateController.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/omaha/inline/BromiteInlineUpdateController.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/omaha/inline/BromiteInlineUpdateController.java
-@@ -60,10 +60,10 @@ import org.chromium.chrome.browser.omaha.VersionNumber;
+@@ -61,10 +61,10 @@ import org.chromium.chrome.browser.omaha.VersionNumber;
  public class BromiteInlineUpdateController implements InlineUpdateController {
  
      private static final String TAG = "BromiteInlineUpdateController";
@@ -9137,7 +9137,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/omaha/inline/Br
  
      public static String getDownloadUrl() {
          return UPDATE_VERSION_URL + BuildConfig.BUILD_TARGET_CPU + "_ChromePublic.apk";
-@@ -212,11 +212,20 @@ public class BromiteInlineUpdateController implements InlineUpdateController {
+@@ -213,11 +213,20 @@ public class BromiteInlineUpdateController implements InlineUpdateController {
                          Log.i(TAG, "BromiteUpdater: obtained response '%s' and redirect URL '%s'", endpointResponse.getResponseString(), redirectURL);
                          if (redirectURL.indexOf(REDIRECT_URL_PREFIX) == 0) {
                              redirectURL = redirectURL.substring(REDIRECT_URL_PREFIX.length());
@@ -9158,7 +9158,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/omaha/inline/Br
                                      OmahaBase.setLatestModifiedVersion(parts[0]);
                                      callback.onResult(version);
                                      return;
-@@ -239,6 +248,10 @@ public class BromiteInlineUpdateController implements InlineUpdateController {
+@@ -240,6 +249,10 @@ public class BromiteInlineUpdateController implements InlineUpdateController {
      }
  
      private void checkLatestUpstreamVersion(final Callback<VersionNumber> callback) {

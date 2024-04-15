@@ -46,7 +46,7 @@ deactivation of all pop-ups (default disabled)
  .../AdblockCustomFiltersFragment.java         |    7 +-
  .../settings/AdblockCustomItemFragment.java   |   20 +-
  .../settings/AdblockFilterListsAdapter.java   |    6 +
- .../settings/AdblockSettingsFragment.java     |   45 +-
+ .../settings/AdblockSettingsFragment.java     |   50 +-
  components/adblock/content/browser/BUILD.gn   |   18 +-
  .../adblock_controller_factory_base.cc        |    5 +-
  .../browser/adblock_url_loader_factory.cc     |   17 +-
@@ -128,7 +128,7 @@ deactivation of all pop-ups (default disabled)
  .../blink/renderer/core/css/style_engine.h    |    1 +
  .../renderer/core/exported/web_document.cc    |   15 +-
  .../definitions/adblock_private.d.ts          |   14 +
- 118 files changed, 9188 insertions(+), 1264 deletions(-)
+ 118 files changed, 9191 insertions(+), 1266 deletions(-)
  create mode 100644 chrome/browser/resources/settings/adblock_page/adblock_page.html
  create mode 100644 chrome/browser/resources/settings/adblock_page/adblock_page.ts
  rename components/adblock/android/java/res/xml/{adblock_preferences.xml => eyeo_adblock_preferences.xml} (56%)
@@ -2375,7 +2375,15 @@ diff --git a/components/adblock/android/java/src/org/chromium/components/adblock
  
  import androidx.preference.Preference;
  import androidx.preference.PreferenceFragmentCompat;
-@@ -32,7 +33,19 @@ public class AdblockSettingsFragment
+@@ -20,6 +21,7 @@ import androidx.preference.PreferenceFragmentCompat;
+ import org.chromium.build.BuildConfig;
+ import org.chromium.chrome.browser.preferences.Pref;
+ import org.chromium.chrome.browser.profiles.Profile;
++import org.chromium.chrome.browser.profiles.ProfileManager;
+ import org.chromium.components.adblock.AdblockController;
+ import org.chromium.components.adblock.R;
+ import org.chromium.components.browser_ui.settings.ChromeSwitchPreference;
+@@ -32,7 +34,19 @@ public class AdblockSettingsFragment
      private Preference mFilterLists;
      private Preference mAllowedDomains;
      private Preference mMoreOptions;
@@ -2396,7 +2404,7 @@ diff --git a/components/adblock/android/java/src/org/chromium/components/adblock
      private static final String SETTINGS_ENABLED_KEY = "fragment_adblock_settings_enabled_key";
      private static final String SETTINGS_FILTER_LISTS_KEY =
              "fragment_adblock_settings_filter_lists_key";
-@@ -49,9 +62,20 @@ public class AdblockSettingsFragment
+@@ -49,27 +63,49 @@ public class AdblockSettingsFragment
      private long mOnOffTogleTimestamp;
  
      private void bindPreferences() {
@@ -2417,7 +2425,11 @@ diff --git a/components/adblock/android/java/src/org/chromium/components/adblock
          mAllowedDomains = findPreference(SETTINGS_ALLOWED_DOMAINS_KEY);
          mMoreOptions = findPreference(SETTINGS_MORE_OPTIONS_KEY);
      }
-@@ -62,14 +86,25 @@ public class AdblockSettingsFragment
+ 
+     private boolean areMoreOptionsEnabled() {
+-        return UserPrefs.get(Profile.getLastUsedRegularProfile())
++        return UserPrefs.get(ProfileManager.getLastUsedRegularProfile())
+                 .getBoolean(Pref.ADBLOCK_MORE_OPTIONS_ENABLED);
      }
  
      private void applyAdblockEnabled(boolean enabledValue) {
@@ -2445,7 +2457,16 @@ diff --git a/components/adblock/android/java/src/org/chromium/components/adblock
          boolean enabled = AdblockController.getInstance().isEnabled();
          mAdblockEnabled.setChecked(enabled);
          mAdblockEnabled.setOnPreferenceChangeListener(this);
-@@ -107,7 +142,7 @@ public class AdblockSettingsFragment
+@@ -95,7 +131,7 @@ public class AdblockSettingsFragment
+ 
+         mOnOffTogleTimestamp = now;
+         if (mOnOffClickCount >= ON_OFF_TOGGLE_COUNT_TO_ENABLE_MORE_OPTIONS) {
+-            UserPrefs.get(Profile.getLastUsedRegularProfile())
++            UserPrefs.get(ProfileManager.getLastUsedRegularProfile())
+                     .setBoolean(Pref.ADBLOCK_MORE_OPTIONS_ENABLED, true);
+         }
+     }
+@@ -107,7 +143,7 @@ public class AdblockSettingsFragment
  
      @Override
      public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -2454,7 +2475,7 @@ diff --git a/components/adblock/android/java/src/org/chromium/components/adblock
          bindPreferences();
          synchronizePreferences();
      }
-@@ -126,6 +161,8 @@ public class AdblockSettingsFragment
+@@ -126,6 +162,8 @@ public class AdblockSettingsFragment
              maybeEnableMoreOptions();
  
              applyAdblockEnabled((Boolean) newValue);

@@ -46,14 +46,14 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 diff --git a/android_webview/browser/aw_content_browser_client.cc b/android_webview/browser/aw_content_browser_client.cc
 --- a/android_webview/browser/aw_content_browser_client.cc
 +++ b/android_webview/browser/aw_content_browser_client.cc
-@@ -1153,6 +1153,7 @@ bool AwContentBrowserClient::ShouldPreconnectNavigation(
- 
- void AwContentBrowserClient::OnDisplayInsecureContent(
-     content::WebContents* web_contents) {
+@@ -1178,6 +1178,7 @@ network::mojom::AttributionSupport
+ AwContentBrowserClient::GetAttributionSupport(
+     AttributionReportingOsApiState state,
+     bool client_os_disabled) {
 +  if ((true)) return network::mojom::AttributionSupport::kNone;
-   AwSettings* aw_settings = AwSettings::FromWebContents(web_contents);
-   if (aw_settings) {
-     UMA_HISTOGRAM_ENUMERATION(
+   // WebView only supports OS-level attribution and not web-attribution.
+   switch (state) {
+     case AttributionReportingOsApiState::kDisabled:
 @@ -1196,6 +1197,8 @@ bool AwContentBrowserClient::IsAttributionReportingOperationAllowed(
      const url::Origin* destination_origin,
      const url::Origin* reporting_origin,

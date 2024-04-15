@@ -18,11 +18,11 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../browser/omaha/UpdateMenuItemHelper.java   |  82 +++++-
  .../browser/omaha/UpdateStatusProvider.java   | 165 ++++++++---
  .../browser/omaha/VersionNumberGetter.java    |   3 +-
- .../inline/BromiteInlineUpdateController.java | 272 ++++++++++++++++++
+ .../inline/BromiteInlineUpdateController.java | 273 ++++++++++++++++++
  .../omaha/inline/InlineUpdateController.java  |  51 ++++
  .../inline/InlineUpdateControllerFactory.java |  21 ++
  chrome/browser/BUILD.gn                       |   2 +
- chrome/browser/endpoint_fetcher/BUILD.gn      |  32 +++
+ chrome/browser/endpoint_fetcher/BUILD.gn      |  32 ++
  chrome/browser/endpoint_fetcher/DEPS          |   3 +
  chrome/browser/endpoint_fetcher/OWNERS        |   1 +
  .../endpoint_fetcher_android.cc               | 184 ++++++++++++
@@ -36,7 +36,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../endpoint_fetcher/endpoint_fetcher.h       |  23 +-
  .../Bromite-auto-updater.inc                  |   3 +
  .../Bromite-auto-updater.inc                  |   1 +
- 28 files changed, 1268 insertions(+), 52 deletions(-)
+ 28 files changed, 1269 insertions(+), 52 deletions(-)
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/omaha/inline/BromiteInlineUpdateController.java
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/omaha/inline/InlineUpdateController.java
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/omaha/inline/InlineUpdateControllerFactory.java
@@ -755,7 +755,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/omaha/inline/Br
 new file mode 100644
 --- /dev/null
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/omaha/inline/BromiteInlineUpdateController.java
-@@ -0,0 +1,272 @@
+@@ -0,0 +1,273 @@
 +// Copyright 2021 The Ungoogled Chromium Authors. All rights reserved.
 +//
 +// This file is part of Ungoogled Chromium Android.
@@ -796,6 +796,7 @@ new file mode 100644
 +import org.chromium.chrome.browser.omaha.UpdateConfigs;
 +import org.chromium.chrome.browser.omaha.UpdateStatusProvider;
 +import org.chromium.chrome.browser.profiles.Profile;
++import org.chromium.chrome.browser.profiles.ProfileManager;
 +import org.chromium.chrome.browser.tab.TabLaunchType;
 +import org.chromium.chrome.browser.tabmodel.TabCreator;
 +import org.chromium.content_public.browser.LoadUrlParams;
@@ -992,7 +993,7 @@ new file mode 100644
 +
 +                    callback.onResult(null);
 +                },
-+                Profile.getLastUsedRegularProfile(),
++                ProfileManager.getLastUsedRegularProfile(),
 +                urlToCheck, /*timeout*/5000, /*follow_redirect*/true, TRAFFIC_ANNOTATION);
 +    }
 +
@@ -1018,7 +1019,7 @@ new file mode 100644
 +
 +                    callback.onResult(null);
 +                },
-+                Profile.getLastUsedRegularProfile(),
++                ProfileManager.getLastUsedRegularProfile(),
 +                UPSTREAM_VERSION_URL, /*timeout*/5000, /*follow_redirect*/false, TRAFFIC_ANNOTATION);
 +    }
 +

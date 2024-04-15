@@ -6,7 +6,7 @@ Original License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.
 License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 ---
  .../crash/MinidumpUploadServiceImpl.java      |  22 +++
- .../crash_upload_list_android.cc              |  25 ++-
+ .../crash_upload_list_android.cc              |  19 +-
  .../crash_upload_list_android.h               |   1 +
  chrome/browser/net/chrome_network_delegate.cc |   7 +
  chrome/browser/ui/BUILD.gn                    |   1 +
@@ -23,7 +23,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../upload_list/text_log_upload_list.cc       |   1 +
  components/upload_list/upload_list.cc         |  14 ++
  components/upload_list/upload_list.h          |   9 +
- 18 files changed, 385 insertions(+), 139 deletions(-)
+ 18 files changed, 379 insertions(+), 139 deletions(-)
 
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/crash/MinidumpUploadServiceImpl.java b/chrome/android/java/src/org/chromium/chrome/browser/crash/MinidumpUploadServiceImpl.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/crash/MinidumpUploadServiceImpl.java
@@ -111,20 +111,14 @@ diff --git a/chrome/browser/crash_upload_list/crash_upload_list_android.cc b/chr
      // Crash reports can have multiple extensions (e.g. foo.dmp, foo.dmp.try1,
      // foo.skipped.try0).
      file = file.BaseName();
-@@ -135,7 +148,15 @@ void CrashUploadListAndroid::LoadUnsuccessfulUploadList(
+@@ -135,7 +148,9 @@ void CrashUploadListAndroid::LoadUnsuccessfulUploadList(
      RecordUnsuccessfulUploadListState(
          UnsuccessfulUploadListState::ADDING_AN_UPLOAD_ENTRY);
      id = id.substr(pos + 1);
 -    uploads->push_back(std::make_unique<UploadList::UploadInfo>(
 -        id, info.creation_time, upload_state, file_size));
-+    // Since current thread is an IO thread
-+    // to avoid failed DCHECK ThreadRestrictions::AssertSingletonAllowed()
-+    // remove ui::FormatBytes(): dcheck fail because it use base::FormatDouble()
-+    // and LazyInstance<NumberFormatWrapper>::DestructorAtExit().
-+    // also "upload.file_size" is unused.
-+    std::u16string file_size_string;
 +    auto upload = std::make_unique<UploadList::UploadInfo>(
-+        id, info.creation_time, upload_state, file_size_string);
++        id, info.creation_time, upload_state, file_size);
 +    upload->file_path = file_path;
 +    uploads->push_back(std::move(upload));
    }

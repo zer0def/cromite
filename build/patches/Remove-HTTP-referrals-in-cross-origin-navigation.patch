@@ -18,7 +18,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../res/xml/referer_policy_preferences.xml    | 31 +++++++
  .../privacy/settings/PrivacySettings.java     |  6 ++
  .../RadioButtonGroupRefererSettings.java      | 89 +++++++++++++++++++
- .../settings/RefererSettingsFragment.java     | 79 ++++++++++++++++
+ .../settings/RefererSettingsFragment.java     | 80 +++++++++++++++++
  .../api/settings_private/prefs_util.cc        |  5 ++
  .../net/system_network_context_manager.cc     |  4 +
  chrome/browser/renderer_preferences_util.cc   |  1 +
@@ -34,7 +34,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../renderer_host/navigation_request.cc       |  9 ++
  .../network/public/cpp/resource_request.h     |  2 +-
  .../renderer_preferences.h                    |  1 +
- 23 files changed, 371 insertions(+), 1 deletion(-)
+ 23 files changed, 372 insertions(+), 1 deletion(-)
  create mode 100644 chrome/android/java/res/layout/radio_button_group_referer_policy_preference.xml
  create mode 100644 chrome/android/java/res/xml/referer_policy_preferences.xml
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/RadioButtonGroupRefererSettings.java
@@ -295,7 +295,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/privacy/setting
 new file mode 100644
 --- /dev/null
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/RefererSettingsFragment.java
-@@ -0,0 +1,79 @@
+@@ -0,0 +1,80 @@
 +/*
 +    This file is part of Bromite.
 +
@@ -324,6 +324,7 @@ new file mode 100644
 +import org.chromium.chrome.R;
 +import org.chromium.chrome.browser.preferences.Pref;
 +import org.chromium.chrome.browser.profiles.Profile;
++import org.chromium.chrome.browser.profiles.ProfileManager;
 +import org.chromium.components.browser_ui.settings.TextMessagePreference;
 +import org.chromium.components.browser_ui.settings.SettingsUtils;
 +import org.chromium.components.prefs.PrefService;
@@ -336,10 +337,10 @@ new file mode 100644
 +    static final String PREF_REFERER_POLICY = "referer_page_radio_button_group";
 +
 +    private RadioButtonGroupRefererSettings mRefererPreference;
-+    private final PrefService prefService = UserPrefs.get(Profile.getLastUsedRegularProfile());
++    private final PrefService prefService = UserPrefs.get(ProfileManager.getLastUsedRegularProfile());
 +
 +    public static String getRefererSummaryString(Context context) {
-+        int policy = UserPrefs.get(Profile.getLastUsedRegularProfile())
++        int policy = UserPrefs.get(ProfileManager.getLastUsedRegularProfile())
 +                              .getInteger(Pref.REFERRERS_POLICY);
 +
 +        if (policy == 0) {
@@ -368,9 +369,9 @@ new file mode 100644
 +
 +    @Override
 +    public boolean onPreferenceChange(Preference preference, Object newValue) {
-+        UserPrefs.get(Profile.getLastUsedRegularProfile())
++        UserPrefs.get(ProfileManager.getLastUsedRegularProfile())
 +                 .setInteger(Pref.REFERRERS_POLICY, (int)newValue);
-+        UserPrefs.get(Profile.getLastUsedRegularProfile())
++        UserPrefs.get(ProfileManager.getLastUsedRegularProfile())
 +                 .setBoolean(Pref.ENABLE_REFERRERS, (int)newValue != 0);
 +        return true;
 +    }

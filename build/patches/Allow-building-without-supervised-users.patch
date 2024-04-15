@@ -8,18 +8,19 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  chrome/android/chrome_java_sources.gni                      | 1 -
  .../chrome/browser/feed/FeedSurfaceCoordinator.java         | 5 +----
  chrome/browser/BUILD.gn                                     | 6 ------
+ chrome/browser/about_flags.cc                               | 2 ++
  .../browser/extensions/api/settings_private/prefs_util.cc   | 2 ++
  chrome/browser/profiles/profile_impl.cc                     | 4 ++++
  chrome/browser/profiles/profile_manager.cc                  | 4 ++++
  chrome/browser/ui/webui/managed_ui_handler.cc               | 2 ++
  chrome/browser/ui/webui/management/management_ui_handler.cc | 2 ++
  components/supervised_user/buildflags.gni                   | 6 +-----
+ .../core/browser/supervised_user_pref_store.cc              | 1 +
  .../core/browser/supervised_user_preferences.cc             | 2 +-
  .../supervised_user/core/browser/supervised_user_utils.cc   | 4 ++++
- components/supervised_user/core/common/features.cc          | 1 +
  components/supervised_user/core/common/pref_names.h         | 4 ++++
  .../core/common/supervised_user_constants.cc                | 2 ++
- 15 files changed, 28 insertions(+), 18 deletions(-)
+ 16 files changed, 30 insertions(+), 18 deletions(-)
 
 diff --git a/chrome/android/BUILD.gn b/chrome/android/BUILD.gn
 --- a/chrome/android/BUILD.gn
@@ -88,6 +89,25 @@ diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
        "sync/glue/synced_tab_delegate_android.cc",
        "sync/glue/synced_tab_delegate_android.h",
        "sync/glue/synced_window_delegate_android.cc",
+diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
+--- a/chrome/browser/about_flags.cc
++++ b/chrome/browser/about_flags.cc
+@@ -7886,6 +7886,7 @@ const FeatureEntry kFeatureEntries[] = {
+ #endif
+ 
+ #if BUILDFLAG(IS_MAC) || BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_WIN)
++#if BUILDFLAG(ENABLE_SUPERVISED_USERS)
+     {"enable-family-link-extensions-permissions",
+      flag_descriptions::
+          kEnableExtensionsPermissionsForSupervisedUsersOnDesktopName,
+@@ -7895,6 +7896,7 @@ const FeatureEntry kFeatureEntries[] = {
+      FEATURE_VALUE_TYPE(
+          supervised_user::
+              kEnableExtensionsPermissionsForSupervisedUsersOnDesktop)},
++#endif
+ #endif
+ 
+     {"notification-scheduler", flag_descriptions::kNotificationSchedulerName,
 diff --git a/chrome/browser/extensions/api/settings_private/prefs_util.cc b/chrome/browser/extensions/api/settings_private/prefs_util.cc
 --- a/chrome/browser/extensions/api/settings_private/prefs_util.cc
 +++ b/chrome/browser/extensions/api/settings_private/prefs_util.cc
@@ -208,6 +228,17 @@ diff --git a/components/supervised_user/buildflags.gni b/components/supervised_u
 -      is_ios || is_linux || is_mac || is_win
 +  enable_supervised_users = false
  }
+diff --git a/components/supervised_user/core/browser/supervised_user_pref_store.cc b/components/supervised_user/core/browser/supervised_user_pref_store.cc
+--- a/components/supervised_user/core/browser/supervised_user_pref_store.cc
++++ b/components/supervised_user/core/browser/supervised_user_pref_store.cc
+@@ -126,6 +126,7 @@ SupervisedUserPrefStore::~SupervisedUserPrefStore() {}
+ 
+ void SupervisedUserPrefStore::OnNewSettingsAvailable(
+     const base::Value::Dict& settings) {
++  if ((true)) return;
+   std::unique_ptr<PrefValueMap> old_prefs = std::move(prefs_);
+   prefs_ = std::make_unique<PrefValueMap>();
+   if (!settings.empty()) {
 diff --git a/components/supervised_user/core/browser/supervised_user_preferences.cc b/components/supervised_user/core/browser/supervised_user_preferences.cc
 --- a/components/supervised_user/core/browser/supervised_user_preferences.cc
 +++ b/components/supervised_user/core/browser/supervised_user_preferences.cc
@@ -239,15 +270,6 @@ diff --git a/components/supervised_user/core/browser/supervised_user_utils.cc b/
  }
  
  bool EmitLogRecordHistograms(
-diff --git a/components/supervised_user/core/common/features.cc b/components/supervised_user/core/common/features.cc
---- a/components/supervised_user/core/common/features.cc
-+++ b/components/supervised_user/core/common/features.cc
-@@ -119,4 +119,5 @@ bool IsShadowKidsApiWithSafeSitesEnabled() {
-   return base::FeatureList::IsEnabled(kShadowKidsApiWithSafeSites);
- }
- 
-+SET_CROMITE_FEATURE_DISABLED(kForceGoogleSafeSearchForSupervisedUsers);
- }  // namespace supervised_user
 diff --git a/components/supervised_user/core/common/pref_names.h b/components/supervised_user/core/common/pref_names.h
 --- a/components/supervised_user/core/common/pref_names.h
 +++ b/components/supervised_user/core/common/pref_names.h

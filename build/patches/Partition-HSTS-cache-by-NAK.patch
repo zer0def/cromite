@@ -577,7 +577,7 @@ diff --git a/net/quic/quic_chromium_client_session.cc b/net/quic/quic_chromium_c
 diff --git a/net/socket/ssl_client_socket_impl.cc b/net/socket/ssl_client_socket_impl.cc
 --- a/net/socket/ssl_client_socket_impl.cc
 +++ b/net/socket/ssl_client_socket_impl.cc
-@@ -1187,7 +1187,8 @@ ssl_verify_result_t SSLClientSocketImpl::HandleVerifyResult() {
+@@ -1190,7 +1190,8 @@ ssl_verify_result_t SSLClientSocketImpl::HandleVerifyResult() {
      TransportSecurityState::PKPStatus pin_validity =
          context_->transport_security_state()->CheckPublicKeyPins(
              host_and_port_, server_cert_verify_result_.is_issued_by_known_root,
@@ -587,7 +587,7 @@ diff --git a/net/socket/ssl_client_socket_impl.cc b/net/socket/ssl_client_socket
      switch (pin_validity) {
        case TransportSecurityState::PKPStatus::VIOLATED:
          server_cert_verify_result_.cert_status |=
-@@ -1209,7 +1210,7 @@ ssl_verify_result_t SSLClientSocketImpl::HandleVerifyResult() {
+@@ -1212,7 +1213,7 @@ ssl_verify_result_t SSLClientSocketImpl::HandleVerifyResult() {
        IsCertStatusError(server_cert_verify_result_.cert_status) &&
        result != ERR_CERT_KNOWN_INTERCEPTION_BLOCKED &&
        context_->transport_security_state()->ShouldSSLErrorsBeFatal(

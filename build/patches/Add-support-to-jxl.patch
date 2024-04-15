@@ -36,7 +36,7 @@ Enabled by default
  .../platform/graphics/bitmap_image_metrics.h  |   4 +-
  .../renderer/platform/image-decoders/BUILD.gn |   9 +
  .../platform/image-decoders/image_decoder.cc  |  23 +
- .../image-decoders/jxl/jxl_image_decoder.cc   | 683 ++++++++++++++++++
+ .../image-decoders/jxl/jxl_image_decoder.cc   | 684 ++++++++++++++++++
  .../image-decoders/jxl/jxl_image_decoder.h    | 123 ++++
  .../jxl/jxl_image_decoder_test.cc             | 626 ++++++++++++++++
  .../blink/tools/commit_stats/git-dirs.txt     |   1 +
@@ -58,7 +58,7 @@ Enabled by default
  .../libjxl/gen_headers/jxl/jxl_export.h       |  11 +
  tools/metrics/histograms/enums.xml            |   1 +
  .../histograms/metadata/blink/enums.xml       |   2 +-
- 53 files changed, 1995 insertions(+), 17 deletions(-)
+ 53 files changed, 1996 insertions(+), 17 deletions(-)
  create mode 100644 build/linux/unbundle/libjxl.gn
  create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Add-support-to-jxl.inc
  create mode 100644 cromite_flags/third_party/blink/common/features_cc/Add-support-to-jxl.inc
@@ -765,7 +765,7 @@ diff --git a/third_party/blink/renderer/platform/image-decoders/jxl/jxl_image_de
 new file mode 100644
 --- /dev/null
 +++ b/third_party/blink/renderer/platform/image-decoders/jxl/jxl_image_decoder.cc
-@@ -0,0 +1,683 @@
+@@ -0,0 +1,684 @@
 +// Copyright 2021 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
@@ -815,11 +815,12 @@ new file mode 100644
 +  // The input ColorProfile owns the buffer memory, make a new copy for
 +  // the newly created one and pass the ownership of the new copy to the new
 +  // color profile.
-+  std::unique_ptr<uint8_t[]> owned_buffer(
-+      new uint8_t[buffer_donor.GetProfile()->size]);
-+  memcpy(owned_buffer.get(), buffer_donor.GetProfile()->buffer,
-+         buffer_donor.GetProfile()->size);
-+  new_profile.buffer = owned_buffer.get();
++  auto owned_buffer = base::HeapArray<uint8_t>::Uninit(buffer_donor.GetProfile()->size);
++  owned_buffer.copy_from(
++    base::span<const uint8_t>(
++      static_cast<const uint8_t*>(buffer_donor.GetProfile()->buffer),
++      buffer_donor.GetProfile()->size));
++  new_profile.buffer = std::move(owned_buffer.data());
 +  return std::make_unique<ColorProfile>(new_profile, std::move(owned_buffer));
 +}
 +}  // namespace

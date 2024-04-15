@@ -12,19 +12,19 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 ---
  chrome/android/chrome_java_resources.gni      |   1 +
  chrome/android/chrome_java_sources.gni        |   1 +
- chrome/android/java/AndroidManifest.xml       |  28 +++-
+ chrome/android/java/AndroidManifest.xml       |  28 ++-
  .../res/layout/sharing_intent_content.xml     |  88 ++++++++++
  .../chrome/browser/IntentHandler.java         |  16 +-
  .../browser/LaunchIntentDispatcher.java       |  14 +-
  .../init/ProcessInitializationHandler.java    |   3 +
- .../SharedIntentShareActivity.java            | 158 ++++++++++++++++++
+ .../SharedIntentShareActivity.java            | 159 ++++++++++++++++++
  .../flags/android/chrome_feature_list.cc      |   1 +
  .../browser/flags/ChromeFeatureList.java      |   1 +
  .../strings/android_chrome_strings.grd        |  13 ++
  .../about_flags_cc/Enable-share-intent.inc    |  12 ++
  .../Enable-share-intent.inc                   |   3 +
  .../Enable-share-intent.inc                   |   1 +
- 14 files changed, 332 insertions(+), 8 deletions(-)
+ 14 files changed, 333 insertions(+), 8 deletions(-)
  create mode 100644 chrome/android/java/res/layout/sharing_intent_content.xml
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/sharing/shared_intent/SharedIntentShareActivity.java
  create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Enable-share-intent.inc
@@ -306,7 +306,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/sharing/shared_
 new file mode 100644
 --- /dev/null
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/sharing/shared_intent/SharedIntentShareActivity.java
-@@ -0,0 +1,158 @@
+@@ -0,0 +1,159 @@
 +// Copyright 2019 The Chromium Authors. All rights reserved.
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
@@ -340,6 +340,7 @@ new file mode 100644
 +import org.chromium.chrome.browser.profiles.ProfileProvider;
 +import org.chromium.ui.widget.ButtonCompat;
 +import org.chromium.chrome.browser.profiles.Profile;
++import org.chromium.chrome.browser.profiles.ProfileManager;
 +import org.chromium.chrome.browser.search_engines.TemplateUrlServiceFactory;
 +import org.chromium.chrome.browser.privacy.settings.PrivacySettings;
 +
@@ -427,7 +428,7 @@ new file mode 100644
 +        String scheme = Uri.parse(linkUrl).getScheme();
 +        if (scheme == null) {
 +            linkUrl =
-+                TemplateUrlServiceFactory.getForProfile(Profile.getLastUsedRegularProfile())
++                TemplateUrlServiceFactory.getForProfile(ProfileManager.getLastUsedRegularProfile())
 +                    .getUrlForSearchQuery(linkUrl);
 +        }
 +        updateTextLink();

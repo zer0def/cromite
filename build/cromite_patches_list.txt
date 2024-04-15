@@ -246,7 +246,6 @@ Remove-support-for-device-memory-and-cpu-recovery.patch
 Log-dangling-attributes-in-some-html-elements.patch
 Keep-Side-Panel-Companion-disabled.patch
 Lock-Profile-Cookie-Database.patch
-Show-warnings-on-downloads-over-HTTP.patch
 Compress-libchrome-to-free-up-some-space.patch
 Cromite-Branding.patch
 Disable-Feeback-Collector.patch
