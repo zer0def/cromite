@@ -20,7 +20,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../chromium/chrome/browser/tab/TabImpl.java  | 42 ++++++++++
  .../browser/tab/TabViewAndroidDelegate.java   |  4 +
  chrome/browser/BUILD.gn                       |  7 ++
- chrome/browser/android/tab_android.cc         |  9 +++
+ chrome/browser/android/tab_android.cc         |  8 ++
  .../strings/android_chrome_strings.grd        |  6 ++
  components/android_autofill/browser/BUILD.gn  |  1 +
  .../browser/android_autofill_manager.cc       |  2 +
@@ -41,7 +41,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../autofill/core/common/autofill_prefs.h     |  5 ++
  .../embedder_support/view/ContentView.java    | 47 +++++++++++
  .../chromium/ui/base/ViewAndroidDelegate.java |  4 +
- 26 files changed, 380 insertions(+), 3 deletions(-)
+ 26 files changed, 379 insertions(+), 3 deletions(-)
  create mode 100644 components/android_autofill/browser/java/src/org/chromium/components/autofill/BrowserSelectionActionMenuDelegate.java
 
 diff --git a/chrome/android/BUILD.gn b/chrome/android/BUILD.gn
@@ -303,11 +303,6 @@ diff --git a/chrome/browser/android/tab_android.cc b/chrome/browser/android/tab_
    android_autofill::AndroidAutofillClient::CreateForWebContents(
        web_contents_.get(), [&](const JavaRef<jobject>& client) {});
  
-@@ -536,3 +544,4 @@ static void JNI_TabImpl_Init(JNIEnv* env,
-   // This will automatically bind to the Java object and pass ownership there.
-   new TabAndroid(env, obj, profile, id);
- }
-+
 diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chrome/browser/ui/android/strings/android_chrome_strings.grd
 --- a/chrome/browser/ui/android/strings/android_chrome_strings.grd
 +++ b/chrome/browser/ui/android/strings/android_chrome_strings.grd
