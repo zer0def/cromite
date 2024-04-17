@@ -6,7 +6,6 @@ Block access to the local network by default in android while allowing
 user choice in desktop platforms.
 
 License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
-
 ---
  .../browser/chrome_content_browser_client.cc  |  3 +-
  ...eInsecurePrivateNetworkContentSetting.java | 93 +++++++++++++++++++
@@ -22,7 +21,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 diff --git a/chrome/browser/chrome_content_browser_client.cc b/chrome/browser/chrome_content_browser_client.cc
 --- a/chrome/browser/chrome_content_browser_client.cc
 +++ b/chrome/browser/chrome_content_browser_client.cc
-@@ -7514,8 +7514,7 @@ ChromeContentBrowserClient::ShouldOverridePrivateNetworkRequestPolicy(
+@@ -7510,8 +7510,7 @@ ChromeContentBrowserClient::ShouldOverridePrivateNetworkRequestPolicy(
  
  #if BUILDFLAG(IS_ANDROID)
    if (base::FeatureList::IsEnabled(
