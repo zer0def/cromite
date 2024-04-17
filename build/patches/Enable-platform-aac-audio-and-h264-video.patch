@@ -131,7 +131,7 @@ diff --git a/media/filters/ffmpeg_video_decoder.cc b/media/filters/ffmpeg_video_
  #include "media/base/decoder_buffer.h"
  #include "media/base/limits.h"
  #include "media/base/media_log.h"
-@@ -137,6 +138,16 @@ bool FFmpegVideoDecoder::IsCodecSupported(VideoCodec codec) {
+@@ -129,6 +130,16 @@ bool FFmpegVideoDecoder::IsCodecSupported(VideoCodec codec) {
      return false;
    }
  #endif

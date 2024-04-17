@@ -236,6 +236,9 @@ Add-webGL-site-setting.patch
 Add-webRTC-site-settings.patch
 Show-site-settings-for-cookies-javascript-and-ads.patch
 Viewport-Protection-flag.patch
+Revert-remove-allowscript-content-setting-secondary-url.patch
+Revert-remove-allowimage-content-setting-secondary-url.patch
+Temp-Alert-for-CC-revert.patch
 Timezone-customization.patch
 Change-popup-site-setting.patch
 Disable-speechSynthesis-getVoices-API.patch
@@ -243,7 +246,6 @@ Remove-support-for-device-memory-and-cpu-recovery.patch
 Log-dangling-attributes-in-some-html-elements.patch
 Keep-Side-Panel-Companion-disabled.patch
 Lock-Profile-Cookie-Database.patch
-Show-warnings-on-downloads-over-HTTP.patch
 Compress-libchrome-to-free-up-some-space.patch
 Cromite-Branding.patch
 Disable-Feeback-Collector.patch

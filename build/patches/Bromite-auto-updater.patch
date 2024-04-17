@@ -18,11 +18,11 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../browser/omaha/UpdateMenuItemHelper.java   |  82 +++++-
  .../browser/omaha/UpdateStatusProvider.java   | 165 ++++++++---
  .../browser/omaha/VersionNumberGetter.java    |   3 +-
- .../inline/BromiteInlineUpdateController.java | 272 ++++++++++++++++++
+ .../inline/BromiteInlineUpdateController.java | 273 ++++++++++++++++++
  .../omaha/inline/InlineUpdateController.java  |  51 ++++
  .../inline/InlineUpdateControllerFactory.java |  21 ++
  chrome/browser/BUILD.gn                       |   2 +
- chrome/browser/endpoint_fetcher/BUILD.gn      |  32 +++
+ chrome/browser/endpoint_fetcher/BUILD.gn      |  32 ++
  chrome/browser/endpoint_fetcher/DEPS          |   3 +
  chrome/browser/endpoint_fetcher/OWNERS        |   1 +
  .../endpoint_fetcher_android.cc               | 184 ++++++++++++
@@ -36,7 +36,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../endpoint_fetcher/endpoint_fetcher.h       |  23 +-
  .../Bromite-auto-updater.inc                  |   3 +
  .../Bromite-auto-updater.inc                  |   1 +
- 28 files changed, 1268 insertions(+), 52 deletions(-)
+ 28 files changed, 1269 insertions(+), 52 deletions(-)
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/omaha/inline/BromiteInlineUpdateController.java
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/omaha/inline/InlineUpdateController.java
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/omaha/inline/InlineUpdateControllerFactory.java
@@ -78,7 +78,7 @@ diff --git a/build/config/android/rules.gni b/build/config/android/rules.gni
 diff --git a/chrome/android/chrome_java_sources.gni b/chrome/android/chrome_java_sources.gni
 --- a/chrome/android/chrome_java_sources.gni
 +++ b/chrome/android/chrome_java_sources.gni
-@@ -883,6 +883,9 @@ chrome_java_sources = [
+@@ -884,6 +884,9 @@ chrome_java_sources = [
    "java/src/org/chromium/chrome/browser/omaha/UpdateConfigs.java",
    "java/src/org/chromium/chrome/browser/omaha/UpdateMenuItemHelper.java",
    "java/src/org/chromium/chrome/browser/omaha/UpdateStatusProvider.java",
@@ -755,7 +755,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/omaha/inline/Br
 new file mode 100644
 --- /dev/null
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/omaha/inline/BromiteInlineUpdateController.java
-@@ -0,0 +1,272 @@
+@@ -0,0 +1,273 @@
 +// Copyright 2021 The Ungoogled Chromium Authors. All rights reserved.
 +//
 +// This file is part of Ungoogled Chromium Android.
@@ -796,6 +796,7 @@ new file mode 100644
 +import org.chromium.chrome.browser.omaha.UpdateConfigs;
 +import org.chromium.chrome.browser.omaha.UpdateStatusProvider;
 +import org.chromium.chrome.browser.profiles.Profile;
++import org.chromium.chrome.browser.profiles.ProfileManager;
 +import org.chromium.chrome.browser.tab.TabLaunchType;
 +import org.chromium.chrome.browser.tabmodel.TabCreator;
 +import org.chromium.content_public.browser.LoadUrlParams;
@@ -992,7 +993,7 @@ new file mode 100644
 +
 +                    callback.onResult(null);
 +                },
-+                Profile.getLastUsedRegularProfile(),
++                ProfileManager.getLastUsedRegularProfile(),
 +                urlToCheck, /*timeout*/5000, /*follow_redirect*/true, TRAFFIC_ANNOTATION);
 +    }
 +
@@ -1018,7 +1019,7 @@ new file mode 100644
 +
 +                    callback.onResult(null);
 +                },
-+                Profile.getLastUsedRegularProfile(),
++                ProfileManager.getLastUsedRegularProfile(),
 +                UPSTREAM_VERSION_URL, /*timeout*/5000, /*follow_redirect*/false, TRAFFIC_ANNOTATION);
 +    }
 +
@@ -1113,7 +1114,7 @@ new file mode 100644
 diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -3112,6 +3112,7 @@ static_library("browser") {
+@@ -3121,6 +3121,7 @@ static_library("browser") {
        "download/android/service/download_task_scheduler.h",
        "download/android/string_utils.cc",
        "download/download_crx_util_android.cc",
@@ -1121,7 +1122,7 @@ diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
        "enterprise/reporting/browser_report_generator_android.cc",
        "enterprise/reporting/browser_report_generator_android.h",
        "enterprise/reporting/profile_report_generator_android.cc",
-@@ -3451,6 +3452,7 @@ static_library("browser") {
+@@ -3456,6 +3457,7 @@ static_library("browser") {
        "//chrome/browser/content_extraction/android:jni_headers",
        "//chrome/browser/device_reauth/android:jni_headers",
        "//chrome/browser/download/internal/android",
@@ -1618,24 +1619,24 @@ diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browse
      &kPriceChangeModule,
      &kPwaRestoreUi,
 +    &kInlineUpdateFlow,
-     &kPwaUniversalInstallUi,
      &kOmahaMinSdkVersionAndroid,
      &kShortCircuitUnfocusAnimation,
+     &kOmniboxNoopEditUrlSuggestionClicks,
 diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 --- a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 +++ b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
-@@ -315,6 +315,7 @@ public abstract class ChromeFeatureList {
+@@ -309,6 +309,7 @@ public abstract class ChromeFeatureList {
              "IncognitoReauthenticationForAndroid";
      public static final String INCOGNITO_SCREENSHOT = "IncognitoScreenshot";
      public static final String INSTANT_START = "InstantStart";
 +    public static final String INLINE_UPDATE_FLOW = "InlineUpdateFlow";
      public static final String INTEREST_FEED_V2_HEARTS = "InterestFeedV2Hearts";
+     public static final String IP_PROTECTION_UX = "IpProtectionUx";
      public static final String KID_FRIENDLY_CONTENT_FEED = "KidFriendlyContentFeed";
-     public static final String LENS_CAMERA_ASSISTED_SEARCH = "LensCameraAssistedSearch";
 diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chrome/browser/ui/android/strings/android_chrome_strings.grd
 --- a/chrome/browser/ui/android/strings/android_chrome_strings.grd
 +++ b/chrome/browser/ui/android/strings/android_chrome_strings.grd
-@@ -2050,6 +2050,12 @@ Your Google account may have other forms of browsing history like searches and a
+@@ -2090,6 +2090,12 @@ Your Google account may have other forms of browsing history like searches and a
        <message name="IDS_DEPRECATION_WARNING" desc="Warning about Chrome updates no longer being supported">
          Chrome updates are no longer supported for this version of Android
        </message>
@@ -1648,7 +1649,7 @@ diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chro
  
        <!-- Account management UI strings. -->
        <message name="IDS_ACCOUNT_MANAGEMENT_TITLE" desc="Header title for the account management screen. [CHAR_LIMIT=32]">
-@@ -3732,7 +3738,10 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>clear the Chrome da
+@@ -3784,7 +3790,10 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>clear the Chrome da
  
        <!-- Main menu items -->
        <message name="IDS_MENU_UPDATE" desc="Menu item for updating chrome. [CHAR_LIMIT=24]">
@@ -1660,7 +1661,7 @@ diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chro
        </message>
        <message name="IDS_MENU_UPDATE_SUMMARY_DEFAULT" desc="Summary string for update menu item explaining that a newer version of Chrome is available. [CHAR_LIMIT=30]">
          Newer version is available
-@@ -3743,6 +3752,18 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>clear the Chrome da
+@@ -3795,6 +3804,18 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>clear the Chrome da
        <message name="IDS_MENU_UPDATE_UNSUPPORTED_SUMMARY_DEFAULT" desc="Summary string for update menu item explaining that the Android version on the device is unsupported. [CHAR_LIMIT=30]">
          Android version is unsupported
        </message>

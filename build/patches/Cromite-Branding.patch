@@ -9122,7 +9122,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/omaha/UpdateCon
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/omaha/inline/BromiteInlineUpdateController.java b/chrome/android/java/src/org/chromium/chrome/browser/omaha/inline/BromiteInlineUpdateController.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/omaha/inline/BromiteInlineUpdateController.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/omaha/inline/BromiteInlineUpdateController.java
-@@ -60,10 +60,10 @@ import org.chromium.chrome.browser.omaha.VersionNumber;
+@@ -61,10 +61,10 @@ import org.chromium.chrome.browser.omaha.VersionNumber;
  public class BromiteInlineUpdateController implements InlineUpdateController {
  
      private static final String TAG = "BromiteInlineUpdateController";
@@ -9137,7 +9137,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/omaha/inline/Br
  
      public static String getDownloadUrl() {
          return UPDATE_VERSION_URL + BuildConfig.BUILD_TARGET_CPU + "_ChromePublic.apk";
-@@ -212,11 +212,20 @@ public class BromiteInlineUpdateController implements InlineUpdateController {
+@@ -213,11 +213,20 @@ public class BromiteInlineUpdateController implements InlineUpdateController {
                          Log.i(TAG, "BromiteUpdater: obtained response '%s' and redirect URL '%s'", endpointResponse.getResponseString(), redirectURL);
                          if (redirectURL.indexOf(REDIRECT_URL_PREFIX) == 0) {
                              redirectURL = redirectURL.substring(REDIRECT_URL_PREFIX.length());
@@ -9158,7 +9158,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/omaha/inline/Br
                                      OmahaBase.setLatestModifiedVersion(parts[0]);
                                      callback.onResult(version);
                                      return;
-@@ -239,6 +248,10 @@ public class BromiteInlineUpdateController implements InlineUpdateController {
+@@ -240,6 +249,10 @@ public class BromiteInlineUpdateController implements InlineUpdateController {
      }
  
      private void checkLatestUpstreamVersion(final Callback<VersionNumber> callback) {
@@ -9193,7 +9193,7 @@ diff --git a/chrome/app/extensions_strings.grdp b/chrome/app/extensions_strings.
 diff --git a/chrome/app/settings_strings.grdp b/chrome/app/settings_strings.grdp
 --- a/chrome/app/settings_strings.grdp
 +++ b/chrome/app/settings_strings.grdp
-@@ -278,7 +278,7 @@
+@@ -287,7 +287,7 @@
      Change
    </message>
    <message name="IDS_SETTINGS_WEB_STORE" desc="Sub-label about choosing something from the Chrome Web Store.">
@@ -13147,7 +13147,7 @@ e)fqMZZ`3a)Ds&5H<cfp<0000<MNUMnLSTYHt&Yn8
 diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -2050,6 +2050,7 @@ static_library("browser") {
+@@ -2058,6 +2058,7 @@ static_library("browser") {
      "//build:chromeos_buildflags",
      "//build/config/chromebox_for_meetings:buildflags",
      "//build/config/compiler:compiler_buildflags",
@@ -13209,7 +13209,7 @@ diff --git a/chrome/browser/resources/settings/settings_menu/settings_menu.html 
 diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chrome/browser/ui/android/strings/android_chrome_strings.grd
 --- a/chrome/browser/ui/android/strings/android_chrome_strings.grd
 +++ b/chrome/browser/ui/android/strings/android_chrome_strings.grd
-@@ -2124,7 +2124,7 @@ Your Google account may have other forms of browsing history like searches and a
+@@ -2164,7 +2164,7 @@ Your Google account may have other forms of browsing history like searches and a
          About Chrome
        </message>
        <message name="IDS_LEGAL_INFORMATION_SUMMARY" desc="Summary for legal information" meaning="Android">
@@ -13242,7 +13242,7 @@ diff --git a/chrome/common/url_constants.h b/chrome/common/url_constants.h
 diff --git a/components/browser_ui/strings/android/browser_ui_strings.grd b/components/browser_ui/strings/android/browser_ui_strings.grd
 --- a/components/browser_ui/strings/android/browser_ui_strings.grd
 +++ b/components/browser_ui/strings/android/browser_ui_strings.grd
-@@ -994,7 +994,7 @@
+@@ -999,7 +999,7 @@
  
        <!-- Accessibility preferences -->
        <message name="IDS_PREFS_ACCESSIBILITY" desc="Title of Accessibility settings, which allows the user to change webpage font sizes. [CHAR_LIMIT=32]">
@@ -18202,8 +18202,8 @@ diff --git a/tools/grit/grit/grd_reader.py b/tools/grit/grit/grd_reader.py
 diff --git a/ui/base/ui_base_features.cc b/ui/base/ui_base_features.cc
 --- a/ui/base/ui_base_features.cc
 +++ b/ui/base/ui_base_features.cc
-@@ -643,4 +643,6 @@ BASE_FEATURE(kUseGammaContrastRegistrySettings,
-              base::FEATURE_DISABLED_BY_DEFAULT);
+@@ -648,4 +648,6 @@ BASE_FEATURE(kUseGammaContrastRegistrySettings,
+              base::FEATURE_ENABLED_BY_DEFAULT);
  #endif  // BUILDFLAG(IS_WIN)
  
 +SET_CROMITE_FEATURE_ENABLED(kChromeRefresh2023);
