@@ -39,7 +39,7 @@ Require: bromite-build-utils.patch
  .../browser_ui/site_settings/android/BUILD.gn |  18 +
  .../site_settings/AllSiteSettings.java        |   5 +-
  .../BromiteCustomContentSetting.java          | 155 +++++++
- .../BromiteCustomContentSettingImpl.java      | 409 ++++++++++++++++++
+ .../BromiteCustomContentSettingImpl.java      | 411 ++++++++++++++++++
  ...tomTriStateSiteSettingsPreferenceImpl.java |  24 +
  .../ContentSettingsResources.java             |  16 +-
  .../site_settings/SingleCategorySettings.java |  50 ++-
@@ -82,7 +82,7 @@ Require: bromite-build-utils.patch
  .../platform/web_content_settings_client.h    |   5 +
  .../execution_context/execution_context.cc    |  16 +
  .../execution_context/execution_context.h     |   5 +
- 71 files changed, 1834 insertions(+), 89 deletions(-)
+ 71 files changed, 1836 insertions(+), 89 deletions(-)
  create mode 100644 components/browser_ui/settings/android/java/res/layout/preference_spinner_single_widget.xml
  create mode 100644 components/browser_ui/site_settings/android/java/src/org/chromium/components/browser_ui/site_settings/BromiteCustomContentSetting.java
  create mode 100644 components/browser_ui/site_settings/android/java/src/org/chromium/components/browser_ui/site_settings/BromiteCustomContentSettingImpl.java
@@ -1675,7 +1675,7 @@ diff --git a/components/browser_ui/site_settings/android/java/src/org/chromium/c
 new file mode 100644
 --- /dev/null
 +++ b/components/browser_ui/site_settings/android/java/src/org/chromium/components/browser_ui/site_settings/BromiteCustomContentSettingImpl.java
-@@ -0,0 +1,409 @@
+@@ -0,0 +1,411 @@
 +/*
 +    This file is part of Bromite.
 +
@@ -1976,8 +1976,10 @@ new file mode 100644
 +
 +        Context styledContext = settings.getPreferenceManager().getContext();
 +        for (BromiteCustomContentSetting cs : mItemList) {
++            String preferenceKey = cs.getPreferenceKey();
++            if (settings.findPreference(preferenceKey) != null) continue;
 +            ChromeBasePreference pref = new ChromeBasePreference(styledContext);
-+            pref.setKey(cs.getPreferenceKey());
++            pref.setKey(preferenceKey);
 +            pref.setFragment(SingleCategorySettings.class.getCanonicalName());
 +            preferenceScreen.addPreference(pref);
 +        }
