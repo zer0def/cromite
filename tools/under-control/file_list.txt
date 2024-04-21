@@ -8,17 +8,21 @@
 
 third_party/blink/renderer/core/frame/settings.json5
 third_party/blink/renderer/core/events/event_type_names.json5
+third_party/blink/renderer/core/exported/web_view_impl.cc
 third_party/blink/renderer/core/css/parser/media_query_parser.cc
-third_party/blink/renderer/core/css/media_feature_names.json5
+third_party/blink/renderer/core/frame/settings.json5
 third_party/blink/renderer/core/origin_trials/origin_trial_context.cc
 third_party/blink/public/mojom/use_counter/metrics/web_feature.mojom
+third_party/blink/public/mojom/webpreferences/web_preferences.mojom
 
 chrome/android/java/AndroidManifest.xml
 
 chrome/browser/ui/tab_helpers.cc
 chrome/browser/chrome_browser_interface_binders.cc
+chrome/browser/chrome_content_browser_client.cc
 chrome/browser/prefs/browser_prefs.cc
 chrome/browser/browsing_data/chrome_browsing_data_remover_delegate.cc
+chrome/browser/ui/webui/chrome_content_browser_client_webui_part.cc
 
 chrome/renderer/chrome_content_renderer_client.cc
 
@@ -32,3 +36,6 @@ gin/v8_initializer.cc
 media/base/video_codecs.h
 
 testing/variations/fieldtrial_testing_config.json
+
+android_webview/browser/aw_content_browser_client.cc
+
