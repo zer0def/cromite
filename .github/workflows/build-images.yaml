@@ -163,8 +163,8 @@ jobs:
           path: cromite
           add-paths: |
             tools/under-control/*
-          commit-message: 'AUTOMATED - new files under control ${{ env.NEW_VERSION }}'
-          title: New files under control ${{ env.NEW_VERSION }}
+          commit-message: '[AUTO][FILECONTROL] - version ${{ env.NEW_VERSION }}'
+          title: '[AUTO][FILECONTROL] - version ${{ env.NEW_VERSION }}'
           body: ${{ env.MESSAGE }}
           delete-branch: true
           branch-suffix: short-commit-hash
