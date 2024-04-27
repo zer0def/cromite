@@ -1114,7 +1114,7 @@ new file mode 100644
 diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -3121,6 +3121,7 @@ static_library("browser") {
+@@ -3123,6 +3123,7 @@ static_library("browser") {
        "download/android/service/download_task_scheduler.h",
        "download/android/string_utils.cc",
        "download/download_crx_util_android.cc",
@@ -1122,7 +1122,7 @@ diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
        "enterprise/reporting/browser_report_generator_android.cc",
        "enterprise/reporting/browser_report_generator_android.h",
        "enterprise/reporting/profile_report_generator_android.cc",
-@@ -3456,6 +3457,7 @@ static_library("browser") {
+@@ -3458,6 +3459,7 @@ static_library("browser") {
        "//chrome/browser/content_extraction/android:jni_headers",
        "//chrome/browser/device_reauth/android:jni_headers",
        "//chrome/browser/download/internal/android",
@@ -1614,7 +1614,7 @@ new file mode 100644
 diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browser/flags/android/chrome_feature_list.cc
 --- a/chrome/browser/flags/android/chrome_feature_list.cc
 +++ b/chrome/browser/flags/android/chrome_feature_list.cc
-@@ -235,6 +235,7 @@ const base::Feature* const kFeaturesExposedToJava[] = {
+@@ -237,6 +237,7 @@ const base::Feature* const kFeaturesExposedToJava[] = {
      &kPreconnectOnTabCreation,
      &kPriceChangeModule,
      &kPwaRestoreUi,
@@ -1625,7 +1625,7 @@ diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browse
 diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 --- a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 +++ b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
-@@ -309,6 +309,7 @@ public abstract class ChromeFeatureList {
+@@ -311,6 +311,7 @@ public abstract class ChromeFeatureList {
              "IncognitoReauthenticationForAndroid";
      public static final String INCOGNITO_SCREENSHOT = "IncognitoScreenshot";
      public static final String INSTANT_START = "InstantStart";

@@ -132,7 +132,7 @@ diff --git a/chrome/android/BUILD.gn b/chrome/android/BUILD.gn
 diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -3457,6 +3457,17 @@ static_library("browser") {
+@@ -3459,6 +3459,17 @@ static_library("browser") {
        "webauthn/android/webauthn_request_delegate_android.h",
      ]
  
@@ -150,7 +150,7 @@ diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
  
      public_deps += [
        "//chrome/android/features/dev_ui:buildflags",
-@@ -3647,6 +3658,9 @@ static_library("browser") {
+@@ -3649,6 +3660,9 @@ static_library("browser") {
        "//url",
      ]
  
