@@ -774,7 +774,7 @@ diff --git a/third_party/blink/renderer/platform/graphics/static_bitmap_image.h 
 diff --git a/third_party/blink/renderer/platform/runtime_enabled_features.json5 b/third_party/blink/renderer/platform/runtime_enabled_features.json5
 --- a/third_party/blink/renderer/platform/runtime_enabled_features.json5
 +++ b/third_party/blink/renderer/platform/runtime_enabled_features.json5
-@@ -2632,6 +2632,15 @@
+@@ -2624,6 +2624,15 @@
        status: {"Mac": "test", "default": "stable"},
        base_feature: "none",
      },

@@ -122,7 +122,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tracing/setting
 diff --git a/chrome/app/chrome_main_delegate.cc b/chrome/app/chrome_main_delegate.cc
 --- a/chrome/app/chrome_main_delegate.cc
 +++ b/chrome/app/chrome_main_delegate.cc
-@@ -2029,7 +2029,7 @@ void ChromeMainDelegate::InitializeMemorySystem() {
+@@ -2036,7 +2036,7 @@ void ChromeMainDelegate::InitializeMemorySystem() {
    const version_info::Channel channel = chrome::GetChannel();
    const bool is_canary_dev = (channel == version_info::Channel::CANARY ||
                                channel == version_info::Channel::DEV);

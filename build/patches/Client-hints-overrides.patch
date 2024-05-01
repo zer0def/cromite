@@ -278,7 +278,7 @@ diff --git a/third_party/blink/renderer/core/loader/base_fetch_context.cc b/thir
 diff --git a/third_party/blink/renderer/platform/runtime_enabled_features.json5 b/third_party/blink/renderer/platform/runtime_enabled_features.json5
 --- a/third_party/blink/renderer/platform/runtime_enabled_features.json5
 +++ b/third_party/blink/renderer/platform/runtime_enabled_features.json5
-@@ -332,6 +332,11 @@
+@@ -324,6 +324,11 @@
        name: "AsyncClipboardImplicitPermission",
        status: "stable",
      },

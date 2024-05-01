@@ -3514,7 +3514,7 @@ diff --git a/components/webauthn/android/java/src/org/chromium/components/webaut
 diff --git a/content/browser/push_messaging/push_messaging_manager.cc b/content/browser/push_messaging/push_messaging_manager.cc
 --- a/content/browser/push_messaging/push_messaging_manager.cc
 +++ b/content/browser/push_messaging/push_messaging_manager.cc
-@@ -802,7 +802,7 @@ void PushMessagingManager::GetSubscriptionInfo(
+@@ -803,7 +803,7 @@ void PushMessagingManager::GetSubscriptionInfo(
  }
  
  PushMessagingService* PushMessagingManager::GetService() {

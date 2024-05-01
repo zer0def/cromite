@@ -23,7 +23,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 diff --git a/chrome/browser/prefs/browser_prefs.cc b/chrome/browser/prefs/browser_prefs.cc
 --- a/chrome/browser/prefs/browser_prefs.cc
 +++ b/chrome/browser/prefs/browser_prefs.cc
-@@ -1346,7 +1346,7 @@ void RegisterProfilePrefsForMigration(
+@@ -1350,7 +1350,7 @@ void RegisterProfilePrefsForMigration(
  #endif
  
    // Deprecated 12/2023.

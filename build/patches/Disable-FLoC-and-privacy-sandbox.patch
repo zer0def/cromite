@@ -40,7 +40,7 @@ diff --git a/chrome/browser/chrome_content_browser_client.cc b/chrome/browser/ch
 diff --git a/chrome/browser/prefs/browser_prefs.cc b/chrome/browser/prefs/browser_prefs.cc
 --- a/chrome/browser/prefs/browser_prefs.cc
 +++ b/chrome/browser/prefs/browser_prefs.cc
-@@ -1428,7 +1428,7 @@ void RegisterProfilePrefsForMigration(
+@@ -1432,7 +1432,7 @@ void RegisterProfilePrefsForMigration(
    registry->RegisterTimePref(kPlusAddressLastFetchedTime, base::Time());
  
    // Deprecated 03/2024.
@@ -231,7 +231,7 @@ new file mode 100644
 diff --git a/third_party/blink/common/features.cc b/third_party/blink/common/features.cc
 --- a/third_party/blink/common/features.cc
 +++ b/third_party/blink/common/features.cc
-@@ -2514,6 +2514,7 @@ bool IsAllowPageWithIDBConnectionAndTransactionInBFCacheEnabled() {
+@@ -2519,6 +2519,7 @@ bool IsAllowPageWithIDBConnectionAndTransactionInBFCacheEnabled() {
  }
  
  bool IsAllowURNsInIframeEnabled() {

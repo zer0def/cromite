@@ -92,7 +92,7 @@ diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -7886,6 +7886,7 @@ const FeatureEntry kFeatureEntries[] = {
+@@ -7864,6 +7864,7 @@ const FeatureEntry kFeatureEntries[] = {
  #endif
  
  #if BUILDFLAG(IS_MAC) || BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_WIN)
@@ -100,7 +100,7 @@ diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
      {"enable-family-link-extensions-permissions",
       flag_descriptions::
           kEnableExtensionsPermissionsForSupervisedUsersOnDesktopName,
-@@ -7895,6 +7896,7 @@ const FeatureEntry kFeatureEntries[] = {
+@@ -7873,6 +7874,7 @@ const FeatureEntry kFeatureEntries[] = {
       FEATURE_VALUE_TYPE(
           supervised_user::
               kEnableExtensionsPermissionsForSupervisedUsersOnDesktop)},
