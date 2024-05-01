@@ -9,14 +9,14 @@ keyboard events.
 License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
  .../Keyboard-protection-flag.inc              | 10 +++
- .../renderer/core/events/keyboard_event.cc    | 77 +++++++++++++++++++
+ .../renderer/core/events/keyboard_event.cc    | 81 +++++++++++++++++++
  .../renderer/core/events/keyboard_event.h     |  3 +
  ui/base/ui_base_features.cc                   |  8 ++
  ui/base/ui_base_features.h                    |  2 +
- .../dom/dom_keyboard_layout_map_win.cc        | 13 ++++
+ .../dom/dom_keyboard_layout_map_win.cc        | 13 +++
  .../keycodes/keyboard_code_conversion.cc      | 10 ++-
  ui/events/keycodes/keyboard_code_conversion.h |  2 +-
- 8 files changed, 122 insertions(+), 3 deletions(-)
+ 8 files changed, 126 insertions(+), 3 deletions(-)
  create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Keyboard-protection-flag.inc
 
 diff --git a/cromite_flags/chrome/browser/about_flags_cc/Keyboard-protection-flag.inc b/cromite_flags/chrome/browser/about_flags_cc/Keyboard-protection-flag.inc
@@ -63,7 +63,7 @@ diff --git a/third_party/blink/renderer/core/events/keyboard_event.cc b/third_pa
  
  namespace blink {
  
-@@ -133,6 +140,70 @@ KeyboardEvent::KeyboardEvent(const WebKeyboardEvent& key,
+@@ -133,6 +140,74 @@ KeyboardEvent::KeyboardEvent(const WebKeyboardEvent& key,
    else
      key_code_ = char_code_;
  
@@ -96,22 +96,26 @@ diff --git a/third_party/blink/renderer/core/events/keyboard_event.cc b/third_pa
 +    //    in us keybord       --> shift + Quote
 +    int shift_needed = 0;
 +    ui::DomCode us_code = ui::UsLayoutDomKeyToDomCode(ascii_key, &shift_needed);
-+    if (shift_needed == 0)
-+      modifiers_ &= ~WebInputEvent::kShiftKey;
-+    else if (shift_needed == 1)
-+      modifiers_ |= WebInputEvent::kShiftKey;
++    // some layout are unsupported, as russian keyboard
++    // in that case, let the keys with control pass
++    if (us_code != ui::DomCode::NONE ||
++       ((modifiers_ & WebInputEvent::kControlKey) != WebInputEvent::kControlKey)) {
++      if (shift_needed == 0)
++        modifiers_ &= ~WebInputEvent::kShiftKey;
++      else if (shift_needed == 1)
++        modifiers_ |= WebInputEvent::kShiftKey;
 +
-+    // convert keyboard code to us layout (platform code)
-+    if (type() == event_type_names::kKeydown ||
-+        type() == event_type_names::kKeyup) {
-+      int windows_key_code = ui::DomCodeToUsLayoutNonLocatedKeyboardCode(us_code);
-+      key_code_ = windows_key_code;
++      // convert keyboard code to us layout (platform code)
++      if (type() == event_type_names::kKeydown ||
++          type() == event_type_names::kKeyup) {
++        int windows_key_code = ui::DomCodeToUsLayoutNonLocatedKeyboardCode(us_code);
++        key_code_ = windows_key_code;
++      }
++
++      // regenerate key_ and code_ for us keyboard
++      key_ = FromUTF8(ui::KeycodeConverter::DomKeyToKeyString(ascii_key));
++      code_ = FromUTF8(ui::KeycodeConverter::DomCodeToCodeString(us_code));
 +    }
-+
-+    // regenerate key_ and code_ for us keyboard
-+    key_ = FromUTF8(ui::KeycodeConverter::DomKeyToKeyString(ascii_key));
-+    code_ = FromUTF8(ui::KeycodeConverter::DomCodeToCodeString(us_code));
-+
 +    if (ui::KeycodeConverter::IsDomKeyForModifier(original_dom_key) ||
 +        original_dom_key.IsDeadKey()) {
 +      // suppress event if is ctrl/shift/alt... otherwise key_code of
@@ -134,7 +138,7 @@ diff --git a/third_party/blink/renderer/core/events/keyboard_event.cc b/third_pa
  #if BUILDFLAG(IS_ANDROID)
    // FIXME: Check to see if this applies to other OS.
    // If the key event belongs to IME composition then propagate to JS.
-@@ -205,6 +276,12 @@ unsigned KeyboardEvent::which() const {
+@@ -205,6 +280,12 @@ unsigned KeyboardEvent::which() const {
    return (unsigned)keyCode();
  }
  
