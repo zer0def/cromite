@@ -12,7 +12,7 @@ deactivation of all pop-ups (default disabled)
 ---
  .../android/java/res/xml/main_preferences.xml |   19 +-
  chrome/browser/BUILD.gn                       |    2 -
- .../adblock/adblock_content_browser_client.cc |  280 +-
+ .../adblock/adblock_content_browser_client.cc |  284 +-
  .../adblock/adblock_content_browser_client.h  |   47 +-
  .../browser/chrome_content_browser_client.cc  |    6 +-
  .../browser/chrome_content_browser_client.h   |    6 +-
@@ -21,7 +21,7 @@ deactivation of all pop-ups (default disabled)
  .../eyeo_filtering_private_api.cc             |   25 +-
  ...hrome_browser_main_extra_parts_profiles.cc |    2 -
  chrome/browser/resources/settings/BUILD.gn    |    2 +
- .../settings/adblock_page/adblock_page.html   |  207 +
+ .../settings/adblock_page/adblock_page.html   |  212 +
  .../settings/adblock_page/adblock_page.ts     |  286 ++
  .../settings/basic_page/basic_page.html       |    7 +
  .../settings/basic_page/basic_page.ts         |    1 +
@@ -128,7 +128,7 @@ deactivation of all pop-ups (default disabled)
  .../blink/renderer/core/css/style_engine.h    |    1 +
  .../renderer/core/exported/web_document.cc    |   15 +-
  .../definitions/adblock_private.d.ts          |   14 +
- 118 files changed, 9191 insertions(+), 1266 deletions(-)
+ 118 files changed, 9200 insertions(+), 1266 deletions(-)
  create mode 100644 chrome/browser/resources/settings/adblock_page/adblock_page.html
  create mode 100644 chrome/browser/resources/settings/adblock_page/adblock_page.ts
  rename components/adblock/android/java/res/xml/{adblock_preferences.xml => eyeo_adblock_preferences.xml} (56%)
@@ -218,7 +218,7 @@ diff --git a/chrome/browser/adblock/adblock_content_browser_client.cc b/chrome/b
  #include "services/service_manager/public/cpp/binder_registry.h"
  #include "third_party/blink/public/common/loader/url_loader_throttle.h"
  
-@@ -54,17 +57,37 @@
+@@ -54,17 +57,41 @@
  
  namespace {
  
@@ -229,6 +229,10 @@ diff --git a/chrome/browser/adblock/adblock_content_browser_client.cc b/chrome/b
 +    // in android can be empty because it was created by
 +    // RenderFrameHostImpl::CreateSubresourceLoaderFactoriesForInitialEmptyDocument
 +    return true;
++  }
++
++  if (embedder_url.SchemeIs(content_settings::kChromeUIScheme)) {
++    return false;
 +  }
 +
 +  HostContentSettingsMap* settings_map = HostContentSettingsMapFactory::GetForProfile(profile);
@@ -262,7 +266,7 @@ diff --git a/chrome/browser/adblock/adblock_content_browser_client.cc b/chrome/b
      }
    }
    return false;
-@@ -79,10 +102,11 @@ class AdblockContextData : public base::SupportsUserData::Data {
+@@ -79,10 +106,11 @@ class AdblockContextData : public base::SupportsUserData::Data {
  
    static void StartProxying(
        Profile* profile,
@@ -276,7 +280,7 @@ diff --git a/chrome/browser/adblock/adblock_content_browser_client.cc b/chrome/b
        bool use_test_loader) {
      const void* const kAdblockContextUserDataKey = &kAdblockContextUserDataKey;
      auto* self = static_cast<AdblockContextData*>(
-@@ -91,8 +115,6 @@ class AdblockContextData : public base::SupportsUserData::Data {
+@@ -91,8 +119,6 @@ class AdblockContextData : public base::SupportsUserData::Data {
        self = new AdblockContextData();
        profile->SetUserData(kAdblockContextUserDataKey, base::WrapUnique(self));
      }
@@ -285,7 +289,7 @@ diff --git a/chrome/browser/adblock/adblock_content_browser_client.cc b/chrome/b
      adblock::AdblockURLLoaderFactoryConfig config{
          adblock::SubscriptionServiceFactory::GetForBrowserContext(
              browser_context),
-@@ -102,28 +124,12 @@ class AdblockContextData : public base::SupportsUserData::Data {
+@@ -102,28 +128,12 @@ class AdblockContextData : public base::SupportsUserData::Data {
          adblock::SitekeyStorageFactory::GetForBrowserContext(browser_context),
          adblock::ContentSecurityPolicyInjectorFactory::GetForBrowserContext(
              browser_context)};
@@ -317,7 +321,7 @@ diff --git a/chrome/browser/adblock/adblock_content_browser_client.cc b/chrome/b
          embedder_support::GetUserAgent(),
          base::BindOnce(&AdblockContextData::RemoveProxy,
                         self->weak_factory_.GetWeakPtr()));
-@@ -163,47 +169,50 @@ void AdblockContentBrowserClient::ForceAdblockProxyForTesting() {
+@@ -163,47 +173,50 @@ void AdblockContentBrowserClient::ForceAdblockProxyForTesting() {
  #endif
  
  bool AdblockContentBrowserClient::WillInterceptWebSocket(
@@ -385,7 +389,7 @@ diff --git a/chrome/browser/adblock/adblock_content_browser_client.cc b/chrome/b
    auto* subscription_service =
        adblock::SubscriptionServiceFactory::GetForBrowserContext(
            browser_context);
-@@ -211,33 +220,33 @@ void AdblockContentBrowserClient::CreateWebSocketInternal(
+@@ -211,33 +224,33 @@ void AdblockContentBrowserClient::CreateWebSocketInternal(
        adblock::ResourceClassificationRunnerFactory::GetForBrowserContext(
            browser_context);
    classification_runner->CheckRequestFilterMatchForWebSocket(
@@ -427,7 +431,7 @@ diff --git a/chrome/browser/adblock/adblock_content_browser_client.cc b/chrome/b
            std::move(handshake_client));
        return;
      }
-@@ -254,15 +263,133 @@ void AdblockContentBrowserClient::OnWebSocketFilterCheckCompleted(
+@@ -254,15 +267,133 @@ void AdblockContentBrowserClient::OnWebSocketFilterCheckCompleted(
    VLOG(1) << "[eyeo] Web socket blocked for " << url;
  }
  
@@ -564,7 +568,7 @@ diff --git a/chrome/browser/adblock/adblock_content_browser_client.cc b/chrome/b
      mojo::PendingRemote<network::mojom::TrustedURLLoaderHeaderClient>*
          header_client,
      bool* bypass_redirect_checks,
-@@ -271,30 +398,17 @@ bool AdblockContentBrowserClient::WillCreateURLLoaderFactory(
+@@ -271,30 +402,17 @@ bool AdblockContentBrowserClient::WillCreateURLLoaderFactory(
      scoped_refptr<base::SequencedTaskRunner> navigation_response_task_runner) {
    // Create Chromium proxy first as WebRequestProxyingURLLoaderFactory logic
    // depends on being first proxy
@@ -604,7 +608,7 @@ diff --git a/chrome/browser/adblock/adblock_content_browser_client.cc b/chrome/b
  
    bool use_test_loader = false;
  #ifdef EYEO_INTERCEPT_DEBUG_URL
-@@ -309,12 +423,8 @@ bool AdblockContentBrowserClient::WillCreateURLLoaderFactory(
+@@ -309,12 +427,8 @@ bool AdblockContentBrowserClient::WillCreateURLLoaderFactory(
  #endif
  
    if (use_adblock_proxy) {
@@ -1036,7 +1040,7 @@ diff --git a/chrome/browser/resources/settings/adblock_page/adblock_page.html b/
 new file mode 100644
 --- /dev/null
 +++ b/chrome/browser/resources/settings/adblock_page/adblock_page.html
-@@ -0,0 +1,207 @@
+@@ -0,0 +1,212 @@
 +<!--
 +    This file is part of Bromite.
 +
@@ -1057,6 +1061,11 @@ new file mode 100644
 +<style include="settings-shared cr-shared-style settings-shared action-link iron-flex">
 +    #languagesCollapse .list-item.selected {
 +        min-height: var(--settings-row-two-line-min-height);
++    }
++    .ad-fixed-width {
++        width: 80%;
++        text-overflow: ellipsis;
++        word-wrap: break-word;
 +    }
 +</style>
 +<settings-toggle-button class="hr" pref="{{prefs.adblock.enabled}}"
@@ -1178,7 +1187,7 @@ new file mode 100644
 +            <div class="list-frame vertical-list">
 +                <template is="dom-repeat" items="{{customSubscriptions}}">
 +                    <div class="list-item">
-+                        <div class="start cr-padded-text">
++                        <div class="start cr-padded-text ad-fixed-width">
 +                            <div data-qa="custom-subscriptions-list-item">
 +                                [[item.url]]
 +                                <div style="margin-left: 20px; margin-top: 5px;">
