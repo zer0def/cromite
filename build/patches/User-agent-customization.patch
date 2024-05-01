@@ -20,9 +20,9 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../init/ChromeBrowserInitializer.java        |   3 +
  .../PrivacyPreferencesManagerImpl.java        |  42 ++++
  .../settings/UserAgentPreferences.java        | 188 ++++++++++++++++++
- .../chromium/chrome/browser/tab/TabImpl.java  |  91 ++++++++-
+ .../chromium/chrome/browser/tab/TabImpl.java  |  94 ++++++++-
  .../chromium/chrome/browser/tab/TabUtils.java |  24 ++-
- .../browser/android/content/content_utils.cc  |  28 +++
+ .../browser/android/content/content_utils.cc  |  30 +++
  .../preferences/browser_prefs_android.cc      |   7 +
  .../privacy_preferences_manager_impl.cc       | 124 ++++++++++++
  .../preferences/ChromePreferenceKeys.java     |   7 +-
@@ -33,14 +33,14 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../strings/android_chrome_strings.grd        |  35 ++++
  chrome/common/pref_names.h                    |   8 +
  .../widget/RadioButtonWithEditText.java       |  11 +
- .../embedder_support/user_agent_utils.cc      |   7 +-
+ .../embedder_support/user_agent_utils.cc      |   3 +-
  .../navigation_controller_android.cc          |   4 +
  .../navigation_controller_android.h           |   1 +
  .../renderer_host/render_process_host_impl.cc |   1 +
- .../browser/web_contents/web_contents_impl.cc |   4 +
+ .../browser/web_contents/web_contents_impl.cc |   6 +-
  .../framehost/NavigationControllerImpl.java   |   3 +-
  content/renderer/render_thread_impl.cc        |   1 -
- 30 files changed, 749 insertions(+), 19 deletions(-)
+ 30 files changed, 752 insertions(+), 19 deletions(-)
  create mode 100644 chrome/android/java/res/layout/custom_useragent_preferences.xml
  create mode 100644 chrome/android/java/res/xml/useragent_preferences.xml
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/settings/UserAgentPreferences.java
@@ -576,13 +576,11 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tab/TabImpl.jav
              LoadUrlResult result = loadUrlInternal(params, fixedUrl);
  
              for (TabObserver observer : mObservers) {
-@@ -1598,9 +1629,16 @@ class TabImpl implements Tab {
+@@ -1597,9 +1628,17 @@ class TabImpl implements Tab {
  
              mWebContents.setImportance(mImportance);
  
 -            ContentUtils.setUserAgentOverride(
--                    mWebContents,
--                    calculateUserAgentOverrideOption(null) == UserAgentOverrideOption.TRUE);
 +            if (ChromeSharedPreferences.getInstance().readBoolean(
 +                        ChromePreferenceKeys.USERAGENT_STICKY_DESKTOP_MODE, false) &&
 +                ChromeSharedPreferences.getInstance().readBoolean(
@@ -590,13 +588,14 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tab/TabImpl.jav
 +                ContentUtils.setUserAgentOverride(
 +                    mWebContents, true);
 +            } else {
-+                ContentUtils.setUserAgentOverride(mWebContents,
-+                        calculateUserAgentOverrideOption(null) == UserAgentOverrideOption.TRUE);
++                ContentUtils.setUserAgentOverride(
+                     mWebContents,
+                     calculateUserAgentOverrideOption(null) == UserAgentOverrideOption.TRUE);
 +            }
  
              mContentView.addOnAttachStateChangeListener(mAttachStateChangeListener);
              updateInteractableState();
-@@ -1791,6 +1829,10 @@ class TabImpl implements Tab {
+@@ -1790,6 +1829,10 @@ class TabImpl implements Tab {
              }
              mIsBeingRestored = true;
              for (TabObserver observer : mObservers) observer.onRestoreStarted(this);
@@ -607,7 +606,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tab/TabImpl.jav
          } finally {
              TraceEvent.end("Tab.restoreIfNeeded");
          }
-@@ -2055,6 +2097,13 @@ class TabImpl implements Tab {
+@@ -2054,6 +2097,13 @@ class TabImpl implements Tab {
      }
  
      private @UserAgentOverrideOption int calculateUserAgentOverrideOption(@Nullable GURL url) {
@@ -621,7 +620,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tab/TabImpl.jav
          WebContents webContents = getWebContents();
          boolean currentRequestDesktopSite = TabUtils.isUsingDesktopUserAgent(webContents);
          @TabUserAgent int tabUserAgent = TabUtils.getTabUserAgent(this);
-@@ -2136,6 +2185,42 @@ class TabImpl implements Tab {
+@@ -2135,6 +2185,48 @@ class TabImpl implements Tab {
          }
      }
  
@@ -638,6 +637,12 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tab/TabImpl.jav
 +            }
 +            if (UrlUtilities.isInternalScheme(url) == true)
 +                usingDesktopUserAgent = false;
++        }
++
++        if (forcedByUser) {
++            @TabUserAgent
++            int tabUserAgent = usingDesktopUserAgent ? TabUserAgent.DESKTOP : TabUserAgent.MOBILE;
++            setUserAgent(tabUserAgent);
 +        }
 +
 +        if (webContents != null) {
@@ -729,7 +734,7 @@ diff --git a/chrome/browser/android/content/content_utils.cc b/chrome/browser/an
  static base::android::ScopedJavaLocalRef<jstring>
  JNI_ContentUtils_GetBrowserUserAgent(JNIEnv* env) {
    return base::android::ConvertUTF8ToJavaString(
-@@ -18,6 +32,20 @@ static void JNI_ContentUtils_SetUserAgentOverride(
+@@ -18,6 +32,22 @@ static void JNI_ContentUtils_SetUserAgentOverride(
      JNIEnv* env,
      const base::android::JavaParamRef<jobject>& jweb_contents,
      jboolean j_override_in_new_tabs) {
@@ -740,6 +745,8 @@ diff --git a/chrome/browser/android/content/content_utils.cc b/chrome/browser/an
 +    std::string ua = g_browser_process->local_state()->GetString(prefs::kOverrideUserAgentDesktopMode);
 +    blink::UserAgentOverride spoofed_ua;
 +    spoofed_ua.ua_string_override = ua;
++    spoofed_ua.ua_metadata_override =
++        embedder_support::GetUserAgentMetadata(/*only_low_entropy_ch*/ true);
 +
 +    content::WebContents* web_contents =
 +        content::WebContents::FromJavaWebContents(jweb_contents);
@@ -1093,18 +1100,7 @@ diff --git a/components/browser_ui/widget/android/java/src/org/chromium/componen
 diff --git a/components/embedder_support/user_agent_utils.cc b/components/embedder_support/user_agent_utils.cc
 --- a/components/embedder_support/user_agent_utils.cc
 +++ b/components/embedder_support/user_agent_utils.cc
-@@ -457,6 +457,10 @@ blink::UserAgentMetadata GetUserAgentMetadata(bool only_low_entropy_ch) {
- blink::UserAgentMetadata GetUserAgentMetadata(const PrefService* pref_service,
-                                               bool only_low_entropy_ch) {
-   blink::UserAgentMetadata metadata;
-+  if (base::CommandLine::ForCurrentProcess()->HasSwitch(kUserAgent)) {
-+    //NOTE: metadata is not updated with custom UA information
-+    return metadata;
-+  }
- 
-   bool enable_updated_grease_by_policy = true;
-   if (pref_service) {
-@@ -524,7 +528,8 @@ void SetDesktopUserAgentOverride(content::WebContents* web_contents,
+@@ -524,7 +524,8 @@ void SetDesktopUserAgentOverride(content::WebContents* web_contents,
  
    blink::UserAgentOverride spoofed_ua;
    spoofed_ua.ua_string_override = content::BuildUserAgentFromOSAndProduct(
@@ -1168,7 +1164,16 @@ diff --git a/content/browser/web_contents/web_contents_impl.cc b/content/browser
  #include "base/check_op.h"
  #include "base/command_line.h"
  #include "base/containers/contains.h"
-@@ -3157,6 +3158,9 @@ const blink::web_pref::WebPreferences WebContentsImpl::ComputeWebPreferences() {
+@@ -2105,8 +2106,6 @@ void WebContentsImpl::SetUserAgentOverride(
+   OPTIONAL_TRACE_EVENT2("content", "WebContentsImpl::SetUserAgentOverride",
+                         "ua_override", ua_override.ua_string_override,
+                         "override_in_new_tabs", override_in_new_tabs);
+-  DCHECK(!ua_override.ua_metadata_override.has_value() ||
+-         !ua_override.ua_string_override.empty());
+ 
+   if (GetUserAgentOverride() == ua_override) {
+     return;
+@@ -3157,6 +3156,9 @@ const blink::web_pref::WebPreferences WebContentsImpl::ComputeWebPreferences() {
  #else
      prefs.viewport_meta_enabled = false;
  #endif
