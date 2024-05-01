@@ -10,7 +10,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../settings/SettingsLauncherImpl.java        |  10 +
  chrome/app/generated_resources.grd            |   7 +-
  chrome/app/settings_strings.grdp              |   3 +
- chrome/app/settings_strings_android.grdp      | 257 ++++++++++++++++++
+ chrome/app/settings_strings_android.grdp      | 260 ++++++++++++++++++
  chrome/browser/BUILD.gn                       |   3 +
  chrome/browser/resources/BUILD.gn             |   6 +
  chrome/browser/resources/settings/BUILD.gn    |   2 +-
@@ -18,7 +18,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../search_engine_edit_dialog.html            |   6 +
  .../search_engine_edit_dialog.ts              |   6 +-
  .../search_engines_browser_proxy.ts           |   8 +-
- .../search_engines_page.html                  |   9 +-
+ .../search_engines_page.html                  |  14 +-
  .../settings/search_page/search_page.html     |   6 +-
  .../browser/resources/settings/settings.gni   |   2 +-
  .../browser/resources/settings/settings.html  |   8 +-
@@ -40,7 +40,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../webui/settings/search_engines_handler.cc  |  28 +-
  .../webui/settings/search_engines_handler.h   |   3 +-
  .../settings_localized_strings_provider.cc    |   2 +
- ...ings_localized_strings_provider_android.cc | 196 +++++++++++++
+ ...ings_localized_strings_provider_android.cc | 197 +++++++++++++
  ...tings_localized_strings_provider_android.h |  19 ++
  .../ui/webui/settings/settings_ui_android.cc  | 135 +++++++++
  .../ui/webui/settings/settings_ui_android.h   | 127 +++++++++
@@ -68,7 +68,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  ui/webui/resources/include_polymer.gni        |   2 +-
  ui/webui/resources/js/BUILD.gn                |   2 +-
  ui/webui/resources/js/load_time_data.ts       |  17 +-
- 61 files changed, 1089 insertions(+), 61 deletions(-)
+ 61 files changed, 1097 insertions(+), 62 deletions(-)
  create mode 100644 chrome/app/settings_strings_android.grdp
  create mode 100644 chrome/browser/search_engines/android/java/res/layout/search_engine_layout.xml
  create mode 100644 chrome/browser/ui/webui/settings/settings_localized_strings_provider_android.cc
@@ -145,7 +145,7 @@ diff --git a/chrome/app/settings_strings_android.grdp b/chrome/app/settings_stri
 new file mode 100644
 --- /dev/null
 +++ b/chrome/app/settings_strings_android.grdp
-@@ -0,0 +1,257 @@
+@@ -0,0 +1,260 @@
 +<?xml version="1.0" encoding="utf-8"?>
 +<!-- Settings-specific strings (included from generated_resources.grd). -->
 +<grit-part>
@@ -296,6 +296,9 @@ new file mode 100644
 +  <message name="IDS_SETTINGS_SEARCH_ENGINES_SHORTCUT" desc="Label for Shortcut column header for a search engine or site search entry">
 +    Shortcut
 +  </message>
++  <message name="IDS_SETTINGS_SEARCH_ENGINES_NAME" desc="Label for a table column that holds the name of a search engine or site search provider">
++    Name
++  </message>
 +  <message name="IDS_SETTINGS_SEARCH_ENGINES_QUERY_URL" desc="Label for Query URL column header for a search engine">
 +    Query URL
 +  </message>
@@ -406,7 +409,7 @@ new file mode 100644
 diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -3663,6 +3663,9 @@ static_library("browser") {
+@@ -3661,6 +3661,9 @@ static_library("browser") {
          "//components/user_scripts/android",
        ]
      }
@@ -608,6 +611,18 @@ diff --git a/chrome/browser/resources/settings/search_engines_page/search_engine
          <div class="secondary">
            $i18n{searchEnginesSearchEnginesExplanation}
          </div>
+@@ -101,7 +106,10 @@
+         hidden="[[!matchingOtherEngines_.length]]"
+         engines="[[matchingOtherEngines_]]"
+         scroll-target="[[subpageScrollTarget]]"
+-        show-query-url collapse-list
++<if expr="not is_android">
++        show-query-url
++</if>
++        collapse-list
+         expand-list-text="$i18n{searchEnginesAdditionalInactiveSites}">
+     </settings-search-engines-list>
+ 
 diff --git a/chrome/browser/resources/settings/search_page/search_page.html b/chrome/browser/resources/settings/search_page/search_page.html
 --- a/chrome/browser/resources/settings/search_page/search_page.html
 +++ b/chrome/browser/resources/settings/search_page/search_page.html
@@ -1257,7 +1272,7 @@ diff --git a/chrome/browser/ui/webui/settings/settings_localized_strings_provide
 new file mode 100644
 --- /dev/null
 +++ b/chrome/browser/ui/webui/settings/settings_localized_strings_provider_android.cc
-@@ -0,0 +1,196 @@
+@@ -0,0 +1,197 @@
 +#include "chrome/browser/ui/webui/settings/settings_localized_strings_provider.h"
 +
 +#include <string>
@@ -1380,6 +1395,7 @@ new file mode 100644
 +      {"searchEnginesExtensionExplanation",
 +       IDS_SETTINGS_SEARCH_ENGINES_EXTENSION_ENGINES_EXPLANATION},
 +      {"searchEnginesSearch", IDS_SETTINGS_SEARCH_ENGINES_SEARCH},
++      {"searchEnginesName", IDS_SETTINGS_SEARCH_ENGINES_NAME},
 +      {"searchEnginesSearchEngine", IDS_SETTINGS_SEARCH_ENGINES_SEARCH_ENGINE},
 +      {"searchEnginesSiteOrPage", IDS_SETTINGS_SEARCH_ENGINES_SITE_OR_PAGE},
 +      {"searchEnginesShortcut", IDS_SETTINGS_SEARCH_ENGINES_SHORTCUT},
@@ -1841,7 +1857,7 @@ diff --git a/components/search_engines/template_url_service.cc b/components/sear
    return Add(std::move(template_url));
  }
  
-@@ -840,7 +842,8 @@ void TemplateURLService::IncrementUsageCount(TemplateURL* url) {
+@@ -841,7 +843,8 @@ void TemplateURLService::IncrementUsageCount(TemplateURL* url) {
  void TemplateURLService::ResetTemplateURL(TemplateURL* url,
                                            const std::u16string& title,
                                            const std::u16string& keyword,
@@ -1851,7 +1867,7 @@ diff --git a/components/search_engines/template_url_service.cc b/components/sear
    DCHECK(!IsCreatedByExtension(url));
    DCHECK(!keyword.empty());
    DCHECK(!search_url.empty());
-@@ -852,6 +855,7 @@ void TemplateURLService::ResetTemplateURL(TemplateURL* url,
+@@ -853,6 +856,7 @@ void TemplateURLService::ResetTemplateURL(TemplateURL* url,
      // The urls have changed, reset the favicon url.
      data.favicon_url = GURL();
    }
