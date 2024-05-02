@@ -47,13 +47,13 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../autofill/core/browser/autofill_manager.h  |  2 +
  .../core/browser/browser_autofill_manager.cc  |  2 +
  .../core/browser/browser_autofill_manager.h   |  2 +
- .../autofill/core/common/autofill_features.cc |  8 --
- .../autofill/core/common/autofill_features.h  |  7 --
+ .../autofill/core/common/autofill_features.cc |  6 --
+ .../autofill/core/common/autofill_features.h  |  6 --
  .../autofill/core/common/autofill_prefs.cc    |  2 +
  .../autofill/core/common/autofill_prefs.h     |  5 ++
  .../embedder_support/view/ContentView.java    | 47 +++++++++++
  .../chromium/ui/base/ViewAndroidDelegate.java |  4 +
- 38 files changed, 384 insertions(+), 73 deletions(-)
+ 38 files changed, 384 insertions(+), 70 deletions(-)
  create mode 100644 components/android_autofill/browser/java/src/org/chromium/components/autofill/BrowserSelectionActionMenuDelegate.java
 
 diff --git a/chrome/android/BUILD.gn b/chrome/android/BUILD.gn
@@ -1004,7 +1004,7 @@ diff --git a/components/autofill/core/browser/browser_autofill_manager.h b/compo
 diff --git a/components/autofill/core/common/autofill_features.cc b/components/autofill/core/common/autofill_features.cc
 --- a/components/autofill/core/common/autofill_features.cc
 +++ b/components/autofill/core/common/autofill_features.cc
-@@ -699,14 +699,6 @@ BASE_FEATURE(kAutofillEnableSecurityTouchEventFilteringAndroid,
+@@ -699,12 +699,6 @@ BASE_FEATURE(kAutofillEnableSecurityTouchEventFilteringAndroid,
               "AutofillEnableSecurityTouchEventFilteringAndroid",
               base::FEATURE_DISABLED_BY_DEFAULT);
  
@@ -1014,28 +1014,25 @@ diff --git a/components/autofill/core/common/autofill_features.cc b/components/a
 -             "AutofillVirtualViewStructureAndroid",
 -             base::FEATURE_DISABLED_BY_DEFAULT);
 -
--#endif  // BUILDFLAG(IS_ANDROID)
--
- namespace test {
+ #endif  // BUILDFLAG(IS_ANDROID)
  
- // Testing tool that collects metrics during a run of the captured site tests
+ namespace test {
 diff --git a/components/autofill/core/common/autofill_features.h b/components/autofill/core/common/autofill_features.h
 --- a/components/autofill/core/common/autofill_features.h
 +++ b/components/autofill/core/common/autofill_features.h
-@@ -228,13 +228,6 @@ COMPONENT_EXPORT(AUTOFILL)
+@@ -227,12 +227,6 @@ extern const base::FeatureParam<int>
+ COMPONENT_EXPORT(AUTOFILL)
  BASE_DECLARE_FEATURE(kAutofillEnableSecurityTouchEventFilteringAndroid);
  
- COMPONENT_EXPORT(AUTOFILL)
+-COMPONENT_EXPORT(AUTOFILL)
 -BASE_DECLARE_FEATURE(kAutofillVirtualViewStructureAndroid);
 -inline constexpr base::FeatureParam<bool>
 -    kAutofillVirtualViewStructureAndroidSkipsCompatibilityCheck{
 -        &kAutofillVirtualViewStructureAndroid, "skip_compatibility_check",
 -        false};
--#endif  // BUILDFLAG(IS_ANDROID)
--
+ #endif  // BUILDFLAG(IS_ANDROID)
+ 
  #if BUILDFLAG(IS_APPLE)
- // Returns true if whether the views autofill popup feature is enabled or the
- // we're using the views browser.
 diff --git a/components/autofill/core/common/autofill_prefs.cc b/components/autofill/core/common/autofill_prefs.cc
 --- a/components/autofill/core/common/autofill_prefs.cc
 +++ b/components/autofill/core/common/autofill_prefs.cc
