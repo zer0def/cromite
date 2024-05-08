@@ -9,14 +9,14 @@ keyboard events.
 License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
  .../Keyboard-protection-flag.inc              |  10 ++
- .../renderer/core/events/keyboard_event.cc    | 137 ++++++++++++++++++
+ .../renderer/core/events/keyboard_event.cc    | 136 ++++++++++++++++++
  .../renderer/core/events/keyboard_event.h     |   3 +
- ui/base/ui_base_features.cc                   |   8 +
+ ui/base/ui_base_features.cc                   |   8 ++
  ui/base/ui_base_features.h                    |   2 +
  .../dom/dom_keyboard_layout_map_win.cc        |  13 ++
  .../keycodes/keyboard_code_conversion.cc      |  10 +-
  ui/events/keycodes/keyboard_code_conversion.h |   2 +-
- 8 files changed, 182 insertions(+), 3 deletions(-)
+ 8 files changed, 181 insertions(+), 3 deletions(-)
  create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Keyboard-protection-flag.inc
 
 diff --git a/cromite_flags/chrome/browser/about_flags_cc/Keyboard-protection-flag.inc b/cromite_flags/chrome/browser/about_flags_cc/Keyboard-protection-flag.inc
@@ -56,7 +56,7 @@ diff --git a/third_party/blink/renderer/core/events/keyboard_event.cc b/third_pa
  namespace blink {
  
  namespace {
-@@ -133,6 +145,125 @@ KeyboardEvent::KeyboardEvent(const WebKeyboardEvent& key,
+@@ -133,6 +145,124 @@ KeyboardEvent::KeyboardEvent(const WebKeyboardEvent& key,
    else
      key_code_ = char_code_;
  
@@ -104,7 +104,6 @@ diff --git a/third_party/blink/renderer/core/events/keyboard_event.cc b/third_pa
 +               element->FastGetAttribute(html_names::kRoleAttr), "textbox"));
 +      }
 +    }
-+    LOG(INFO) << "--support_focus=" << is_editable;
 +
 +    // get domcode of us layout keyboard
 +    // we transform the character pressed by the user into
@@ -182,7 +181,7 @@ diff --git a/third_party/blink/renderer/core/events/keyboard_event.cc b/third_pa
  #if BUILDFLAG(IS_ANDROID)
    // FIXME: Check to see if this applies to other OS.
    // If the key event belongs to IME composition then propagate to JS.
-@@ -205,6 +336,12 @@ unsigned KeyboardEvent::which() const {
+@@ -205,6 +335,12 @@ unsigned KeyboardEvent::which() const {
    return (unsigned)keyCode();
  }
  
