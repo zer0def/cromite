@@ -45,7 +45,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../modaldialog/ChromeTabModalPresenter.java  |  2 +-
  .../chrome/browser/ntp/NewTabPage.java        | 14 ++-
  .../chrome/browser/ntp/NewTabPageLayout.java  |  8 ++
- .../chrome/browser/ntp/RecentTabsPage.java    | 29 +++++-
+ .../chrome/browser/ntp/RecentTabsPage.java    | 26 ++++-
  .../browser/searchwidget/SearchActivity.java  | 12 ++-
  .../browser/settings/SettingsActivity.java    |  5 +
  .../StatusIndicatorCoordinator.java           |  9 ++
@@ -87,7 +87,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../AccessibilitySettingsDelegate.java        |  7 ++
  .../render_widget_host_view_android.cc        |  3 +
  .../Move-navigation-bar-to-bottom.inc         | 17 ++++
- 74 files changed, 962 insertions(+), 89 deletions(-)
+ 74 files changed, 959 insertions(+), 89 deletions(-)
  create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Move-navigation-bar-to-bottom.inc
 
 diff --git a/cc/base/features.cc b/cc/base/features.cc
@@ -1482,24 +1482,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ntp/RecentTabsP
  
  /**
   * The native recent tabs page. Lists recently closed tabs, open windows and tabs from the user's
-@@ -56,6 +57,7 @@ public class RecentTabsPage
-     private int mSnapshotListTop;
-     private int mSnapshotWidth;
-     private int mSnapshotHeight;
-+    private final int mTabStripAndToolbarHeight;
- 
-     /** Whether {@link #mView} is attached to the application window. */
-     private boolean mIsAttachedToWindow;
-@@ -82,6 +84,8 @@ public class RecentTabsPage
-         mActivity = activity;
-         mRecentTabsManager = recentTabsManager;
-         mPageHost = pageHost;
-+        mTabStripAndToolbarHeight =
-+                activity.getResources().getDimensionPixelSize(R.dimen.tab_strip_and_toolbar_height);
-         Resources resources = activity.getResources();
- 
-         mTitle = resources.getString(R.string.recent_tabs);
-@@ -99,7 +103,8 @@ public class RecentTabsPage
+@@ -99,7 +100,8 @@ public class RecentTabsPage
  
          mView.addOnAttachStateChangeListener(this);
  
@@ -1509,7 +1492,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ntp/RecentTabsP
              mBrowserControlsStateProvider = browserControlsStateProvider;
              mBrowserControlsStateProvider.addObserver(this);
              onBottomControlsHeightChanged(
-@@ -111,7 +116,13 @@ public class RecentTabsPage
+@@ -111,7 +113,13 @@ public class RecentTabsPage
  
          mTabStripHeightSupplier = tabStripHeightSupplier;
          mView.setPadding(0, mTabStripHeightSupplier.get(), 0, 0);
@@ -1524,7 +1507,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ntp/RecentTabsP
              mTabStripHeightChangeCallback =
                      newHeight ->
                              mView.setPadding(
-@@ -300,7 +311,7 @@ public class RecentTabsPage
+@@ -300,7 +308,7 @@ public class RecentTabsPage
  
      private void updateMargins() {
          final View recentTabsRoot = mView.findViewById(R.id.recent_tabs_root);
@@ -1533,7 +1516,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ntp/RecentTabsP
          final int contentOffset = mBrowserControlsStateProvider.getContentOffset();
          ViewGroup.MarginLayoutParams layoutParams =
                  (ViewGroup.MarginLayoutParams) recentTabsRoot.getLayoutParams();
-@@ -316,9 +327,17 @@ public class RecentTabsPage
+@@ -316,9 +324,17 @@ public class RecentTabsPage
  
          // If the content offset is different from the margin, we use translationY to position the
          // view in line with the content offset.
