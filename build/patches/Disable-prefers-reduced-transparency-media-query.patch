@@ -13,7 +13,7 @@ This feature can be used for fingerprinting as it exposes a user preference
 diff --git a/third_party/blink/renderer/core/css/media_query_exp.cc b/third_party/blink/renderer/core/css/media_query_exp.cc
 --- a/third_party/blink/renderer/core/css/media_query_exp.cc
 +++ b/third_party/blink/renderer/core/css/media_query_exp.cc
-@@ -114,7 +114,8 @@ static inline bool FeatureWithValidIdent(const String& media_feature,
+@@ -115,7 +115,8 @@ static inline bool FeatureWithValidIdent(const String& media_feature,
             ident == CSSValueID::kLess || ident == CSSValueID::kCustom;
    }
  

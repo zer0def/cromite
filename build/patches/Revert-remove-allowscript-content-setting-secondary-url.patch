@@ -84,7 +84,7 @@ diff --git a/components/content_settings/renderer/content_settings_agent_impl.cc
  
    blink::WebLocalFrame* frame = render_frame()->GetWebFrame();
    if (frame->Parent())
-@@ -330,6 +330,46 @@ bool ContentSettingsAgentImpl::AllowStorageAccessSync(
+@@ -326,6 +326,46 @@ bool ContentSettingsAgentImpl::AllowStorageAccessSync(
    return result;
  }
  
@@ -131,7 +131,7 @@ diff --git a/components/content_settings/renderer/content_settings_agent_impl.cc
  bool ContentSettingsAgentImpl::AllowReadFromClipboard() {
    return delegate_->AllowReadFromClipboard();
  }
-@@ -391,6 +431,7 @@ void ContentSettingsAgentImpl::DidNotAllowImage() {
+@@ -384,6 +424,7 @@ void ContentSettingsAgentImpl::DidNotAllowImage() {
  void ContentSettingsAgentImpl::ClearBlockedContentSettings() {
    content_blocked_.clear();
    cached_storage_permissions_.clear();
@@ -152,16 +152,16 @@ diff --git a/components/content_settings/renderer/content_settings_agent_impl.h 
    bool AllowReadFromClipboard() override;
    bool AllowWriteToClipboard() override;
    bool AllowMutationEvents(bool default_value) override;
-@@ -160,6 +163,9 @@ class ContentSettingsAgentImpl
+@@ -159,6 +162,9 @@ class ContentSettingsAgentImpl
    using StoragePermissionsKey = std::pair<url::Origin, StorageType>;
    base::flat_map<StoragePermissionsKey, bool> cached_storage_permissions_;
  
 +  // Caches the result of AllowScript.
 +  base::flat_map<blink::WebFrame*, bool> cached_script_permissions_;
 +
-   bool mixed_content_autoupgrades_disabled_ = false;
- 
    // If true, IsAllowlistedForContentSettings will always return true.
+   const bool should_allowlist_;
+ 
 diff --git a/third_party/blink/public/platform/web_content_settings_client.h b/third_party/blink/public/platform/web_content_settings_client.h
 --- a/third_party/blink/public/platform/web_content_settings_client.h
 +++ b/third_party/blink/public/platform/web_content_settings_client.h
@@ -187,7 +187,7 @@ diff --git a/third_party/blink/public/platform/web_content_settings_client.h b/t
 diff --git a/third_party/blink/renderer/core/frame/local_frame.cc b/third_party/blink/renderer/core/frame/local_frame.cc
 --- a/third_party/blink/renderer/core/frame/local_frame.cc
 +++ b/third_party/blink/renderer/core/frame/local_frame.cc
-@@ -3913,14 +3913,6 @@ bool LocalFrame::ImagesEnabled() {
+@@ -3941,14 +3941,6 @@ bool LocalFrame::ImagesEnabled() {
    return allow_image_renderer && allow_image_content_setting;
  }
  
@@ -205,7 +205,7 @@ diff --git a/third_party/blink/renderer/core/frame/local_frame.cc b/third_party/
 diff --git a/third_party/blink/renderer/core/frame/local_frame.h b/third_party/blink/renderer/core/frame/local_frame.h
 --- a/third_party/blink/renderer/core/frame/local_frame.h
 +++ b/third_party/blink/renderer/core/frame/local_frame.h
-@@ -931,12 +931,6 @@ class CORE_EXPORT LocalFrame final
+@@ -936,12 +936,6 @@ class CORE_EXPORT LocalFrame final
    // Can only be called while the frame is not detached.
    bool ImagesEnabled();
  
@@ -221,7 +221,7 @@ diff --git a/third_party/blink/renderer/core/frame/local_frame.h b/third_party/b
 diff --git a/third_party/blink/renderer/core/html/html_meta_element.cc b/third_party/blink/renderer/core/html/html_meta_element.cc
 --- a/third_party/blink/renderer/core/html/html_meta_element.cc
 +++ b/third_party/blink/renderer/core/html/html_meta_element.cc
-@@ -781,7 +781,9 @@ void HTMLMetaElement::ProcessMetaCH(Document& document,
+@@ -772,7 +772,9 @@ void HTMLMetaElement::ProcessMetaCH(Document& document,
      return;
    }
  
@@ -303,7 +303,7 @@ diff --git a/third_party/blink/renderer/core/loader/frame_fetch_context.cc b/thi
 +  return allow_script;
  }
  
- bool FrameFetchContext::IsFirstPartyOrigin(const KURL& url) const {
+ bool FrameFetchContext::IsFirstPartyOrigin(
 diff --git a/third_party/blink/renderer/core/loader/frame_fetch_context.h b/third_party/blink/renderer/core/loader/frame_fetch_context.h
 --- a/third_party/blink/renderer/core/loader/frame_fetch_context.h
 +++ b/third_party/blink/renderer/core/loader/frame_fetch_context.h

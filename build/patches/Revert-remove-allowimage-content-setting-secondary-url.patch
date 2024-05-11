@@ -21,7 +21,7 @@ https://chromium-review.googlesource.com/c/chromium/src/+/5308361
 diff --git a/components/content_settings/renderer/content_settings_agent_impl.cc b/components/content_settings/renderer/content_settings_agent_impl.cc
 --- a/components/content_settings/renderer/content_settings_agent_impl.cc
 +++ b/components/content_settings/renderer/content_settings_agent_impl.cc
-@@ -330,6 +330,23 @@ bool ContentSettingsAgentImpl::AllowStorageAccessSync(
+@@ -326,6 +326,23 @@ bool ContentSettingsAgentImpl::AllowStorageAccessSync(
    return result;
  }
  
@@ -75,7 +75,7 @@ diff --git a/third_party/blink/public/platform/web_content_settings_client.h b/t
 diff --git a/third_party/blink/renderer/core/frame/local_frame.cc b/third_party/blink/renderer/core/frame/local_frame.cc
 --- a/third_party/blink/renderer/core/frame/local_frame.cc
 +++ b/third_party/blink/renderer/core/frame/local_frame.cc
-@@ -3905,14 +3905,6 @@ const mojom::RendererContentSettingsPtr& LocalFrame::GetContentSettings() {
+@@ -3933,14 +3933,6 @@ const mojom::RendererContentSettingsPtr& LocalFrame::GetContentSettings() {
    return loader_.GetDocumentLoader()->GetContentSettings();
  }
  
@@ -93,7 +93,7 @@ diff --git a/third_party/blink/renderer/core/frame/local_frame.cc b/third_party/
 diff --git a/third_party/blink/renderer/core/frame/local_frame.h b/third_party/blink/renderer/core/frame/local_frame.h
 --- a/third_party/blink/renderer/core/frame/local_frame.h
 +++ b/third_party/blink/renderer/core/frame/local_frame.h
-@@ -925,12 +925,6 @@ class CORE_EXPORT LocalFrame final
+@@ -930,12 +930,6 @@ class CORE_EXPORT LocalFrame final
    // Can only be called while the frame is not detached.
    const mojom::RendererContentSettingsPtr& GetContentSettings();
  
@@ -167,7 +167,7 @@ diff --git a/third_party/blink/renderer/core/loader/frame_fetch_context.h b/thir
 diff --git a/third_party/blink/renderer/core/page/page.cc b/third_party/blink/renderer/core/page/page.cc
 --- a/third_party/blink/renderer/core/page/page.cc
 +++ b/third_party/blink/renderer/core/page/page.cc
-@@ -877,9 +877,8 @@ void Page::SettingsChanged(ChangeType change_type) {
+@@ -880,9 +880,8 @@ void Page::SettingsChanged(ChangeType change_type) {
        for (Frame* frame = MainFrame(); frame;
             frame = frame->Tree().TraverseNext()) {
          if (auto* local_frame = DynamicTo<LocalFrame>(frame)) {
@@ -194,7 +194,7 @@ diff --git a/third_party/blink/renderer/platform/loader/fetch/fetch_context.h b/
 diff --git a/third_party/blink/renderer/platform/loader/fetch/resource_fetcher.cc b/third_party/blink/renderer/platform/loader/fetch/resource_fetcher.cc
 --- a/third_party/blink/renderer/platform/loader/fetch/resource_fetcher.cc
 +++ b/third_party/blink/renderer/platform/loader/fetch/resource_fetcher.cc
-@@ -657,6 +657,7 @@ ResourceFetcher::ResourceFetcher(const ResourceFetcherInit& init)
+@@ -708,6 +708,7 @@ ResourceFetcher::ResourceFetcher(const ResourceFetcherInit& init)
        blob_registry_remote_(init.context_lifecycle_notifier),
        context_lifecycle_notifier_(init.context_lifecycle_notifier),
        auto_load_images_(true),
@@ -202,7 +202,7 @@ diff --git a/third_party/blink/renderer/platform/loader/fetch/resource_fetcher.c
        allow_stale_resources_(false),
        image_fetched_(false) {
    InstanceCounters::IncrementCounter(InstanceCounters::kResourceFetcherCounter);
-@@ -1679,7 +1680,7 @@ bool ResourceFetcher::IsImageResourceDisallowedToBeReused(
+@@ -1735,7 +1736,7 @@ bool ResourceFetcher::IsImageResourceDisallowedToBeReused(
    if (existing_resource.GetType() != ResourceType::kImage)
      return false;
  
@@ -211,7 +211,7 @@ diff --git a/third_party/blink/renderer/platform/loader/fetch/resource_fetcher.c
  }
  
  ResourceFetcher::RevalidationPolicy
-@@ -1922,8 +1923,20 @@ void ResourceFetcher::SetAutoLoadImages(bool enable) {
+@@ -1978,8 +1979,20 @@ void ResourceFetcher::SetAutoLoadImages(bool enable) {
    ReloadImagesIfNotDeferred();
  }
  
@@ -236,7 +236,7 @@ diff --git a/third_party/blink/renderer/platform/loader/fetch/resource_fetcher.c
 diff --git a/third_party/blink/renderer/platform/loader/fetch/resource_fetcher.h b/third_party/blink/renderer/platform/loader/fetch/resource_fetcher.h
 --- a/third_party/blink/renderer/platform/loader/fetch/resource_fetcher.h
 +++ b/third_party/blink/renderer/platform/loader/fetch/resource_fetcher.h
-@@ -223,6 +223,7 @@ class PLATFORM_EXPORT ResourceFetcher
+@@ -224,6 +224,7 @@ class PLATFORM_EXPORT ResourceFetcher
    bool StartLoad(Resource*);
  
    void SetAutoLoadImages(bool);
@@ -244,7 +244,7 @@ diff --git a/third_party/blink/renderer/platform/loader/fetch/resource_fetcher.h
  
    FetchContext& Context() const;
    void ClearContext();
-@@ -636,8 +637,9 @@ class PLATFORM_EXPORT ResourceFetcher
+@@ -642,8 +643,9 @@ class PLATFORM_EXPORT ResourceFetcher
    // This is not in the bit field below because we want to use AutoReset.
    bool is_in_request_resource_ = false;
  

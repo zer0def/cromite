@@ -14,18 +14,18 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  chrome/browser/profiles/profile_manager.cc                  | 4 ++++
  chrome/browser/ui/webui/managed_ui_handler.cc               | 2 ++
  chrome/browser/ui/webui/management/management_ui_handler.cc | 2 ++
- components/supervised_user/buildflags.gni                   | 6 +-----
+ components/supervised_user/buildflags.gni                   | 4 +---
  .../core/browser/supervised_user_pref_store.cc              | 1 +
  .../core/browser/supervised_user_preferences.cc             | 2 +-
  .../supervised_user/core/browser/supervised_user_utils.cc   | 4 ++++
  components/supervised_user/core/common/pref_names.h         | 4 ++++
  .../core/common/supervised_user_constants.cc                | 2 ++
- 16 files changed, 30 insertions(+), 18 deletions(-)
+ 16 files changed, 30 insertions(+), 16 deletions(-)
 
 diff --git a/chrome/android/BUILD.gn b/chrome/android/BUILD.gn
 --- a/chrome/android/BUILD.gn
 +++ b/chrome/android/BUILD.gn
-@@ -3726,7 +3726,6 @@ generate_jni("chrome_jni_headers") {
+@@ -3758,7 +3758,6 @@ generate_jni("chrome_jni_headers") {
      "java/src/org/chromium/chrome/browser/status_indicator/StatusIndicatorSceneLayer.java",
      "java/src/org/chromium/chrome/browser/suggestions/mostvisited/MostVisitedSites.java",
      "java/src/org/chromium/chrome/browser/suggestions/mostvisited/MostVisitedSitesBridge.java",
@@ -36,7 +36,7 @@ diff --git a/chrome/android/BUILD.gn b/chrome/android/BUILD.gn
 diff --git a/chrome/android/chrome_java_sources.gni b/chrome/android/chrome_java_sources.gni
 --- a/chrome/android/chrome_java_sources.gni
 +++ b/chrome/android/chrome_java_sources.gni
-@@ -1087,7 +1087,6 @@ chrome_java_sources = [
+@@ -1084,7 +1084,6 @@ chrome_java_sources = [
    "java/src/org/chromium/chrome/browser/suggestions/tile/TileGroupDelegateImpl.java",
    "java/src/org/chromium/chrome/browser/suggestions/tile/TileRenderer.java",
    "java/src/org/chromium/chrome/browser/suggestions/tile/TopSitesTileView.java",
@@ -47,7 +47,7 @@ diff --git a/chrome/android/chrome_java_sources.gni b/chrome/android/chrome_java
 diff --git a/chrome/android/feed/core/java/src/org/chromium/chrome/browser/feed/FeedSurfaceCoordinator.java b/chrome/android/feed/core/java/src/org/chromium/chrome/browser/feed/FeedSurfaceCoordinator.java
 --- a/chrome/android/feed/core/java/src/org/chromium/chrome/browser/feed/FeedSurfaceCoordinator.java
 +++ b/chrome/android/feed/core/java/src/org/chromium/chrome/browser/feed/FeedSurfaceCoordinator.java
-@@ -67,7 +67,6 @@ import org.chromium.components.browser_ui.widget.displaystyle.UiConfig;
+@@ -68,7 +68,6 @@ import org.chromium.components.browser_ui.widget.displaystyle.UiConfig;
  import org.chromium.components.feature_engagement.EventConstants;
  import org.chromium.components.feature_engagement.Tracker;
  import org.chromium.components.prefs.PrefService;
@@ -55,7 +55,7 @@ diff --git a/chrome/android/feed/core/java/src/org/chromium/chrome/browser/feed/
  import org.chromium.components.user_prefs.UserPrefs;
  import org.chromium.third_party.android.swiperefresh.SwipeRefreshLayout;
  import org.chromium.ui.base.DeviceFormFactor;
-@@ -759,9 +758,7 @@ public class FeedSurfaceCoordinator
+@@ -753,9 +752,7 @@ public class FeedSurfaceCoordinator
       * Returns true if the supervised user feed should be displayed.
       */
      public boolean shouldDisplaySupervisedFeed() {
@@ -69,7 +69,7 @@ diff --git a/chrome/android/feed/core/java/src/org/chromium/chrome/browser/feed/
 diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -3166,8 +3166,6 @@ static_library("browser") {
+@@ -3227,8 +3227,6 @@ static_library("browser") {
        "feed/android/refresh_task_scheduler_impl.cc",
        "feed/android/refresh_task_scheduler_impl.h",
        "feed/android/web_feed_bridge.cc",
@@ -78,7 +78,7 @@ diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
        "file_select_helper_contacts_android.cc",
        "file_select_helper_contacts_android.h",
        "first_run/android/first_run_prefs.cc",
-@@ -3372,10 +3370,6 @@ static_library("browser") {
+@@ -3436,10 +3434,6 @@ static_library("browser") {
        "ssl/chrome_security_state_model_delegate.h",
        "ssl/known_interception_disclosure_infobar.cc",
        "ssl/known_interception_disclosure_infobar.h",
@@ -92,7 +92,7 @@ diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -7864,6 +7864,7 @@ const FeatureEntry kFeatureEntries[] = {
+@@ -7957,6 +7957,7 @@ const FeatureEntry kFeatureEntries[] = {
  #endif
  
  #if BUILDFLAG(IS_MAC) || BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_WIN)
@@ -100,7 +100,7 @@ diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
      {"enable-family-link-extensions-permissions",
       flag_descriptions::
           kEnableExtensionsPermissionsForSupervisedUsersOnDesktopName,
-@@ -7873,6 +7874,7 @@ const FeatureEntry kFeatureEntries[] = {
+@@ -7966,6 +7967,7 @@ const FeatureEntry kFeatureEntries[] = {
       FEATURE_VALUE_TYPE(
           supervised_user::
               kEnableExtensionsPermissionsForSupervisedUsersOnDesktop)},
@@ -111,7 +111,7 @@ diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 diff --git a/chrome/browser/extensions/api/settings_private/prefs_util.cc b/chrome/browser/extensions/api/settings_private/prefs_util.cc
 --- a/chrome/browser/extensions/api/settings_private/prefs_util.cc
 +++ b/chrome/browser/extensions/api/settings_private/prefs_util.cc
-@@ -1047,9 +1047,11 @@ const PrefsUtil::TypedPrefMap& PrefsUtil::GetAllowlistedKeys() {
+@@ -1056,9 +1056,11 @@ const PrefsUtil::TypedPrefMap& PrefsUtil::GetAllowlistedKeys() {
        settings_api::PrefType::kBoolean;
  #endif
  
@@ -126,7 +126,7 @@ diff --git a/chrome/browser/extensions/api/settings_private/prefs_util.cc b/chro
 diff --git a/chrome/browser/profiles/profile_impl.cc b/chrome/browser/profiles/profile_impl.cc
 --- a/chrome/browser/profiles/profile_impl.cc
 +++ b/chrome/browser/profiles/profile_impl.cc
-@@ -693,10 +693,12 @@ void ProfileImpl::DoFinalInit(CreateMode create_mode) {
+@@ -690,10 +690,12 @@ void ProfileImpl::DoFinalInit(CreateMode create_mode) {
      prefs->SetTime(prefs::kProfileCreationTime, path_creation_time_);
  
    pref_change_registrar_.Init(prefs);
@@ -139,7 +139,7 @@ diff --git a/chrome/browser/profiles/profile_impl.cc b/chrome/browser/profiles/p
  
    // Changes in the profile avatar.
    pref_change_registrar_.Add(
-@@ -1638,11 +1640,13 @@ GURL ProfileImpl::GetHomePage() {
+@@ -1631,11 +1633,13 @@ GURL ProfileImpl::GetHomePage() {
  }
  
  void ProfileImpl::UpdateSupervisedUserIdInStorage() {
@@ -172,7 +172,7 @@ diff --git a/chrome/browser/profiles/profile_manager.cc b/chrome/browser/profile
  #if !BUILDFLAG(IS_ANDROID)
    if (profile->IsNewProfile()) {
      profile->GetPrefs()->SetBoolean(prefs::kHasSeenWelcomePage, false);
-@@ -2029,8 +2031,10 @@ void ProfileManager::AddProfileToStorage(Profile* profile) {
+@@ -2025,8 +2027,10 @@ void ProfileManager::AddProfileToStorage(Profile* profile) {
    init_params.icon_index =
        profile->GetPrefs()->GetInteger(prefs::kProfileAvatarIndex);
  
@@ -201,7 +201,7 @@ diff --git a/chrome/browser/ui/webui/managed_ui_handler.cc b/chrome/browser/ui/w
 diff --git a/chrome/browser/ui/webui/management/management_ui_handler.cc b/chrome/browser/ui/webui/management/management_ui_handler.cc
 --- a/chrome/browser/ui/webui/management/management_ui_handler.cc
 +++ b/chrome/browser/ui/webui/management/management_ui_handler.cc
-@@ -1507,10 +1507,12 @@ void ManagementUIHandler::AddObservers() {
+@@ -1496,10 +1496,12 @@ void ManagementUIHandler::AddObservers() {
  
    pref_registrar_.Init(profile->GetPrefs());
  
@@ -217,15 +217,13 @@ diff --git a/chrome/browser/ui/webui/management/management_ui_handler.cc b/chrom
 diff --git a/components/supervised_user/buildflags.gni b/components/supervised_user/buildflags.gni
 --- a/components/supervised_user/buildflags.gni
 +++ b/components/supervised_user/buildflags.gni
-@@ -4,9 +4,5 @@
+@@ -4,7 +4,5 @@
  
  declare_args() {
    # Enables supervision for Family Link users.
 -  enable_supervised_users =
 -      # Platforms which fully support supervision features:
--      is_android || is_chromeos ||
--      # Platforms for which support is currently in development:
--      is_ios || is_linux || is_mac || is_win
+-      is_android || is_chromeos || is_ios || is_linux || is_mac || is_win
 +  enable_supervised_users = false
  }
 diff --git a/components/supervised_user/core/browser/supervised_user_pref_store.cc b/components/supervised_user/core/browser/supervised_user_pref_store.cc
@@ -242,7 +240,7 @@ diff --git a/components/supervised_user/core/browser/supervised_user_pref_store.
 diff --git a/components/supervised_user/core/browser/supervised_user_preferences.cc b/components/supervised_user/core/browser/supervised_user_preferences.cc
 --- a/components/supervised_user/core/browser/supervised_user_preferences.cc
 +++ b/components/supervised_user/core/browser/supervised_user_preferences.cc
-@@ -187,7 +187,7 @@ bool IsSafeSitesEnabled(const PrefService& pref_service) {
+@@ -184,7 +184,7 @@ bool IsSafeSitesEnabled(const PrefService& pref_service) {
  }
  
  bool IsSubjectToParentalControls(const PrefService& pref_service) {
@@ -254,7 +252,7 @@ diff --git a/components/supervised_user/core/browser/supervised_user_preferences
 diff --git a/components/supervised_user/core/browser/supervised_user_utils.cc b/components/supervised_user/core/browser/supervised_user_utils.cc
 --- a/components/supervised_user/core/browser/supervised_user_utils.cc
 +++ b/components/supervised_user/core/browser/supervised_user_utils.cc
-@@ -97,11 +97,15 @@ GURL NormalizeUrl(const GURL& url) {
+@@ -99,11 +99,15 @@ GURL NormalizeUrl(const GURL& url) {
  }
  
  bool AreWebFilterPrefsDefault(const PrefService& pref_service) {
