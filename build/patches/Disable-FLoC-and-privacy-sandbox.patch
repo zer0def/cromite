@@ -228,7 +228,7 @@ new file mode 100644
 +SET_CROMITE_FEATURE_DISABLED(kFencedFrames);
 +SET_CROMITE_FEATURE_DISABLED(kSharedStorageAPI);
 +SET_CROMITE_FEATURE_DISABLED(kSharedStorageAPIM118);
-+SET_CROMITE_FEATURE_DISABLED(kSharedStorageAPIM124);
++SET_CROMITE_FEATURE_DISABLED(kSharedStorageAPIM125);
 diff --git a/third_party/blink/common/features.cc b/third_party/blink/common/features.cc
 --- a/third_party/blink/common/features.cc
 +++ b/third_party/blink/common/features.cc

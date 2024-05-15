@@ -12,10 +12,8 @@ https://bugs.chromium.org/p/chromium/issues/detail?id=1491776#c10
  components/omnibox/browser/omnibox_field_trial.cc  |  4 ++--
  .../phishing_classifier/phishing_image_embedder.cc | 14 +++-----------
  content/browser/browser_interface_binders.cc       |  1 +
- crypto/BUILD.gn                                    |  3 +++
  net/BUILD.gn                                       |  1 +
- third_party/libevent/BUILD.gn                      |  2 ++
- 10 files changed, 17 insertions(+), 16 deletions(-)
+ 8 files changed, 12 insertions(+), 16 deletions(-)
 
 diff --git a/BUILD.gn b/BUILD.gn
 --- a/BUILD.gn
@@ -117,19 +115,6 @@ diff --git a/content/browser/browser_interface_binders.cc b/content/browser/brow
    auto* view =
        RenderWidgetHostViewAndroid::FromRenderWidgetHostView(host->GetView());
    if (!view || !view->text_suggestion_host())
-diff --git a/crypto/BUILD.gn b/crypto/BUILD.gn
---- a/crypto/BUILD.gn
-+++ b/crypto/BUILD.gn
-@@ -14,6 +14,9 @@ buildflag_header("buildflags") {
- }
- 
- component("crypto") {
-+  # fix error
-+  # [chromium-rawptr] Use raw_ptr<T> instead of a raw pointer.
-+  configs -= [ "//build/config/clang:find_bad_constructs" ]
-   output_name = "crcrypto"  # Avoid colliding with OpenSSL's libcrypto.
-   sources = [
-     "aead.cc",
 diff --git a/net/BUILD.gn b/net/BUILD.gn
 --- a/net/BUILD.gn
 +++ b/net/BUILD.gn
@@ -141,16 +126,4 @@ diff --git a/net/BUILD.gn b/net/BUILD.gn
  }
  
  # net_export.h has its own build target so that code (eg
-diff --git a/third_party/libevent/BUILD.gn b/third_party/libevent/BUILD.gn
---- a/third_party/libevent/BUILD.gn
-+++ b/third_party/libevent/BUILD.gn
-@@ -58,6 +58,8 @@ static_library("libevent") {
-     configs += [ "//build/config/compiler:optimize_max" ]
-   }
- 
-+  configs -= [ "//build/config/clang:find_bad_constructs" ]
-+
-   configs -= [ "//build/config/compiler:chromium_code" ]
-   configs += [ "//build/config/compiler:no_chromium_code" ]
- }
 --

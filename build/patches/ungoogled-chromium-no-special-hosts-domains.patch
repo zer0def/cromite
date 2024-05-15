@@ -55,12 +55,11 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  components/search_provider_logos/BUILD.gn     |   2 -
  .../logo_service_impl.cc                      |  16 +-
  components/url_matcher/url_util.cc            |  83 -----
- ...gled-chromium-no-special-hosts-domains.inc |   1 +
+ .../webid/identity_url_loader_throttle.cc     |   1 +
  ...gled-chromium-no-special-hosts-domains.inc |   1 +
  net/base/url_util.cc                          |  25 +-
  services/network/network_context.cc           |   2 +-
  52 files changed, 58 insertions(+), 807 deletions(-)
- create mode 100644 cromite_flags/content/common/features_cc/ungoogled-chromium-no-special-hosts-domains.inc
  create mode 100644 cromite_flags/content/public/common/content_features_cc/ungoogled-chromium-no-special-hosts-domains.inc
 
 diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
@@ -1635,12 +1634,17 @@ diff --git a/components/url_matcher/url_util.cc b/components/url_matcher/url_uti
      return GURL();
    }
  
-diff --git a/cromite_flags/content/common/features_cc/ungoogled-chromium-no-special-hosts-domains.inc b/cromite_flags/content/common/features_cc/ungoogled-chromium-no-special-hosts-domains.inc
-new file mode 100644
---- /dev/null
-+++ b/cromite_flags/content/common/features_cc/ungoogled-chromium-no-special-hosts-domains.inc
-@@ -0,0 +1 @@
-+SET_CROMITE_FEATURE_DISABLED(kFedCmIdpSigninStatusMetrics);
+diff --git a/content/common/webid/identity_url_loader_throttle.cc b/content/common/webid/identity_url_loader_throttle.cc
+--- a/content/common/webid/identity_url_loader_throttle.cc
++++ b/content/common/webid/identity_url_loader_throttle.cc
+@@ -36,6 +36,7 @@ namespace content {
+ 
+ std::unique_ptr<blink::URLLoaderThrottle> MaybeCreateIdentityUrlLoaderThrottle(
+     SetIdpStatusCallback cb) {
++  if ((true)) return nullptr;
+   return std::make_unique<IdentityUrlLoaderThrottle>(std::move(cb));
+ }
+ 
 diff --git a/cromite_flags/content/public/common/content_features_cc/ungoogled-chromium-no-special-hosts-domains.inc b/cromite_flags/content/public/common/content_features_cc/ungoogled-chromium-no-special-hosts-domains.inc
 new file mode 100644
 --- /dev/null

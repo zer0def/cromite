@@ -396,7 +396,7 @@ diff --git a/chrome/browser/profiles/android/profile_manager_utils.cc b/chrome/b
 diff --git a/chrome/browser/profiles/profile_manager.cc b/chrome/browser/profiles/profile_manager.cc
 --- a/chrome/browser/profiles/profile_manager.cc
 +++ b/chrome/browser/profiles/profile_manager.cc
-@@ -1483,6 +1483,19 @@ void ProfileManager::DoFinalInit(ProfileInfo* profile_info,
+@@ -1481,6 +1481,19 @@ void ProfileManager::DoFinalInit(ProfileInfo* profile_info,
    }
  }
  
@@ -416,7 +416,7 @@ diff --git a/chrome/browser/profiles/profile_manager.cc b/chrome/browser/profile
  void ProfileManager::DoFinalInitForServices(Profile* profile,
                                              bool go_off_the_record) {
    if (!do_final_services_init_ ||
-@@ -2145,7 +2158,7 @@ void ProfileManager::OnBrowserClosed(Browser* browser) {
+@@ -2141,7 +2154,7 @@ void ProfileManager::OnBrowserClosed(Browser* browser) {
    Profile* original_profile = profile->GetOriginalProfile();
    // Do nothing if the closed window is not the last window of the same profile.
    for (Browser* browser_iter : *BrowserList::GetInstance()) {

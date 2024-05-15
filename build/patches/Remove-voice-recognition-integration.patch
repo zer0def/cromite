@@ -20,7 +20,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../suggestions/AutocompleteController.java   | 25 -------
  .../suggestions/AutocompleteCoordinator.java  |  8 ---
  .../suggestions/AutocompleteMediator.java     |  9 ---
- 16 files changed, 11 insertions(+), 288 deletions(-)
+ 16 files changed, 10 insertions(+), 289 deletions(-)
 
 diff --git a/chrome/android/features/start_surface/java/src/org/chromium/chrome/features/start_surface/StartSurfaceMediator.java b/chrome/android/features/start_surface/java/src/org/chromium/chrome/features/start_surface/StartSurfaceMediator.java
 --- a/chrome/android/features/start_surface/java/src/org/chromium/chrome/features/start_surface/StartSurfaceMediator.java
@@ -586,7 +586,7 @@ diff --git a/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/brow
      }
  
      /** package */
-@@ -1131,10 +1116,8 @@ class LocationBarMediator
+@@ -1131,10 +1116,7 @@ class LocationBarMediator
  
      private boolean shouldShowMicButton() {
          if (shouldShowDeleteButton()) return false;
@@ -594,12 +594,11 @@ diff --git a/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/brow
 -                || mVoiceRecognitionHandler == null
 -                || !mVoiceRecognitionHandler.isVoiceSearchEnabled()
 -                || !mEmbedderUiOverrides.isVoiceEntrypointAllowed()) {
-+        if (()
-+                || !mEmbedderUiOverrides.isVoiceEntrypointAllowed(true)) {
++        if ((true)) {
              return false;
          }
          boolean isToolbarMicEnabled = mIsToolbarMicEnabledSupplier.getAsBoolean();
-@@ -1151,6 +1134,7 @@ class LocationBarMediator
+@@ -1151,6 +1133,7 @@ class LocationBarMediator
      }
  
      private boolean shouldShowLensButton() {
@@ -607,7 +606,15 @@ diff --git a/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/brow
          if (shouldShowDeleteButton()) return false;
  
          // When this method is called on UI inflation, return false as the native is not ready.
-@@ -1370,16 +1354,6 @@ class LocationBarMediator
+@@ -1161,7 +1144,6 @@ class LocationBarMediator
+         // Never show Lens in the old search widget page context.
+         // This widget must guarantee consistent feature set regardless of search engine choice or
+         // other aspects that may not be met by Lens.
+-        LocationBarDataProvider dataProvider = getLocationBarDataProvider();
+         if (!mEmbedderUiOverrides.isLensEntrypointAllowed()) {
+             return false;
+         }
+@@ -1370,16 +1352,6 @@ class LocationBarMediator
          }
      }
  
@@ -624,7 +631,7 @@ diff --git a/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/brow
      @Override
      public void addUrlFocusChangeListener(UrlFocusChangeListener listener) {
          mUrlFocusChangeListeners.addObserver(listener);
-@@ -1395,33 +1369,13 @@ class LocationBarMediator
+@@ -1395,33 +1367,13 @@ class LocationBarMediator
          return mUrlHasFocus;
      }
  
@@ -660,7 +667,7 @@ diff --git a/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/brow
      public void setSearchQuery(String query) {
          if (TextUtils.isEmpty(query)) return;
  
-@@ -1444,20 +1398,6 @@ class LocationBarMediator
+@@ -1444,20 +1396,6 @@ class LocationBarMediator
          mUrlCoordinator.setKeyboardVisibility(true, false);
      }
  

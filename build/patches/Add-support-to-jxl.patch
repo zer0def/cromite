@@ -36,7 +36,7 @@ Enabled by default
  .../platform/graphics/bitmap_image_metrics.h  |   4 +-
  .../renderer/platform/image-decoders/BUILD.gn |   9 +
  .../platform/image-decoders/image_decoder.cc  |  23 +
- .../image-decoders/jxl/jxl_image_decoder.cc   | 684 ++++++++++++++++++
+ .../image-decoders/jxl/jxl_image_decoder.cc   | 685 ++++++++++++++++++
  .../image-decoders/jxl/jxl_image_decoder.h    | 123 ++++
  .../jxl/jxl_image_decoder_test.cc             | 626 ++++++++++++++++
  .../blink/tools/commit_stats/git-dirs.txt     |   1 +
@@ -58,7 +58,7 @@ Enabled by default
  .../libjxl/gen_headers/jxl/jxl_export.h       |  11 +
  tools/metrics/histograms/enums.xml            |   1 +
  .../histograms/metadata/blink/enums.xml       |   2 +-
- 53 files changed, 1996 insertions(+), 17 deletions(-)
+ 53 files changed, 1997 insertions(+), 17 deletions(-)
  create mode 100644 build/linux/unbundle/libjxl.gn
  create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Add-support-to-jxl.inc
  create mode 100644 cromite_flags/third_party/blink/common/features_cc/Add-support-to-jxl.inc
@@ -765,7 +765,7 @@ diff --git a/third_party/blink/renderer/platform/image-decoders/jxl/jxl_image_de
 new file mode 100644
 --- /dev/null
 +++ b/third_party/blink/renderer/platform/image-decoders/jxl/jxl_image_decoder.cc
-@@ -0,0 +1,684 @@
+@@ -0,0 +1,685 @@
 +// Copyright 2021 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
@@ -1145,7 +1145,8 @@ new file mode 100644
 +                                     JXL_COLOR_PROFILE_TARGET_DATA,
 +                                     icc_profile.data(), icc_profile.size())) {
 +            profile =
-+                ColorProfile::Create(icc_profile.data(), icc_profile.size());
++                ColorProfile::Create(
++                  base::span(icc_profile.data(), icc_profile.size()));
 +            have_data_profile = true;
 +
 +            // Detect whether the ICC profile approximately equals PQ or HLG,

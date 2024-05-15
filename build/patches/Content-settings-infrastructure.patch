@@ -12,6 +12,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 Require: bromite-build-utils.patch
 ---
  .../ChromeSiteSettingsDelegate.java           |  17 +-
+ ...page_specific_content_settings_delegate.cc |   2 +-
  .../settings/privacy_page/privacy_page.html   |   1 +
  .../settings/privacy_page/privacy_page.ts     |  77 +++-
  chrome/browser/resources/settings/route.ts    |   2 +
@@ -65,24 +66,24 @@ Require: bromite-build-utils.patch
  .../core/browser/website_settings_registry.h  |   1 +
  .../content_settings/core/common/BUILD.gn     |   7 +
  .../bromite_content_settings/placeholder.txt  |   1 +
- .../core/common/content_settings.cc           |  20 +
- .../core/common/content_settings.h            |  10 +
+ .../core/common/content_settings.cc           |  31 +-
+ .../core/common/content_settings.h            |  12 +
  .../core/common/content_settings.mojom        |   6 +
  .../common/content_settings_mojom_traits.cc   |  12 +-
  .../common/content_settings_mojom_traits.h    |  24 +
  .../core/common/content_settings_types.mojom  |   1 +
- .../renderer/content_settings_agent_impl.cc   |  33 ++
- .../renderer/content_settings_agent_impl.h    |   5 +
+ .../renderer/content_settings_agent_impl.cc   |  45 +-
+ .../renderer/content_settings_agent_impl.h    |   9 +-
  .../PageInfoPermissionsController.java        |   9 +
  .../PermissionParamsListBuilder.java          |   1 +
  .../android/page_info_controller_android.cc   |  18 +
  components/page_info/page_info.cc             |  23 +-
  components/page_info/page_info_ui.cc          |  18 +
  components/site_settings_strings.grdp         |   1 +
- .../platform/web_content_settings_client.h    |   5 +
+ .../platform/web_content_settings_client.h    |   9 +
  .../execution_context/execution_context.cc    |  16 +
  .../execution_context/execution_context.h     |   5 +
- 71 files changed, 1837 insertions(+), 89 deletions(-)
+ 72 files changed, 1866 insertions(+), 95 deletions(-)
  create mode 100644 components/browser_ui/settings/android/java/res/layout/preference_spinner_single_widget.xml
  create mode 100644 components/browser_ui/site_settings/android/java/src/org/chromium/components/browser_ui/site_settings/BromiteCustomContentSetting.java
  create mode 100644 components/browser_ui/site_settings/android/java/src/org/chromium/components/browser_ui/site_settings/BromiteCustomContentSettingImpl.java
@@ -134,6 +135,18 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/site_settings/C
      @Override
      public boolean canLaunchClearBrowsingDataDialog() {
          return true;
+diff --git a/chrome/browser/content_settings/page_specific_content_settings_delegate.cc b/chrome/browser/content_settings/page_specific_content_settings_delegate.cc
+--- a/chrome/browser/content_settings/page_specific_content_settings_delegate.cc
++++ b/chrome/browser/content_settings/page_specific_content_settings_delegate.cc
+@@ -163,7 +163,7 @@ namespace {
+ void GetGuestViewDefaultContentSettingRules(
+     bool incognito,
+     RendererContentSettingRules* rules) {
+-  rules->mixed_content_rules.clear();
++  rules->mixed_content_rules.clear(); // do not remove
+   rules->mixed_content_rules.push_back(ContentSettingPatternSource(
+       ContentSettingsPattern::Wildcard(), ContentSettingsPattern::Wildcard(),
+       content_settings::ContentSettingToValue(CONTENT_SETTING_BLOCK),
 diff --git a/chrome/browser/resources/settings/privacy_page/privacy_page.html b/chrome/browser/resources/settings/privacy_page/privacy_page.html
 --- a/chrome/browser/resources/settings/privacy_page/privacy_page.html
 +++ b/chrome/browser/resources/settings/privacy_page/privacy_page.html
@@ -2932,7 +2945,7 @@ new file mode 100644
 diff --git a/components/content_settings/core/common/content_settings.cc b/components/content_settings/core/common/content_settings.cc
 --- a/components/content_settings/core/common/content_settings.cc
 +++ b/components/content_settings/core/common/content_settings.cc
-@@ -16,6 +16,7 @@
+@@ -16,10 +16,11 @@
  #include "components/content_settings/core/common/content_settings_metadata.h"
  #include "components/content_settings/core/common/content_settings_types.h"
  #include "components/content_settings/core/common/content_settings_utils.h"
@@ -2940,6 +2953,11 @@ diff --git a/components/content_settings/core/common/content_settings.cc b/compo
  
  namespace {
  
+-void FilterRulesForType(ContentSettingsForOneType& settings,
++void FilterRulesForType(ContentSettingsForOneType& settings, // do not remove
+                         const GURL& primary_url) {
+   std::erase_if(settings,
+                 [&primary_url](const ContentSettingPatternSource& source) {
 @@ -98,6 +99,13 @@ std::ostream& operator<<(std::ostream& os,
  // static
  bool RendererContentSettingRules::IsRendererContentSetting(
@@ -2954,20 +2972,27 @@ diff --git a/components/content_settings/core/common/content_settings.cc b/compo
    return content_type == ContentSettingsType::IMAGES ||
           content_type == ContentSettingsType::JAVASCRIPT ||
           content_type == ContentSettingsType::POPUPS ||
-@@ -107,6 +115,9 @@ bool RendererContentSettingRules::IsRendererContentSetting(
+@@ -107,7 +115,10 @@ bool RendererContentSettingRules::IsRendererContentSetting(
  
  void RendererContentSettingRules::FilterRulesByOutermostMainFrameURL(
      const GURL& outermost_main_frame_url) {
+-  FilterRulesForType(mixed_content_rules, outermost_main_frame_url);
 +  for (ContentSettingRuleSource& info : settings_rules) {
 +      FilterRulesForType(info.rules, outermost_main_frame_url);
 +  }
-   FilterRulesForType(mixed_content_rules, outermost_main_frame_url);
++  FilterRulesForType(mixed_content_rules, outermost_main_frame_url); // do not remove
  }
  
-@@ -128,3 +139,12 @@ RendererContentSettingRules& RendererContentSettingRules::operator=(
+ RendererContentSettingRules::RendererContentSettingRules() = default;
+@@ -127,4 +138,18 @@ RendererContentSettingRules& RendererContentSettingRules::operator=(
+     RendererContentSettingRules&& rules) = default;
  
  bool RendererContentSettingRules::operator==(
-     const RendererContentSettingRules& other) const = default;
+-    const RendererContentSettingRules& other) const = default;
++    const RendererContentSettingRules& other) const {
++  return std::tie(settings_rules, mixed_content_rules) ==
++         std::tie(other.settings_rules, other.mixed_content_rules);
++}
 +
 +ContentSettingRuleSource::ContentSettingRuleSource() = default;
 +
@@ -2976,11 +3001,13 @@ diff --git a/components/content_settings/core/common/content_settings.cc b/compo
 +ContentSettingRuleSource::ContentSettingRuleSource(
 +    const ContentSettingRuleSource&) = default;
 +
-+}
++bool ContentSettingRuleSource::operator==(
++    const ContentSettingRuleSource& other) const = default;
++
 diff --git a/components/content_settings/core/common/content_settings.h b/components/content_settings/core/common/content_settings.h
 --- a/components/content_settings/core/common/content_settings.h
 +++ b/components/content_settings/core/common/content_settings.h
-@@ -72,10 +72,20 @@ std::ostream& operator<<(std::ostream& os,
+@@ -72,10 +72,22 @@ std::ostream& operator<<(std::ostream& os,
  
  typedef std::vector<ContentSettingPatternSource> ContentSettingsForOneType;
  
@@ -2991,6 +3018,8 @@ diff --git a/components/content_settings/core/common/content_settings.h b/compon
 +  ContentSettingRuleSource();
 +  ~ContentSettingRuleSource();
 +  ContentSettingRuleSource(const ContentSettingRuleSource& source);
++
++  bool operator==(const ContentSettingRuleSource& other) const;
 +};
 +
  struct RendererContentSettingRules {
@@ -3100,7 +3129,7 @@ diff --git a/components/content_settings/core/common/content_settings_types.mojo
 diff --git a/components/content_settings/renderer/content_settings_agent_impl.cc b/components/content_settings/renderer/content_settings_agent_impl.cc
 --- a/components/content_settings/renderer/content_settings_agent_impl.cc
 +++ b/components/content_settings/renderer/content_settings_agent_impl.cc
-@@ -202,6 +202,39 @@ void ContentSettingsAgentImpl::SendRendererContentSettingRules(
+@@ -202,6 +202,49 @@ void ContentSettingsAgentImpl::SendRendererContentSettingRules(
        std::move(renderer_settings));
  }
  
@@ -3128,6 +3157,16 @@ diff --git a/components/content_settings/renderer/content_settings_agent_impl.cc
 +  blink::WebLocalFrame* frame = render_frame()->GetWebFrame();
 +  const GURL secondary_url =
 +          url::Origin(frame->GetDocument().GetSecurityOrigin()).GetURL();
++  return AllowContentSetting(type, secondary_url, default_value);
++}
++
++bool ContentSettingsAgentImpl::AllowContentSetting(
++        ContentSettingsType type,
++        const blink::WebURL& secondary_url,
++        bool default_value) {
++  if (!content_setting_rules_)
++    return default_value;
++
 +  for (ContentSettingRuleSource& info : content_setting_rules_->settings_rules) {
 +      if (info.type == (int)type) {
 +        return CONTENT_SETTING_ALLOW == GetContentSettingFromRules(
@@ -3140,13 +3179,24 @@ diff --git a/components/content_settings/renderer/content_settings_agent_impl.cc
  void ContentSettingsAgentImpl::OnContentSettingsAgentRequest(
      mojo::PendingAssociatedReceiver<mojom::ContentSettingsAgent> receiver) {
    receivers_.Add(this, std::move(receiver));
+@@ -353,7 +396,7 @@ void ContentSettingsAgentImpl::ClearBlockedContentSettings() {
+   cached_storage_permissions_.clear();
+ }
+ 
+-bool ContentSettingsAgentImpl::IsAllowlistedForContentSettings() const {
++bool ContentSettingsAgentImpl::IsAllowlistedForContentSettingsCromite() const {
+   if (should_allowlist_)
+     return true;
+ 
 diff --git a/components/content_settings/renderer/content_settings_agent_impl.h b/components/content_settings/renderer/content_settings_agent_impl.h
 --- a/components/content_settings/renderer/content_settings_agent_impl.h
 +++ b/components/content_settings/renderer/content_settings_agent_impl.h
-@@ -80,6 +80,11 @@ class ContentSettingsAgentImpl
+@@ -80,6 +80,13 @@ class ContentSettingsAgentImpl
    static mojom::ContentSettingsManager::StorageType ConvertToMojoStorageType(
        StorageType storage_type);
  
++  bool AllowContentSetting(
++          ContentSettingsType type, const blink::WebURL& secondary_url, bool default_value) override;
 +  bool AllowContentSetting(
 +          ContentSettingsType type, bool default_value) override;
 +  ContentSetting GetContentSetting(
@@ -3155,6 +3205,15 @@ diff --git a/components/content_settings/renderer/content_settings_agent_impl.h 
    // blink::WebContentSettingsClient:
    void AllowStorageAccess(StorageType storage_type,
                            base::OnceCallback<void(bool)> callback) override;
+@@ -135,7 +142,7 @@ class ContentSettingsAgentImpl
+   // Helpers.
+   // True if `render_frame()` contains content that is allowlisted for content
+   // settings.
+-  bool IsAllowlistedForContentSettings() const;
++  bool IsAllowlistedForContentSettingsCromite() const;
+ 
+   // A getter for `content_settings_manager_` that ensures it is bound.
+   mojom::ContentSettingsManager& GetContentSettingsManager();
 diff --git a/components/page_info/android/java/src/org/chromium/components/page_info/PageInfoPermissionsController.java b/components/page_info/android/java/src/org/chromium/components/page_info/PageInfoPermissionsController.java
 --- a/components/page_info/android/java/src/org/chromium/components/page_info/PageInfoPermissionsController.java
 +++ b/components/page_info/android/java/src/org/chromium/components/page_info/PageInfoPermissionsController.java
@@ -3344,11 +3403,15 @@ diff --git a/third_party/blink/public/platform/web_content_settings_client.h b/t
  #include "third_party/blink/public/common/client_hints/enabled_client_hints.h"
  #include "third_party/blink/public/mojom/navigation/renderer_content_settings.mojom.h"
  
-@@ -46,6 +47,10 @@ class WebContentSettingsClient {
+@@ -46,6 +47,14 @@ class WebContentSettingsClient {
    // Blocks until done.
    virtual bool AllowStorageAccessSync(StorageType storage_type) { return true; }
  
 +  virtual bool AllowContentSetting(ContentSettingsType type, bool enabled_per_settings) {
++    return enabled_per_settings;
++  }
++
++  virtual bool AllowContentSetting(ContentSettingsType type, const WebURL& secondary_url, bool enabled_per_settings) {
 +    return enabled_per_settings;
 +  }
 +

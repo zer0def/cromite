@@ -554,7 +554,7 @@ diff --git a/third_party/blink/renderer/core/frame/local_frame.h b/third_party/b
  
    // Informs the local root's document and its local descendant subtree that a
    // media query value changed.
-@@ -1087,6 +1088,7 @@ class CORE_EXPORT LocalFrame final
+@@ -1081,6 +1082,7 @@ class CORE_EXPORT LocalFrame final
    unsigned hidden_ : 1;
  
    float page_zoom_factor_;
@@ -745,7 +745,7 @@ diff --git a/third_party/blink/renderer/core/page/page.cc b/third_party/blink/re
  namespace blink {
  
  namespace {
-@@ -1083,7 +1089,94 @@ void Page::UpdateAcceleratedCompositingSettings() {
+@@ -1082,7 +1088,94 @@ void Page::UpdateAcceleratedCompositingSettings() {
    }
  }
  

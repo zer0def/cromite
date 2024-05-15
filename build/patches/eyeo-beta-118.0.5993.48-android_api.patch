@@ -121,7 +121,7 @@ diff --git a/chrome/android/BUILD.gn b/chrome/android/BUILD.gn
        "//chrome/test/data/android/",
        "//chrome/test/data/autofill/",
        "//chrome/test/data/background_sync/",
-@@ -3850,6 +3857,7 @@ group("jni_headers") {
+@@ -3851,6 +3858,7 @@ group("jni_headers") {
      "//chrome/browser/util:jni_headers",
      "//chrome/browser/webauthn/android:jni_headers",
      "//components/browser_ui/device_lock/android:device_lock_bridge_jni_headers",
@@ -132,7 +132,7 @@ diff --git a/chrome/android/BUILD.gn b/chrome/android/BUILD.gn
 diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -3516,6 +3516,17 @@ static_library("browser") {
+@@ -3522,6 +3522,17 @@ static_library("browser") {
        "webauthn/android/webauthn_request_delegate_android.h",
      ]
  
@@ -150,7 +150,7 @@ diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
  
      public_deps += [
        "//chrome/android/features/dev_ui:buildflags",
-@@ -3713,6 +3724,9 @@ static_library("browser") {
+@@ -3719,6 +3730,9 @@ static_library("browser") {
        "//url",
      ]
  

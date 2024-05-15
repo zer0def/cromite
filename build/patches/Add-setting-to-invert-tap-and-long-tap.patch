@@ -24,12 +24,12 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  ...Add-setting-to-invert-tap-and-long-tap.inc |  3 ++
  ...Add-setting-to-invert-tap-and-long-tap.inc |  1 +
  .../renderer/core/html/html_anchor_element.cc | 36 +++++++++++++++----
- .../renderer/core/html/html_anchor_element.h  |  6 ++++
+ .../renderer/core/html/html_anchor_element.h  |  7 +++-
  .../renderer/core/html/html_image_element.cc  | 17 +++++++++
  .../renderer/core/html/html_image_element.h   |  2 ++
- .../core/page/context_menu_controller.cc      | 32 ++++++++++++-----
+ .../core/page/context_menu_controller.cc      | 33 ++++++++++++-----
  .../core/page/context_menu_controller.h       |  5 +--
- 21 files changed, 164 insertions(+), 19 deletions(-)
+ 21 files changed, 165 insertions(+), 20 deletions(-)
  create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Add-setting-to-invert-tap-and-long-tap.inc
  create mode 100644 cromite_flags/third_party/blink/common/features_cc/Add-setting-to-invert-tap-and-long-tap.inc
  create mode 100644 cromite_flags/third_party/blink/common/features_h/Add-setting-to-invert-tap-and-long-tap.inc
@@ -401,22 +401,23 @@ diff --git a/third_party/blink/renderer/core/html/html_anchor_element.h b/third_
    AtomicString interestAction() const override;
  
    void Trace(Visitor*) const override;
-+  void HandleClick(Event&, bool do_not_show_context_menu = false);
++  void HandleClick(MouseEvent&, bool do_not_show_context_menu = false);
  
   protected:
    void ParseAttribute(const AttributeModificationParams&) override;
-@@ -143,6 +144,11 @@ class CORE_EXPORT HTMLAnchorElement : public HTMLElement, public DOMURLUtils {
+@@ -143,7 +144,11 @@ class CORE_EXPORT HTMLAnchorElement : public HTMLElement, public DOMURLUtils {
                             bool is_trusted,
                             base::TimeTicks platform_time_stamp,
                             KURL);
+-  void HandleClick(MouseEvent&);
 + void NavigateToHyperlink2(ResourceRequest,
 +                           NavigationPolicy,
 +                           bool is_trusted,
 +                           base::TimeTicks platform_time_stamp,
 +                           KURL, Event&, bool do_not_show_context_menu);
-   void HandleClick(MouseEvent&);
  
    unsigned link_relations_ : 31;
+   mutable LinkHash cached_visited_link_hash_;
 diff --git a/third_party/blink/renderer/core/html/html_image_element.cc b/third_party/blink/renderer/core/html/html_image_element.cc
 --- a/third_party/blink/renderer/core/html/html_image_element.cc
 +++ b/third_party/blink/renderer/core/html/html_image_element.cc
@@ -503,14 +504,15 @@ diff --git a/third_party/blink/renderer/core/page/context_menu_controller.cc b/t
    // Displaying the context menu in this function is a big hack as we don't
    // have context, i.e. whether this is being invoked via a script or in
    // response to user input (Mouse event WM_RBUTTONDOWN,
-@@ -476,6 +479,15 @@ bool ContextMenuController::ShowContextMenu(LocalFrame* frame,
+@@ -476,6 +479,16 @@ bool ContextMenuController::ShowContextMenu(LocalFrame* frame,
    if (!result.InnerNodeOrImageMapImage())
      return false;
  
 +  if (!do_not_show_context_menu &&
 +        base::FeatureList::IsEnabled(features::kShowAlwaysContextMenuOnLinks)) {
 +    if (auto* anchor_element = DynamicTo<HTMLAnchorElement>(result.URLElement())) {
-+      Event event;
++      MouseEvent event;
++      event.SetTarget(mouse_event->target());
 +      anchor_element->HandleClick(event, /*do_not_show_context_menu*/true);
 +      return true;
 +    }
@@ -519,7 +521,7 @@ diff --git a/third_party/blink/renderer/core/page/context_menu_controller.cc b/t
    // Clear any previously set cached results if we are resetting the hit test
    // result.
    image_selection_cached_result_ = nullptr;
-@@ -830,11 +842,13 @@ bool ContextMenuController::ShowContextMenu(LocalFrame* frame,
+@@ -830,11 +843,13 @@ bool ContextMenuController::ShowContextMenu(LocalFrame* frame,
    SetAutofillData(result.InnerNode(), data);
    SetPasswordManagerData(result.InnerElement(), data);
  

@@ -38,7 +38,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../strip/StripLayoutHelperManager.java       | 38 +++++++-
  .../scene_layer/StaticTabSceneLayer.java      |  7 +-
  .../scene_layer/TabListSceneLayer.java        |  8 ++
- .../scene_layer/TabStripSceneLayer.java       | 18 +++-
+ .../scene_layer/TabStripSceneLayer.java       | 19 +++-
  .../browser/findinpage/FindToolbarTablet.java | 10 +-
  .../fullscreen/BrowserControlsManager.java    | 12 +++
  .../messages/MessageContainerCoordinator.java | 16 +++-
@@ -87,7 +87,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../AccessibilitySettingsDelegate.java        |  7 ++
  .../render_widget_host_view_android.cc        |  3 +
  .../Move-navigation-bar-to-bottom.inc         | 17 ++++
- 74 files changed, 954 insertions(+), 87 deletions(-)
+ 74 files changed, 955 insertions(+), 87 deletions(-)
  create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Move-navigation-bar-to-bottom.inc
 
 diff --git a/cc/base/features.cc b/cc/base/features.cc
@@ -1149,7 +1149,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/compositor/over
          Resources res = context.getResources();
          mUpdateHost = updateHost;
          mLayerTitleCacheSupplier = layerTitleCacheSupplier;
-@@ -523,6 +535,8 @@ public class StripLayoutHelperManager
+@@ -520,6 +532,8 @@ public class StripLayoutHelperManager
                          mTabDragSource,
                          toolbarContainerView,
                          windowAndroid);
@@ -1158,7 +1158,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/compositor/over
  
          tabHoverCardViewStub.setOnInflateListener(
                  (viewStub, view) -> {
-@@ -674,6 +688,10 @@ public class StripLayoutHelperManager
+@@ -671,6 +685,10 @@ public class StripLayoutHelperManager
              // value.
              yOffset -= getHeight();
          }
@@ -1169,7 +1169,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/compositor/over
          mTabStripTreeProvider.pushAndUpdateStrip(
                  this,
                  mLayerTitleCacheSupplier.get(),
-@@ -687,7 +705,9 @@ public class StripLayoutHelperManager
+@@ -684,7 +702,9 @@ public class StripLayoutHelperManager
                  scrimOpacity,
                  mLeftPadding,
                  mRightPadding,
@@ -1180,7 +1180,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/compositor/over
          return mTabStripTreeProvider;
      }
  
-@@ -746,11 +766,21 @@ public class StripLayoutHelperManager
+@@ -743,11 +763,21 @@ public class StripLayoutHelperManager
                  mLeftPadding,
                  mRightPadding);
  
@@ -1266,12 +1266,13 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/compositor/scen
  
  /**
   * The Java component of what is basically a CC Layer that manages drawing the Tab Strip (which is
-@@ -88,9 +91,20 @@ public class TabStripSceneLayer extends SceneOverlayLayer {
+@@ -88,9 +91,21 @@ public class TabStripSceneLayer extends SceneOverlayLayer {
              float scrimOpacity,
              float leftPaddingDp,
              float rightPaddingDp,
 -            float topPaddingDp) {
 +            float topPaddingDp,
++            float viewportHeight,
 +            int topControlsHeight) {
          if (mNativePtr == 0) return;
 -        final boolean visible = yOffset > -layoutHelper.getHeight();

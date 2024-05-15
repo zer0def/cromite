@@ -6,7 +6,7 @@ Original License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.
 License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 ---
  chrome/browser/BUILD.gn                           |  2 --
- .../preloading_model_keyed_service.cc             |  1 +
+ .../preloading_model_keyed_service.cc             |  3 +++
  .../preloading_model_keyed_service_factory.cc     |  4 +---
  .../optimization_guide/chrome_hints_manager.cc    |  1 +
  .../model_validator_keyed_service.cc              |  6 +++++-
@@ -16,7 +16,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  chrome/browser/ui/tab_helpers.cc                  |  1 -
  .../ui/webui/omnibox/omnibox_page_handler.cc      |  2 ++
  .../core/browser/autofill_optimization_guide.cc   |  5 +++--
- .../omnibox/browser/autocomplete_controller.cc    |  2 ++
+ .../omnibox/browser/autocomplete_controller.cc    |  4 ++++
  .../optimization_guide/core/hints_fetcher.cc      |  1 +
  .../optimization_guide/core/hints_manager.cc      |  5 +++++
  .../core/optimization_guide_features.cc           | 15 +++++++++------
@@ -31,7 +31,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../features_cc/Disable-all-predictors-code.inc   |  2 ++
  .../document_speculation_rules.cc                 |  1 +
  .../platform/runtime_enabled_features.json5       |  2 +-
- 26 files changed, 60 insertions(+), 25 deletions(-)
+ 26 files changed, 64 insertions(+), 25 deletions(-)
  create mode 100644 cromite_flags/chrome/browser/browser_features_cc/Disable-all-predictors-code.inc
  create mode 100644 cromite_flags/chrome/common/chrome_features_cc/Disable-all-predictors-code.inc
  create mode 100644 cromite_flags/components/permissions/features_cc/Disable-all-predictors-code.inc
@@ -52,7 +52,22 @@ diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 diff --git a/chrome/browser/navigation_predictor/preloading_model_keyed_service.cc b/chrome/browser/navigation_predictor/preloading_model_keyed_service.cc
 --- a/chrome/browser/navigation_predictor/preloading_model_keyed_service.cc
 +++ b/chrome/browser/navigation_predictor/preloading_model_keyed_service.cc
-@@ -34,6 +34,7 @@ PreloadingModelKeyedService::Inputs::Inputs() = default;
+@@ -11,6 +11,7 @@
+ #include "chrome/browser/navigation_predictor/preloading_model_handler.h"
+ #endif
+ 
++#if BUILDFLAG(BUILD_WITH_TFLITE_LIB)
+ namespace {
+ 
+ // The model takes all of its inputs as floats, so this is a convenience
+@@ -28,12 +29,14 @@ constexpr float ToInput(base::TimeDelta val) {
+ static_assert(1.0f == ToInput(true));
+ 
+ }  // namespace
++#endif
+ 
+ PreloadingModelKeyedService::Inputs::Inputs() = default;
+ 
  PreloadingModelKeyedService::PreloadingModelKeyedService(
      OptimizationGuideKeyedService* optimization_guide_keyed_service) {
  #if BUILDFLAG(BUILD_WITH_TFLITE_LIB)
@@ -237,6 +252,22 @@ diff --git a/components/omnibox/browser/autocomplete_controller.cc b/components/
  #include "components/omnibox/browser/autocomplete_scoring_signals_annotator.h"
  #include "components/omnibox/browser/bookmark_provider.h"
  #include "components/omnibox/browser/bookmark_scoring_signals_annotator.h"
+@@ -116,6 +118,7 @@ using ScoringSignals = ::metrics::OmniboxEventProto::Suggestion::ScoringSignals;
+ 
+ constexpr bool is_android = !!BUILDFLAG(IS_ANDROID);
+ 
++#if BUILDFLAG(BUILD_WITH_TFLITE_LIB)
+ void RecordMlScoreCoverage(size_t matches_with_non_null_scores,
+                            size_t total_scored_matches) {
+   int percent_score_coverage =
+@@ -124,6 +127,7 @@ void RecordMlScoreCoverage(size_t matches_with_non_null_scores,
+       "Omnibox.URLScoringModelExecuted.MLScoreCoverage",
+       percent_score_coverage);
+ }
++#endif
+ 
+ // Appends available autocompletion of the given type, subtype, and number to
+ // the existing available autocompletions string, encoding according to the
 diff --git a/components/optimization_guide/core/hints_fetcher.cc b/components/optimization_guide/core/hints_fetcher.cc
 --- a/components/optimization_guide/core/hints_fetcher.cc
 +++ b/components/optimization_guide/core/hints_fetcher.cc

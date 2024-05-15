@@ -9649,11 +9649,11 @@ new file mode 100755
 +
 +  // Unpickle scripts.
 +  uint32_t num_scripts = 0;
-+  auto memory = shared_memory_mapping_.GetMemoryAsSpan<char>(pickle_size);
++  auto memory = shared_memory_mapping_.GetMemoryAsSpan<uint8_t>(pickle_size);
 +  if (!memory.size())
 +    return false;
 +
-+  base::Pickle pickle(memory.data(), pickle_size);
++  base::Pickle pickle = base::Pickle::WithUnownedBuffer(memory);
 +  base::PickleIterator iter(pickle);
 +  base::debug::Alias(&pickle_size);
 +  CHECK(iter.ReadUInt32(&num_scripts));

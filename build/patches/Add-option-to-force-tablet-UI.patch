@@ -15,7 +15,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../ChromeAccessibilitySettingsDelegate.java  | 19 +++++++++++++
  .../chrome/browser/app/ChromeActivity.java    |  4 ++-
  .../overlays/strip/StripLayoutHelper.java     | 10 +++++--
- .../strip/StripLayoutHelperManager.java       |  8 ++++++
+ .../strip/StripLayoutHelperManager.java       |  7 ++++-
  .../browser/tasks/ReturnToChromeUtil.java     |  4 ++-
  .../chrome/browser/ui/RootUiCoordinator.java  |  5 +++-
  chrome/browser/preferences/BUILD.gn           |  1 +
@@ -37,7 +37,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../res/xml/accessibility_preferences.xml     |  5 ++++
  .../AccessibilitySettingsDelegate.java        | 11 ++++++++
  .../chromium/ui/base/DeviceFormFactor.java    |  9 ++++++
- 33 files changed, 173 insertions(+), 33 deletions(-)
+ 33 files changed, 171 insertions(+), 34 deletions(-)
 
 diff --git a/chrome/android/features/start_surface/java/src/org/chromium/chrome/features/start_surface/StartSurfaceMediator.java b/chrome/android/features/start_surface/java/src/org/chromium/chrome/features/start_surface/StartSurfaceMediator.java
 --- a/chrome/android/features/start_surface/java/src/org/chromium/chrome/features/start_surface/StartSurfaceMediator.java
@@ -278,16 +278,19 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/compositor/over
  import org.chromium.ui.base.LocalizationUtils;
  import org.chromium.ui.base.PageTransition;
  import org.chromium.ui.base.WindowAndroid;
-@@ -401,6 +402,13 @@ public class StripLayoutHelperManager
+@@ -396,11 +397,15 @@ public class StripLayoutHelperManager
+ 
+         mIsLayoutOptimizationsEnabled =
+                 ToolbarFeatures.isTabStripWindowLayoutOptimizationEnabled(true);
+-        mScrollableStripHeight = res.getDimension(R.dimen.tab_strip_height) / mDensity;
++        mScrollableStripHeight =
++            (DeviceFormFactor.isForceTabletUI()
++                ? res.getDimension(R.dimen.tab_strip_height_tabletui)
++                : res.getDimension(R.dimen.tab_strip_height_cromite)) / mDensity;
+         mHeight =
                  mIsLayoutOptimizationsEnabled
                          ? toolbarManager.getTabStripHeightSupplier().get() / mDensity
                          : mScrollableStripHeight;
-+
-+        Resources res = context.getResources();
-+        int tab_strip_height = (int) res.getDimension(R.dimen.control_container_height_cromite);
-+        if (DeviceFormFactor.isForceTabletUI())
-+            tab_strip_height = (int) res.getDimension(R.dimen.control_container_height_tabletui);
-+        mHeight = tab_strip_height / mDensity;
 +
          mTopPadding = mHeight - mScrollableStripHeight;
  
