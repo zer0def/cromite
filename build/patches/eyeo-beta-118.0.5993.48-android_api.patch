@@ -105,7 +105,7 @@ diff --git a/chrome/android/BUILD.gn b/chrome/android/BUILD.gn
        "//components/autofill/android:autofill_java",
        "//components/background_task_scheduler:background_task_scheduler_java",
        "//components/background_task_scheduler:background_task_scheduler_task_ids_java",
-@@ -1645,6 +1650,7 @@ if (current_toolchain == default_toolchain) {
+@@ -1644,6 +1649,7 @@ if (current_toolchain == default_toolchain) {
        "//chrome/android/webapk/libs/client:client_java",
        "//chrome/android/webapk/libs/common:common_java",
        "//chrome/android/webapk/libs/runtime_library:webapk_service_aidl_java",
@@ -113,7 +113,7 @@ diff --git a/chrome/android/BUILD.gn b/chrome/android/BUILD.gn
        "//chrome/browser/android/browserservices/intents:java",
        "//chrome/browser/android/browserservices/verification:java",
        "//chrome/browser/android/browserservices/verification:javatests",
-@@ -1998,6 +2004,7 @@ if (current_toolchain == default_toolchain) {
+@@ -1997,6 +2003,7 @@ if (current_toolchain == default_toolchain) {
      srcjar_deps = [ "//chrome/browser:tos_dialog_behavior_generated_enum" ]
  
      data = [
@@ -121,7 +121,7 @@ diff --git a/chrome/android/BUILD.gn b/chrome/android/BUILD.gn
        "//chrome/test/data/android/",
        "//chrome/test/data/autofill/",
        "//chrome/test/data/background_sync/",
-@@ -3851,6 +3858,7 @@ group("jni_headers") {
+@@ -3850,6 +3857,7 @@ group("jni_headers") {
      "//chrome/browser/util:jni_headers",
      "//chrome/browser/webauthn/android:jni_headers",
      "//components/browser_ui/device_lock/android:device_lock_bridge_jni_headers",
@@ -132,7 +132,7 @@ diff --git a/chrome/android/BUILD.gn b/chrome/android/BUILD.gn
 diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -3522,6 +3522,17 @@ static_library("browser") {
+@@ -3520,6 +3520,17 @@ static_library("browser") {
        "webauthn/android/webauthn_request_delegate_android.h",
      ]
  
@@ -150,7 +150,7 @@ diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
  
      public_deps += [
        "//chrome/android/features/dev_ui:buildflags",
-@@ -3719,6 +3730,9 @@ static_library("browser") {
+@@ -3717,6 +3728,9 @@ static_library("browser") {
        "//url",
      ]
  

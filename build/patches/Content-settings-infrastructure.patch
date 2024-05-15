@@ -66,7 +66,7 @@ Require: bromite-build-utils.patch
  .../core/browser/website_settings_registry.h  |   1 +
  .../content_settings/core/common/BUILD.gn     |   7 +
  .../bromite_content_settings/placeholder.txt  |   1 +
- .../core/common/content_settings.cc           |  31 +-
+ .../core/common/content_settings.cc           |  30 +-
  .../core/common/content_settings.h            |  12 +
  .../core/common/content_settings.mojom        |   6 +
  .../common/content_settings_mojom_traits.cc   |  12 +-
@@ -83,7 +83,7 @@ Require: bromite-build-utils.patch
  .../platform/web_content_settings_client.h    |   9 +
  .../execution_context/execution_context.cc    |  16 +
  .../execution_context/execution_context.h     |   5 +
- 72 files changed, 1866 insertions(+), 95 deletions(-)
+ 72 files changed, 1865 insertions(+), 95 deletions(-)
  create mode 100644 components/browser_ui/settings/android/java/res/layout/preference_spinner_single_widget.xml
  create mode 100644 components/browser_ui/site_settings/android/java/src/org/chromium/components/browser_ui/site_settings/BromiteCustomContentSetting.java
  create mode 100644 components/browser_ui/site_settings/android/java/src/org/chromium/components/browser_ui/site_settings/BromiteCustomContentSettingImpl.java
@@ -2984,7 +2984,7 @@ diff --git a/components/content_settings/core/common/content_settings.cc b/compo
  }
  
  RendererContentSettingRules::RendererContentSettingRules() = default;
-@@ -127,4 +138,18 @@ RendererContentSettingRules& RendererContentSettingRules::operator=(
+@@ -127,4 +138,17 @@ RendererContentSettingRules& RendererContentSettingRules::operator=(
      RendererContentSettingRules&& rules) = default;
  
  bool RendererContentSettingRules::operator==(
@@ -3003,7 +3003,6 @@ diff --git a/components/content_settings/core/common/content_settings.cc b/compo
 +
 +bool ContentSettingRuleSource::operator==(
 +    const ContentSettingRuleSource& other) const = default;
-+
 diff --git a/components/content_settings/core/common/content_settings.h b/components/content_settings/core/common/content_settings.h
 --- a/components/content_settings/core/common/content_settings.h
 +++ b/components/content_settings/core/common/content_settings.h
