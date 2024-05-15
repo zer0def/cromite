@@ -176,7 +176,7 @@ diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
      "//components/assist_ranker",
      "//components/autofill/content/browser",
      "//components/autofill/content/common:features",
-@@ -3495,6 +3521,8 @@ static_library("browser") {
+@@ -3493,6 +3519,8 @@ static_library("browser") {
        "webauthn/android/webauthn_request_delegate_android.cc",
        "webauthn/android/webauthn_request_delegate_android.h",
      ]
@@ -185,7 +185,7 @@ diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
      public_deps += [
        "//chrome/android/features/dev_ui:buildflags",
        "//components/image_fetcher/core",
-@@ -3691,6 +3719,7 @@ static_library("browser") {
+@@ -3689,6 +3717,7 @@ static_library("browser") {
        "//url",
      ]
  

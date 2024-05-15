@@ -23,7 +23,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 diff --git a/chrome/android/BUILD.gn b/chrome/android/BUILD.gn
 --- a/chrome/android/BUILD.gn
 +++ b/chrome/android/BUILD.gn
-@@ -762,7 +762,6 @@ if (current_toolchain == default_toolchain) {
+@@ -749,7 +749,6 @@ if (current_toolchain == default_toolchain) {
        "//components/dom_distiller/core:distiller_type_java",
        "//components/ntp_tiles:ntp_tiles_enums_java",
        "//components/offline_pages/core:offline_page_model_enums_java",
@@ -56,7 +56,7 @@ diff --git a/chrome/android/feed/core/java/src/org/chromium/chrome/browser/feed/
 diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -3261,8 +3261,6 @@ static_library("browser") {
+@@ -3237,8 +3237,6 @@ static_library("browser") {
        "feed/android/refresh_task_scheduler_impl.cc",
        "feed/android/refresh_task_scheduler_impl.h",
        "feed/android/web_feed_bridge.cc",
@@ -68,7 +68,7 @@ diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 diff --git a/chrome/browser/prefs/chrome_pref_service_factory.cc b/chrome/browser/prefs/chrome_pref_service_factory.cc
 --- a/chrome/browser/prefs/chrome_pref_service_factory.cc
 +++ b/chrome/browser/prefs/chrome_pref_service_factory.cc
-@@ -328,7 +328,7 @@ void PrepareFactory(
+@@ -317,7 +317,7 @@ void PrepareFactory(
      policy::BrowserPolicyConnector* policy_connector) {
    factory->SetManagedPolicies(policy_service, policy_connector);
    factory->SetRecommendedPolicies(policy_service, policy_connector);
