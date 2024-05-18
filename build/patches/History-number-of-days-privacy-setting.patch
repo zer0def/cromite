@@ -218,7 +218,7 @@ diff --git a/chrome/browser/resources/settings/privacy_page/privacy_page.html b/
 diff --git a/chrome/browser/resources/settings/privacy_page/privacy_page.ts b/chrome/browser/resources/settings/privacy_page/privacy_page.ts
 --- a/chrome/browser/resources/settings/privacy_page/privacy_page.ts
 +++ b/chrome/browser/resources/settings/privacy_page/privacy_page.ts
-@@ -80,6 +80,23 @@ export class SettingsPrivacyPageElement extends SettingsPrivacyPageElementBase {
+@@ -81,6 +81,23 @@ export class SettingsPrivacyPageElement extends SettingsPrivacyPageElementBase {
  
    static get properties() {
      return {

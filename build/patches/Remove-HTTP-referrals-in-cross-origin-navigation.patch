@@ -446,7 +446,7 @@ diff --git a/chrome/browser/resources/settings/privacy_page/privacy_page.html b/
 diff --git a/chrome/browser/resources/settings/privacy_page/privacy_page.ts b/chrome/browser/resources/settings/privacy_page/privacy_page.ts
 --- a/chrome/browser/resources/settings/privacy_page/privacy_page.ts
 +++ b/chrome/browser/resources/settings/privacy_page/privacy_page.ts
-@@ -97,6 +97,17 @@ export class SettingsPrivacyPageElement extends SettingsPrivacyPageElementBase {
+@@ -98,6 +98,17 @@ export class SettingsPrivacyPageElement extends SettingsPrivacyPageElementBase {
          },
        },
  
@@ -464,7 +464,7 @@ diff --git a/chrome/browser/resources/settings/privacy_page/privacy_page.ts b/ch
        /**
         * Preferences state.
         */
-@@ -475,6 +486,12 @@ export class SettingsPrivacyPageElement extends SettingsPrivacyPageElementBase {
+@@ -482,6 +493,12 @@ export class SettingsPrivacyPageElement extends SettingsPrivacyPageElementBase {
      Router.getInstance().navigateTo(routes.TRACKING_PROTECTION);
    }
  

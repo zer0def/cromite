@@ -1144,7 +1144,7 @@ diff --git a/chrome/common/webui_url_constants.cc b/chrome/common/webui_url_cons
        kChromeUIMultiDeviceSetupHost,
        kChromeUINetworkHost,
        kChromeUINotificationTesterHost,
-@@ -759,6 +762,7 @@ const char* const kChromeHostURLs[] = {
+@@ -760,6 +763,7 @@ const char* const kChromeHostURLs[] = {
  #if !BUILDFLAG(IS_ANDROID)
  #if !BUILDFLAG(IS_CHROMEOS)
      kChromeUIAppLauncherPageHost,
