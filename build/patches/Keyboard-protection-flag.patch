@@ -217,7 +217,7 @@ diff --git a/third_party/blink/renderer/core/events/keyboard_event.h b/third_par
 diff --git a/ui/base/ui_base_features.cc b/ui/base/ui_base_features.cc
 --- a/ui/base/ui_base_features.cc
 +++ b/ui/base/ui_base_features.cc
-@@ -196,6 +196,14 @@ BASE_FEATURE(kSystemKeyboardLock,
+@@ -213,6 +213,14 @@ BASE_FEATURE(kSystemKeyboardLock,
               "SystemKeyboardLock",
               base::FEATURE_ENABLED_BY_DEFAULT);
  
@@ -277,7 +277,7 @@ diff --git a/ui/events/keycodes/dom/dom_keyboard_layout_map_win.cc b/ui/events/k
 diff --git a/ui/events/keycodes/keyboard_code_conversion.cc b/ui/events/keycodes/keyboard_code_conversion.cc
 --- a/ui/events/keycodes/keyboard_code_conversion.cc
 +++ b/ui/events/keycodes/keyboard_code_conversion.cc
-@@ -293,16 +293,22 @@ int ModifierDomKeyToEventFlag(DomKey key) {
+@@ -296,16 +296,22 @@ int ModifierDomKeyToEventFlag(DomKey key) {
    //   DomKey::SYMBOL_LOCK
  }
  
