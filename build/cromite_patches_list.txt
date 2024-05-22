@@ -287,6 +287,8 @@ Do-not-use-Windows-ClearType-Text-Tuner-setting.patch
 Private-network-access-content-settings.patch
 Allow-building-without-supervised-users.patch
 Keep-ComputePressure-disabled.patch
+Android-Toolbar-Scroll-Ablation-setting.patch
+Keep-disabled-WebViewMediaIntegrityApi.patch
 
 Temp-PerformanceNavigationTiming-privacy-fix.patch
 Temp-disable-predictive-back-gesture.patch
