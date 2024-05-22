@@ -8,6 +8,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  chrome/android/java/AndroidManifest.xml       |   4 -
  .../privacy_preferences_manager_impl.cc       |   5 +
  .../metrics/chrome_feature_list_creator.cc    |  12 ++
+ .../search_engine_preconnector.cc             |   2 +
  .../policy/chrome_browser_policy_connector.cc |   3 -
  ...nfiguration_policy_handler_list_factory.cc |   6 +-
  .../account_consistency_mode_manager.cc       |   7 +-
@@ -35,7 +36,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../gaia_cookie_manager_service.cc            |   4 +
  google_apis/gaia/gaia_auth_fetcher.cc         |   1 +
  net/socket/ssl_client_socket_impl.cc          |   3 +
- 31 files changed, 317 insertions(+), 150 deletions(-)
+ 32 files changed, 319 insertions(+), 150 deletions(-)
 
 diff --git a/base/win/win_util.cc b/base/win/win_util.cc
 --- a/base/win/win_util.cc
@@ -193,6 +194,18 @@ diff --git a/chrome/browser/metrics/chrome_feature_list_creator.cc b/chrome/brow
      auto* platform_management_service =
          policy::ManagementServiceFactory::GetForPlatform();
      platform_management_service->UsePrefStoreAsCache(local_state_pref_store);
+diff --git a/chrome/browser/navigation_predictor/search_engine_preconnector.cc b/chrome/browser/navigation_predictor/search_engine_preconnector.cc
+--- a/chrome/browser/navigation_predictor/search_engine_preconnector.cc
++++ b/chrome/browser/navigation_predictor/search_engine_preconnector.cc
+@@ -42,6 +42,8 @@ BASE_FEATURE(kPreconnectToSearch,
+ BASE_FEATURE(kPreconnectToSearchWithPrivacyModeEnabled,
+              "PreconnectToSearchWithPrivacyModeEnabled",
+              base::FEATURE_DISABLED_BY_DEFAULT);
++SET_CROMITE_FEATURE_DISABLED(kPreconnectToSearch);
++SET_CROMITE_FEATURE_DISABLED(kPreconnectToSearchWithPrivacyModeEnabled);
+ }  // namespace features
+ 
+ SearchEnginePreconnector::SearchEnginePreconnector(
 diff --git a/chrome/browser/policy/chrome_browser_policy_connector.cc b/chrome/browser/policy/chrome_browser_policy_connector.cc
 --- a/chrome/browser/policy/chrome_browser_policy_connector.cc
 +++ b/chrome/browser/policy/chrome_browser_policy_connector.cc
