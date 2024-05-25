@@ -208,7 +208,7 @@ diff --git a/chrome/browser/tab_ui/android/java/src/org/chromium/chrome/browser/
 diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chrome/browser/ui/android/strings/android_chrome_strings.grd
 --- a/chrome/browser/ui/android/strings/android_chrome_strings.grd
 +++ b/chrome/browser/ui/android/strings/android_chrome_strings.grd
-@@ -5436,6 +5436,14 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>clear the Chrome da
+@@ -5427,6 +5427,14 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>clear the Chrome da
          Your <ph name="FQDN">%1$s<ex>www.amazon.com</ex></ph> timer ran out. It'll start again tomorrow.
        </message>
  

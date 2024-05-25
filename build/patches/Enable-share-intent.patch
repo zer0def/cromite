@@ -491,7 +491,7 @@ diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/f
 diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chrome/browser/ui/android/strings/android_chrome_strings.grd
 --- a/chrome/browser/ui/android/strings/android_chrome_strings.grd
 +++ b/chrome/browser/ui/android/strings/android_chrome_strings.grd
-@@ -5291,6 +5291,19 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>clear the Chrome da
+@@ -5282,6 +5282,19 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>clear the Chrome da
          Make sure a phone app is enabled on this device
        </message>
  
