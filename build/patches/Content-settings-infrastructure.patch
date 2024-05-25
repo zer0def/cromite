@@ -2491,9 +2491,9 @@ diff --git a/components/browser_ui/site_settings/android/java/src/org/chromium/c
 +                            checked
 +                                    ? ContentSettingsResources.getDefaultEnabledValue(contentType)
 +                                    : ContentSettingsResources.getDefaultDisabledValue(contentType);
-+                    p.setSummary(
-+                            ContentSettingsResources.getCategorySummary(
-+                                    defaultForToggle, /* isOneTime= */ false));
++                    summary = ContentSettingsResources.getCategorySummary(
++                                   contentType, defaultForToggle, /* isOneTime= */ false);
++                    p.setSummary(summary);
 +                }
              }
  
