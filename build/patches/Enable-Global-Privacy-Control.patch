@@ -207,7 +207,7 @@ diff --git a/chrome/app/settings_strings.grdp b/chrome/app/settings_strings.grdp
 diff --git a/chrome/browser/extensions/api/settings_private/prefs_util.cc b/chrome/browser/extensions/api/settings_private/prefs_util.cc
 --- a/chrome/browser/extensions/api/settings_private/prefs_util.cc
 +++ b/chrome/browser/extensions/api/settings_private/prefs_util.cc
-@@ -392,6 +392,7 @@ const PrefsUtil::TypedPrefMap& PrefsUtil::GetAllowlistedKeys() {
+@@ -373,6 +373,7 @@ const PrefsUtil::TypedPrefMap& PrefsUtil::GetAllowlistedKeys() {
    (*s_allowlist)[::prefs::kTrackingProtectionLevel] =
        settings_api::PrefType::kNumber;
    (*s_allowlist)[::prefs::kEnableDoNotTrack] = settings_api::PrefType::kBoolean;
@@ -231,7 +231,7 @@ diff --git a/chrome/browser/renderer_preferences_util.cc b/chrome/browser/render
 diff --git a/chrome/browser/resources/settings/BUILD.gn b/chrome/browser/resources/settings/BUILD.gn
 --- a/chrome/browser/resources/settings/BUILD.gn
 +++ b/chrome/browser/resources/settings/BUILD.gn
-@@ -124,6 +124,7 @@ build_webui("build") {
+@@ -123,6 +123,7 @@ build_webui("build") {
      "privacy_page/cookies_page.ts",
      "privacy_page/fingerprint_progress_arc.ts",
      "privacy_page/do_not_track_toggle.ts",
@@ -439,7 +439,7 @@ new file mode 100644
 diff --git a/chrome/browser/ui/prefs/pref_watcher.cc b/chrome/browser/ui/prefs/pref_watcher.cc
 --- a/chrome/browser/ui/prefs/pref_watcher.cc
 +++ b/chrome/browser/ui/prefs/pref_watcher.cc
-@@ -168,6 +168,10 @@ void PrefWatcher::OnDoNotTrackEnabledChanged() {
+@@ -155,6 +155,10 @@ void PrefWatcher::OnDoNotTrackEnabledChanged() {
    UpdateRendererPreferences();
  }
  
