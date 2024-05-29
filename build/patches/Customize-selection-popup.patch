@@ -11,12 +11,13 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../chrome/browser/ChromeTabbedActivity.java  |  15 +-
  ...ActivityTabWebContentsDelegateAndroid.java |  10 +-
  .../compositor/layouts/LayoutManagerImpl.java |   8 ++
+ .../tab/TabContextMenuItemDelegate.java       |   7 +-
  .../chrome/browser/ui/RootUiCoordinator.java  |   8 +-
  .../Customize-selection-popup.grdp            |  34 +++++
  .../res/xml/accessibility_preferences.xml     |  24 ++++
  .../selection/SelectActionMenuHelper.java     | 131 ++++++++++++------
  .../selection/SmartSelectionClient.java       |   4 +
- 9 files changed, 187 insertions(+), 51 deletions(-)
+ 10 files changed, 193 insertions(+), 52 deletions(-)
  create mode 100644 chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Customize-selection-popup.grdp
 
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ChromeActionModeHandler.java b/chrome/android/java/src/org/chromium/chrome/browser/ChromeActionModeHandler.java
@@ -108,6 +109,24 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/compositor/layo
                  float lastTapX = LocalizationUtils.isLayoutRtl() ? mHost.getWidth() * mPxToDp : 0.f;
                  float lastTapY = 0.f;
                  if (launchType != TabLaunchType.FROM_CHROME_UI) {
+diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tab/TabContextMenuItemDelegate.java b/chrome/android/java/src/org/chromium/chrome/browser/tab/TabContextMenuItemDelegate.java
+--- a/chrome/android/java/src/org/chromium/chrome/browser/tab/TabContextMenuItemDelegate.java
++++ b/chrome/android/java/src/org/chromium/chrome/browser/tab/TabContextMenuItemDelegate.java
+@@ -285,8 +285,13 @@ public class TabContextMenuItemDelegate implements ContextMenuItemDelegate {
+     public void onOpenImageInNewTab(GURL url, Referrer referrer) {
+         LoadUrlParams loadUrlParams = new LoadUrlParams(url.getSpec());
+         loadUrlParams.setReferrer(referrer);
++        @TabLaunchType int type = TabLaunchType.FROM_LONGPRESS_BACKGROUND;
++        if (ContextUtils.getAppSharedPreferences().getBoolean(
++                "selection_popup_tabs_foreground", false)) {
++            type = TabLaunchType.FROM_LONGPRESS_BACKGROUND_IN_GROUP;
++        }
+         mTabModelSelector.openNewTab(
+-                loadUrlParams, TabLaunchType.FROM_LONGPRESS_BACKGROUND, mTab, isIncognito());
++                loadUrlParams, type, mTab, isIncognito());
+     }
+ 
+     @Override
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ui/RootUiCoordinator.java b/chrome/android/java/src/org/chromium/chrome/browser/ui/RootUiCoordinator.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/ui/RootUiCoordinator.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/ui/RootUiCoordinator.java
