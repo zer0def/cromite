@@ -292,6 +292,7 @@ Keep-disabled-WebViewMediaIntegrityApi.patch
 Enable-menu-on-reload-button.patch
 Enable-Global-Privacy-Control.patch
 Enable-Do-Not-Track-by-default.patch
+Media-fingerprinting-mitigations.patch
 
 Temp-PerformanceNavigationTiming-privacy-fix.patch
 Temp-disable-predictive-back-gesture.patch
