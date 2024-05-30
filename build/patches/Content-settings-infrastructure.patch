@@ -17,7 +17,7 @@ Require: bromite-build-utils.patch
  .../settings/privacy_page/privacy_page.ts     |  77 +++-
  chrome/browser/resources/settings/route.ts    |   2 +
  ...settings_category_default_radio_group.html |  12 +
- .../settings_category_default_radio_group.ts  |  22 +-
+ .../settings_category_default_radio_group.ts  |  23 +-
  .../settings/site_settings/site_details.html  |   1 +
  .../settings/site_settings/site_details.ts    |  33 +-
  .../site_details_permission.html              |   8 +-
@@ -83,7 +83,7 @@ Require: bromite-build-utils.patch
  .../platform/web_content_settings_client.h    |   9 +
  .../execution_context/execution_context.cc    |  16 +
  .../execution_context/execution_context.h     |   5 +
- 72 files changed, 1865 insertions(+), 95 deletions(-)
+ 72 files changed, 1866 insertions(+), 95 deletions(-)
  create mode 100644 components/browser_ui/settings/android/java/res/layout/preference_spinner_single_widget.xml
  create mode 100644 components/browser_ui/site_settings/android/java/src/org/chromium/components/browser_ui/site_settings/BromiteCustomContentSetting.java
  create mode 100644 components/browser_ui/site_settings/android/java/src/org/chromium/components/browser_ui/site_settings/BromiteCustomContentSettingImpl.java
@@ -354,12 +354,13 @@ diff --git a/chrome/browser/resources/settings/site_settings/settings_category_d
          this.categoryEnabled_ ? allowOption : ContentSetting.BLOCK);
    }
  
-@@ -224,7 +242,9 @@ export class SettingsCategoryDefaultRadioGroupElement extends
+@@ -224,7 +242,10 @@ export class SettingsCategoryDefaultRadioGroupElement extends
      }
  
      const enabled = this.computeIsSettingEnabled(update.setting);
 -    const prefValue = enabled ? SiteContentRadioSetting.ENABLED :
-+    const ask = this.computeIsSettingAsk(update.setting);
++    const ask = this.computeIsSettingAsk(update.setting)
++                 && this.showAskSetting_(this.category);
 +    const prefValue = ask ? SiteContentRadioSetting.ASK :
 +                      enabled ? SiteContentRadioSetting.ENABLED :
                                  SiteContentRadioSetting.DISABLED;
