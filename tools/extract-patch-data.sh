@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -euo pipefail
+
 while read current_line
 do
     if [[ $current_line =~ ^Filename:* ]]; then

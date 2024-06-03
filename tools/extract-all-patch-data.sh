@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -euo pipefail
+
 SCRIPT_FOLDER="$(realpath "$(dirname "$0")")"
 SCRIPT="$SCRIPT_FOLDER/extract-patch-data.sh"
 
