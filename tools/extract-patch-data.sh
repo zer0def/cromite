@@ -1,12 +1,13 @@
 #!/bin/bash
 
-PATCH=$1
 CR=$(printf "\r")
 
-cat $PATCH | (
 while read current_line
 do
-    if [[ $current_line =~ ^Subject:* ]]; then
+    if [[ $current_line =~ ^Filename:* ]]; then
+        FILENAME=${current_line:9}
+
+    elif [[ $current_line =~ ^Subject:* ]]; then
         SUBJECT=${current_line:8}
 
     elif [[ $current_line =~ ^Date:* ]]; then
@@ -43,8 +44,7 @@ SUBJECT=`echo $SUBJECT | xargs`
 
 echo "|**$SUBJECT**" \
      "<br><sub><nobr>"$DATE"</nobr>" \
-     "<br>File: [$(basename $PATCH)](/build/patches/$(basename $PATCH))" \
+     "<br>File: [$FILENAME](/build/patches/$FILENAME)" \
      "<br><nobr>Author: "$FROM"</nobr>" \
      "<br><nobr>License: "$LICENSE"</nobr>" \
      "|"$MESSAGE"|"
-)

@@ -1,13 +1,15 @@
 #!/bin/bash
 
-FOLDER=$1
-SCRIPT_FOLDER="$(dirname "$0")"
+SCRIPT_FOLDER="$(realpath "$(dirname "$0")")"
+SCRIPT="$SCRIPT_FOLDER/extract-patch-data.sh"
 
 OUTPUT="$SCRIPT_FOLDER"/../docs/PATCHES.md
 test -f $OUTPUT && rm $OUTPUT
 
-for filename in "$FOLDER"/*.patch; do
-    bash $SCRIPT_FOLDER/extract-patch-data.sh $filename >>$OUTPUT
+pushd "$1" >/dev/null
+
+for filename in *.patch; do
+    (echo "Filename: $filename"; cat "$filename") | bash "$SCRIPT" >>"$OUTPUT"
 done
 
 sort -k1 -t"|" -o $OUTPUT $OUTPUT
