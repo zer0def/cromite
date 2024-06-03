@@ -1,7 +1,5 @@
 #!/bin/bash
 
-CR=$(printf "\r")
-
 while read current_line
 do
     if [[ $current_line =~ ^Filename:* ]]; then
@@ -39,8 +37,6 @@ done
 # echo DATE: $DATE
 # echo LICENSE: $LICENSE
 # echo -e MESSAGE: $MESSAGE
-
-SUBJECT=`echo $SUBJECT | xargs`
 
 echo "|**$SUBJECT**" \
      "<br><sub><nobr>"$DATE"</nobr>" \
