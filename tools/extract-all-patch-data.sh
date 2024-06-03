@@ -4,7 +4,7 @@ SCRIPT_FOLDER="$(realpath "$(dirname "$0")")"
 SCRIPT="$SCRIPT_FOLDER/extract-patch-data.sh"
 
 OUTPUT="$SCRIPT_FOLDER"/../docs/PATCHES.md
-test -f $OUTPUT && rm $OUTPUT
+rm -f "$OUTPUT"
 
 pushd "$1" >/dev/null
 
