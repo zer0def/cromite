@@ -2,8 +2,7 @@
 
 set -euo pipefail
 
-while read current_line
-do
+while read -r current_line; do
     if [[ $current_line =~ ^Filename:* ]]; then
         FILENAME=${current_line:9}
 
@@ -14,19 +13,19 @@ do
         DATE=${current_line:5}
 
     elif [[ $current_line =~ ^License:* ]]; then
-        LICENSE=`echo ${current_line:9} | cut -d ' ' -f1`
+        LICENSE=$(echo "${current_line:9}" | cut -d ' ' -f1)
 
     elif [[ $current_line =~ ^"Original License:"* ]]; then
         continue
 
     elif [[ $current_line =~ ^From:* ]]; then
-        FROM=`echo ${current_line:5} | cut -d ' ' -f1`
+        FROM=$(echo "${current_line:5}" | cut -d ' ' -f1)
 
     elif [[ $current_line =~ ^---* ]]; then
         break
 
-    elif [ ! -z "$current_line" ]; then
-        if [ ! -z "$MESSAGE" ]; then
+    elif [ -n "$current_line" ]; then
+        if [ -n  "$MESSAGE" ]; then
             MESSAGE+="<br>"
         fi
         MESSAGE+=$current_line
