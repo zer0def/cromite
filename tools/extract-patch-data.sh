@@ -39,8 +39,8 @@ done
 # echo -e MESSAGE: $MESSAGE
 
 echo "|**$SUBJECT**" \
-     "<br><sub><nobr>"$DATE"</nobr>" \
+     "<br><sub><nobr>$DATE</nobr>" \
      "<br>File: [$FILENAME](/build/patches/$FILENAME)" \
-     "<br><nobr>Author: "$FROM"</nobr>" \
-     "<br><nobr>License: "$LICENSE"</nobr>" \
-     "|"$MESSAGE"|"
+     "<br><nobr>Author: $FROM</nobr>" \
+     "<br><nobr>License: $LICENSE</nobr>" \
+     "|$MESSAGE|"
