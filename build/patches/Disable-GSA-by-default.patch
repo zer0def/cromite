@@ -31,7 +31,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/IntentHandler.j
      private static final String PACKAGE_GMAIL = "com.google.android.gm";
      private static final String PACKAGE_PLUS = "com.google.android.apps.plus";
      private static final String PACKAGE_HANGOUTS = "com.google.android.talk";
-@@ -475,8 +472,6 @@ public class IntentHandler {
+@@ -482,8 +479,6 @@ public class IntentHandler {
              return ExternalAppId.LINE;
          } else if (packageName.equals(PACKAGE_WHATSAPP)) {
              return ExternalAppId.WHATSAPP;

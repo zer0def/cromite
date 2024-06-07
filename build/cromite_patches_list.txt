@@ -40,7 +40,6 @@ Disable-all-promo-dialogs.patch
 Disable-update-scheduler.patch
 Add-search-engine.patch
 openH264-enable-ARM-ARM64-optimizations.patch
-build-remove-calling-untrusted-hooks.patch
 Inject-scripts-for-AMP-tracking-ads-and-video.patch
 Allow-playing-audio-in-background.patch
 Add-flag-to-control-video-playback-resume-feature.patch

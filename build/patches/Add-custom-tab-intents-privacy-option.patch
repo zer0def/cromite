@@ -98,7 +98,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/LaunchIntentDis
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/customtabs/CustomTabsConnection.java b/chrome/android/java/src/org/chromium/chrome/browser/customtabs/CustomTabsConnection.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/customtabs/CustomTabsConnection.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/customtabs/CustomTabsConnection.java
-@@ -854,6 +854,7 @@ public class CustomTabsConnection {
+@@ -853,6 +853,7 @@ public class CustomTabsConnection {
          PostTask.postTask(
                  TaskTraits.UI_DEFAULT,
                  () -> {
@@ -109,7 +109,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/customtabs/Cust
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/customtabs/IncognitoCustomTabIntentDataProvider.java b/chrome/android/java/src/org/chromium/chrome/browser/customtabs/IncognitoCustomTabIntentDataProvider.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/customtabs/IncognitoCustomTabIntentDataProvider.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/customtabs/IncognitoCustomTabIntentDataProvider.java
-@@ -38,6 +38,9 @@ import org.chromium.components.browser_ui.widget.TintedDrawable;
+@@ -39,6 +39,9 @@ import org.chromium.components.browser_ui.widget.TintedDrawable;
  import java.util.ArrayList;
  import java.util.List;
  
@@ -117,9 +117,9 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/customtabs/Inco
 +import org.chromium.chrome.browser.privacy.settings.PrivacySettings;
 +
  /**
-  * A model class that parses the incoming intent for incognito Custom Tabs specific customization
-  * data.
-@@ -115,6 +118,9 @@ public class IncognitoCustomTabIntentDataProvider extends BrowserServicesIntentD
+  * A model class that parses the incoming intent for incognito and ephemeral Custom Tabs specific
+  * customization data.
+@@ -125,6 +128,9 @@ public class IncognitoCustomTabIntentDataProvider extends BrowserServicesIntentD
      }
  
      private static boolean isIntentFromThirdPartyAllowed() {
@@ -142,7 +142,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/privacy/setting
      @Override
      public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
          getActivity().setTitle(R.string.prefs_privacy_security);
-@@ -298,6 +301,9 @@ public class PrivacySettings extends ChromeBaseSettingsFragment
+@@ -299,6 +302,9 @@ public class PrivacySettings extends ChromeBaseSettingsFragment
                  new SpanApplier.SpanInfo("<link2>", "</link2>", servicesLink));
      }
  
@@ -152,7 +152,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/privacy/setting
      @Override
      public boolean onPreferenceChange(Preference preference, Object newValue) {
          String key = preference.getKey();
-@@ -314,6 +320,14 @@ public class PrivacySettings extends ChromeBaseSettingsFragment
+@@ -315,6 +321,14 @@ public class PrivacySettings extends ChromeBaseSettingsFragment
          } else if (PREF_SEARCH_SUGGESTIONS.equals(key)) {
              UserPrefs.get(getProfile())
                      .setBoolean(Pref.SEARCH_SUGGEST_ENABLED, (boolean) newValue);
@@ -167,7 +167,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/privacy/setting
          }
          return true;
      }
-@@ -336,6 +350,16 @@ public class PrivacySettings extends ChromeBaseSettingsFragment
+@@ -337,6 +351,16 @@ public class PrivacySettings extends ChromeBaseSettingsFragment
                      UserPrefs.get(getProfile()).getBoolean(Pref.CAN_MAKE_PAYMENT_ENABLED));
          }
  
@@ -203,7 +203,7 @@ diff --git a/chrome/browser/tab/java/src/org/chromium/chrome/browser/tab/TabAsso
 diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chrome/browser/ui/android/strings/android_chrome_strings.grd
 --- a/chrome/browser/ui/android/strings/android_chrome_strings.grd
 +++ b/chrome/browser/ui/android/strings/android_chrome_strings.grd
-@@ -5217,6 +5217,20 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>clear the Chrome da
+@@ -5301,6 +5301,20 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>delete the Chrome d
        <message name="IDS_NEAR_OOM_INTERVENTION_DECLINE" desc="The text of the button letting the user decline the browser's intervention, so that the page can resume what it was doing.">
           Resume
        </message>

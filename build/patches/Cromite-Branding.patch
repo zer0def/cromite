@@ -25,7 +25,6 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../mipmap-xxxhdpi/app_icon.png               | Bin 9667 -> 20837 bytes
  .../mipmap-xxxhdpi/layered_app_icon.png       | Bin 3652 -> 29220 bytes
  .../layered_app_icon_background.png           | Bin 3519 -> 142032 bytes
- .../chrome/browser/omaha/UpdateConfigs.java   |   2 +-
  .../inline/BromiteInlineUpdateController.java |  21 +++-
  chrome/app/extensions_strings.grdp            |   4 +-
  chrome/app/settings_strings.grdp              |   2 +-
@@ -35,9 +34,10 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../theme/chromium/win/tiles/SmallLogo.png    | Bin 9784 -> 12363 bytes
  .../chromium/product_logo_32.png              | Bin 822 -> 2301 bytes
  chrome/browser/BUILD.gn                       |   1 +
+ .../chrome/browser/omaha/UpdateConfigs.java   |   2 +-
  .../prefs/chrome_pref_service_factory.cc      |   6 +-
  .../profiles/profile_shortcut_manager_win.cc  |   2 +-
- .../settings/settings_menu/settings_menu.html |   5 +-
+ .../settings/settings_menu/settings_menu.html |  14 ++-
  .../strings/android_chrome_strings.grd        |   2 +-
  chrome/common/url_constants.h                 |   4 +-
  .../strings/android/browser_ui_strings.grd    |   2 +-
@@ -52,8 +52,8 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../chromium/product_logo.png                 | Bin 2714 -> 7923 bytes
  .../chromium/product_logo_white.png           | Bin 2512 -> 6790 bytes
  tools/grit/grit/grd_reader.py                 |  35 +++++++
- ui/base/ui_base_features.cc                   |   2 +
- 49 files changed, 155 insertions(+), 100 deletions(-)
+ ui/base/ui_base_features.cc                   |   3 +
+ 49 files changed, 166 insertions(+), 99 deletions(-)
 
 diff --git a/build/BUILD.gn b/build/BUILD.gn
 --- a/build/BUILD.gn
@@ -9112,18 +9112,6 @@ zk0U>@{Db0uvVi{o$%=-6@&Jp4mhhHYo~{+5O$ZdgIR*B?vJ5$!R3PXBkQ0>lqcPjJ
 zG!=nXw2&abs#xr~fFDF!vq@X7`+qtd5cw$r{cp#9R6!ToGG#p=PkT1k)Wlt8^P%Pg
 W=g!Ha2?pSwIRxeC=1^|uclqCxqvpf_
 
-diff --git a/chrome/android/java/src/org/chromium/chrome/browser/omaha/UpdateConfigs.java b/chrome/android/java/src/org/chromium/chrome/browser/omaha/UpdateConfigs.java
---- a/chrome/android/java/src/org/chromium/chrome/browser/omaha/UpdateConfigs.java
-+++ b/chrome/android/java/src/org/chromium/chrome/browser/omaha/UpdateConfigs.java
-@@ -37,7 +37,7 @@ public class UpdateConfigs {
-     private static final String UPDATE_AVAILABLE_SWITCH_VALUE = "update_available";
-     private static final String UNSUPPORTED_OS_VERSION_SWITCH_VALUE = "unsupported_os_version";
- 
--    private static final long DEFAULT_UPDATE_NOTIFICATION_INTERVAL = 3 * DateUtils.DAY_IN_MILLIS;
-+    private static final long DEFAULT_UPDATE_NOTIFICATION_INTERVAL = 1 * DateUtils.DAY_IN_MILLIS;
-     private static final long DEFAULT_UPDATE_ATTRIBUTION_WINDOW_MS = 2 * DateUtils.DAY_IN_MILLIS;
- 
-     /** Possible update flow configurations. */
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/omaha/inline/BromiteInlineUpdateController.java b/chrome/android/java/src/org/chromium/chrome/browser/omaha/inline/BromiteInlineUpdateController.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/omaha/inline/BromiteInlineUpdateController.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/omaha/inline/BromiteInlineUpdateController.java
@@ -9198,7 +9186,7 @@ diff --git a/chrome/app/extensions_strings.grdp b/chrome/app/extensions_strings.
 diff --git a/chrome/app/settings_strings.grdp b/chrome/app/settings_strings.grdp
 --- a/chrome/app/settings_strings.grdp
 +++ b/chrome/app/settings_strings.grdp
-@@ -323,7 +323,7 @@
+@@ -402,7 +402,7 @@
      Change
    </message>
    <message name="IDS_SETTINGS_WEB_STORE" desc="Sub-label about choosing something from the Chrome Web Store.">
@@ -13152,7 +13140,7 @@ e)fqMZZ`3a)Ds&5H<cfp<0000<MNUMnLSTYHt&Yn8
 diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -2095,6 +2095,7 @@ static_library("browser") {
+@@ -2103,6 +2103,7 @@ static_library("browser") {
      "//build:chromeos_buildflags",
      "//build/config/chromebox_for_meetings:buildflags",
      "//build/config/compiler:compiler_buildflags",
@@ -13160,6 +13148,18 @@ diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
      "//cc",
      "//chrome:extra_resources",
      "//chrome:resources",
+diff --git a/chrome/browser/omaha/android/java/src/org/chromium/chrome/browser/omaha/UpdateConfigs.java b/chrome/browser/omaha/android/java/src/org/chromium/chrome/browser/omaha/UpdateConfigs.java
+--- a/chrome/browser/omaha/android/java/src/org/chromium/chrome/browser/omaha/UpdateConfigs.java
++++ b/chrome/browser/omaha/android/java/src/org/chromium/chrome/browser/omaha/UpdateConfigs.java
+@@ -37,7 +37,7 @@ public class UpdateConfigs {
+     private static final String UPDATE_AVAILABLE_SWITCH_VALUE = "update_available";
+     private static final String UNSUPPORTED_OS_VERSION_SWITCH_VALUE = "unsupported_os_version";
+ 
+-    private static final long DEFAULT_UPDATE_NOTIFICATION_INTERVAL = 3 * DateUtils.DAY_IN_MILLIS;
++    private static final long DEFAULT_UPDATE_NOTIFICATION_INTERVAL = 1 * DateUtils.DAY_IN_MILLIS;
+     private static final long DEFAULT_UPDATE_ATTRIBUTION_WINDOW_MS = 2 * DateUtils.DAY_IN_MILLIS;
+ 
+     /** Possible update flow configurations. */
 diff --git a/chrome/browser/prefs/chrome_pref_service_factory.cc b/chrome/browser/prefs/chrome_pref_service_factory.cc
 --- a/chrome/browser/prefs/chrome_pref_service_factory.cc
 +++ b/chrome/browser/prefs/chrome_pref_service_factory.cc
@@ -13171,7 +13171,7 @@ diff --git a/chrome/browser/prefs/chrome_pref_service_factory.cc b/chrome/browse
  #include "chrome/browser/browser_process.h"
  #include "chrome/browser/policy/chrome_browser_policy_connector.h"
  #include "chrome/browser/prefs/chrome_command_line_pref_store.h"
-@@ -270,10 +271,7 @@ std::unique_ptr<ProfilePrefStoreManager> CreateProfilePrefStoreManager(
+@@ -273,10 +274,7 @@ std::unique_ptr<ProfilePrefStoreManager> CreateProfilePrefStoreManager(
  #endif
    std::string seed;
    CHECK(ui::ResourceBundle::HasSharedInstance());
@@ -13198,23 +13198,38 @@ diff --git a/chrome/browser/profiles/profile_shortcut_manager_win.cc b/chrome/br
 diff --git a/chrome/browser/resources/settings/settings_menu/settings_menu.html b/chrome/browser/resources/settings/settings_menu/settings_menu.html
 --- a/chrome/browser/resources/settings/settings_menu/settings_menu.html
 +++ b/chrome/browser/resources/settings/settings_menu/settings_menu.html
-@@ -31,9 +31,10 @@
+@@ -10,6 +10,18 @@
+         -webkit-tap-highlight-color: transparent;
        }
  
-       #aboutIcon {
--        --cr-icon-image: url(//resources/images/chrome_logo_dark.svg);
++      #aboutIcon {
 +        background: url('chrome://theme/current-channel-logo@1x');
 +        background-size: 20px 20px;
 +        filter: grayscale();
-         -webkit-mask-size: 18px;
--        background-color: var(--iron-icon-fill-color);
-         display: block;
-         height: var(--cr-icon-size);
-         margin-inline-end: 20px;
++        -webkit-mask-size: 18px;
++        display: block;
++        height: var(--cr-icon-size);
++        margin-inline-end: 20px;
++        margin-inline-start: 0;
++        width: var(--cr-icon-size);
++      }
++
+       #menu {
+         color: var(--google-grey-700);
+         display: flex;
+@@ -162,7 +174,7 @@
+         </a>
+         <a role="menuitem" id="about-menu" href="/help"
+             class="cr-nav-menu-item">
+-          <iron-icon icon="settings:about"></iron-icon>
++          <span id="aboutIcon" class="cr-icon" role="presentation"></span>
+           $i18n{aboutPageTitle}
+           <cr-ripple></cr-ripple>
+         </a>
 diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chrome/browser/ui/android/strings/android_chrome_strings.grd
 --- a/chrome/browser/ui/android/strings/android_chrome_strings.grd
 +++ b/chrome/browser/ui/android/strings/android_chrome_strings.grd
-@@ -2169,7 +2169,7 @@ Your Google account may have other forms of browsing history like searches and a
+@@ -2200,7 +2200,7 @@ Your Google account may have other forms of browsing history like searches and a
          About Chrome
        </message>
        <message name="IDS_LEGAL_INFORMATION_SUMMARY" desc="Summary for legal information" meaning="Android">
@@ -13242,12 +13257,12 @@ diff --git a/chrome/common/url_constants.h b/chrome/common/url_constants.h
 -inline constexpr char16_t kChromiumProjectURL[] = u"https://www.chromium.org/";
 +inline constexpr char16_t kChromiumProjectURL[] = u"https://www.cromite.org/";
  
- inline constexpr char16_t kContentSettingsExceptionsLearnMoreURL[] =
-     u"https://support.google.com/chrome?p=settings_manage_exceptions";
+ #if BUILDFLAG(GOOGLE_CHROME_BRANDING)
+ // The URL for the "Clear browsing data in Chrome" help center article.
 diff --git a/components/browser_ui/strings/android/browser_ui_strings.grd b/components/browser_ui/strings/android/browser_ui_strings.grd
 --- a/components/browser_ui/strings/android/browser_ui_strings.grd
 +++ b/components/browser_ui/strings/android/browser_ui_strings.grd
-@@ -987,7 +987,7 @@
+@@ -977,7 +977,7 @@
  
        <!-- Accessibility preferences -->
        <message name="IDS_PREFS_ACCESSIBILITY" desc="Title of Accessibility settings, which allows the user to change webpage font sizes. [CHAR_LIMIT=32]">
@@ -18908,10 +18923,11 @@ diff --git a/tools/grit/grit/grd_reader.py b/tools/grit/grit/grd_reader.py
 diff --git a/ui/base/ui_base_features.cc b/ui/base/ui_base_features.cc
 --- a/ui/base/ui_base_features.cc
 +++ b/ui/base/ui_base_features.cc
-@@ -659,4 +659,6 @@ BASE_FEATURE(kUseGammaContrastRegistrySettings,
+@@ -549,4 +549,7 @@ BASE_FEATURE(kUseGammaContrastRegistrySettings,
+ BASE_FEATURE(kBubbleFrameViewTitleIsHeading,
+              "BubbleFrameViewTitleIsHeading",
               base::FEATURE_ENABLED_BY_DEFAULT);
- #endif  // BUILDFLAG(IS_WIN)
- 
++
 +SET_CROMITE_FEATURE_ENABLED(kChromeRefresh2023);
 +SET_CROMITE_FEATURE_ENABLED(kChromeWebuiRefresh2023);
  }  // namespace features

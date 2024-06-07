@@ -10,7 +10,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 diff --git a/third_party/blink/renderer/platform/runtime_enabled_features.json5 b/third_party/blink/renderer/platform/runtime_enabled_features.json5
 --- a/third_party/blink/renderer/platform/runtime_enabled_features.json5
 +++ b/third_party/blink/renderer/platform/runtime_enabled_features.json5
-@@ -696,8 +696,9 @@
+@@ -699,8 +699,9 @@
      },
      {
        // Shipping in M125. Should be removed after M127.
@@ -21,5 +21,5 @@ diff --git a/third_party/blink/renderer/platform/runtime_enabled_features.json5 
 +      public: true,
      },
      {
-       name: "ConsolidatedMovementXY",
+       name: "ConcurrentViewTransitionsSPA",
 --

@@ -45,9 +45,9 @@ diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browse
 --- a/chrome/browser/flags/android/chrome_feature_list.cc
 +++ b/chrome/browser/flags/android/chrome_feature_list.cc
 @@ -186,6 +186,7 @@ const base::Feature* const kFeaturesExposedToJava[] = {
-     &kCCTEmbedderSpecialBehaviorTrigger,
      &kCCTExtendTrustedCdnPublisher,
      &kCCTFeatureUsage,
+     &kCCTEphemeralMode,
 +    &kChromeSmartSelection,
      &kCCTIncognitoAvailableToThirdParty,
      &kCCTIntentFeatureOverrides,
@@ -55,8 +55,8 @@ diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browse
 diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 --- a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 +++ b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
-@@ -227,6 +227,7 @@ public abstract class ChromeFeatureList {
-     public static final String CCT_MINIMIZED_ENABLED_BY_DEFAULT = "CCTMinimizedEnabledByDefault";
+@@ -239,6 +239,7 @@ public abstract class ChromeFeatureList {
+     public static final String CCT_NESTED_SECURITY_ICON = "CCTNestedSecurityIcon";
      public static final String CCT_INTENT_FEATURE_OVERRIDES = "CCTIntentFeatureOverrides";
      public static final String CCT_PAGE_INSIGHTS_HUB = "CCTPageInsightsHub";
 +    public static final String CHROME_SMART_SELECTION = "ChromeSmartSelection";
@@ -66,7 +66,7 @@ diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/f
 diff --git a/content/public/android/java/src/org/chromium/content/browser/selection/SelectionPopupControllerImpl.java b/content/public/android/java/src/org/chromium/content/browser/selection/SelectionPopupControllerImpl.java
 --- a/content/public/android/java/src/org/chromium/content/browser/selection/SelectionPopupControllerImpl.java
 +++ b/content/public/android/java/src/org/chromium/content/browser/selection/SelectionPopupControllerImpl.java
-@@ -1199,7 +1199,6 @@ public class SelectionPopupControllerImpl extends ActionModeCallbackHelper
+@@ -1187,7 +1187,6 @@ public class SelectionPopupControllerImpl extends ActionModeCallbackHelper
      public boolean canWebSearch() {
          return hasSelection()
                  && !isFocusedNodeEditable()

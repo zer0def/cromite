@@ -11,9 +11,9 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tabmodel/TabPersistentStore.java b/chrome/android/java/src/org/chromium/chrome/browser/tabmodel/TabPersistentStore.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/tabmodel/TabPersistentStore.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/tabmodel/TabPersistentStore.java
-@@ -718,18 +718,6 @@ public class TabPersistentStore {
-                     .getTabCreator(isIncognito)
-                     .createFrozenTab(tabState, tabToRestore.id, restoredIndex);
+@@ -731,18 +731,6 @@ public class TabPersistentStore {
+             }
+ 
          } else {
 -            if (!mSkipSavingNonActiveNtps
 -                    && UrlUtilities.isNtpUrl(tabToRestore.url)

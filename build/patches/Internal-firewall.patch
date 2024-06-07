@@ -13,7 +13,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  chrome/browser/about_flags.cc                 |   1 +
  .../downloads/offline_page_download_bridge.cc |  32 +-
  .../content/internal/context_menu_download.cc |  32 +-
- .../android/webapk/webapk_icon_hasher.cc      |  32 +-
+ .../webapk/webapk_single_icon_hasher.cc       |  32 +-
  .../about_flags_cc/Internal-firewall.inc      |   8 +
  net/BUILD.gn                                  |   1 +
  .../network_traffic_annotation.h              |   4 -
@@ -58,7 +58,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -2597,6 +2597,7 @@ static_library("browser") {
+@@ -2608,6 +2608,7 @@ static_library("browser") {
      "//third_party/ungoogled:switches",
      "//services/device/public/mojom",
      "//services/device/public/mojom:usb",
@@ -69,7 +69,7 @@ diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -212,6 +212,7 @@
+@@ -214,6 +214,7 @@
  #include "sandbox/policy/features.h"
  #include "sandbox/policy/switches.h"
  #include "services/device/public/cpp/device_features.h"
@@ -174,12 +174,12 @@ diff --git a/components/download/content/internal/context_menu_download.cc b/com
    content::Referrer referrer = content::Referrer::SanitizeForRequest(
        url,
        content::Referrer(referring_url.GetAsReferrer(), params.referrer_policy));
-diff --git a/components/webapps/browser/android/webapk/webapk_icon_hasher.cc b/components/webapps/browser/android/webapk/webapk_icon_hasher.cc
---- a/components/webapps/browser/android/webapk/webapk_icon_hasher.cc
-+++ b/components/webapps/browser/android/webapk/webapk_icon_hasher.cc
-@@ -121,6 +121,36 @@ void WebApkIconHasher::DownloadAndComputeMurmur2HashWithTimeout(
-                        std::move(callback));
- }
+diff --git a/components/webapps/browser/android/webapk/webapk_single_icon_hasher.cc b/components/webapps/browser/android/webapk/webapk_single_icon_hasher.cc
+--- a/components/webapps/browser/android/webapk/webapk_single_icon_hasher.cc
++++ b/components/webapps/browser/android/webapk/webapk_single_icon_hasher.cc
+@@ -41,6 +41,36 @@ std::string ComputeMurmur2Hash(const std::string& raw_image_data) {
+ 
+ }  // anonymous namespace
  
 +const net::NetworkTrafficAnnotationTag traffic_annotation =
 +    net::DefineNetworkTrafficAnnotation("webapk_icon_hasher", R"(
@@ -211,18 +211,18 @@ diff --git a/components/webapps/browser/android/webapk/webapk_icon_hasher.cc b/c
 +          policy_exception_justification: "Not implemented."
 +        })");
 +
- WebApkIconHasher::WebApkIconHasher(
+ WebApkSingleIconHasher::WebApkSingleIconHasher(
+     base::PassKey<WebApkIconsHasher> pass_key,
      network::mojom::URLLoaderFactory* url_loader_factory,
-     base::WeakPtr<content::WebContents> web_contents,
-@@ -145,7 +175,7 @@ WebApkIconHasher::WebApkIconHasher(
-   resource_request->url = webapk_icon.url();
+@@ -84,7 +114,7 @@ WebApkSingleIconHasher::WebApkSingleIconHasher(
+   resource_request->url = icon_->url();
    simple_url_loader_ = network::SimpleURLLoader::Create(
        std::move(resource_request),
 -      TRAFFIC_ANNOTATION_WITHOUT_PROTO("webapk icon hasher"));
 +      traffic_annotation);
    simple_url_loader_->DownloadToStringOfUnboundedSizeUntilCrashAndDie(
        url_loader_factory,
-       base::BindOnce(&WebApkIconHasher::OnSimpleLoaderComplete,
+       base::BindOnce(&WebApkSingleIconHasher::OnSimpleLoaderComplete,
 diff --git a/cromite_flags/chrome/browser/about_flags_cc/Internal-firewall.inc b/cromite_flags/chrome/browser/about_flags_cc/Internal-firewall.inc
 new file mode 100644
 --- /dev/null
@@ -274,7 +274,7 @@ diff --git a/net/url_request/url_request_http_job.cc b/net/url_request/url_reque
  }
  
  URLRequestHttpJob::~URLRequestHttpJob() {
-@@ -626,6 +629,18 @@ void URLRequestHttpJob::MaybeStartTransactionInternal(int result) {
+@@ -623,6 +626,18 @@ void URLRequestHttpJob::MaybeStartTransactionInternal(int result) {
  void URLRequestHttpJob::StartTransactionInternal() {
    DCHECK(!override_response_headers_);
  

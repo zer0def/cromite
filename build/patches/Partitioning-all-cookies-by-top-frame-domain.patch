@@ -15,24 +15,25 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  ...storage_access_grant_permission_context.cc | 12 ++++
  .../experiment/experiment_manager_impl.cc     |  1 +
  .../core/browser/cookie_settings.cc           |  2 +
- .../core/common/cookie_settings_base.cc       | 59 -------------------
+ .../core/common/cookie_settings_base.cc       | 58 -------------------
  ...ioning-all-cookies-by-top-frame-domain.inc |  3 +
  ...ioning-all-cookies-by-top-frame-domain.inc |  1 +
  ...ioning-all-cookies-by-top-frame-domain.inc |  1 +
  ...ioning-all-cookies-by-top-frame-domain.inc |  9 +++
- net/cookies/canonical_cookie.cc               | 13 +---
+ net/cookies/canonical_cookie.cc               |  3 -
  net/cookies/cookie_deletion_info.cc           |  3 +-
  net/cookies/cookie_monster.cc                 |  1 +
+ net/cookies/cookie_util.cc                    |  1 +
  net/cookies/parsed_cookie.h                   |  6 +-
  .../sqlite/sqlite_persistent_cookie_store.cc  |  8 +++
  net/url_request/url_request_http_job.cc       | 10 +---
- services/network/cookie_settings.cc           |  5 +-
+ services/network/cookie_settings.cc           |  6 +-
  services/network/restricted_cookie_manager.cc |  6 ++
  .../modules/cookie_store/cookie_init.idl      |  2 +-
  .../modules/cookie_store/cookie_store.cc      |  3 +
  .../cookie_store_delete_options.idl           |  2 +-
  ui/webui/webui_allowlist.cc                   |  1 +
- 23 files changed, 71 insertions(+), 92 deletions(-)
+ 24 files changed, 71 insertions(+), 83 deletions(-)
  create mode 100644 cromite_flags/components/content_settings/core/common/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
  create mode 100644 cromite_flags/components/permissions/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
  create mode 100644 cromite_flags/content/public/common/content_features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
@@ -41,7 +42,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 diff --git a/chrome/browser/chrome_content_browser_client.cc b/chrome/browser/chrome_content_browser_client.cc
 --- a/chrome/browser/chrome_content_browser_client.cc
 +++ b/chrome/browser/chrome_content_browser_client.cc
-@@ -3474,7 +3474,7 @@ bool ChromeContentBrowserClient::IsFullCookieAccessAllowed(
+@@ -3484,7 +3484,7 @@ bool ChromeContentBrowserClient::IsFullCookieAccessAllowed(
    scoped_refptr<content_settings::CookieSettings> cookie_settings =
        CookieSettingsFactory::GetForProfile(profile);
    if (!cookie_settings) {
@@ -53,7 +54,7 @@ diff --git a/chrome/browser/chrome_content_browser_client.cc b/chrome/browser/ch
 diff --git a/chrome/browser/net/profile_network_context_service.cc b/chrome/browser/net/profile_network_context_service.cc
 --- a/chrome/browser/net/profile_network_context_service.cc
 +++ b/chrome/browser/net/profile_network_context_service.cc
-@@ -806,16 +806,16 @@ ProfileNetworkContextService::CreateCookieManagerParams(
+@@ -781,16 +781,16 @@ ProfileNetworkContextService::CreateCookieManagerParams(
    // UI to interact with SameSite cookies on accounts.google.com, which is used
    // for displaying a list of available accounts on the NTP
    // (chrome://new-tab-page), etc.
@@ -79,7 +80,7 @@ diff --git a/chrome/browser/net/profile_network_context_service.cc b/chrome/brow
 diff --git a/chrome/browser/privacy_sandbox/privacy_sandbox_settings_delegate.cc b/chrome/browser/privacy_sandbox/privacy_sandbox_settings_delegate.cc
 --- a/chrome/browser/privacy_sandbox/privacy_sandbox_settings_delegate.cc
 +++ b/chrome/browser/privacy_sandbox/privacy_sandbox_settings_delegate.cc
-@@ -359,6 +359,7 @@ bool PrivacySandboxSettingsDelegate::IsCookieDeprecationLabelAllowed() const {
+@@ -363,6 +363,7 @@ bool PrivacySandboxSettingsDelegate::IsCookieDeprecationLabelAllowed() const {
  
  bool PrivacySandboxSettingsDelegate::
      AreThirdPartyCookiesBlockedByCookieDeprecationExperiment() const {
@@ -90,7 +91,7 @@ diff --git a/chrome/browser/privacy_sandbox/privacy_sandbox_settings_delegate.cc
 diff --git a/chrome/browser/storage_access_api/storage_access_grant_permission_context.cc b/chrome/browser/storage_access_api/storage_access_grant_permission_context.cc
 --- a/chrome/browser/storage_access_api/storage_access_grant_permission_context.cc
 +++ b/chrome/browser/storage_access_api/storage_access_grant_permission_context.cc
-@@ -351,6 +351,18 @@ void StorageAccessGrantPermissionContext::CheckForAutoGrantOrAutoDenial(
+@@ -425,6 +425,18 @@ void StorageAccessGrantPermissionContext::CheckForAutoGrantOrAutoDenial(
      permissions::PermissionRequestData request_data,
      permissions::BrowserPermissionCallback callback,
      net::FirstPartySetMetadata metadata) {
@@ -131,8 +132,8 @@ diff --git a/components/content_settings/core/browser/cookie_settings.cc b/compo
    if (url.is_empty() || first_party_url.is_empty()) {
      return;
    }
-@@ -397,6 +398,7 @@ bool CookieSettings::MitigationsEnabledFor3pcdInternal() {
-     return !tracking_protection_settings_->AreAllThirdPartyCookiesBlocked();
+@@ -398,6 +399,7 @@ bool CookieSettings::MitigationsEnabledFor3pcdInternal() {
+                 ->AreThirdPartyCookiesAllowedByEnterprise();
    }
  
 +  if ((true)) return false;
@@ -159,7 +160,7 @@ diff --git a/components/content_settings/core/common/cookie_settings_base.cc b/c
  constexpr StorageAccessResult GetStorageAccessResult(
      ThirdPartyCookieAllowMechanism mechanism) {
    switch (mechanism) {
-@@ -534,63 +524,14 @@ CookieSettingsBase::DecideAccess(const GURL& url,
+@@ -534,62 +524,14 @@ CookieSettingsBase::DecideAccess(const GURL& url,
      return BlockAllCookies{};
    }
  
@@ -205,8 +206,7 @@ diff --git a/components/content_settings/core/common/cookie_settings_base.cc b/c
 -  }
 -
 -  // Enterprise Policies:
--  if (is_explicit_setting &&
--      setting_source == SettingSource::SETTING_SOURCE_POLICY) {
+-  if (is_explicit_setting && setting_source == SettingSource::kPolicy) {
 -    return AllowAllCookies{ThirdPartyCookieAllowMechanism::
 -                               kAllowByEnterprisePolicyCookieAllowedForUrls};
 -  }
@@ -260,7 +260,7 @@ new file mode 100644
 diff --git a/net/cookies/canonical_cookie.cc b/net/cookies/canonical_cookie.cc
 --- a/net/cookies/canonical_cookie.cc
 +++ b/net/cookies/canonical_cookie.cc
-@@ -1025,9 +1025,6 @@ bool CanonicalCookie::IsCanonicalForFromStorage() const {
+@@ -1001,9 +1001,6 @@ bool CanonicalCookie::IsCanonicalForFromStorage() const {
      if (CookiePartitionKey::HasNonce(PartitionKey())) {
        return true;
      }
@@ -270,23 +270,6 @@ diff --git a/net/cookies/canonical_cookie.cc b/net/cookies/canonical_cookie.cc
    }
  
    return true;
-@@ -1250,15 +1247,7 @@ bool CanonicalCookie::IsCookiePartitionedValid(const GURL& url,
-                                                bool secure,
-                                                bool is_partitioned,
-                                                bool partition_has_nonce) {
--  if (!is_partitioned)
--    return true;
--  if (partition_has_nonce)
--    return true;
--  CookieAccessScheme scheme = cookie_util::ProvisionalAccessScheme(url);
--  bool result = (scheme != CookieAccessScheme::kNonCryptographic) && secure;
--  DLOG_IF(WARNING, !result)
--      << "CanonicalCookie has invalid Partitioned attribute";
--  return result;
-+  return true;
- }
- 
- CookieAndLineWithAccessResult::CookieAndLineWithAccessResult() = default;
 diff --git a/net/cookies/cookie_deletion_info.cc b/net/cookies/cookie_deletion_info.cc
 --- a/net/cookies/cookie_deletion_info.cc
 +++ b/net/cookies/cookie_deletion_info.cc
@@ -303,7 +286,7 @@ diff --git a/net/cookies/cookie_deletion_info.cc b/net/cookies/cookie_deletion_i
 diff --git a/net/cookies/cookie_monster.cc b/net/cookies/cookie_monster.cc
 --- a/net/cookies/cookie_monster.cc
 +++ b/net/cookies/cookie_monster.cc
-@@ -2215,6 +2215,7 @@ size_t CookieMonster::GarbageCollectPartitionedCookies(
+@@ -2216,6 +2216,7 @@ size_t CookieMonster::GarbageCollectPartitionedCookies(
    if (cookie_partition_it == partitioned_cookies_.end())
      return num_deleted;
  
@@ -311,6 +294,17 @@ diff --git a/net/cookies/cookie_monster.cc b/net/cookies/cookie_monster.cc
    if (NumBytesInCookieMapForKey(*cookie_partition_it->second.get(), key) >
            kPerPartitionDomainMaxCookieBytes ||
        cookie_partition_it->second->count(key) > kPerPartitionDomainMaxCookies) {
+diff --git a/net/cookies/cookie_util.cc b/net/cookies/cookie_util.cc
+--- a/net/cookies/cookie_util.cc
++++ b/net/cookies/cookie_util.cc
+@@ -726,6 +726,7 @@ bool IsCookiePartitionedValid(const GURL& url,
+                               bool secure,
+                               bool is_partitioned,
+                               bool partition_has_nonce) {
++  if ((true)) return true;
+   if (!is_partitioned) {
+     return true;
+   }
 diff --git a/net/cookies/parsed_cookie.h b/net/cookies/parsed_cookie.h
 --- a/net/cookies/parsed_cookie.h
 +++ b/net/cookies/parsed_cookie.h
@@ -355,7 +349,7 @@ diff --git a/net/extras/sqlite/sqlite_persistent_cookie_store.cc b/net/extras/sq
 diff --git a/net/url_request/url_request_http_job.cc b/net/url_request/url_request_http_job.cc
 --- a/net/url_request/url_request_http_job.cc
 +++ b/net/url_request/url_request_http_job.cc
-@@ -785,13 +785,9 @@ void URLRequestHttpJob::SetCookieHeaderAndStart(
+@@ -782,13 +782,9 @@ void URLRequestHttpJob::SetCookieHeaderAndStart(
      AnnotateAndMoveUserBlockedCookies(maybe_included_cookies, excluded_cookies);
    }
  
@@ -375,16 +369,17 @@ diff --git a/net/url_request/url_request_http_job.cc b/net/url_request/url_reque
 diff --git a/services/network/cookie_settings.cc b/services/network/cookie_settings.cc
 --- a/services/network/cookie_settings.cc
 +++ b/services/network/cookie_settings.cc
-@@ -44,7 +44,7 @@ bool AffectedByThirdPartyCookiePhaseout(
-     const bool is_third_party_request,
-     const bool is_cookie_partitioned) {
-   return cookie_same_site == net::CookieSameSite::NO_RESTRICTION &&
--         is_third_party_request && !is_cookie_partitioned;
-+         is_third_party_request;
+@@ -42,8 +42,7 @@ namespace network {
+ namespace {
+ 
+ bool ShouldApply3pcdRelatedReasons(const net::CanonicalCookie& cookie) {
+-  return cookie.SameSite() == net::CookieSameSite::NO_RESTRICTION &&
+-         !cookie.IsPartitioned();
++  return cookie.SameSite() == net::CookieSameSite::NO_RESTRICTION;
  }
  
  bool IsValidType(ContentSettingsType type) {
-@@ -119,8 +119,7 @@ bool IsOriginOpaqueHttpOrHttps(const url::Origin* top_frame_origin) {
+@@ -118,8 +117,7 @@ bool IsOriginOpaqueHttpOrHttps(const url::Origin* top_frame_origin) {
  // static
  bool CookieSettings::IsCookieAllowed(const net::CanonicalCookie& cookie,
                                       const CookieSettingWithMetadata& setting) {
@@ -397,7 +392,7 @@ diff --git a/services/network/cookie_settings.cc b/services/network/cookie_setti
 diff --git a/services/network/restricted_cookie_manager.cc b/services/network/restricted_cookie_manager.cc
 --- a/services/network/restricted_cookie_manager.cc
 +++ b/services/network/restricted_cookie_manager.cc
-@@ -947,6 +947,12 @@ void RestrictedCookieManager::SetCookieFromString(
+@@ -950,6 +950,12 @@ void RestrictedCookieManager::SetCookieFromString(
  
    std::move(callback).Run();
  

@@ -7,8 +7,8 @@ Log rotation enabled by default.
 ---
  chrome/common/logging_chrome.cc | 11 +++++++----
  chrome/common/logging_chrome.h  |  6 ++++--
- content/app/content_main.cc     |  6 +++++-
- 3 files changed, 16 insertions(+), 7 deletions(-)
+ content/app/content_main.cc     |  9 ++++++---
+ 3 files changed, 17 insertions(+), 9 deletions(-)
 
 diff --git a/chrome/common/logging_chrome.cc b/chrome/common/logging_chrome.cc
 --- a/chrome/common/logging_chrome.cc
@@ -22,7 +22,7 @@ diff --git a/chrome/common/logging_chrome.cc b/chrome/common/logging_chrome.cc
  #include "base/i18n/time_formatting.h"
  #include "third_party/icu/source/i18n/unicode/timezone.h"
  #endif
-@@ -239,7 +239,7 @@ LoggingDestination DetermineLoggingDestination(
+@@ -233,7 +233,7 @@ LoggingDestination DetermineLoggingDestination(
    return LoggingDestFromCommandLine(command_line, unused);
  }
  
@@ -31,7 +31,7 @@ diff --git a/chrome/common/logging_chrome.cc b/chrome/common/logging_chrome.cc
  bool RotateLogFile(const base::FilePath& target_path) {
    DCHECK(!target_path.empty());
    // If the old log file doesn't exist, do nothing.
-@@ -284,7 +284,7 @@ bool RotateLogFile(const base::FilePath& target_path) {
+@@ -278,7 +278,7 @@ bool RotateLogFile(const base::FilePath& target_path) {
  
    return true;
  }
@@ -40,7 +40,7 @@ diff --git a/chrome/common/logging_chrome.cc b/chrome/common/logging_chrome.cc
  
  #if BUILDFLAG(IS_CHROMEOS_ASH)
  base::FilePath SetUpSymlinkIfNeeded(const base::FilePath& symlink_path,
-@@ -462,6 +462,9 @@ void InitChromeLogging(const base::CommandLine& command_line,
+@@ -456,6 +456,9 @@ void InitChromeLogging(const base::CommandLine& command_line,
        // since that will remove the newly created link instead.
        delete_old_log_file = APPEND_TO_OLD_LOG_FILE;
  #endif  // BUILDFLAG(IS_CHROMEOS_ASH)
@@ -50,7 +50,7 @@ diff --git a/chrome/common/logging_chrome.cc b/chrome/common/logging_chrome.cc
      }
    } else {
      log_locking_state = DONT_LOCK_LOG_FILE;
-@@ -626,7 +629,7 @@ bool DialogsAreSuppressed() {
+@@ -620,7 +623,7 @@ bool DialogsAreSuppressed() {
    return dialogs_are_suppressed_;
  }
  
@@ -88,15 +88,18 @@ diff --git a/chrome/common/logging_chrome.h b/chrome/common/logging_chrome.h
 diff --git a/content/app/content_main.cc b/content/app/content_main.cc
 --- a/content/app/content_main.cc
 +++ b/content/app/content_main.cc
-@@ -311,7 +311,11 @@ RunContentProcess(ContentMainParams params,
-       base::RouteStdioToConsole(/*create_console_if_not_found*/ false);
+@@ -312,9 +312,12 @@ RunContentProcess(ContentMainParams params,
      } else if (command_line->HasSwitch(switches::kEnableLogging)) {
-       // Route stdio to parent console (if any) or create one.
--      base::RouteStdioToConsole(/*create_console_if_not_found*/ true);
+       // Route stdio to parent console (if any) or create one, do not create a
+       // console in children if handles are being passed.
+-      bool create_console = command_line->GetSwitchValueASCII(
+-                                switches::kEnableLogging) != "handle";
+-      base::RouteStdioToConsole(create_console);
 +      std::string logging_destination =
-+        base::CommandLine::ForCurrentProcess()->GetSwitchValueASCII(switches::kEnableLogging);
++        command_line->GetSwitchValueASCII(switches::kEnableLogging);
++      bool create_console = logging_destination != "handle";
 +      if (logging_destination == "stderr") {
-+        base::RouteStdioToConsole(/*create_console_if_not_found*/ true);
++        base::RouteStdioToConsole(create_console);
 +      }
      }
  #endif

@@ -12,18 +12,18 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  chrome/browser/profiles/profile_impl.cc       |  5 +----
  chrome/browser/profiles/profile_manager.cc    | 20 -------------------
  chrome/browser/ui/webui/managed_ui_handler.cc |  4 ----
- .../webui/management/management_ui_handler.cc |  5 -----
+ .../webui/management/management_ui_handler.cc |  4 ----
  .../browser/supervised_user_pref_store.cc     |  1 +
  .../browser/supervised_user_preferences.cc    |  6 +++++-
- .../core/browser/supervised_user_service.cc   |  1 +
+ .../core/browser/supervised_user_service.cc   |  5 +----
  .../core/browser/supervised_user_utils.cc     |  1 +
  .../supervised_user/core/common/features.cc   |  6 ++++++
- 14 files changed, 18 insertions(+), 43 deletions(-)
+ 14 files changed, 18 insertions(+), 46 deletions(-)
 
 diff --git a/chrome/android/BUILD.gn b/chrome/android/BUILD.gn
 --- a/chrome/android/BUILD.gn
 +++ b/chrome/android/BUILD.gn
-@@ -749,7 +749,6 @@ if (current_toolchain == default_toolchain) {
+@@ -754,7 +754,6 @@ if (current_toolchain == default_toolchain) {
        "//components/dom_distiller/core:distiller_type_java",
        "//components/ntp_tiles:ntp_tiles_enums_java",
        "//components/offline_pages/core:offline_page_model_enums_java",
@@ -34,7 +34,7 @@ diff --git a/chrome/android/BUILD.gn b/chrome/android/BUILD.gn
 diff --git a/chrome/android/feed/core/java/src/org/chromium/chrome/browser/feed/FeedSurfaceCoordinator.java b/chrome/android/feed/core/java/src/org/chromium/chrome/browser/feed/FeedSurfaceCoordinator.java
 --- a/chrome/android/feed/core/java/src/org/chromium/chrome/browser/feed/FeedSurfaceCoordinator.java
 +++ b/chrome/android/feed/core/java/src/org/chromium/chrome/browser/feed/FeedSurfaceCoordinator.java
-@@ -68,7 +68,6 @@ import org.chromium.components.browser_ui.widget.displaystyle.UiConfig;
+@@ -69,7 +69,6 @@ import org.chromium.components.browser_ui.widget.displaystyle.UiConfig;
  import org.chromium.components.feature_engagement.EventConstants;
  import org.chromium.components.feature_engagement.Tracker;
  import org.chromium.components.prefs.PrefService;
@@ -42,7 +42,7 @@ diff --git a/chrome/android/feed/core/java/src/org/chromium/chrome/browser/feed/
  import org.chromium.components.user_prefs.UserPrefs;
  import org.chromium.third_party.android.swiperefresh.SwipeRefreshLayout;
  import org.chromium.ui.base.DeviceFormFactor;
-@@ -753,9 +752,7 @@ public class FeedSurfaceCoordinator
+@@ -793,9 +792,7 @@ public class FeedSurfaceCoordinator
       * Returns true if the supervised user feed should be displayed.
       */
      public boolean shouldDisplaySupervisedFeed() {
@@ -56,7 +56,7 @@ diff --git a/chrome/android/feed/core/java/src/org/chromium/chrome/browser/feed/
 diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -3237,8 +3237,6 @@ static_library("browser") {
+@@ -3277,8 +3277,6 @@ static_library("browser") {
        "feed/android/refresh_task_scheduler_impl.cc",
        "feed/android/refresh_task_scheduler_impl.h",
        "feed/android/web_feed_bridge.cc",
@@ -68,7 +68,7 @@ diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 diff --git a/chrome/browser/prefs/chrome_pref_service_factory.cc b/chrome/browser/prefs/chrome_pref_service_factory.cc
 --- a/chrome/browser/prefs/chrome_pref_service_factory.cc
 +++ b/chrome/browser/prefs/chrome_pref_service_factory.cc
-@@ -317,7 +317,7 @@ void PrepareFactory(
+@@ -320,7 +320,7 @@ void PrepareFactory(
      policy::BrowserPolicyConnector* policy_connector) {
    factory->SetManagedPolicies(policy_service, policy_connector);
    factory->SetRecommendedPolicies(policy_service, policy_connector);
@@ -103,7 +103,7 @@ diff --git a/chrome/browser/profiles/profile_impl.cc b/chrome/browser/profiles/p
  
    // Changes in the profile avatar.
    pref_change_registrar_.Add(
-@@ -1631,6 +1627,7 @@ GURL ProfileImpl::GetHomePage() {
+@@ -1628,6 +1624,7 @@ GURL ProfileImpl::GetHomePage() {
  }
  
  void ProfileImpl::UpdateSupervisedUserIdInStorage() {
@@ -114,7 +114,7 @@ diff --git a/chrome/browser/profiles/profile_impl.cc b/chrome/browser/profiles/p
 diff --git a/chrome/browser/profiles/profile_manager.cc b/chrome/browser/profiles/profile_manager.cc
 --- a/chrome/browser/profiles/profile_manager.cc
 +++ b/chrome/browser/profiles/profile_manager.cc
-@@ -1214,23 +1214,6 @@ void ProfileManager::InitProfileUserPrefs(Profile* profile) {
+@@ -1213,23 +1213,6 @@ void ProfileManager::InitProfileUserPrefs(Profile* profile) {
      profile->GetPrefs()->SetString(prefs::kProfileName, profile_name);
    }
  
@@ -138,7 +138,7 @@ diff --git a/chrome/browser/profiles/profile_manager.cc b/chrome/browser/profile
  #if !BUILDFLAG(IS_ANDROID)
    if (profile->IsNewProfile()) {
      profile->GetPrefs()->SetBoolean(prefs::kHasSeenWelcomePage, false);
-@@ -2038,9 +2021,6 @@ void ProfileManager::AddProfileToStorage(Profile* profile) {
+@@ -2037,9 +2020,6 @@ void ProfileManager::AddProfileToStorage(Profile* profile) {
    init_params.icon_index =
        profile->GetPrefs()->GetInteger(prefs::kProfileAvatarIndex);
  
@@ -165,18 +165,17 @@ diff --git a/chrome/browser/ui/webui/managed_ui_handler.cc b/chrome/browser/ui/w
 diff --git a/chrome/browser/ui/webui/management/management_ui_handler.cc b/chrome/browser/ui/webui/management/management_ui_handler.cc
 --- a/chrome/browser/ui/webui/management/management_ui_handler.cc
 +++ b/chrome/browser/ui/webui/management/management_ui_handler.cc
-@@ -1496,11 +1496,6 @@ void ManagementUIHandler::AddObservers() {
+@@ -546,10 +546,6 @@ bool ManagementUIHandler::managed() const {
  
-   pref_registrar_.Init(profile->GetPrefs());
- 
+ void ManagementUIHandler::RegisterPrefChange(
+     PrefChangeRegistrar& pref_registrar) {
 -  pref_registrar_.Add(
 -      prefs::kSupervisedUserId,
 -      base::BindRepeating(&ManagementUIHandler::UpdateManagedState,
 -                          base::Unretained(this)));
--
- #if BUILDFLAG(IS_CHROMEOS_ASH)
-   pref_registrar_.Add(
-       plugin_vm::prefs::kPluginVmDataCollectionAllowed,
+ }
+ 
+ void ManagementUIHandler::UpdateManagedState() {
 diff --git a/components/supervised_user/core/browser/supervised_user_pref_store.cc b/components/supervised_user/core/browser/supervised_user_pref_store.cc
 --- a/components/supervised_user/core/browser/supervised_user_pref_store.cc
 +++ b/components/supervised_user/core/browser/supervised_user_pref_store.cc
@@ -191,7 +190,7 @@ diff --git a/components/supervised_user/core/browser/supervised_user_pref_store.
 diff --git a/components/supervised_user/core/browser/supervised_user_preferences.cc b/components/supervised_user/core/browser/supervised_user_preferences.cc
 --- a/components/supervised_user/core/browser/supervised_user_preferences.cc
 +++ b/components/supervised_user/core/browser/supervised_user_preferences.cc
-@@ -162,6 +162,10 @@ void RegisterProfilePrefs(PrefRegistrySimple* registry) {
+@@ -164,6 +164,10 @@ void RegisterProfilePrefs(PrefRegistrySimple* registry) {
  }
  
  void EnableParentalControls(PrefService& pref_service) {
@@ -202,7 +201,7 @@ diff --git a/components/supervised_user/core/browser/supervised_user_preferences
    pref_service.SetString(prefs::kSupervisedUserId,
                           supervised_user::kChildAccountSUID);
    SetIsChildAccountStatusKnown(pref_service);
-@@ -184,7 +188,7 @@ bool IsSafeSitesEnabled(const PrefService& pref_service) {
+@@ -186,7 +190,7 @@ bool IsSafeSitesEnabled(const PrefService& pref_service) {
  }
  
  bool IsSubjectToParentalControls(const PrefService& pref_service) {
@@ -214,7 +213,18 @@ diff --git a/components/supervised_user/core/browser/supervised_user_preferences
 diff --git a/components/supervised_user/core/browser/supervised_user_service.cc b/components/supervised_user/core/browser/supervised_user_service.cc
 --- a/components/supervised_user/core/browser/supervised_user_service.cc
 +++ b/components/supervised_user/core/browser/supervised_user_service.cc
-@@ -189,6 +189,7 @@ FirstTimeInterstitialBannerState SupervisedUserService::GetUpdatedBannerState(
+@@ -48,10 +48,6 @@ void SupervisedUserService::Init() {
+   DCHECK(settings_service_->IsReady());
+ 
+   pref_change_registrar_.Init(&user_prefs_.get());
+-  pref_change_registrar_.Add(
+-      prefs::kSupervisedUserId,
+-      base::BindRepeating(&SupervisedUserService::OnSupervisedUserIdChanged,
+-                          base::Unretained(this)));
+   FirstTimeInterstitialBannerState banner_state =
+       static_cast<FirstTimeInterstitialBannerState>(
+           user_prefs_->GetInteger(prefs::kFirstTimeInterstitialBannerState));
+@@ -189,6 +185,7 @@ FirstTimeInterstitialBannerState SupervisedUserService::GetUpdatedBannerState(
  }
  
  void SupervisedUserService::SetActive(bool active) {
@@ -225,7 +235,7 @@ diff --git a/components/supervised_user/core/browser/supervised_user_service.cc 
 diff --git a/components/supervised_user/core/browser/supervised_user_utils.cc b/components/supervised_user/core/browser/supervised_user_utils.cc
 --- a/components/supervised_user/core/browser/supervised_user_utils.cc
 +++ b/components/supervised_user/core/browser/supervised_user_utils.cc
-@@ -99,6 +99,7 @@ GURL NormalizeUrl(const GURL& url) {
+@@ -119,6 +119,7 @@ GURL NormalizeUrl(const GURL& url) {
  }
  
  bool AreWebFilterPrefsDefault(const PrefService& pref_service) {
@@ -236,7 +246,7 @@ diff --git a/components/supervised_user/core/browser/supervised_user_utils.cc b/
 diff --git a/components/supervised_user/core/common/features.cc b/components/supervised_user/core/common/features.cc
 --- a/components/supervised_user/core/common/features.cc
 +++ b/components/supervised_user/core/common/features.cc
-@@ -122,4 +122,10 @@ bool IsShadowKidsApiWithSafeSitesEnabled() {
+@@ -115,4 +115,10 @@ bool IsShadowKidsApiWithSafeSitesEnabled() {
    return base::FeatureList::IsEnabled(kShadowKidsApiWithSafeSites);
  }
  

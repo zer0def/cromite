@@ -14,9 +14,9 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 --- a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 +++ b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
-@@ -648,7 +648,7 @@ public abstract class ChromeFeatureList {
+@@ -647,7 +647,7 @@ public abstract class ChromeFeatureList {
      public static final CachedFlag sSmallerTabStripTitleLimit =
-             newCachedFlag(SMALLER_TAB_STRIP_TITLE_LIMIT, false);
+             newCachedFlag(SMALLER_TAB_STRIP_TITLE_LIMIT, true);
      public static final CachedFlag sStartSurfaceAndroid =
 -            newCachedFlag(START_SURFACE_ANDROID, true);
 +            newCachedFlag(START_SURFACE_ANDROID, false);

@@ -36,7 +36,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedAct
  import org.chromium.base.IntentUtils;
  import org.chromium.base.Log;
  import org.chromium.base.MemoryPressureListener;
-@@ -1614,8 +1615,10 @@ public class ChromeTabbedActivity extends ChromeActivity<ChromeActivityComponent
+@@ -1636,8 +1637,10 @@ public class ChromeTabbedActivity extends ChromeActivity<ChromeActivityComponent
              boolean hadCipherData =
                      CipherFactory.getInstance().restoreFromBundle(getSavedInstanceState());
  
@@ -77,7 +77,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/privacy/setting
      private ManagedPreferenceDelegate mManagedPreferenceDelegate;
      private static final String PREF_IP_PROTECTION = "ip_protection";
      @VisibleForTesting static final String PREF_CLEAR_BROWSING_DATA = "clear_browsing_data";
-@@ -295,7 +300,11 @@ public class PrivacySettings extends ChromeBaseSettingsFragment
+@@ -296,7 +301,11 @@ public class PrivacySettings extends ChromeBaseSettingsFragment
      @Override
      public boolean onPreferenceChange(Preference preference, Object newValue) {
          String key = preference.getKey();
@@ -90,7 +90,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/privacy/setting
              UserPrefs.get(getProfile())
                      .setBoolean(Pref.CAN_MAKE_PAYMENT_ENABLED, (boolean) newValue);
          } else if (PREF_HTTPS_FIRST_MODE.equals(key)) {
-@@ -349,6 +358,11 @@ public class PrivacySettings extends ChromeBaseSettingsFragment
+@@ -350,6 +359,11 @@ public class PrivacySettings extends ChromeBaseSettingsFragment
                              getContext(), getProfile()));
          }
  
@@ -105,7 +105,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/privacy/setting
 diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chrome/browser/ui/android/strings/android_chrome_strings.grd
 --- a/chrome/browser/ui/android/strings/android_chrome_strings.grd
 +++ b/chrome/browser/ui/android/strings/android_chrome_strings.grd
-@@ -4918,6 +4918,12 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>clear the Chrome da
+@@ -5002,6 +5002,12 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>delete the Chrome d
        <message name="IDS_CONTEXTMENU_IMAGE_TITLE" desc="The title of a context menu tab when the item pressed contains more than one type. This indicates that all the actions are related to the image.">
          IMAGE
        </message>

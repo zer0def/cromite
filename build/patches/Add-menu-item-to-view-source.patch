@@ -42,7 +42,7 @@ diff --git a/chrome/android/java/res/menu/main_menu.xml b/chrome/android/java/re
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java b/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java
-@@ -2986,6 +2986,8 @@ public class ChromeTabbedActivity extends ChromeActivity<ChromeActivityComponent
+@@ -3003,6 +3003,8 @@ public class ChromeTabbedActivity extends ChromeActivity<ChromeActivityComponent
                  NewTabPageUma.recordAction(NewTabPageUma.ACTION_OPENED_DOWNLOADS_MANAGER);
              }
              RecordUserAction.record("MobileMenuDownloadManager");
@@ -54,7 +54,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedAct
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActivity.java b/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActivity.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActivity.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActivity.java
-@@ -2722,6 +2722,11 @@ public abstract class ChromeActivity<C extends ChromeActivityComponent>
+@@ -2739,6 +2739,11 @@ public abstract class ChromeActivity<C extends ChromeActivityComponent>
              return doOpenWebApk(currentTab);
          }
  
@@ -69,7 +69,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActiv
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/app/appmenu/AppMenuPropertiesDelegateImpl.java b/chrome/android/java/src/org/chromium/chrome/browser/app/appmenu/AppMenuPropertiesDelegateImpl.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/app/appmenu/AppMenuPropertiesDelegateImpl.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/app/appmenu/AppMenuPropertiesDelegateImpl.java
-@@ -576,6 +576,7 @@ public class AppMenuPropertiesDelegateImpl implements AppMenuPropertiesDelegate
+@@ -575,6 +575,7 @@ public class AppMenuPropertiesDelegateImpl implements AppMenuPropertiesDelegate
                          isNativePage, isFileScheme, isContentScheme, isIncognito, url));
  
          updateRequestDesktopSiteMenuItem(menu, currentTab, true /* can show */, isNativePage);
@@ -77,8 +77,8 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/app/appmenu/App
  
          updateAutoDarkMenuItem(menu, currentTab, isNativePage);
  
-@@ -1286,6 +1287,23 @@ public class AppMenuPropertiesDelegateImpl implements AppMenuPropertiesDelegate
-         }
+@@ -1294,6 +1295,23 @@ public class AppMenuPropertiesDelegateImpl implements AppMenuPropertiesDelegate
+         findInPageMenuRow.setVisible(itemVisible);
      }
  
 +    /**
@@ -115,7 +115,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/customtabs/Cust
 diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chrome/browser/ui/android/strings/android_chrome_strings.grd
 --- a/chrome/browser/ui/android/strings/android_chrome_strings.grd
 +++ b/chrome/browser/ui/android/strings/android_chrome_strings.grd
-@@ -319,6 +319,10 @@ CHAR_LIMIT guidelines:
+@@ -316,6 +316,10 @@ CHAR_LIMIT guidelines:
          USB
        </message>
  

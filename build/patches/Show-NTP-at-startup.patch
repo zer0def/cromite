@@ -71,7 +71,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ChromeInactivit
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java b/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java
-@@ -1650,7 +1650,7 @@ public class ChromeTabbedActivity extends ChromeActivity<ChromeActivityComponent
+@@ -1672,7 +1672,7 @@ public class ChromeTabbedActivity extends ChromeActivity<ChromeActivityComponent
                  Callback<String> onStandardActiveIndexRead = null;
                  shouldShowNtpAsHomeSurfaceAtStartup = shouldShowNtpHomeSurfaceOnStartup();
                  boolean skipSavingNonActiveNtps = skipSavingNonActiveNtps();
@@ -80,7 +80,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedAct
                      mHomeSurfaceTracker = new HomeSurfaceTracker();
                  }
                  if (shouldShowNtpAsHomeSurfaceAtStartup) {
-@@ -2377,6 +2377,8 @@ public class ChromeTabbedActivity extends ChromeActivity<ChromeActivityComponent
+@@ -2389,6 +2389,8 @@ public class ChromeTabbedActivity extends ChromeActivity<ChromeActivityComponent
          mInactivityTracker =
                  new ChromeInactivityTracker(
                          ChromePreferenceKeys.TABBED_ACTIVITY_LAST_BACKGROUNDED_TIME_MS_PREF);
@@ -92,7 +92,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedAct
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tasks/ReturnToChromeUtil.java b/chrome/android/java/src/org/chromium/chrome/browser/tasks/ReturnToChromeUtil.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/tasks/ReturnToChromeUtil.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/tasks/ReturnToChromeUtil.java
-@@ -630,6 +630,12 @@ public final class ReturnToChromeUtil {
+@@ -631,6 +631,12 @@ public final class ReturnToChromeUtil {
              }
          }
  
@@ -105,7 +105,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tasks/ReturnToC
          // Checks whether to show the Start surface due to feature flag TAB_SWITCHER_ON_RETURN_MS.
          long lastVisibleTimeMs = inactivityTracker.getLastVisibleTimeMs();
          long lastBackgroundTimeMs = inactivityTracker.getLastBackgroundedTimeMs();
-@@ -777,7 +783,7 @@ public final class ReturnToChromeUtil {
+@@ -778,7 +784,7 @@ public final class ReturnToChromeUtil {
              TabModel currentTabModel,
              TabCreator tabCreator,
              HomeSurfaceTracker homeSurfaceTracker) {
@@ -117,7 +117,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tasks/ReturnToC
 diff --git a/chrome/browser/preferences/android/java/src/org/chromium/chrome/browser/preferences/ChromePreferenceKeys.java b/chrome/browser/preferences/android/java/src/org/chromium/chrome/browser/preferences/ChromePreferenceKeys.java
 --- a/chrome/browser/preferences/android/java/src/org/chromium/chrome/browser/preferences/ChromePreferenceKeys.java
 +++ b/chrome/browser/preferences/android/java/src/org/chromium/chrome/browser/preferences/ChromePreferenceKeys.java
-@@ -779,6 +779,8 @@ public final class ChromePreferenceKeys {
+@@ -791,6 +791,8 @@ public final class ChromePreferenceKeys {
  
      public static final String TABBED_ACTIVITY_LAST_BACKGROUNDED_TIME_MS_PREF =
              "ChromeTabbedActivity.BackgroundTimeMs";
@@ -129,7 +129,7 @@ diff --git a/chrome/browser/preferences/android/java/src/org/chromium/chrome/bro
 diff --git a/chrome/browser/preferences/android/java/src/org/chromium/chrome/browser/preferences/LegacyChromePreferenceKeys.java b/chrome/browser/preferences/android/java/src/org/chromium/chrome/browser/preferences/LegacyChromePreferenceKeys.java
 --- a/chrome/browser/preferences/android/java/src/org/chromium/chrome/browser/preferences/LegacyChromePreferenceKeys.java
 +++ b/chrome/browser/preferences/android/java/src/org/chromium/chrome/browser/preferences/LegacyChromePreferenceKeys.java
-@@ -119,6 +119,7 @@ public class LegacyChromePreferenceKeys {
+@@ -118,6 +118,7 @@ public class LegacyChromePreferenceKeys {
                  ChromePreferenceKeys.SNAPSHOT_DATABASE_REMOVED,
                  ChromePreferenceKeys.SYNC_ERROR_MESSAGE_SHOWN_AT_TIME,
                  ChromePreferenceKeys.TABBED_ACTIVITY_LAST_BACKGROUNDED_TIME_MS_PREF,
