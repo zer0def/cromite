@@ -53,7 +53,7 @@ echo >>../.gclient "       \"codesearch\": 'Debug',"
 echo >>../.gclient "    },"
 echo >>../.gclient "  },"
 echo >>../.gclient "]"
-echo >>../.gclient "target_os=['android','win']"
+echo >>../.gclient "target_os=['android']"
 
 git submodule foreach git config -f ./.git/config submodule.$name.ignore all
 git config --add remote.origin.fetch '+refs/tags/*:refs/tags/*'
