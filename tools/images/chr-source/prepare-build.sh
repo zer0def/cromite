@@ -38,10 +38,10 @@ echo >>../.gclient "  { \"name\"        : 'src',"
 echo >>../.gclient "    \"url\"         : '$CHR_SOURCE@$VERSION_SHA',"
 echo >>../.gclient "    \"deps_file\"   : 'DEPS',"
 echo >>../.gclient "    \"managed\"     : True,"
-echo >>../.gclient "    \"custom_deps\" : {"
 
 # for windows
 # exclude everything but not "microsoft_dxheaders"
+echo >>../.gclient "    \"custom_deps\" : {"
 echo >>../.gclient "        \"src/third_party/apache-windows-arm64\": None,"
 echo >>../.gclient "        \"src/third_party/updater/chrome_win_x86\": None,"
 echo >>../.gclient "        \"src/third_party/updater/chrome_win_x86_64\": None,"
@@ -55,13 +55,16 @@ echo >>../.gclient "        \"src/third_party/perl\": None,"
 echo >>../.gclient "        \"src/tools/skia_goldctl/win\": None,"
 echo >>../.gclient "        \"src/third_party/screen-ai/windows_amd64\": None,"
 echo >>../.gclient "        \"src/third_party/screen-ai/windows_386\": None,"
-echo >>../.gclient "        \"ciopfs_linux\": None,"
-echo >>../.gclient "        \"win_toolchain\": None,"
-echo >>../.gclient "        \"rc_win\": None,"
-echo >>../.gclient "        \"rc_linux\": None,"
-echo >>../.gclient "        \"apache_win32\": None,"
-
 echo >>../.gclient "    },"
+
+echo >>../.gclient "    \"custom_hooks\" : ["
+echo >>../.gclient "        { 'name': 'ciopfs_linux', 'pattern': '.', 'action': ['echo', 'ciopfs_linux hook override'] },"
+echo >>../.gclient "        { 'name': 'win_toolchain', 'pattern': '.', 'action': ['echo', 'win_toolchain hook override'] },"
+echo >>../.gclient "        { 'name': 'rc_win', 'pattern': '.', 'action': ['echo', 'rc_win hook override'] },"
+echo >>../.gclient "        { 'name': 'rc_linux', 'pattern': '.', 'action': ['echo', 'rc_linux hook override'] },"
+echo >>../.gclient "        { 'name': 'apache_win32', 'pattern': '.', 'action': ['echo', 'apache_win32 hook override'] },"
+echo >>../.gclient "    ],"
+
 echo >>../.gclient "    \"custom_vars\": {"
 echo >>../.gclient "       \"checkout_android_prebuilts_build_tools\": True,"
 echo >>../.gclient "       \"checkout_telemetry_dependencies\": False,"
@@ -70,6 +73,9 @@ echo >>../.gclient "    },"
 echo >>../.gclient "  },"
 echo >>../.gclient "]"
 echo >>../.gclient "target_os=['android','win']"
+
+echo -e ${RED} -------- .gclient dump ${NC}
+cat ../.gclient
 
 git submodule foreach git config -f ./.git/config submodule.$name.ignore all
 git config --add remote.origin.fetch '+refs/tags/*:refs/tags/*'
