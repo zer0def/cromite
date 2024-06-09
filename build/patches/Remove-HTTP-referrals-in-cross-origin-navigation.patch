@@ -56,7 +56,7 @@ diff --git a/chrome/android/chrome_java_resources.gni b/chrome/android/chrome_ja
 diff --git a/chrome/android/chrome_java_sources.gni b/chrome/android/chrome_java_sources.gni
 --- a/chrome/android/chrome_java_sources.gni
 +++ b/chrome/android/chrome_java_sources.gni
-@@ -985,6 +985,8 @@ chrome_java_sources = [
+@@ -984,6 +984,8 @@ chrome_java_sources = [
    "java/src/org/chromium/chrome/browser/privacy_sandbox/TrackingProtectionNoticeController.java",
    "java/src/org/chromium/chrome/browser/privacy_sandbox/TrackingProtectionSnackbarController.java",
    "java/src/org/chromium/chrome/browser/privacy/settings/IncognitoSettings.java",
@@ -404,7 +404,7 @@ diff --git a/chrome/browser/net/system_network_context_manager.cc b/chrome/brows
    pref_change_registrar_.Add(
        prefs::kExplicitlyAllowedNetworkPorts,
        base::BindRepeating(
-@@ -691,6 +694,7 @@ void SystemNetworkContextManager::RegisterPrefs(PrefRegistrySimple* registry) {
+@@ -687,6 +690,7 @@ void SystemNetworkContextManager::RegisterPrefs(PrefRegistrySimple* registry) {
    // the system NetworkContext, and the per-profile pref values are used for
    // the profile NetworkContexts.
    registry->RegisterBooleanPref(prefs::kEnableReferrers, true);

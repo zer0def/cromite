@@ -56,7 +56,7 @@ diff --git a/chrome/android/feed/core/java/src/org/chromium/chrome/browser/feed/
 diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -3277,8 +3277,6 @@ static_library("browser") {
+@@ -3286,8 +3286,6 @@ static_library("browser") {
        "feed/android/refresh_task_scheduler_impl.cc",
        "feed/android/refresh_task_scheduler_impl.h",
        "feed/android/web_feed_bridge.cc",
