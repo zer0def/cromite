@@ -8,12 +8,6 @@ echo -e ${RED} -------- chromium version is: $VERSION ${NC}
 echo -e ${RED} -------- cloning depot_tools ${NC}
 git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
 
-echo -e ${RED} -------- apply depot_tools patch ${NC}
-cd depot_tools/
-git apply ../depot_tools.diff
-git apply ../remove_ninja_uploader.diff
-cd ..
-
 echo -e ${RED} -------- set envs ${NC}
 PATH=/home/lg/working_dir/depot_tools:$PATH
 echo $PATH
