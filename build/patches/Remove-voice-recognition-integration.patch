@@ -8,9 +8,10 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../browser/metrics/UmaSessionStats.java      | 19 -----
  .../chrome/browser/ntp/NewTabPage.java        | 38 +---------
  .../browser/ntp/search/SearchBoxMediator.java |  1 -
+ .../browser/searchwidget/SearchActivity.java  |  3 +-
  .../SearchActivityLocationBarLayout.java      |  8 ---
  .../browser/toolbar/ToolbarManager.java       |  5 --
- .../chrome/browser/ui/RootUiCoordinator.java  | 23 +------
+ .../chrome/browser/ui/RootUiCoordinator.java  | 43 ------------
  chrome/browser/ui/android/omnibox/BUILD.gn    |  1 -
  .../chrome/browser/omnibox/LocationBar.java   |  6 --
  .../omnibox/LocationBarCoordinator.java       | 13 ----
@@ -21,7 +22,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../suggestions/AutocompleteCoordinator.java  |  8 ---
  .../suggestions/AutocompleteMediator.java     |  9 ---
  chrome/browser/ui/android/toolbar/BUILD.gn    |  1 -
- 17 files changed, 7 insertions(+), 256 deletions(-)
+ 18 files changed, 7 insertions(+), 279 deletions(-)
 
 diff --git a/chrome/android/features/start_surface/java/src/org/chromium/chrome/features/start_surface/StartSurfaceMediator.java b/chrome/android/features/start_surface/java/src/org/chromium/chrome/features/start_surface/StartSurfaceMediator.java
 --- a/chrome/android/features/start_surface/java/src/org/chromium/chrome/features/start_surface/StartSurfaceMediator.java
@@ -220,6 +221,26 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ntp/search/Sear
      }
  
      /** Called to set a click listener for the search box. */
+diff --git a/chrome/android/java/src/org/chromium/chrome/browser/searchwidget/SearchActivity.java b/chrome/android/java/src/org/chromium/chrome/browser/searchwidget/SearchActivity.java
+--- a/chrome/android/java/src/org/chromium/chrome/browser/searchwidget/SearchActivity.java
++++ b/chrome/android/java/src/org/chromium/chrome/browser/searchwidget/SearchActivity.java
+@@ -65,7 +65,6 @@ import org.chromium.chrome.browser.settings.SettingsLauncherImpl;
+ import org.chromium.chrome.browser.tab.Tab;
+ import org.chromium.chrome.browser.tab.TabBuilder;
+ import org.chromium.chrome.browser.tab.TabLaunchType;
+-import org.chromium.chrome.browser.toolbar.VoiceToolbarButtonController;
+ import org.chromium.chrome.browser.ui.messages.snackbar.SnackbarManager;
+ import org.chromium.chrome.browser.ui.messages.snackbar.SnackbarManager.SnackbarManageable;
+ import org.chromium.chrome.browser.ui.native_page.NativePage;
+@@ -330,7 +329,7 @@ public class SearchActivity extends AsyncInitializationActivity
+                         /*omniboxUma*/ (url, transition, isNtp) -> {},
+                         TabWindowManagerSingleton::getInstance,
+                         /* bookmarkState= */ (url) -> false,
+-                        VoiceToolbarButtonController::isToolbarMicEnabled,
++                        /* isToolbarMicEnabled */ () -> false,
+                         /* merchantTrustSignalsCoordinatorSupplier= */ null,
+                         new OmniboxActionDelegateImpl(
+                                 this,
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/searchwidget/SearchActivityLocationBarLayout.java b/chrome/android/java/src/org/chromium/chrome/browser/searchwidget/SearchActivityLocationBarLayout.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/searchwidget/SearchActivityLocationBarLayout.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/searchwidget/SearchActivityLocationBarLayout.java
@@ -279,7 +300,15 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ui/RootUiCoordi
  import org.chromium.chrome.browser.paint_preview.DemoPaintPreview;
  import org.chromium.chrome.browser.password_manager.ManagePasswordsReferrer;
  import org.chromium.chrome.browser.password_manager.PasswordManagerLauncher;
-@@ -295,7 +293,6 @@ public class RootUiCoordinator
+@@ -134,7 +132,6 @@ import org.chromium.chrome.browser.theme.TopUiThemeColorProvider;
+ import org.chromium.chrome.browser.toolbar.ButtonDataProvider;
+ import org.chromium.chrome.browser.toolbar.ToolbarIntentMetadata;
+ import org.chromium.chrome.browser.toolbar.ToolbarManager;
+-import org.chromium.chrome.browser.toolbar.VoiceToolbarButtonController;
+ import org.chromium.chrome.browser.toolbar.adaptive.AdaptiveButtonActionMenuCoordinator;
+ import org.chromium.chrome.browser.toolbar.adaptive.AdaptiveToolbarButtonController;
+ import org.chromium.chrome.browser.toolbar.adaptive.AdaptiveToolbarButtonVariant;
+@@ -295,7 +292,6 @@ public class RootUiCoordinator
      protected OneshotSupplier<ToolbarIntentMetadata> mIntentMetadataOneshotSupplier;
      protected OneshotSupplierImpl<Boolean> mPromoShownOneshotSupplier = new OneshotSupplierImpl<>();
      protected Supplier<Tab> mStartSurfaceParentTabSupplier;
@@ -287,7 +316,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ui/RootUiCoordi
      private MediaCaptureOverlayController mCaptureController;
      private @Nullable ScrollCaptureManager mScrollCaptureManager;
      protected final ActivityLifecycleDispatcher mActivityLifecycleDispatcher;
-@@ -654,9 +651,6 @@ public class RootUiCoordinator
+@@ -654,9 +650,6 @@ public class RootUiCoordinator
          }
  
          if (mToolbarManager != null) {
@@ -297,28 +326,56 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ui/RootUiCoordi
              mToolbarManager.destroy();
              mToolbarManager = null;
          }
-@@ -1326,19 +1320,11 @@ public class RootUiCoordinator
-                     new VoiceToolbarButtonController.VoiceSearchDelegate() {
-                         @Override
-                         public boolean isVoiceSearchEnabled() {
+@@ -1322,39 +1315,12 @@ public class RootUiCoordinator
+                             () ->
+                                     mToolbarManager.setUrlBarFocus(
+                                             false, OmniboxFocusReason.UNFOCUS));
+-            VoiceToolbarButtonController.VoiceSearchDelegate voiceSearchDelegate =
+-                    new VoiceToolbarButtonController.VoiceSearchDelegate() {
+-                        @Override
+-                        public boolean isVoiceSearchEnabled() {
 -                            VoiceRecognitionHandler voiceRecognitionHandler =
 -                                    mToolbarManager.getVoiceRecognitionHandler();
 -                            if (voiceRecognitionHandler == null) return false;
 -                            return voiceRecognitionHandler.isVoiceSearchEnabled();
-+                            return false;
-                         }
- 
-                         @Override
-                         public void startVoiceRecognition() {
+-                        }
+-
+-                        @Override
+-                        public void startVoiceRecognition() {
 -                            VoiceRecognitionHandler voiceRecognitionHandler =
 -                                    mToolbarManager.getVoiceRecognitionHandler();
 -                            if (voiceRecognitionHandler == null) return;
 -                            voiceRecognitionHandler.startVoiceRecognition(
 -                                    VoiceInteractionSource.TOOLBAR);
-                         }
-                     };
+-                        }
+-                    };
              TranslateToolbarButtonController translateToolbarButtonController =
-@@ -1503,13 +1489,6 @@ public class RootUiCoordinator
+                     new TranslateToolbarButtonController(
+                             mActivityTabProvider,
+                             AppCompatResources.getDrawable(mActivity, R.drawable.ic_translate),
+                             mActivity.getString(R.string.menu_translate),
+                             trackerSupplier);
+-            VoiceToolbarButtonController voiceToolbarButtonController =
+-                    new VoiceToolbarButtonController(
+-                            mActivity,
+-                            AppCompatResources.getDrawable(mActivity, R.drawable.ic_mic_white_24dp),
+-                            mActivityTabProvider,
+-                            trackerSupplier,
+-                            mModalDialogManagerSupplier.get(),
+-                            voiceSearchDelegate);
+             OptionalNewTabButtonController newTabButtonController =
+                     new OptionalNewTabButtonController(
+                             mActivity,
+@@ -1384,8 +1350,6 @@ public class RootUiCoordinator
+                     AdaptiveToolbarButtonVariant.NEW_TAB, newTabButtonController);
+             adaptiveToolbarButtonController.addButtonVariant(
+                     AdaptiveToolbarButtonVariant.SHARE, shareButtonController);
+-            adaptiveToolbarButtonController.addButtonVariant(
+-                    AdaptiveToolbarButtonVariant.VOICE, voiceToolbarButtonController);
+             adaptiveToolbarButtonController.addButtonVariant(
+                     AdaptiveToolbarButtonVariant.ADD_TO_BOOKMARKS,
+                     addToBookmarksToolbarButtonController);
+@@ -1503,13 +1467,6 @@ public class RootUiCoordinator
              if (!mSupportsAppMenuSupplier.getAsBoolean()) {
                  mToolbarManager.getToolbar().disableMenuButton();
              }

@@ -86,6 +86,7 @@ deactivation of all pop-ups (default disabled)
  .../core/converter/parser/url_filter.cc       |   10 +-
  .../converter/parser/url_filter_options.cc    |   21 +-
  .../serializer/flatbuffer_serializer.cc       |   75 +-
+ components/adblock/core/features.cc           |    3 +-
  components/adblock/core/hash/schema_hash.h    |   10 +
  .../adblock/core/sitekey_storage_impl.cc      |    7 +
  .../core/subscription/conversion_executors.h  |    1 +
@@ -130,7 +131,7 @@ deactivation of all pop-ups (default disabled)
  .../blink/renderer/core/css/style_engine.h    |    1 +
  .../renderer/core/exported/web_document.cc    |   15 +-
  .../definitions/adblock_private.d.ts          |   14 +
- 120 files changed, 9293 insertions(+), 1289 deletions(-)
+ 121 files changed, 9294 insertions(+), 1291 deletions(-)
  create mode 100644 chrome/browser/resources/settings/adblock_page/adblock_page.html
  create mode 100644 chrome/browser/resources/settings/adblock_page/adblock_page.ts
  rename components/adblock/android/java/res/xml/{adblock_preferences.xml => eyeo_adblock_preferences.xml} (56%)
@@ -4592,6 +4593,18 @@ diff --git a/components/adblock/core/converter/serializer/flatbuffer_serializer.
      return;
    }
  
+diff --git a/components/adblock/core/features.cc b/components/adblock/core/features.cc
+--- a/components/adblock/core/features.cc
++++ b/components/adblock/core/features.cc
+@@ -19,7 +19,6 @@
+ 
+ namespace adblock {
+ 
+-const base::Feature kAdblockPlusFeature{"AdblockPlus",
+-                                        base::FEATURE_ENABLED_BY_DEFAULT};
++CROMITE_FEATURE(kAdblockPlus, "AdblockPlus", base::FEATURE_ENABLED_BY_DEFAULT);
+ 
+ }
 diff --git a/components/adblock/core/hash/schema_hash.h b/components/adblock/core/hash/schema_hash.h
 new file mode 100644
 --- /dev/null

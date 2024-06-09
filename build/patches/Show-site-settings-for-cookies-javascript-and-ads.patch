@@ -112,7 +112,7 @@ diff --git a/components/browser_ui/site_settings/android/java/src/org/chromium/c
                                  getAddress().getOrigin(),
 -                                ContentSettingValues.BLOCK,
 +                                value,
-+                                "",
++                                ProviderType.NONE,
 +                                /* isEmbargoed= */ false);
 +                setContentSettingException(type, exception);
 +            }

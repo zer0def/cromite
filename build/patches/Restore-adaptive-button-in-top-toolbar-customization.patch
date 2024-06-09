@@ -15,9 +15,13 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../browser/flags/ChromeFeatureList.java      |  1 +
  .../AdaptiveToolbarButtonController.java      |  9 +++
  .../adaptive/AdaptiveToolbarFeatures.java     | 65 ++++++++++++++++++-
+ .../adaptive/AdaptiveToolbarPrefs.java        |  2 +-
  .../AdaptiveToolbarStatePredictor.java        |  9 ++-
  .../AdaptiveToolbarStatePredictorTest.java    | 15 +++++
- 10 files changed, 142 insertions(+), 11 deletions(-)
+ ...oButtonGroupAdaptiveToolbarPreference.java |  1 +
+ ...ve-button-in-top-toolbar-customization.inc |  3 +
+ 13 files changed, 147 insertions(+), 12 deletions(-)
+ create mode 100644 cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Restore-adaptive-button-in-top-toolbar-customization.inc
 
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/settings/MainSettings.java b/chrome/android/java/src/org/chromium/chrome/browser/settings/MainSettings.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/settings/MainSettings.java
@@ -140,7 +144,7 @@ diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browse
  
 +CROMITE_FEATURE(kAdaptiveButtonInTopToolbar,
 +                "AdaptiveButtonInTopToolbar",
-+                base::FEATURE_DISABLED_BY_DEFAULT);
++                base::FEATURE_ENABLED_BY_DEFAULT);
 +
  BASE_FEATURE(kAdaptiveButtonInTopToolbarTranslate,
               "AdaptiveButtonInTopToolbarTranslate",
@@ -277,6 +281,18 @@ diff --git a/chrome/browser/ui/android/toolbar/java/src/org/chromium/chrome/brow
          assert isCustomizationEnabled();
          if (sButtonVariant != null) return sButtonVariant;
          String defaultSegment = getDefaultSegment();
+diff --git a/chrome/browser/ui/android/toolbar/java/src/org/chromium/chrome/browser/toolbar/adaptive/AdaptiveToolbarPrefs.java b/chrome/browser/ui/android/toolbar/java/src/org/chromium/chrome/browser/toolbar/adaptive/AdaptiveToolbarPrefs.java
+--- a/chrome/browser/ui/android/toolbar/java/src/org/chromium/chrome/browser/toolbar/adaptive/AdaptiveToolbarPrefs.java
++++ b/chrome/browser/ui/android/toolbar/java/src/org/chromium/chrome/browser/toolbar/adaptive/AdaptiveToolbarPrefs.java
+@@ -21,7 +21,7 @@ public class AdaptiveToolbarPrefs {
+      */
+     public static boolean isCustomizationPreferenceEnabled() {
+         return ChromeSharedPreferences.getInstance()
+-                .readBoolean(ADAPTIVE_TOOLBAR_CUSTOMIZATION_ENABLED, true);
++                .readBoolean(ADAPTIVE_TOOLBAR_CUSTOMIZATION_ENABLED, false);
+     }
+ 
+     /**
 diff --git a/chrome/browser/ui/android/toolbar/java/src/org/chromium/chrome/browser/toolbar/adaptive/AdaptiveToolbarStatePredictor.java b/chrome/browser/ui/android/toolbar/java/src/org/chromium/chrome/browser/toolbar/adaptive/AdaptiveToolbarStatePredictor.java
 --- a/chrome/browser/ui/android/toolbar/java/src/org/chromium/chrome/browser/toolbar/adaptive/AdaptiveToolbarStatePredictor.java
 +++ b/chrome/browser/ui/android/toolbar/java/src/org/chromium/chrome/browser/toolbar/adaptive/AdaptiveToolbarStatePredictor.java
@@ -323,4 +339,23 @@ diff --git a/chrome/browser/ui/android/toolbar/java/src/org/chromium/chrome/brow
      @Test
      @SmallTest
      public void testManualOverride() {
+diff --git a/chrome/browser/ui/android/toolbar/java/src/org/chromium/chrome/browser/toolbar/adaptive/settings/RadioButtonGroupAdaptiveToolbarPreference.java b/chrome/browser/ui/android/toolbar/java/src/org/chromium/chrome/browser/toolbar/adaptive/settings/RadioButtonGroupAdaptiveToolbarPreference.java
+--- a/chrome/browser/ui/android/toolbar/java/src/org/chromium/chrome/browser/toolbar/adaptive/settings/RadioButtonGroupAdaptiveToolbarPreference.java
++++ b/chrome/browser/ui/android/toolbar/java/src/org/chromium/chrome/browser/toolbar/adaptive/settings/RadioButtonGroupAdaptiveToolbarPreference.java
+@@ -57,6 +57,7 @@ public class RadioButtonGroupAdaptiveToolbarPreference extends Preference
+         mAutoButton =
+                 (RadioButtonWithDescription)
+                         holder.findViewById(R.id.adaptive_option_based_on_usage);
++        mAutoButton.setVisibility(View.GONE);
+         mNewTabButton =
+                 (RadioButtonWithDescription) holder.findViewById(R.id.adaptive_option_new_tab);
+         mShareButton = (RadioButtonWithDescription) holder.findViewById(R.id.adaptive_option_share);
+diff --git a/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Restore-adaptive-button-in-top-toolbar-customization.inc b/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Restore-adaptive-button-in-top-toolbar-customization.inc
+new file mode 100644
+--- /dev/null
++++ b/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Restore-adaptive-button-in-top-toolbar-customization.inc
+@@ -0,0 +1,3 @@
++SET_CROMITE_FEATURE_ENABLED(kAdaptiveButtonInTopToolbarCustomizationV2);
++
++SET_CROMITE_FEATURE_DISABLED(kAdaptiveButtonInTopToolbarTranslate);
 --

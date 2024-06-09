@@ -19,9 +19,11 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../privacy_sandbox/privacy_sandbox_prefs.cc  |  2 +-
  .../privacy_sandbox_settings_impl.cc          | 19 ++++++++++++++-----
  .../identity_manager/account_capabilities.cc  |  2 +-
+ .../Disable-FLoC-and-privacy-sandbox.inc      |  1 +
  .../Disable-FLoC-and-privacy-sandbox.inc      |  4 ++++
  third_party/blink/common/features.cc          |  1 +
- 12 files changed, 32 insertions(+), 22 deletions(-)
+ 13 files changed, 33 insertions(+), 22 deletions(-)
+ create mode 100644 cromite_flags/content/common/features_cc/Disable-FLoC-and-privacy-sandbox.inc
  create mode 100644 cromite_flags/third_party/blink/common/features_cc/Disable-FLoC-and-privacy-sandbox.inc
 
 diff --git a/chrome/browser/chrome_content_browser_client.cc b/chrome/browser/chrome_content_browser_client.cc
@@ -219,6 +221,12 @@ diff --git a/components/signin/public/identity_manager/account_capabilities.cc b
  }
  
  signin::Tribool AccountCapabilities::is_opted_in_to_parental_supervision()
+diff --git a/cromite_flags/content/common/features_cc/Disable-FLoC-and-privacy-sandbox.inc b/cromite_flags/content/common/features_cc/Disable-FLoC-and-privacy-sandbox.inc
+new file mode 100644
+--- /dev/null
++++ b/cromite_flags/content/common/features_cc/Disable-FLoC-and-privacy-sandbox.inc
+@@ -0,0 +1 @@
++SET_CROMITE_FEATURE_DISABLED(kPrivacySandboxAdsAPIsM1Override);
 diff --git a/cromite_flags/third_party/blink/common/features_cc/Disable-FLoC-and-privacy-sandbox.inc b/cromite_flags/third_party/blink/common/features_cc/Disable-FLoC-and-privacy-sandbox.inc
 new file mode 100644
 --- /dev/null

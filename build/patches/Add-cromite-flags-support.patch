@@ -342,7 +342,7 @@ diff --git a/base/feature_list.h b/base/feature_list.h
 +}  // namespace base
 +
 +#define CROMITE_FEATURE(feature, name, default_state) \
-+  constinit const base::Feature feature(name, default_state, true, true); \
++  constinit const base::Feature feature(name, default_state, base::internal::FeatureMacroHandshake::kSecret, true, true); \
 +  _Pragma("clang diagnostic push")                              \
 +  _Pragma("clang diagnostic ignored \"-Wglobal-constructors\"") \
 +  static const ::base::internal::FeatureDefaultStateOverrider   \

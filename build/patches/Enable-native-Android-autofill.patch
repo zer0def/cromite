@@ -20,11 +20,12 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../chromium/chrome/browser/tab/TabImpl.java  | 43 ++++++++--
  chrome/browser/about_flags.cc                 | 22 -----
  chrome/browser/android/tab_android.cc         |  3 +-
- .../autofill/AutofillClientProviderUtils.java |  1 +
+ chrome/browser/autofill/android/BUILD.gn      |  2 +-
+ .../autofill/AutofillClientProviderUtils.java |  2 +-
  chrome/browser/flag_descriptions.cc           |  6 --
  chrome/browser/flag_descriptions.h            |  3 -
  .../strings/android_chrome_strings.grd        |  6 ++
- .../ui/autofill/autofill_client_provider.cc   | 31 +------
+ .../ui/autofill/autofill_client_provider.cc   | 32 +-------
  .../ui/autofill/autofill_client_provider.h    |  6 --
  chrome/browser/ui/tab_helpers.cc              |  4 +-
  components/android_autofill/browser/BUILD.gn  |  1 +
@@ -33,7 +34,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../autofill/AutofillManagerWrapper.java      |  5 +-
  .../components/autofill/AutofillProvider.java |  7 ++
  .../BrowserSelectionActionMenuDelegate.java   | 62 ++++++++++++++
- .../browser/content_autofill_driver.cc        | 55 +++++++++++++
+ .../browser/content_autofill_driver.cc        | 59 +++++++++++++
  .../content/browser/content_autofill_driver.h | 10 +++
  .../content_autofill_driver_factory.cc        | 12 +++
  .../content/renderer/autofill_agent.cc        |  6 ++
@@ -46,7 +47,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../autofill/core/common/autofill_features.h  |  4 -
  .../autofill/core/common/autofill_prefs.cc    |  4 +-
  .../autofill/core/common/autofill_prefs.h     |  5 ++
- 31 files changed, 309 insertions(+), 91 deletions(-)
+ 32 files changed, 314 insertions(+), 94 deletions(-)
  create mode 100644 components/android_autofill/browser/java/src/org/chromium/components/autofill/BrowserSelectionActionMenuDelegate.java
 
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/password_manager/settings/PasswordSettings.java b/chrome/android/java/src/org/chromium/chrome/browser/password_manager/settings/PasswordSettings.java
@@ -332,12 +333,26 @@ diff --git a/chrome/browser/android/tab_android.cc b/chrome/browser/android/tab_
  
    // We need to initialize the keyboard suppressor before creating any
    // AutofillManagers and after the autofill client is available.
+diff --git a/chrome/browser/autofill/android/BUILD.gn b/chrome/browser/autofill/android/BUILD.gn
+--- a/chrome/browser/autofill/android/BUILD.gn
++++ b/chrome/browser/autofill/android/BUILD.gn
+@@ -124,7 +124,7 @@ android_library("bottom_sheet_utils_java") {
+ generate_jni("jni_headers") {
+   sources = [
+     "java/src/org/chromium/chrome/browser/autofill/AddressNormalizerFactory.java",
+-    "java/src/org/chromium/chrome/browser/autofill/AutofillClientProviderUtils.java",
++    #"java/src/org/chromium/chrome/browser/autofill/AutofillClientProviderUtils.java",
+     "java/src/org/chromium/chrome/browser/autofill/AutofillImageFetcher.java",
+     "java/src/org/chromium/chrome/browser/autofill/AutofillProfileBridge.java",
+     "java/src/org/chromium/chrome/browser/autofill/PersonalDataManager.java",
 diff --git a/chrome/browser/autofill/android/java/src/org/chromium/chrome/browser/autofill/AutofillClientProviderUtils.java b/chrome/browser/autofill/android/java/src/org/chromium/chrome/browser/autofill/AutofillClientProviderUtils.java
 --- a/chrome/browser/autofill/android/java/src/org/chromium/chrome/browser/autofill/AutofillClientProviderUtils.java
 +++ b/chrome/browser/autofill/android/java/src/org/chromium/chrome/browser/autofill/AutofillClientProviderUtils.java
-@@ -39,6 +39,7 @@ public class AutofillClientProviderUtils {
+@@ -37,8 +37,8 @@ public class AutofillClientProviderUtils {
+      * Android: The AutofillManager exists, is enabled, and its provider is not Autofill with
+      * Google.
       */
-     @CalledByNative
+-    @CalledByNative
      public static boolean isAllowedToUseAndroidAutofillFramework() {
 +        if ((true)) return true;
          if (sAllowedToUseAutofillFrameworkForTesting != null) {
@@ -391,7 +406,15 @@ diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chro
 diff --git a/chrome/browser/ui/autofill/autofill_client_provider.cc b/chrome/browser/ui/autofill/autofill_client_provider.cc
 --- a/chrome/browser/ui/autofill/autofill_client_provider.cc
 +++ b/chrome/browser/ui/autofill/autofill_client_provider.cc
-@@ -21,32 +21,13 @@
+@@ -13,7 +13,6 @@
+ 
+ #if BUILDFLAG(IS_ANDROID)
+ #include "base/android/jni_android.h"
+-#include "chrome/browser/autofill/android/jni_headers/AutofillClientProviderUtils_jni.h"
+ #include "chrome/browser/keyboard_accessory/android/manual_filling_controller_impl.h"
+ #include "components/android_autofill/browser/android_autofill_client.h"
+ #endif  // BUILDFLAG(IS_ANDROID)
+@@ -21,32 +20,13 @@
  namespace autofill {
  namespace {
  
@@ -426,7 +449,7 @@ diff --git a/chrome/browser/ui/autofill/autofill_client_provider.cc b/chrome/bro
  #endif  // BUILDFLAG(IS_ANDROID)
  }
  
-@@ -54,15 +35,7 @@ AutofillClientProvider::~AutofillClientProvider() = default;
+@@ -54,15 +34,7 @@ AutofillClientProvider::~AutofillClientProvider() = default;
  
  void AutofillClientProvider::CreateClientForWebContents(
      content::WebContents* web_contents) {
@@ -667,51 +690,62 @@ diff --git a/components/autofill/content/browser/content_autofill_driver.cc b/co
        });
  }
  
-@@ -475,6 +483,10 @@ void ContentAutofillDriver::TextFieldDidChange(const FormData& raw_form,
+@@ -457,6 +465,10 @@ void ContentAutofillDriver::CaretMovedInFormField(
+          const FormFieldData& field, const gfx::Rect& caret_bounds) {
+         target->GetAutofillManager().OnCaretMovedInFormField(
+             WithNewVersion(form), field, caret_bounds);
++        if (target->secondary_autofill_manager()) {
++          target->secondary_autofill_manager()->OnCaretMovedInFormField(
++            WithNewVersion(form), field, caret_bounds);
++        }
+       });
+ }
+ 
+@@ -475,6 +487,10 @@ void ContentAutofillDriver::TextFieldDidChange(const FormData& raw_form,
           const FormFieldData& field, base::TimeTicks timestamp) {
          target->GetAutofillManager().OnTextFieldDidChange(WithNewVersion(form),
                                                            field, timestamp);
 +        if (target->secondary_autofill_manager()) {
 +          target->secondary_autofill_manager()->OnTextFieldDidChange(
-+            WithNewVersion(form), field, bounding_box, timestamp);
++            WithNewVersion(form), field, timestamp);
 +        }
        });
  }
  
-@@ -492,6 +504,10 @@ void ContentAutofillDriver::TextFieldDidScroll(const FormData& raw_form,
+@@ -492,6 +508,10 @@ void ContentAutofillDriver::TextFieldDidScroll(const FormData& raw_form,
           const FormFieldData& field) {
          target->GetAutofillManager().OnTextFieldDidScroll(WithNewVersion(form),
                                                            field);
 +        if (target->secondary_autofill_manager()) {
 +          target->secondary_autofill_manager()->OnTextFieldDidScroll(
-+              WithNewVersion(form), field, bounding_box);
++              WithNewVersion(form), field);
 +        }
        });
  }
  
-@@ -510,6 +526,10 @@ void ContentAutofillDriver::SelectControlDidChange(
+@@ -510,6 +530,10 @@ void ContentAutofillDriver::SelectControlDidChange(
           const FormFieldData& field) {
          target->GetAutofillManager().OnSelectControlDidChange(
              WithNewVersion(form), field);
 +        if (target->secondary_autofill_manager()) {
 +          target->secondary_autofill_manager()->OnSelectControlDidChange(
-+            WithNewVersion(form), field, bounding_box);
++            WithNewVersion(form), field);
 +        }
        });
  }
  
-@@ -532,6 +552,10 @@ void ContentAutofillDriver::AskForValuesToFill(
+@@ -532,6 +556,10 @@ void ContentAutofillDriver::AskForValuesToFill(
           AutofillSuggestionTriggerSource trigger_source) {
          target->GetAutofillManager().OnAskForValuesToFill(
              WithNewVersion(form), field, caret_bounds, trigger_source);
 +        if (target->secondary_autofill_manager()) {
 +          target->secondary_autofill_manager()->OnAskForValuesToFill(
-+              WithNewVersion(form), field, bounding_box, trigger_source);
++              WithNewVersion(form), field, caret_bounds, trigger_source);
 +        }
        });
  }
  
-@@ -543,6 +567,8 @@ void ContentAutofillDriver::HidePopup() {
+@@ -543,6 +571,8 @@ void ContentAutofillDriver::HidePopup() {
      DCHECK(!target->IsPrerendering())
          << "We should never affect UI while prerendering";
      target->GetAutofillManager().OnHidePopup();
@@ -720,33 +754,33 @@ diff --git a/components/autofill/content/browser/content_autofill_driver.cc b/co
    });
  }
  
-@@ -554,6 +580,8 @@ void ContentAutofillDriver::FocusOnNonFormField(bool had_interacted_form) {
+@@ -554,6 +584,8 @@ void ContentAutofillDriver::FocusOnNonFormField(bool had_interacted_form) {
        this, had_interacted_form,
        [](autofill::AutofillDriver* target, bool had_interacted_form) {
          target->GetAutofillManager().OnFocusOnNonFormField(had_interacted_form);
 +        if (target->secondary_autofill_manager())
-+          target->secondary_autofill_manager()->OnFocusNoLongerOnForm(had_interacted_form);
++          target->secondary_autofill_manager()->OnFocusOnNonFormField(had_interacted_form);
        });
  }
  
-@@ -571,9 +599,16 @@ void ContentAutofillDriver::FocusOnFormField(const FormData& raw_form,
+@@ -571,9 +603,16 @@ void ContentAutofillDriver::FocusOnFormField(const FormData& raw_form,
           const FormFieldData& field) {
          target->GetAutofillManager().OnFocusOnFormField(WithNewVersion(form),
                                                          field);
 +        if (target->secondary_autofill_manager()) {
 +          target->secondary_autofill_manager()->OnFocusOnFormField(
-+            WithNewVersion(form), field, bounding_box);
++            WithNewVersion(form), field);
 +        }
        },
        [](autofill::AutofillDriver* target) {
          target->GetAutofillManager().OnFocusOnNonFormField(true);
 +        if (target->secondary_autofill_manager()) {
-+          target->secondary_autofill_manager()->OnFocusNoLongerOnForm(true);
++          target->secondary_autofill_manager()->OnFocusOnNonFormField(true);
 +        }
        });
  }
  
-@@ -588,6 +623,10 @@ void ContentAutofillDriver::DidFillAutofillFormData(const FormData& raw_form,
+@@ -588,6 +627,10 @@ void ContentAutofillDriver::DidFillAutofillFormData(const FormData& raw_form,
           base::TimeTicks timestamp) {
          target->GetAutofillManager().OnDidFillAutofillFormData(
              WithNewVersion(form), timestamp);
@@ -757,7 +791,7 @@ diff --git a/components/autofill/content/browser/content_autofill_driver.cc b/co
        });
  }
  
-@@ -597,6 +636,8 @@ void ContentAutofillDriver::DidEndTextFieldEditing() {
+@@ -597,6 +640,8 @@ void ContentAutofillDriver::DidEndTextFieldEditing() {
    }
    router().DidEndTextFieldEditing(this, [](autofill::AutofillDriver* target) {
      target->GetAutofillManager().OnDidEndTextFieldEditing();
@@ -766,7 +800,7 @@ diff --git a/components/autofill/content/browser/content_autofill_driver.cc b/co
    });
  }
  
-@@ -611,6 +652,10 @@ void ContentAutofillDriver::SelectOrSelectListFieldOptionsDidChange(
+@@ -611,6 +656,10 @@ void ContentAutofillDriver::SelectOrSelectListFieldOptionsDidChange(
          cast(target)
              ->GetAutofillManager()
              .OnSelectOrSelectListFieldOptionsDidChange(WithNewVersion(form));
@@ -777,18 +811,18 @@ diff --git a/components/autofill/content/browser/content_autofill_driver.cc b/co
        });
  }
  
-@@ -632,6 +677,10 @@ void ContentAutofillDriver::JavaScriptChangedAutofilledValue(
+@@ -632,6 +681,10 @@ void ContentAutofillDriver::JavaScriptChangedAutofilledValue(
           bool formatting_only) {
          target->GetAutofillManager().OnJavaScriptChangedAutofilledValue(
              WithNewVersion(form), field, old_value, formatting_only);
 +        if (target->secondary_autofill_manager()) {
 +          target->secondary_autofill_manager()->OnJavaScriptChangedAutofilledValue(
-+            WithNewVersion(form), field, old_value);
++            WithNewVersion(form), field, old_value, formatting_only);
 +        }
        });
  }
  
-@@ -639,6 +688,8 @@ void ContentAutofillDriver::Reset() {
+@@ -639,6 +692,8 @@ void ContentAutofillDriver::Reset() {
    owner_->router().UnregisterDriver(this,
                                      /*driver_is_dying=*/false);
    autofill_manager_->Reset();
@@ -797,7 +831,7 @@ diff --git a/components/autofill/content/browser/content_autofill_driver.cc b/co
  }
  
  const mojo::AssociatedRemote<mojom::AutofillAgent>&
-@@ -651,6 +702,10 @@ ContentAutofillDriver::GetAutofillAgent() {
+@@ -651,6 +706,10 @@ ContentAutofillDriver::GetAutofillAgent() {
    return autofill_agent_;
  }
  
@@ -845,7 +879,7 @@ diff --git a/components/autofill/content/browser/content_autofill_driver_factory
 +#if BUILDFLAG(IS_ANDROID)
 +#include "components/android_autofill/browser/android_autofill_manager.h"
 +#include "components/android_autofill/browser/autofill_provider.h"
-+#include "components/android_autofill/browser/autofill_provider_android.h"
++#include "components/android_autofill/browser/android_autofill_provider.h"
 +#endif
 +
  namespace autofill {

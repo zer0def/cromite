@@ -577,7 +577,7 @@ new file mode 100644
 +import android.widget.TextView;
 +
 +import android.content.SharedPreferences;
-+import org.chromium.chrome.browser.omaha.OmahaBase;
++import org.chromium.chrome.browser.omaha.OmahaPrefUtils;
 +
 +import androidx.annotation.NonNull;
 +import androidx.annotation.Nullable;
@@ -730,7 +730,7 @@ new file mode 100644
 +        assert !isWaitingForNativeAndPolicyInit();
 +
 +        setSpinnerVisible(false);
-+        mAutoUpdaterCheckBox.setChecked(true);
++        mAutoUpdaterCheckBox.setChecked(false);
 +    }
 +
 +    private void updateView() {
@@ -771,7 +771,7 @@ new file mode 100644
 +    }
 +
 +    private void updateReportCheckbox() {
-+        mAutoUpdaterCheckBox.setChecked(true);
++        mAutoUpdaterCheckBox.setChecked(false);
 +    }
 +
 +    private void onPolicyServiceInitialized(boolean onDevicePolicyFound) {
@@ -800,8 +800,8 @@ new file mode 100644
 +        mTosAcceptedTime = SystemClock.elapsedRealtime();
 +
 +        // save updater configuration only on button click
-+        SharedPreferences.Editor sharedPreferenceEditor = OmahaBase.getSharedPreferences().edit();
-+        sharedPreferenceEditor.putBoolean(OmahaBase.PREF_ALLOW_INLINE_UPDATE, mAutoUpdaterChecked);
++        SharedPreferences.Editor sharedPreferenceEditor = OmahaPrefUtils.getSharedPreferences().edit();
++        sharedPreferenceEditor.putBoolean(OmahaPrefUtils.PREF_ALLOW_INLINE_UPDATE, mAutoUpdaterChecked);
 +        sharedPreferenceEditor.apply();
 +
 +        tryMarkTermsAccepted(true);

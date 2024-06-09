@@ -79,7 +79,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../media_router/caf/CafMessageHandler.java   | 102 +--
  .../media_router/caf/CastMediaSource.java     |  10 +-
  .../media_router/caf/CastOptionsProvider.java |  22 +-
- .../caf/CastSessionController.java            |  84 ---
+ .../caf/CastSessionController.java            |  84 --
  .../media_router/caf/CastUtils.java           |   8 -
  .../CafExpandedControllerActivity.java        |  35 +-
  .../CafRemotingMediaRouteProvider.java        |   4 +-
@@ -104,11 +104,11 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  services/BUILD.gn                             |   9 -
  services/device/geolocation/BUILD.gn          |   4 -
  services/shape_detection/BUILD.gn             |   2 -
- third_party/android_deps/BUILD.gn             | 664 +-----------------
+ third_party/android_deps/BUILD.gn             | 728 +-----------------
  .../preconditions/javatests/BUILD.gn          |   1 -
  .../gms/ChromiumPlayServicesAvailability.java |  10 +-
  third_party/cardboard/BUILD.gn                |   4 -
- 84 files changed, 117 insertions(+), 2164 deletions(-)
+ 84 files changed, 117 insertions(+), 2228 deletions(-)
  create mode 100644 components/webauthn/android/java/src/org/chromium/components/webauthn/ConditionalUiState.java
 
 diff --git a/android_webview/expectations/system_webview_bundle.AndroidManifest.expected b/android_webview/expectations/system_webview_bundle.AndroidManifest.expected
@@ -3681,7 +3681,37 @@ diff --git a/third_party/android_deps/BUILD.gn b/third_party/android_deps/BUILD.
  }
  
  # TODO(crbug.com/1366370) Remove this once all depencencies are updated to
-@@ -781,237 +772,6 @@ if (!limit_android_deps) {
+@@ -737,29 +728,6 @@ if (!limit_android_deps) {
+     ]
+   }
+ 
+-  # This is generated, do not edit. Update BuildConfigGenerator.groovy instead.
+-  android_aar_prebuilt("com_android_support_support_core_ui_java") {
+-    aar_path =
+-        "libs/com_android_support_support_core_ui/support-core-ui-28.0.0.aar"
+-    info_path = "libs/com_android_support_support_core_ui/com_android_support_support_core_ui.info"
+-    enable_bytecode_checks = false
+-    deps = [
+-      ":com_android_support_asynclayoutinflater_java",
+-      ":com_android_support_coordinatorlayout_java",
+-      ":com_android_support_cursoradapter_java",
+-      ":com_android_support_customview_java",
+-      ":com_android_support_drawerlayout_java",
+-      ":com_android_support_interpolator_java",
+-      ":com_android_support_slidingpanelayout_java",
+-      ":com_android_support_support_annotations_java",
+-      ":com_android_support_support_compat_java",
+-      ":com_android_support_support_core_utils_java",
+-      ":com_android_support_swiperefreshlayout_java",
+-      ":com_android_support_viewpager_java",
+-    ]
+-    resource_overlay = true
+-  }
+-
+   # This is generated, do not edit. Update BuildConfigGenerator.groovy instead.
+   android_aar_prebuilt(
+       "com_google_android_apps_common_testing_accessibility_framework_accessibility_test_framework_java") {
+@@ -781,237 +749,6 @@ if (!limit_android_deps) {
      ]
    }
  
@@ -3919,7 +3949,7 @@ diff --git a/third_party/android_deps/BUILD.gn b/third_party/android_deps/BUILD.
    # This is generated, do not edit. Update BuildConfigGenerator.groovy instead.
    if (!defined(material_design_target)) {
      android_aar_prebuilt("com_google_android_material_material_java") {
-@@ -1060,73 +820,6 @@ if (!limit_android_deps) {
+@@ -1060,73 +797,6 @@ if (!limit_android_deps) {
      }
    }
  
@@ -3993,7 +4023,28 @@ diff --git a/third_party/android_deps/BUILD.gn b/third_party/android_deps/BUILD.
    # This is generated, do not edit. Update BuildConfigGenerator.groovy instead.
    if (!defined(guava_android_target)) {
      java_prebuilt("com_google_guava_guava_android_java") {
-@@ -1897,361 +1590,6 @@ if (!limit_android_deps) {
+@@ -1244,20 +914,6 @@ if (!limit_android_deps) {
+     requires_android = true
+   }
+ 
+-  # This is generated, do not edit. Update BuildConfigGenerator.groovy instead.
+-  android_aar_prebuilt("io_grpc_grpc_binder_java") {
+-    aar_path = "libs/io_grpc_grpc_binder/grpc-binder-1.49.0.aar"
+-    info_path = "libs/io_grpc_grpc_binder/io_grpc_grpc_binder.info"
+-    enable_bytecode_checks = false
+-    deps = [
+-      ":io_grpc_grpc_core_java",
+-      "//third_party/android_deps:guava_android_java",
+-      "//third_party/androidx:androidx_annotation_annotation_java",
+-      "//third_party/androidx:androidx_core_core_java",
+-      "//third_party/androidx:androidx_lifecycle_lifecycle_common_java",
+-    ]
+-  }
+-
+   # This is generated, do not edit. Update BuildConfigGenerator.groovy instead.
+   java_prebuilt("io_grpc_grpc_context_java") {
+     jar_path = "libs/io_grpc_grpc_context/grpc-context-1.49.0.jar"
+@@ -1897,361 +1553,6 @@ if (!limit_android_deps) {
        "androidx/*",
      ]
    }
@@ -4355,6 +4406,40 @@ diff --git a/third_party/android_deps/BUILD.gn b/third_party/android_deps/BUILD.
    # This is generated, do not edit. Update BuildConfigGenerator.groovy instead.
    java_prebuilt("com_squareup_javawriter_java") {
      jar_path = "libs/com_squareup_javawriter/javawriter-2.1.1.jar"
+@@ -2305,33 +1606,6 @@ if (!limit_android_deps) {
+     deps = [ "//third_party/kotlin_stdlib:kotlin_stdlib_java" ]
+   }
+ 
+-  # This is generated, do not edit. Update BuildConfigGenerator.groovy instead.
+-  java_prebuilt("io_grpc_grpc_core_java") {
+-    jar_path = "libs/io_grpc_grpc_core/grpc-core-1.49.0.jar"
+-    output_name = "io_grpc_grpc_core"
+-    supports_android = true
+-    enable_bytecode_checks = false
+-
+-    # To remove visibility constraint, add this dependency to
+-    # //third_party/android_deps/build.gradle.
+-    visibility = [
+-      ":*",
+-      "//third_party/androidx:*",
+-    ]
+-    deps = [
+-      ":com_google_android_annotations_java",
+-      ":com_google_code_gson_gson_java",
+-      ":com_google_errorprone_error_prone_annotations_java",
+-      ":io_grpc_grpc_api_java",
+-      ":io_perfmark_perfmark_api_java",
+-      ":org_codehaus_mojo_animal_sniffer_annotations_java",
+-      "//third_party/android_deps:guava_android_java",
+-    ]
+-
+-    # https://crbug.com/1412551
+-    requires_android = true
+-  }
+-
+   # This is generated, do not edit. Update BuildConfigGenerator.groovy instead.
+   java_prebuilt("io_perfmark_perfmark_api_java") {
+     jar_path = "libs/io_perfmark_perfmark_api/perfmark-api-0.25.0.jar"
 diff --git a/third_party/android_deps/local_modifications/preconditions/javatests/BUILD.gn b/third_party/android_deps/local_modifications/preconditions/javatests/BUILD.gn
 --- a/third_party/android_deps/local_modifications/preconditions/javatests/BUILD.gn
 +++ b/third_party/android_deps/local_modifications/preconditions/javatests/BUILD.gn

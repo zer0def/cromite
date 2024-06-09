@@ -36,8 +36,9 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../attribution/request_headers_internal.cc   |   1 +
  .../network/public/cpp/attribution_utils.cc   |   2 +
  third_party/blink/renderer/core/page/page.cc  |   2 +-
+ .../platform/runtime_enabled_features.json5   |   1 +
  ui/events/android/motion_event_android.cc     |   6 +-
- 26 files changed, 72 insertions(+), 375 deletions(-)
+ 27 files changed, 73 insertions(+), 375 deletions(-)
  create mode 100644 cromite_flags/content/common/features_cc/Disable-conversion-measurement-api.inc
  create mode 100644 cromite_flags/content/public/common/content_features_cc/Disable-conversion-measurement-api.inc
  create mode 100644 cromite_flags/services/network/public/cpp/features_cc/Disable-conversion-measurement-api.inc
@@ -882,6 +883,17 @@ diff --git a/third_party/blink/renderer/core/page/page.cc b/third_party/blink/re
  }
  
  template class CORE_TEMPLATE_EXPORT Supplement<Page>;
+diff --git a/third_party/blink/renderer/platform/runtime_enabled_features.json5 b/third_party/blink/renderer/platform/runtime_enabled_features.json5
+--- a/third_party/blink/renderer/platform/runtime_enabled_features.json5
++++ b/third_party/blink/renderer/platform/runtime_enabled_features.json5
+@@ -3976,6 +3976,7 @@
+     },
+     {
+       name: "TopicsAPI",
++      status: "experimental",
+       base_feature: "none",
+       origin_trial_feature_name: "PrivacySandboxAdsAPIs",
+       origin_trial_allows_third_party: true,
 diff --git a/ui/events/android/motion_event_android.cc b/ui/events/android/motion_event_android.cc
 --- a/ui/events/android/motion_event_android.cc
 +++ b/ui/events/android/motion_event_android.cc

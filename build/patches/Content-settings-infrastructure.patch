@@ -40,7 +40,7 @@ Require: bromite-build-utils.patch
  .../browser_ui/site_settings/android/BUILD.gn |  18 +
  .../site_settings/AllSiteSettings.java        |   5 +-
  .../BromiteCustomContentSetting.java          | 155 +++++++
- .../BromiteCustomContentSettingImpl.java      | 411 ++++++++++++++++++
+ .../BromiteCustomContentSettingImpl.java      | 412 ++++++++++++++++++
  ...tomTriStateSiteSettingsPreferenceImpl.java |  24 +
  .../ContentSettingsResources.java             |  16 +-
  .../site_settings/SingleCategorySettings.java |  50 ++-
@@ -83,7 +83,7 @@ Require: bromite-build-utils.patch
  .../platform/web_content_settings_client.h    |   9 +
  .../execution_context/execution_context.cc    |  16 +
  .../execution_context/execution_context.h     |   5 +
- 72 files changed, 1866 insertions(+), 95 deletions(-)
+ 72 files changed, 1867 insertions(+), 95 deletions(-)
  create mode 100644 components/browser_ui/settings/android/java/res/layout/preference_spinner_single_widget.xml
  create mode 100644 components/browser_ui/site_settings/android/java/src/org/chromium/components/browser_ui/site_settings/BromiteCustomContentSetting.java
  create mode 100644 components/browser_ui/site_settings/android/java/src/org/chromium/components/browser_ui/site_settings/BromiteCustomContentSettingImpl.java
@@ -1690,7 +1690,7 @@ diff --git a/components/browser_ui/site_settings/android/java/src/org/chromium/c
 new file mode 100644
 --- /dev/null
 +++ b/components/browser_ui/site_settings/android/java/src/org/chromium/components/browser_ui/site_settings/BromiteCustomContentSettingImpl.java
-@@ -0,0 +1,411 @@
+@@ -0,0 +1,412 @@
 +/*
 +    This file is part of Bromite.
 +
@@ -1719,6 +1719,7 @@ new file mode 100644
 +import org.chromium.components.browser_ui.site_settings.SiteSettingsCategory;
 +import org.chromium.components.content_settings.ContentSettingValues;
 +import org.chromium.components.content_settings.ContentSettingsType;
++import org.chromium.components.content_settings.ProviderType;
 +import org.chromium.content_public.browser.BrowserContextHandle;
 +import org.chromium.components.browser_ui.settings.ChromeBasePreference;
 +
@@ -2050,7 +2051,7 @@ new file mode 100644
 +            ContentSettingException exception = cs.createCustomException(type, value, websiteAddress);
 +            if (exception == null) {
 +                exception = new ContentSettingException(
-+                    cs.getContentSetting(), websiteAddress.getHost(), value, "",
++                    cs.getContentSetting(), websiteAddress.getHost(), value, ProviderType.NONE,
 +                    /*isEmbargoed=*/false);
 +            }
 +            return exception;

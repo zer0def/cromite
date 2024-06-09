@@ -25,7 +25,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../mipmap-xxxhdpi/app_icon.png               | Bin 9667 -> 20837 bytes
  .../mipmap-xxxhdpi/layered_app_icon.png       | Bin 3652 -> 29220 bytes
  .../layered_app_icon_background.png           | Bin 3519 -> 142032 bytes
- .../inline/BromiteInlineUpdateController.java |  21 +++-
+ .../inline/BromiteInlineUpdateController.java |  19 +++-
  chrome/app/extensions_strings.grdp            |   4 +-
  chrome/app/settings_strings.grdp              |   2 +-
  chrome/app/theme/chromium/BRANDING            |   8 +-
@@ -51,9 +51,10 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../chromium/product_logo_white.png           | Bin 1417 -> 3040 bytes
  .../chromium/product_logo.png                 | Bin 2714 -> 7923 bytes
  .../chromium/product_logo_white.png           | Bin 2512 -> 6790 bytes
+ content/child/runtime_features.cc             |  23 +++--
  tools/grit/grit/grd_reader.py                 |  35 +++++++
  ui/base/ui_base_features.cc                   |   3 +
- 49 files changed, 166 insertions(+), 99 deletions(-)
+ 50 files changed, 175 insertions(+), 111 deletions(-)
 
 diff --git a/build/BUILD.gn b/build/BUILD.gn
 --- a/build/BUILD.gn
@@ -9115,7 +9116,7 @@ W=g!Ha2?pSwIRxeC=1^|uclqCxqvpf_
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/omaha/inline/BromiteInlineUpdateController.java b/chrome/android/java/src/org/chromium/chrome/browser/omaha/inline/BromiteInlineUpdateController.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/omaha/inline/BromiteInlineUpdateController.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/omaha/inline/BromiteInlineUpdateController.java
-@@ -61,10 +61,10 @@ import org.chromium.chrome.browser.omaha.VersionNumber;
+@@ -62,10 +62,10 @@ import org.chromium.chrome.browser.endpoint_fetcher.EndpointResponse;
  public class BromiteInlineUpdateController implements InlineUpdateController {
  
      private static final String TAG = "BromiteInlineUpdateController";
@@ -9128,9 +9129,9 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/omaha/inline/Br
 +    private final String UPSTREAM_VERSION_URL = "";
 +    public static final String VULNERABLE_VERSION_DOC_URL = "";
  
-     public static String getDownloadUrl() {
-         return UPDATE_VERSION_URL + BuildConfig.BUILD_TARGET_CPU + "_ChromePublic.apk";
-@@ -213,11 +213,20 @@ public class BromiteInlineUpdateController implements InlineUpdateController {
+     @Override
+     public String getDownloadUrl() {
+@@ -223,6 +223,13 @@ public class BromiteInlineUpdateController implements InlineUpdateController {
                          Log.i(TAG, "BromiteUpdater: obtained response '%s' and redirect URL '%s'", endpointResponse.getResponseString(), redirectURL);
                          if (redirectURL.indexOf(REDIRECT_URL_PREFIX) == 0) {
                              redirectURL = redirectURL.substring(REDIRECT_URL_PREFIX.length());
@@ -9144,14 +9145,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/omaha/inline/Br
                              String[] parts = redirectURL.split(Pattern.quote("/"));
                              if (parts.length > 0) {
                                  VersionNumber version = VersionNumber.fromString(parts[0]);
-                                 if (version != null) {
-                                     versionFound = true;
-+                                    if (UPSTREAM_VERSION_URL.equals(""))
-+                                        OmahaBase.updateLastPushedTimeStamp(System.currentTimeMillis());
-                                     OmahaBase.setLatestModifiedVersion(parts[0]);
-                                     callback.onResult(version);
-                                     return;
-@@ -240,6 +249,10 @@ public class BromiteInlineUpdateController implements InlineUpdateController {
+@@ -252,6 +259,10 @@ public class BromiteInlineUpdateController implements InlineUpdateController {
      }
  
      private void checkLatestUpstreamVersion(final Callback<VersionNumber> callback) {
@@ -18868,6 +18862,95 @@ z%lwlC#@8v20MrdyXS4Cd9v0(a*!707Mi)DWKCPo$-?g#BRX!@}3RwzBwgOM1&^{Rc
 z3=3bI32q;3&^A^#@RQ;k{^t41Rq+f34W3u|*@1288y{>q;|6&;qJI})ZE0^oH1|#U
 EKU(of)Bpeg
 
+diff --git a/content/child/runtime_features.cc b/content/child/runtime_features.cc
+--- a/content/child/runtime_features.cc
++++ b/content/child/runtime_features.cc
+@@ -616,7 +616,7 @@ void ResolveInvalidConfigurations() {
+        base::FeatureList::IsEnabled(
+            features::kPrivacySandboxAdsAPIsM1Override)) &&
+       !base::FeatureList::IsEnabled(blink::features::kFencedFrames)) {
+-    LOG_IF(WARNING, WebRuntimeFeatures::IsFencedFramesEnabled())
++    CHECK(!WebRuntimeFeatures::IsFencedFramesEnabled())
+         << "Fenced frames cannot be enabled in this configuration. Use --"
+         << switches::kEnableFeatures << "="
+         << blink::features::kFencedFrames.name << " instead.";
+@@ -626,9 +626,8 @@ void ResolveInvalidConfigurations() {
+   if (!base::FeatureList::IsEnabled(blink::features::kFencedFrames) &&
+       base::FeatureList::IsEnabled(
+           blink::features::kFencedFramesLocalUnpartitionedDataAccess)) {
+-    LOG_IF(
+-        WARNING,
+-        WebRuntimeFeatures::IsFencedFramesLocalUnpartitionedDataAccessEnabled())
++    CHECK(
++        !WebRuntimeFeatures::IsFencedFramesLocalUnpartitionedDataAccessEnabled())
+         << "Fenced frames must be enabled in order to enable local "
+            "unpartitioned "
+         << "data access. Use --" << switches::kEnableFeatures << "="
+@@ -641,7 +640,7 @@ void ResolveInvalidConfigurations() {
+   // The Document API should be additionally gated by the
+   // `kBrowsingTopicsDocumentAPI` feature.
+   if (!base::FeatureList::IsEnabled(blink::features::kBrowsingTopics)) {
+-    LOG_IF(WARNING, WebRuntimeFeatures::IsTopicsAPIEnabled())
++    CHECK(!WebRuntimeFeatures::IsTopicsAPIEnabled())
+         << "Topics cannot be enabled in this configuration. Use --"
+         << switches::kEnableFeatures << "="
+         << blink::features::kBrowsingTopics.name << " in addition.";
+@@ -661,7 +660,7 @@ void ResolveInvalidConfigurations() {
+   }
+ 
+   if (!base::FeatureList::IsEnabled(blink::features::kSharedStorageAPI)) {
+-    LOG_IF(WARNING, WebRuntimeFeatures::IsSharedStorageAPIEnabled())
++    CHECK(!WebRuntimeFeatures::IsSharedStorageAPIEnabled())
+         << "SharedStorage cannot be enabled in this "
+            "configuration. Use --"
+         << switches::kEnableFeatures << "="
+@@ -671,7 +670,7 @@ void ResolveInvalidConfigurations() {
+ 
+   if (!base::FeatureList::IsEnabled(blink::features::kSharedStorageAPIM118) ||
+       !base::FeatureList::IsEnabled(blink::features::kSharedStorageAPI)) {
+-    LOG_IF(WARNING, WebRuntimeFeatures::IsSharedStorageAPIM118Enabled())
++    CHECK(!WebRuntimeFeatures::IsSharedStorageAPIM118Enabled())
+         << "SharedStorage for M118+ cannot be enabled in this "
+            "configuration. Use --"
+         << switches::kEnableFeatures << "="
+@@ -682,7 +681,7 @@ void ResolveInvalidConfigurations() {
+ 
+   if (!base::FeatureList::IsEnabled(blink::features::kSharedStorageAPIM125) ||
+       !base::FeatureList::IsEnabled(blink::features::kSharedStorageAPI)) {
+-    LOG_IF(WARNING, WebRuntimeFeatures::IsSharedStorageAPIM125Enabled())
++    CHECK(!WebRuntimeFeatures::IsSharedStorageAPIM125Enabled())
+         << "SharedStorage for M125+ cannot be enabled in this "
+            "configuration. Use --"
+         << switches::kEnableFeatures << "="
+@@ -693,7 +692,7 @@ void ResolveInvalidConfigurations() {
+ 
+   if (!base::FeatureList::IsEnabled(
+           attribution_reporting::features::kConversionMeasurement)) {
+-    LOG_IF(WARNING, WebRuntimeFeatures::IsAttributionReportingEnabled())
++    CHECK(!WebRuntimeFeatures::IsAttributionReportingEnabled())
+         << "AttributionReporting cannot be enabled in this "
+            "configuration. Use --"
+         << switches::kEnableFeatures << "="
+@@ -706,8 +705,8 @@ void ResolveInvalidConfigurations() {
+           attribution_reporting::features::kConversionMeasurement) ||
+       !base::FeatureList::IsEnabled(
+           network::features::kAttributionReportingCrossAppWeb)) {
+-    LOG_IF(WARNING,
+-           WebRuntimeFeatures::IsAttributionReportingCrossAppWebEnabled())
++    CHECK(
++           !WebRuntimeFeatures::IsAttributionReportingCrossAppWebEnabled())
+         << "AttributionReportingCrossAppWeb cannot be enabled in this "
+            "configuration. Use --"
+         << switches::kEnableFeatures << "="
+@@ -718,7 +717,7 @@ void ResolveInvalidConfigurations() {
+   }
+ 
+   if (!base::FeatureList::IsEnabled(blink::features::kInterestGroupStorage)) {
+-    LOG_IF(WARNING, WebRuntimeFeatures::IsAdInterestGroupAPIEnabled())
++    CHECK(!WebRuntimeFeatures::IsAdInterestGroupAPIEnabled())
+         << "AdInterestGroupAPI cannot be enabled in this "
+            "configuration. Use --"
+         << switches::kEnableFeatures << "="
 diff --git a/tools/grit/grit/grd_reader.py b/tools/grit/grit/grd_reader.py
 --- a/tools/grit/grit/grd_reader.py
 +++ b/tools/grit/grit/grd_reader.py
@@ -18929,6 +19012,6 @@ diff --git a/ui/base/ui_base_features.cc b/ui/base/ui_base_features.cc
               base::FEATURE_ENABLED_BY_DEFAULT);
 +
 +SET_CROMITE_FEATURE_ENABLED(kChromeRefresh2023);
-+SET_CROMITE_FEATURE_ENABLED(kChromeWebuiRefresh2023);
++SET_CROMITE_FEATURE_ENABLED(kChromeRefreshSecondary2023);
  }  // namespace features
 --

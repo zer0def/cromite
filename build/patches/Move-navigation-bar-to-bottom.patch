@@ -19,7 +19,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  cc/trees/layer_tree_host_impl.cc              |   3 +
  .../start_surface/StartSurfaceMediator.java   |   4 +
  .../tab_management/TabGroupUiCoordinator.java |   7 +-
- .../tab_management/TabGroupUiMediator.java    |  50 +++++-
+ .../tab_management/TabGroupUiMediator.java    |  56 ++++++-
  .../tab_management/TabGroupUiProperties.java  |   7 +-
  .../tab_management/TabGroupUiToolbarView.java |  17 ++
  .../tab_management/TabGroupUiViewBinder.java  |   3 +
@@ -87,7 +87,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../AccessibilitySettingsDelegate.java        |   7 +
  .../render_widget_host_view_android.cc        |   3 +
  .../Move-navigation-bar-to-bottom.inc         |  17 ++
- 74 files changed, 1013 insertions(+), 87 deletions(-)
+ 74 files changed, 1017 insertions(+), 89 deletions(-)
  create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Move-navigation-bar-to-bottom.inc
 
 diff --git a/cc/base/features.cc b/cc/base/features.cc
@@ -204,7 +204,7 @@ diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser
                              mTabGridDialogControllerSupplier,
 -                            mOmniboxFocusStateSupplier);
 +                            mOmniboxFocusStateSupplier,
-+                    topUiThemeColorProvider, tabSupplier);
++                            topUiThemeColorProvider, tabSupplier);
  
              TabGroupUtils.startObservingForCreationIPH();
  
@@ -236,7 +236,27 @@ diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser
      TabGroupUiMediator(
              Context context,
              BottomControlsVisibilityController visibilityController,
-@@ -161,7 +172,9 @@ public class TabGroupUiMediator implements BackPressHandler {
+@@ -130,7 +141,8 @@ public class TabGroupUiMediator implements BackPressHandler {
+             @Nullable
+                     LazyOneshotSupplier<TabGridDialogMediator.DialogController>
+                             dialogControllerSupplier,
+-            ObservableSupplier<Boolean> omniboxFocusStateSupplier) {
++            ObservableSupplier<Boolean> omniboxFocusStateSupplier,
++            TopUiThemeColorProvider topUiThemeColorProvider, ObservableSupplier<Tab> tabSupplier) {
+         this(
+                 context,
+                 visibilityController,
+@@ -143,7 +155,8 @@ public class TabGroupUiMediator implements BackPressHandler {
+                 dialogControllerSupplier,
+                 omniboxFocusStateSupplier,
+                 SemanticColorUtils.getDialogBgColor(context),
+-                context.getColor(org.chromium.chrome.R.color.dialog_bg_color_dark_baseline));
++                context.getColor(org.chromium.chrome.R.color.dialog_bg_color_dark_baseline),
++                topUiThemeColorProvider, tabSupplier);
+     }
+ 
+     @VisibleForTesting
+@@ -161,7 +174,9 @@ public class TabGroupUiMediator implements BackPressHandler {
                              dialogControllerSupplier,
              ObservableSupplier<Boolean> omniboxFocusStateSupplier,
              @ColorInt int primaryBackgroundColor,
@@ -247,7 +267,7 @@ diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser
          mContext = context;
          mResetHandler = resetHandler;
          mModel = model;
-@@ -185,11 +198,30 @@ public class TabGroupUiMediator implements BackPressHandler {
+@@ -185,11 +200,30 @@ public class TabGroupUiMediator implements BackPressHandler {
              mIsShowingOverViewMode = true;
          }
  
@@ -278,7 +298,7 @@ diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser
                          if (getTabsToShowForId(lastId).contains(tab)) {
                              return;
                          }
-@@ -251,6 +283,7 @@ public class TabGroupUiMediator implements BackPressHandler {
+@@ -251,6 +285,7 @@ public class TabGroupUiMediator implements BackPressHandler {
                              return;
                          }
                          resetTabStripWithRelatedTabsForId(currentTab.getId());
@@ -286,7 +306,7 @@ diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser
                      }
  
                      @Override
-@@ -378,6 +411,8 @@ public class TabGroupUiMediator implements BackPressHandler {
+@@ -378,6 +413,8 @@ public class TabGroupUiMediator implements BackPressHandler {
              resetTabStripWithRelatedTabsForId(tab.getId());
          }
  
@@ -295,7 +315,7 @@ diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser
          mBackPressStateSupplier = new ObservableSupplierImpl<>();
          if (mTabGridDialogControllerSupplier != null) {
              mTabGridDialogControllerSupplier.onAvailable(
-@@ -400,6 +435,18 @@ public class TabGroupUiMediator implements BackPressHandler {
+@@ -400,6 +437,18 @@ public class TabGroupUiMediator implements BackPressHandler {
          mModel.set(TabGroupUiProperties.LEFT_BUTTON_DRAWABLE_ID, drawableId);
      }
  
@@ -314,7 +334,7 @@ diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser
      void setupLeftButtonOnClickListener(View.OnClickListener listener) {
          mModel.set(TabGroupUiProperties.LEFT_BUTTON_ON_CLICK_LISTENER, listener);
      }
-@@ -526,6 +573,7 @@ public class TabGroupUiMediator implements BackPressHandler {
+@@ -526,6 +575,7 @@ public class TabGroupUiMediator implements BackPressHandler {
      }
  
      public void destroy() {
@@ -375,7 +395,7 @@ diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser
 +            return;
 +
 +        // change the background color of the bottom bar if the top toolbar is below
-+        setPrimaryColor(color);
++        setContentBackgroundColor(color);
 +
 +        // and adjust the tint
 +        boolean useLightTint = ColorUtils.shouldUseLightForegroundOnBackground(color);
@@ -1032,7 +1052,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/compositor/layo
              if (mSupportSwipeDown && mScrollDirection == ScrollDirection.DOWN) {
                  RecordUserAction.record("MobileToolbarSwipeOpenStackView");
                  showLayout(LayoutType.TAB_SWITCHER, true);
-+            } else if (mSupportSwipeUp && isTabSwitcherReady()
++            } else if (mSupportSwipeUp
 +                       && mScrollDirection == ScrollDirection.UP
 +                       && !ChromeFeatureList.sDisableToolbarSwipeUp.isEnabled()) {
 +                showLayout(LayoutType.TAB_SWITCHER, true);
@@ -1598,7 +1618,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ntp/RecentTabsP
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/searchwidget/SearchActivity.java b/chrome/android/java/src/org/chromium/chrome/browser/searchwidget/SearchActivity.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/searchwidget/SearchActivity.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/searchwidget/SearchActivity.java
-@@ -86,6 +86,11 @@ import org.chromium.url.GURL;
+@@ -85,6 +85,11 @@ import org.chromium.url.GURL;
  
  import java.lang.annotation.Retention;
  import java.lang.annotation.RetentionPolicy;
@@ -1610,25 +1630,25 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/searchwidget/Se
  import java.lang.ref.WeakReference;
  
  /** Queries the user's default search engine and shows autocomplete suggestions. */
-@@ -293,6 +298,12 @@ public class SearchActivity extends AsyncInitializationActivity
+@@ -292,6 +297,12 @@ public class SearchActivity extends AsyncInitializationActivity
                  (SearchActivityLocationBarLayout)
                          contentView.findViewById(R.id.search_location_bar);
          View anchorView = contentView.findViewById(R.id.toolbar);
 +        if (ChromeFeatureList.sMoveTopToolbarToBottom.isEnabled()) {
 +            CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams)
-+                mAnchorView.getLayoutParams();
++                anchorView.getLayoutParams();
 +            layoutParams.gravity = Gravity.START | Gravity.BOTTOM;
-+            mAnchorView.setLayoutParams(layoutParams);
++            anchorView.setLayoutParams(layoutParams);
 +        }
  
          // Update the status bar's color based on the toolbar color.
          Drawable anchorViewBackground = anchorView.getBackground();
-@@ -309,7 +320,7 @@ public class SearchActivity extends AsyncInitializationActivity
+@@ -308,7 +319,7 @@ public class SearchActivity extends AsyncInitializationActivity
  
          mLocationBarCoordinator =
                  new LocationBarCoordinator(
 -                        mSearchBox,
-+                        mSearchBox, mAnchorView,
++                        mSearchBox, anchorView,
                          anchorView,
                          mProfileSupplier,
                          PrivacyPreferencesManagerImpl.getInstance(),
@@ -2233,7 +2253,7 @@ diff --git a/chrome/browser/ui/android/appmenu/internal/java/src/org/chromium/ch
 diff --git a/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/browser/omnibox/LocationBarCoordinator.java b/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/browser/omnibox/LocationBarCoordinator.java
 --- a/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/browser/omnibox/LocationBarCoordinator.java
 +++ b/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/browser/omnibox/LocationBarCoordinator.java
-@@ -91,6 +91,7 @@ public class LocationBarCoordinator
+@@ -90,6 +90,7 @@ public class LocationBarCoordinator
      private StatusCoordinator mStatusCoordinator;
      private WindowDelegate mWindowDelegate;
      private WindowAndroid mWindowAndroid;
@@ -2241,7 +2261,7 @@ diff --git a/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/brow
      private LocationBarMediator mLocationBarMediator;
      private View mUrlBar;
      private View mDeleteButton;
-@@ -149,7 +150,7 @@ public class LocationBarCoordinator
+@@ -148,7 +149,7 @@ public class LocationBarCoordinator
       */
      public LocationBarCoordinator(
              View locationBarLayout,
@@ -2250,7 +2270,7 @@ diff --git a/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/brow
              ObservableSupplier<Profile> profileObservableSupplier,
              PrivacyPreferencesManager privacyPreferencesManager,
              LocationBarDataProvider locationBarDataProvider,
-@@ -188,6 +189,7 @@ public class LocationBarCoordinator
+@@ -187,6 +188,7 @@ public class LocationBarCoordinator
          mWindowAndroid = windowAndroid;
          mActivityLifecycleDispatcher = activityLifecycleDispatcher;
          mActivityLifecycleDispatcher.register(this);
@@ -2258,7 +2278,7 @@ diff --git a/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/brow
          Context context = mLocationBarLayout.getContext();
          OneshotSupplierImpl<TemplateUrlService> templateUrlServiceSupplier =
                  new OneshotSupplierImpl<>();
-@@ -198,7 +200,8 @@ public class LocationBarCoordinator
+@@ -197,7 +199,8 @@ public class LocationBarCoordinator
                          autocompleteAnchorView,
                          mLocationBarLayout,
                          uiOverrides.isForcedPhoneStyleOmnibox(),
@@ -2649,16 +2669,16 @@ diff --git a/chrome/browser/ui/android/toolbar/java/src/org/chromium/chrome/brow
          mRootFrameLayout = root;
          root.setConstraintsSupplier(constraintsSupplier);
          PropertyModel model = new PropertyModel(BottomControlsProperties.ALL_KEYS);
-@@ -136,7 +142,8 @@ public class BottomControlsCoordinator implements BackPressHandler {
-         if (mContentDelegate != null) {
-             mContentDelegate.initializeWithNative(
-                     activity,
--                    new BottomControlsVisibilityController() {
-+                    new BottomControlsVisibilityController(,
-+                    topUiThemeColorProvider, tabSupplier) {
-                         @Override
-                         public void setBottomControlsVisible(boolean isVisible) {
-                             mMediator.setBottomControlsVisible(isVisible);
+@@ -147,7 +153,8 @@ public class BottomControlsCoordinator implements BackPressHandler {
+                             mMediator.setBottomControlsColor(color);
+                         }
+                     },
+-                    root::onModelTokenChange);
++                    root::onModelTokenChange,
++                    topUiThemeColorProvider, tabSupplier);
+         }
+     }
+ 
 diff --git a/chrome/browser/ui/android/toolbar/java/src/org/chromium/chrome/browser/toolbar/bottom/BottomControlsMediator.java b/chrome/browser/ui/android/toolbar/java/src/org/chromium/chrome/browser/toolbar/bottom/BottomControlsMediator.java
 --- a/chrome/browser/ui/android/toolbar/java/src/org/chromium/chrome/browser/toolbar/bottom/BottomControlsMediator.java
 +++ b/chrome/browser/ui/android/toolbar/java/src/org/chromium/chrome/browser/toolbar/bottom/BottomControlsMediator.java
