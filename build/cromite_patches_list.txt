@@ -56,7 +56,7 @@ Keep-flag-to-allow-screenshots-in-Incognito-mode.patch
 Add-option-to-not-persist-tabs-across-sessions.patch
 Add-a-proxy-configuration-page.patch
 Add-custom-tab-intents-privacy-option.patch
-Disable-FLoC-and-privacy-sandbox.patch
+Disable-privacy-sandbox.patch
 History-number-of-days-privacy-setting.patch
 Disable-fetching-of-all-field-trials.patch
 Disable-plugins-enumeration.patch
@@ -217,7 +217,6 @@ Clear-CORS-Preflight-Cache-on-clearing-data.patch
 Multi-Screen-Window-Placement-API-fix.patch
 Add-a-flag-to-disable-GamePad-API.patch
 Disable-WebGPU.patch
-Disable-FirstPartySets-and-StorageAccessAPI.patch
 Disable-GetInstalledRelatedApps-API.patch
 Disable-GSA-by-default.patch
 Disable-PrivateStateTokens-API.patch
