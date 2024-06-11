@@ -256,8 +256,9 @@ jobs:
           gn args out/x64/ --list >out/x64/gn_list
           echo "::endgroup::"
 
-          ninja -C out/x64 chrome_public_bundle
-          ninja -C out/x64 chrome_public_apk
+          # temporary workaround for https://github.com/uazo/cromite/issues/1161
+          ninja -C out/x64 chrome_public_bundle || ninja -C out/x64 chrome_public_bundle
+          ninja -C out/x64 chrome_public_apk || ninja -C out/x64 chrome_public_apk
 
           cp ../../cromite/build/RELEASE out/x64
 
