@@ -37,7 +37,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ChromeActionMod
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java b/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java
-@@ -754,10 +754,17 @@ public class ChromeTabbedActivity extends ChromeActivity<ChromeActivityComponent
+@@ -756,10 +756,17 @@ public class ChromeTabbedActivity extends ChromeActivity<ChromeActivityComponent
                                  @TabLaunchType int type,
                                  @TabCreationState int creationState,
                                  boolean markedForSelection) {
@@ -95,9 +95,9 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/compositor/layo
  import org.chromium.base.ObserverList;
  import org.chromium.base.TraceEvent;
  import org.chromium.base.supplier.ObservableSupplier;
-@@ -227,6 +228,13 @@ public class LayoutManagerImpl
-                                         && launchType != TabLaunchType.FROM_RECENT_TABS
+@@ -229,6 +230,13 @@ public class LayoutManagerImpl
                                          && launchType != TabLaunchType.FROM_RESTORE_TABS_UI
+                                         && launchType != TabLaunchType.FROM_SYNC_BACKGROUND
                                  || (!getTabModelSelector().isIncognitoSelected() && incognito);
 +                boolean selectionPopupTabsForeground =
 +                            ContextUtils.getAppSharedPreferences().getBoolean(
@@ -138,7 +138,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ui/RootUiCoordi
  import org.chromium.base.TraceEvent;
  import org.chromium.base.metrics.RecordUserAction;
  import org.chromium.base.supplier.ObservableSupplier;
-@@ -841,11 +842,16 @@ public class RootUiCoordinator
+@@ -823,11 +824,16 @@ public class RootUiCoordinator
                              TrackerFactory.getTrackerForProfile(tab.getProfile())
                                      .notifyEvent(EventConstants.WEB_SEARCH_PERFORMED);
  
@@ -230,15 +230,15 @@ diff --git a/components/browser_ui/accessibility/android/java/res/xml/accessibil
 diff --git a/content/public/android/java/src/org/chromium/content/browser/selection/SelectActionMenuHelper.java b/content/public/android/java/src/org/chromium/content/browser/selection/SelectActionMenuHelper.java
 --- a/content/public/android/java/src/org/chromium/content/browser/selection/SelectActionMenuHelper.java
 +++ b/content/public/android/java/src/org/chromium/content/browser/selection/SelectActionMenuHelper.java
-@@ -26,6 +26,7 @@ import androidx.core.content.ContextCompat;
- 
+@@ -28,6 +28,7 @@ import androidx.core.content.ContextCompat;
+ import org.chromium.base.ApiCompatibilityUtils;
  import org.chromium.base.ContextUtils;
  import org.chromium.base.Log;
 +import org.chromium.base.ContextUtils;
  import org.chromium.base.PackageManagerUtils;
  import org.chromium.base.StrictModeContext;
  import org.chromium.content.R;
-@@ -51,38 +52,84 @@ import java.util.TreeSet;
+@@ -53,38 +54,84 @@ import java.util.TreeSet;
  public class SelectActionMenuHelper {
      private static final String TAG = "SelectActionMenu"; // 20 char limit.
  
@@ -353,7 +353,7 @@ diff --git a/content/public/android/java/src/org/chromium/content/browser/select
      }
  
      @Retention(RetentionPolicy.SOURCE)
-@@ -159,7 +206,7 @@ public class SelectActionMenuHelper {
+@@ -161,7 +208,7 @@ public class SelectActionMenuHelper {
              if (!additionalMenuItems.isEmpty()) {
                  // Additional menu item group which comes after default menu items.
                  SelectionMenuGroup additionalItemGroup =
@@ -362,7 +362,7 @@ diff --git a/content/public/android/java/src/org/chromium/content/browser/select
                  additionalItemGroup.addItems(additionalMenuItems);
                  pasteMenuItems.add(additionalItemGroup);
              }
-@@ -225,7 +272,7 @@ public class SelectActionMenuHelper {
+@@ -227,7 +274,7 @@ public class SelectActionMenuHelper {
          }
          SelectionMenuGroup primaryAssistGroup =
                  new SelectionMenuGroup(
@@ -371,7 +371,7 @@ diff --git a/content/public/android/java/src/org/chromium/content/browser/select
          View.OnClickListener clickListener = null;
          if (classificationResult.onClickListener != null) {
              clickListener = classificationResult.onClickListener;
-@@ -251,7 +298,7 @@ public class SelectActionMenuHelper {
+@@ -253,7 +300,7 @@ public class SelectActionMenuHelper {
              String selectedText) {
          SelectionMenuGroup defaultGroup =
                  new SelectionMenuGroup(
@@ -380,7 +380,7 @@ diff --git a/content/public/android/java/src/org/chromium/content/browser/select
          List<SelectionMenuItem.Builder> menuItemBuilders = new ArrayList<>();
          menuItemBuilders.add(cut(delegate.canCut()));
          menuItemBuilders.add(copy(delegate.canCopy()));
-@@ -302,7 +349,7 @@ public class SelectActionMenuHelper {
+@@ -304,7 +351,7 @@ public class SelectActionMenuHelper {
          // these menu items.
          SelectionMenuGroup secondaryAssistItems =
                  new SelectionMenuGroup(
@@ -389,7 +389,7 @@ diff --git a/content/public/android/java/src/org/chromium/content/browser/select
  
          // First action is reserved for primary action so start at index 1.
          final int startIndex = 1;
-@@ -335,7 +382,7 @@ public class SelectActionMenuHelper {
+@@ -337,7 +384,7 @@ public class SelectActionMenuHelper {
          SelectionMenuGroup textProcessingItems =
                  new SelectionMenuGroup(
                          R.id.select_action_menu_text_processing_items,
@@ -398,7 +398,7 @@ diff --git a/content/public/android/java/src/org/chromium/content/browser/select
          if (isSelectionPassword || intentHandler == null) {
              addAdditionalTextProcessingItems(textProcessingItems, selectionActionMenuDelegate);
              return textProcessingItems;
-@@ -432,7 +479,7 @@ public class SelectActionMenuHelper {
+@@ -444,7 +491,7 @@ public class SelectActionMenuHelper {
                  .setId(R.id.select_action_menu_cut)
                  .setIconAttr(android.R.attr.actionModeCutDrawable)
                  .setAlphabeticShortcut(ItemKeyShortcuts.CUT)
@@ -407,7 +407,7 @@ diff --git a/content/public/android/java/src/org/chromium/content/browser/select
                  .setShowAsActionFlags(
                          MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_WITH_TEXT)
                  .setIsEnabled(isEnabled)
-@@ -444,7 +491,7 @@ public class SelectActionMenuHelper {
+@@ -456,7 +503,7 @@ public class SelectActionMenuHelper {
                  .setId(R.id.select_action_menu_copy)
                  .setIconAttr(android.R.attr.actionModeCopyDrawable)
                  .setAlphabeticShortcut(ItemKeyShortcuts.COPY)
@@ -416,7 +416,7 @@ diff --git a/content/public/android/java/src/org/chromium/content/browser/select
                  .setShowAsActionFlags(
                          MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_WITH_TEXT)
                  .setIsEnabled(isEnabled)
-@@ -456,7 +503,7 @@ public class SelectActionMenuHelper {
+@@ -468,7 +515,7 @@ public class SelectActionMenuHelper {
                  .setId(R.id.select_action_menu_paste)
                  .setIconAttr(android.R.attr.actionModePasteDrawable)
                  .setAlphabeticShortcut(ItemKeyShortcuts.PASTE)
@@ -425,7 +425,7 @@ diff --git a/content/public/android/java/src/org/chromium/content/browser/select
                  .setShowAsActionFlags(
                          MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_WITH_TEXT)
                  .setIsEnabled(isEnabled)
-@@ -470,7 +517,7 @@ public class SelectActionMenuHelper {
+@@ -482,7 +529,7 @@ public class SelectActionMenuHelper {
          return new SelectionMenuItem.Builder(context.getString(R.string.actionbar_share))
                  .setId(R.id.select_action_menu_share)
                  .setIconAttr(android.R.attr.actionModeShareDrawable)
@@ -434,7 +434,7 @@ diff --git a/content/public/android/java/src/org/chromium/content/browser/select
                  .setShowAsActionFlags(
                          MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_WITH_TEXT)
                  .setIsEnabled(isEnabled)
-@@ -482,7 +529,7 @@ public class SelectActionMenuHelper {
+@@ -494,7 +541,7 @@ public class SelectActionMenuHelper {
                  .setId(R.id.select_action_menu_select_all)
                  .setIconAttr(android.R.attr.actionModeSelectAllDrawable)
                  .setAlphabeticShortcut(ItemKeyShortcuts.SELECT_ALL)
@@ -443,7 +443,7 @@ diff --git a/content/public/android/java/src/org/chromium/content/browser/select
                  .setShowAsActionFlags(
                          MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_WITH_TEXT)
                  .setIsEnabled(isEnabled)
-@@ -495,7 +542,7 @@ public class SelectActionMenuHelper {
+@@ -507,7 +554,7 @@ public class SelectActionMenuHelper {
          SelectionMenuItem.Builder builder =
                  new SelectionMenuItem.Builder(android.R.string.paste_as_plain_text)
                          .setId(R.id.select_action_menu_paste_as_plain_text)
@@ -452,7 +452,7 @@ diff --git a/content/public/android/java/src/org/chromium/content/browser/select
                          .setShowAsActionFlags(
                                  MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_WITH_TEXT)
                          .setIsEnabled(isEnabled);
-@@ -515,7 +562,7 @@ public class SelectActionMenuHelper {
+@@ -527,7 +574,7 @@ public class SelectActionMenuHelper {
          return new SelectionMenuItem.Builder(context.getString(R.string.actionbar_web_search))
                  .setId(R.id.select_action_menu_web_search)
                  .setIconAttr(android.R.attr.actionModeWebSearchDrawable)

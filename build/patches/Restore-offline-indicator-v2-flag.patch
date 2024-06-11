@@ -92,9 +92,9 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/offlinepages/in
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tabbed_mode/TabbedRootUiCoordinator.java b/chrome/android/java/src/org/chromium/chrome/browser/tabbed_mode/TabbedRootUiCoordinator.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/tabbed_mode/TabbedRootUiCoordinator.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/tabbed_mode/TabbedRootUiCoordinator.java
-@@ -1168,7 +1168,8 @@ public class TabbedRootUiCoordinator extends RootUiCoordinator {
+@@ -1126,7 +1126,8 @@ public class TabbedRootUiCoordinator extends RootUiCoordinator {
      private void initStatusIndicatorCoordinator(LayoutManagerImpl layoutManager) {
-         // TODO(crbug.com/1035584): Disable on tablets for now as we need to do one or two extra
+         // TODO(crbug.com/40112282): Disable on tablets for now as we need to do one or two extra
          // things for tablets.
 -        if (DeviceFormFactor.isNonMultiDisplayContextOnTablet(mActivity)) {
 +        if (DeviceFormFactor.isNonMultiDisplayContextOnTablet(mActivity)
@@ -102,7 +102,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tabbed_mode/Tab
              return;
          }
  
-@@ -1202,6 +1203,11 @@ public class TabbedRootUiCoordinator extends RootUiCoordinator {
+@@ -1160,6 +1161,11 @@ public class TabbedRootUiCoordinator extends RootUiCoordinator {
                      hubManager.setStatusIndicatorHeight(mStatusIndicatorHeight);
                  });
  
@@ -117,25 +117,25 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tabbed_mode/Tab
 diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browser/flags/android/chrome_feature_list.cc
 --- a/chrome/browser/flags/android/chrome_feature_list.cc
 +++ b/chrome/browser/flags/android/chrome_feature_list.cc
-@@ -240,6 +240,7 @@ const base::Feature* const kFeaturesExposedToJava[] = {
+@@ -239,6 +239,7 @@ const base::Feature* const kFeaturesExposedToJava[] = {
+     &kNewTabSearchEngineUrlAndroid,
      &kNotificationPermissionVariant,
      &kNotificationPermissionBottomSheet,
-     &kOpenDownloadDialog,
 +    &kOfflineIndicatorV2,
      &kPageAnnotationsService,
-     &kPaintPreviewNewColdStartHeuristic,
      &kPreconnectOnTabCreation,
+     &kPriceChangeModule,
 diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 --- a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 +++ b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
-@@ -346,6 +346,7 @@ public abstract class ChromeFeatureList {
+@@ -355,6 +355,7 @@ public abstract class ChromeFeatureList {
      public static final String NOTIFICATION_PERMISSION_VARIANT = "NotificationPermissionVariant";
      public static final String NOTIFICATION_PERMISSION_BOTTOM_SHEET =
              "NotificationPermissionBottomSheet";
 +    public static final String OFFLINE_INDICATOR_V2 = "OfflineIndicatorV2";
      public static final String OMAHA_MIN_SDK_VERSION_ANDROID = "OmahaMinSdkVersionAndroid";
-     public static final String OMNIBOX_ANSWER_ACTIONS = "OmniboxAnswerActions";
      public static final String OMNIBOX_CACHE_SUGGESTION_RESOURCES =
+             "OmniboxCacheSuggestionResources";
 diff --git a/cromite_flags/chrome/browser/about_flags_cc/Restore-offline-indicator-v2-flag.inc b/cromite_flags/chrome/browser/about_flags_cc/Restore-offline-indicator-v2-flag.inc
 new file mode 100644
 --- /dev/null

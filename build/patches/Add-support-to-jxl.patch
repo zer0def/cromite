@@ -95,7 +95,7 @@ diff --git a/DEPS b/DEPS
    'highway_revision': '8f20644eca693cfb74aa795b0006b6779c370e7a',
    # Three lines of non-changing comments so that
    # the commit queue can handle CLs rolling ffmpeg
-@@ -1102,6 +1106,9 @@ deps = {
+@@ -1354,6 +1358,9 @@ deps = {
    'src/third_party/dawn':
      Var('dawn_git') + '/dawn.git' + '@' +  Var('dawn_revision'),
  
@@ -171,7 +171,7 @@ diff --git a/cc/base/devtools_instrumentation.cc b/cc/base/devtools_instrumentat
 diff --git a/cc/base/devtools_instrumentation.h b/cc/base/devtools_instrumentation.h
 --- a/cc/base/devtools_instrumentation.h
 +++ b/cc/base/devtools_instrumentation.h
-@@ -72,7 +72,7 @@ class CC_BASE_EXPORT ScopedLayerTask {
+@@ -71,7 +71,7 @@ class CC_BASE_EXPORT ScopedLayerTask {
  
  class CC_BASE_EXPORT ScopedImageTask {
   public:
@@ -375,7 +375,7 @@ diff --git a/net/base/mime_util_unittest.cc b/net/base/mime_util_unittest.cc
 diff --git a/third_party/.gitignore b/third_party/.gitignore
 --- a/third_party/.gitignore
 +++ b/third_party/.gitignore
-@@ -91,6 +91,7 @@
+@@ -92,6 +92,7 @@
  /libgifcodec
  /libjingle/source
  /libupnp
@@ -467,7 +467,7 @@ diff --git a/third_party/blink/common/mime_util/mime_util_unittest.cc b/third_pa
 diff --git a/third_party/blink/public/devtools_protocol/browser_protocol.pdl b/third_party/blink/public/devtools_protocol/browser_protocol.pdl
 --- a/third_party/blink/public/devtools_protocol/browser_protocol.pdl
 +++ b/third_party/blink/public/devtools_protocol/browser_protocol.pdl
-@@ -4346,6 +4346,7 @@ domain Emulation
+@@ -4412,6 +4412,7 @@ domain Emulation
    experimental type DisabledImageType extends string
      enum
        avif
@@ -608,7 +608,7 @@ diff --git a/third_party/blink/renderer/modules/webcodecs/image_decoder_fuzzer.c
 diff --git a/third_party/blink/renderer/platform/BUILD.gn b/third_party/blink/renderer/platform/BUILD.gn
 --- a/third_party/blink/renderer/platform/BUILD.gn
 +++ b/third_party/blink/renderer/platform/BUILD.gn
-@@ -2327,6 +2327,10 @@ source_set("blink_platform_unittests_sources") {
+@@ -2340,6 +2340,10 @@ source_set("blink_platform_unittests_sources") {
      sources += [ "text/locale_icu_test.cc" ]
    }
  
@@ -619,10 +619,10 @@ diff --git a/third_party/blink/renderer/platform/BUILD.gn b/third_party/blink/re
    sources += [ "testing/run_all_tests.cc" ]
  
    configs += [
-@@ -2369,6 +2373,7 @@ source_set("blink_platform_unittests_sources") {
-     "//third_party/blink/renderer/platform/network:unit_tests",
-     "//third_party/blink/renderer/platform/scheduler:unit_tests",
+@@ -2385,6 +2389,7 @@ source_set("blink_platform_unittests_sources") {
      "//third_party/blink/renderer/platform/wtf",
+     "//third_party/dawn/src/dawn/native",
+     "//third_party/dawn/src/dawn/wire",
 +    "//third_party/libjxl:libjxl",
      "//third_party/libyuv",
      "//third_party/webrtc/api/task_queue:task_queue_test",
@@ -2224,7 +2224,7 @@ diff --git a/third_party/blink/tools/commit_stats/git-dirs.txt b/third_party/bli
 diff --git a/third_party/blink/web_tests/TestExpectations b/third_party/blink/web_tests/TestExpectations
 --- a/third_party/blink/web_tests/TestExpectations
 +++ b/third_party/blink/web_tests/TestExpectations
-@@ -4717,6 +4717,12 @@ crbug.com/1199522 http/tests/devtools/layers/layers-3d-view-hit-testing.js [ Fai
+@@ -4611,6 +4611,12 @@ crbug.com/1199522 http/tests/devtools/layers/layers-3d-view-hit-testing.js [ Fai
  # Started failing after rolling new version of check-layout-th.js
  css3/flexbox/perpendicular-writing-modes-inside-flex-item.html [ Failure ]
  
@@ -2240,7 +2240,7 @@ diff --git a/third_party/blink/web_tests/TestExpectations b/third_party/blink/we
 diff --git a/third_party/blink/web_tests/VirtualTestSuites b/third_party/blink/web_tests/VirtualTestSuites
 --- a/third_party/blink/web_tests/VirtualTestSuites
 +++ b/third_party/blink/web_tests/VirtualTestSuites
-@@ -103,6 +103,15 @@
+@@ -435,6 +435,15 @@
               "--disable-threaded-compositing", "--disable-threaded-animation"],
      "expires": "Jul 1, 2023"
    },
@@ -2254,7 +2254,7 @@ diff --git a/third_party/blink/web_tests/VirtualTestSuites b/third_party/blink/w
 +    "expires": "Jul 1, 2023"
 +  },
    {
-     "prefix": "unsafe_webgpu",
+     "prefix": "compute-pressure",
      "platforms": ["Linux", "Mac", "Win"],
 diff --git a/third_party/blink/web_tests/http/tests/inspector-protocol/emulation/emulation-set-disabled-image-types-jxl-expected.txt b/third_party/blink/web_tests/http/tests/inspector-protocol/emulation/emulation-set-disabled-image-types-jxl-expected.txt
 new file mode 100644
@@ -2655,7 +2655,7 @@ new file mode 100644
 diff --git a/tools/metrics/histograms/enums.xml b/tools/metrics/histograms/enums.xml
 --- a/tools/metrics/histograms/enums.xml
 +++ b/tools/metrics/histograms/enums.xml
-@@ -21593,6 +21593,7 @@ from previous Chrome versions.
+@@ -21685,6 +21685,7 @@ from previous Chrome versions.
    <int value="188610022" label="NewMessageListView:enabled"/>
    <int value="189728101" label="FasterLocationReload:disabled"/>
    <int value="189777537" label="DisableInitialMostVisitedFadeIn:enabled"/>

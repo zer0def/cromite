@@ -64,7 +64,7 @@ diff --git a/net/dns/host_resolver_manager.cc b/net/dns/host_resolver_manager.cc
  #include "net/log/net_log_with_source.h"
  #include "net/socket/client_socket_factory.h"
  #include "net/url_request/url_request_context.h"
-@@ -1388,6 +1389,13 @@ int HostResolverManager::StartIPv6ReachabilityCheck(
+@@ -1429,6 +1430,13 @@ int HostResolverManager::StartIPv6ReachabilityCheck(
      return OK;
    }
  

@@ -10,14 +10,14 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 diff --git a/third_party/blink/renderer/platform/runtime_enabled_features.json5 b/third_party/blink/renderer/platform/runtime_enabled_features.json5
 --- a/third_party/blink/renderer/platform/runtime_enabled_features.json5
 +++ b/third_party/blink/renderer/platform/runtime_enabled_features.json5
-@@ -677,16 +677,18 @@
+@@ -680,16 +680,18 @@
        }
      },
      {
 -      name: "CompressionDictionaryTransport",
 +      name: "CompressionDictionaryTransport", // need to be disabled
        base_feature: "none",
-       origin_trial_feature_name: "CompressionDictionaryTransportV2",
+       origin_trial_feature_name: "CompressionDictionaryTransportForTest",
        origin_trial_allows_third_party: true,
        public: true,
 +      status: "experimental",

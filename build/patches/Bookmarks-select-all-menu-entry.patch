@@ -4,29 +4,11 @@ Subject: Bookmarks select all menu entry
 
 License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 ---
- .../java/res/menu/bookmark_toolbar_menu.xml       |  7 +++++++
  .../res/menu/bookmark_toolbar_menu_improved.xml   |  7 +++++++
  .../chrome/browser/bookmarks/BookmarkToolbar.java | 15 +++++++++++++++
  .../ui/android/strings/android_chrome_strings.grd |  3 +++
- 4 files changed, 32 insertions(+)
+ 3 files changed, 25 insertions(+)
 
-diff --git a/chrome/android/java/res/menu/bookmark_toolbar_menu.xml b/chrome/android/java/res/menu/bookmark_toolbar_menu.xml
---- a/chrome/android/java/res/menu/bookmark_toolbar_menu.xml
-+++ b/chrome/android/java/res/menu/bookmark_toolbar_menu.xml
-@@ -23,6 +23,13 @@ found in the LICENSE file.
-             android:visible="false"
-             app:showAsAction="ifRoom"
-             app:iconTint="@color/default_icon_color_secondary_tint_list" />
-+        <item
-+            android:id="@+id/select_all_menu_id"
-+            android:icon="@drawable/ic_done_blue"
-+            android:title="@string/select_all_bookmarks"
-+            android:visible="true"
-+            app:showAsAction="ifRoom"
-+            app:iconTint="@color/default_icon_color_tint_list" />
-         <item
-             android:id="@+id/import_menu_id"
-             android:icon="@drawable/ic_folder_blue_24dp"
 diff --git a/chrome/android/java/res/menu/bookmark_toolbar_menu_improved.xml b/chrome/android/java/res/menu/bookmark_toolbar_menu_improved.xml
 --- a/chrome/android/java/res/menu/bookmark_toolbar_menu_improved.xml
 +++ b/chrome/android/java/res/menu/bookmark_toolbar_menu_improved.xml
@@ -56,7 +38,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/bookmarks/Bookm
  /**
   * Main toolbar of bookmark UI. It is responsible for displaying title and buttons associated with
   * the current context.
-@@ -184,6 +186,7 @@ public class BookmarkToolbar extends SelectableListToolbar<BookmarkId>
+@@ -159,6 +161,7 @@ public class BookmarkToolbar extends SelectableListToolbar<BookmarkId>
  
      void setCurrentFolder(BookmarkId folder) {
          mCurrentFolder = mBookmarkModel.getBookmarkById(folder);
@@ -64,7 +46,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/bookmarks/Bookm
          getMenu().findItem(R.id.import_menu_id).setVisible(true);
          getMenu().findItem(R.id.export_menu_id).setVisible(true);
      }
-@@ -212,6 +215,17 @@ public class BookmarkToolbar extends SelectableListToolbar<BookmarkId>
+@@ -187,6 +190,17 @@ public class BookmarkToolbar extends SelectableListToolbar<BookmarkId>
              mExportBookmarkRunnable.run();
              return true;
          }
@@ -82,18 +64,18 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/bookmarks/Bookm
          return mMenuIdClickedFunction.apply(menuItem.getItemId());
      }
  
-@@ -234,6 +248,7 @@ public class BookmarkToolbar extends SelectableListToolbar<BookmarkId>
+@@ -204,6 +218,7 @@ public class BookmarkToolbar extends SelectableListToolbar<BookmarkId>
  
          getMenu().findItem(R.id.import_menu_id).setVisible(mCurrentFolder != null);
          getMenu().findItem(R.id.export_menu_id).setVisible(mCurrentFolder != null);
 +        getMenu().findItem(R.id.select_all_menu_id).setVisible(mCurrentFolder != null);
  
          // SelectableListToolbar will show/hide the entire group.
-         setSearchButtonVisible(mSearchButtonVisible);
+         setEditButtonVisible(mEditButtonVisible);
 diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chrome/browser/ui/android/strings/android_chrome_strings.grd
 --- a/chrome/browser/ui/android/strings/android_chrome_strings.grd
 +++ b/chrome/browser/ui/android/strings/android_chrome_strings.grd
-@@ -253,6 +253,9 @@ CHAR_LIMIT guidelines:
+@@ -250,6 +250,9 @@ CHAR_LIMIT guidelines:
        <message name="IDS_NOTIFICATION_CATEGORY_SITES" desc="Label for notifications from websites, within a list of notification categories. [CHAR_LIMIT=32]">
          Sites
        </message>

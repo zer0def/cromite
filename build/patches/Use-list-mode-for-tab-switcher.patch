@@ -34,8 +34,8 @@ diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser
      /** Returns whether the Grid Tab Switcher UI should use list mode. */
      public static boolean shouldUseListMode() {
 -        // Low-end forces list mode.
--        return SysUtils.isLowEndDevice();
-+        return sTabSwitcherListMode.getInstance().isEnabled();
+-        return SysUtils.isLowEndDevice() || ChromeFeatureList.sForceListTabSwitcher.isEnabled();
++        return sTabSwitcherListMode.getInstance().isEnabled() || ChromeFeatureList.sForceListTabSwitcher.isEnabled();
      }
  
      /**
@@ -111,7 +111,7 @@ new file mode 100644
 diff --git a/chrome/browser/ui/android/toolbar/java/src/org/chromium/chrome/browser/toolbar/top/ToolbarPhone.java b/chrome/browser/ui/android/toolbar/java/src/org/chromium/chrome/browser/toolbar/top/ToolbarPhone.java
 --- a/chrome/browser/ui/android/toolbar/java/src/org/chromium/chrome/browser/toolbar/top/ToolbarPhone.java
 +++ b/chrome/browser/ui/android/toolbar/java/src/org/chromium/chrome/browser/toolbar/top/ToolbarPhone.java
-@@ -505,7 +505,6 @@ public class ToolbarPhone extends ToolbarLayout
+@@ -516,7 +516,6 @@ public class ToolbarPhone extends ToolbarLayout
  
      private void inflateTabSwitchingResources() {
          mToggleTabStackButton = findViewById(R.id.tab_switcher_button);
@@ -119,7 +119,7 @@ diff --git a/chrome/browser/ui/android/toolbar/java/src/org/chromium/chrome/brow
      }
  
      private void enableTabSwitchingResources() {
-@@ -1998,14 +1997,14 @@ public class ToolbarPhone extends ToolbarLayout
+@@ -2007,14 +2006,14 @@ public class ToolbarPhone extends ToolbarLayout
          // On entering the tab switcher, set the focusability of the url bar to be false. This will
          // occur at the start of the enter event, and will later be reset to true upon finishing the
          // exit event only in #onStartSurfaceStateChanged.
@@ -136,7 +136,7 @@ diff --git a/chrome/browser/ui/android/toolbar/java/src/org/chromium/chrome/brow
              // Prevent pressing the tab switcher button until after transition finishes.
              mToggleTabStackButton.setClickable(false);
              return;
-@@ -2025,7 +2024,7 @@ public class ToolbarPhone extends ToolbarLayout
+@@ -2034,7 +2033,7 @@ public class ToolbarPhone extends ToolbarLayout
              return;
          }
          // Prevent pressing the tab switcher button until after transition finishes.
@@ -145,7 +145,7 @@ diff --git a/chrome/browser/ui/android/toolbar/java/src/org/chromium/chrome/brow
  
          mTabSwitcherState = inTabSwitcherMode ? ENTERING_TAB_SWITCHER : EXITING_TAB_SWITCHER;
  
-@@ -2119,7 +2118,7 @@ public class ToolbarPhone extends ToolbarLayout
+@@ -2128,7 +2127,7 @@ public class ToolbarPhone extends ToolbarLayout
          }
          if (mTabSwitcherState == ENTERING_TAB_SWITCHER) {
              mTabSwitcherState = TAB_SWITCHER;

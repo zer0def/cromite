@@ -14,15 +14,15 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 diff --git a/build/config/compiler/BUILD.gn b/build/config/compiler/BUILD.gn
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -1926,7 +1926,6 @@ config("default_warnings") {
-         # TODO(https://crbug.com/1490607): Fix and re-enable.
+@@ -1901,7 +1901,6 @@ config("default_warnings") {
+         # TODO(crbug.com/40284799): Fix and re-enable.
          "-Wno-thread-safety-reference-return",
        ]
 -
        cflags_cc += [
          # TODO(crbug.com/328490295): Fix and re-enable for C flags.
          "-Wenum-compare-conditional",
-@@ -1938,6 +1937,15 @@ config("default_warnings") {
+@@ -1913,6 +1912,15 @@ config("default_warnings") {
            "-Wno-c++11-narrowing-const-reference",
          ]
        }
@@ -49,6 +49,6 @@ diff --git a/build_overrides/build.gni b/build_overrides/build.gni
 +  skip_clangd_unsupported_options = false
 +
    # Allow projects that wish to stay on C++17 to override Chromium's default.
-   # TODO(crbug.com/1402249): evaluate removing this end of 2023
+   # TODO(crbug.com/40251117): evaluate removing this end of 2023
    use_cxx17 = false
 --

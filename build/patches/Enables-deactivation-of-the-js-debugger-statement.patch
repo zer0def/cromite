@@ -101,7 +101,7 @@ diff --git a/third_party/devtools-frontend/src/front_end/core/sdk/sdk-meta.ts b/
 diff --git a/third_party/devtools-frontend/src/front_end/generated/InspectorBackendCommands.js b/third_party/devtools-frontend/src/front_end/generated/InspectorBackendCommands.js
 --- a/third_party/devtools-frontend/src/front_end/generated/InspectorBackendCommands.js
 +++ b/third_party/devtools-frontend/src/front_end/generated/InspectorBackendCommands.js
-@@ -1321,6 +1321,10 @@ inspectorBackend.registerCommand("Debugger.restartFrame", [{"name": "callFrameId
+@@ -1342,6 +1342,10 @@ inspectorBackend.registerCommand("Debugger.restartFrame", [{"name": "callFrameId
  inspectorBackend.registerCommand("Debugger.resume", [{"name": "terminateOnResume", "type": "boolean", "optional": true, "description": "Set to true to terminate execution upon resuming execution. In contrast to Runtime.terminateExecution, this will allows to execute further JavaScript (i.e. via evaluation) until execution of the paused code is actually resumed, at which point termination is triggered. If execution is currently not paused, this parameter has no effect.", "typeRef": null}], [], "Resumes JavaScript execution.");
  inspectorBackend.registerCommand("Debugger.searchInContent", [{"name": "scriptId", "type": "string", "optional": false, "description": "Id of the script to search in.", "typeRef": "Runtime.ScriptId"}, {"name": "query", "type": "string", "optional": false, "description": "String to search for.", "typeRef": null}, {"name": "caseSensitive", "type": "boolean", "optional": true, "description": "If true, search is case sensitive.", "typeRef": null}, {"name": "isRegex", "type": "boolean", "optional": true, "description": "If true, treats string parameter as regex.", "typeRef": null}], ["result"], "Searches for given string in script content.");
  inspectorBackend.registerCommand("Debugger.setAsyncCallStackDepth", [{"name": "maxDepth", "type": "number", "optional": false, "description": "Maximum depth of async call stacks. Setting to `0` will effectively disable collecting async call stacks (default).", "typeRef": null}], [], "Enables or disables async call stacks tracking.");
@@ -115,7 +115,7 @@ diff --git a/third_party/devtools-frontend/src/front_end/generated/InspectorBack
 diff --git a/third_party/devtools-frontend/src/front_end/generated/protocol-mapping.d.ts b/third_party/devtools-frontend/src/front_end/generated/protocol-mapping.d.ts
 --- a/third_party/devtools-frontend/src/front_end/generated/protocol-mapping.d.ts
 +++ b/third_party/devtools-frontend/src/front_end/generated/protocol-mapping.d.ts
-@@ -4507,6 +4507,10 @@ export namespace ProtocolMapping {
+@@ -4563,6 +4563,10 @@ export namespace ProtocolMapping {
        paramsType: [Protocol.Debugger.SetAsyncCallStackDepthRequest];
        returnType: void;
      };
@@ -129,7 +129,7 @@ diff --git a/third_party/devtools-frontend/src/front_end/generated/protocol-mapp
 diff --git a/third_party/devtools-frontend/src/front_end/generated/protocol-proxy-api.d.ts b/third_party/devtools-frontend/src/front_end/generated/protocol-proxy-api.d.ts
 --- a/third_party/devtools-frontend/src/front_end/generated/protocol-proxy-api.d.ts
 +++ b/third_party/devtools-frontend/src/front_end/generated/protocol-proxy-api.d.ts
-@@ -3995,6 +3995,8 @@ declare namespace ProtocolProxyApi {
+@@ -4050,6 +4050,8 @@ declare namespace ProtocolProxyApi {
       */
      invoke_setAsyncCallStackDepth(params: Protocol.Debugger.SetAsyncCallStackDepthRequest): Promise<Protocol.ProtocolResponseWithError>;
  
@@ -141,7 +141,7 @@ diff --git a/third_party/devtools-frontend/src/front_end/generated/protocol-prox
 diff --git a/third_party/devtools-frontend/src/front_end/generated/protocol.ts b/third_party/devtools-frontend/src/front_end/generated/protocol.ts
 --- a/third_party/devtools-frontend/src/front_end/generated/protocol.ts
 +++ b/third_party/devtools-frontend/src/front_end/generated/protocol.ts
-@@ -17495,6 +17495,10 @@ export namespace Debugger {
+@@ -17757,6 +17757,10 @@ export namespace Debugger {
      maxDepth: integer;
    }
  
@@ -155,7 +155,7 @@ diff --git a/third_party/devtools-frontend/src/front_end/generated/protocol.ts b
 diff --git a/third_party/devtools-frontend/src/third_party/blink/public/devtools_protocol/browser_protocol.json b/third_party/devtools-frontend/src/third_party/blink/public/devtools_protocol/browser_protocol.json
 --- a/third_party/devtools-frontend/src/third_party/blink/public/devtools_protocol/browser_protocol.json
 +++ b/third_party/devtools-frontend/src/third_party/blink/public/devtools_protocol/browser_protocol.json
-@@ -26263,8 +26263,17 @@
+@@ -26821,8 +26821,17 @@
                              "$ref": "WasmDisassemblyChunk"
                          }
                      ]
@@ -175,7 +175,7 @@ diff --git a/third_party/devtools-frontend/src/third_party/blink/public/devtools
                      "name": "nextWasmDisassemblyChunk",
                      "description": "Disassemble the next chunk of lines for the module corresponding to the\nstream. If disassembly is complete, this API will invalidate the streamId\nand return an empty chunk. Any subsequent calls for the now invalid stream\nwill return errors.",
                      "experimental": true,
-@@ -29390,4 +29399,4 @@
+@@ -29948,4 +29957,4 @@
              ]
          }
      ]
@@ -199,14 +199,14 @@ diff --git a/v8/include/js_protocol.pdl b/v8/include/js_protocol.pdl
 diff --git a/v8/src/common/message-template.h b/v8/src/common/message-template.h
 --- a/v8/src/common/message-template.h
 +++ b/v8/src/common/message-template.h
-@@ -739,6 +739,7 @@ namespace internal {
+@@ -741,6 +741,7 @@ namespace internal {
    /* AggregateError */                                                         \
    T(AllPromisesRejected, "All promises were rejected")                         \
    T(CannotDeepFreezeObject, "Cannot DeepFreeze object of type %")              \
 +  T(DebuggerStatementSuppressed, "debugger statement suppressed")             \
-   T(CannotDeepFreezeValue, "Cannot DeepFreeze non-const value %")
- 
- enum class MessageTemplate {
+   T(CannotDeepFreezeValue, "Cannot DeepFreeze non-const value %")              \
+   /* SuppressedError */                                                        \
+   T(SuppressedErrorDuringDisposal, "An error was suppressed during disposal")  \
 diff --git a/v8/src/debug/debug-interface.cc b/v8/src/debug/debug-interface.cc
 --- a/v8/src/debug/debug-interface.cc
 +++ b/v8/src/debug/debug-interface.cc
@@ -260,14 +260,14 @@ diff --git a/v8/src/debug/debug.h b/v8/src/debug/debug.h
 diff --git a/v8/src/execution/messages.cc b/v8/src/execution/messages.cc
 --- a/v8/src/execution/messages.cc
 +++ b/v8/src/execution/messages.cc
-@@ -494,6 +494,7 @@ MaybeHandle<String> MessageFormatter::TryFormat(
+@@ -500,6 +500,7 @@ MaybeHandle<String> MessageFormatter::TryFormat(
        MessageTemplate::kUndefinedOrNullToObject,
        MessageTemplate::kUnexpectedStrictReserved,
        MessageTemplate::kUnexpectedTokenIdentifier,
 +      MessageTemplate::kDebuggerStatementSuppressed,
        MessageTemplate::kWeakRefsCleanupMustBeCallable};
  
-   base::Vector<const Handle<String>> remaining_args = args;
+   base::Vector<const DirectHandle<String>> remaining_args = args;
 diff --git a/v8/src/inspector/v8-debugger-agent-impl.cc b/v8/src/inspector/v8-debugger-agent-impl.cc
 --- a/v8/src/inspector/v8-debugger-agent-impl.cc
 +++ b/v8/src/inspector/v8-debugger-agent-impl.cc

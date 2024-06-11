@@ -16,7 +16,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../res/layout/sharing_intent_content.xml     |  88 ++++++++++
  .../chrome/browser/IntentHandler.java         |  16 +-
  .../browser/LaunchIntentDispatcher.java       |  14 +-
- .../init/ProcessInitializationHandler.java    |   3 +
+ .../init/ProcessInitializationHandler.java    |   2 +
  .../SharedIntentShareActivity.java            | 159 ++++++++++++++++++
  .../flags/android/chrome_feature_list.cc      |   1 +
  .../browser/flags/ChromeFeatureList.java      |   1 +
@@ -24,7 +24,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../about_flags_cc/Enable-share-intent.inc    |  12 ++
  .../Enable-share-intent.inc                   |   3 +
  .../Enable-share-intent.inc                   |   1 +
- 14 files changed, 333 insertions(+), 8 deletions(-)
+ 14 files changed, 332 insertions(+), 8 deletions(-)
  create mode 100644 chrome/android/java/res/layout/sharing_intent_content.xml
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/sharing/shared_intent/SharedIntentShareActivity.java
  create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Enable-share-intent.inc
@@ -34,7 +34,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 diff --git a/chrome/android/chrome_java_resources.gni b/chrome/android/chrome_java_resources.gni
 --- a/chrome/android/chrome_java_resources.gni
 +++ b/chrome/android/chrome_java_resources.gni
-@@ -581,6 +581,7 @@ chrome_java_resources = [
+@@ -571,6 +571,7 @@ chrome_java_resources = [
    "java/res/layout/signin_activity.xml",
    "java/res/layout/status_indicator_container.xml",
    "java/res/layout/suggestions_tile_view_condensed.xml",
@@ -45,7 +45,7 @@ diff --git a/chrome/android/chrome_java_resources.gni b/chrome/android/chrome_ja
 diff --git a/chrome/android/chrome_java_sources.gni b/chrome/android/chrome_java_sources.gni
 --- a/chrome/android/chrome_java_sources.gni
 +++ b/chrome/android/chrome_java_sources.gni
-@@ -1048,6 +1048,7 @@ chrome_java_sources = [
+@@ -1040,6 +1040,7 @@ chrome_java_sources = [
    "java/src/org/chromium/chrome/browser/signin/SyncConsentActivity.java",
    "java/src/org/chromium/chrome/browser/signin/SyncConsentActivityLauncherImpl.java",
    "java/src/org/chromium/chrome/browser/signin/SyncConsentFragment.java",
@@ -211,7 +211,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/IntentHandler.j
      /** A hash code for the URL to verify intent data hasn't been modified. */
      public static final String EXTRA_DATA_HASH_CODE = "org.chromium.chrome.browser.data_hash";
  
-@@ -1295,6 +1298,17 @@ public class IntentHandler {
+@@ -1303,6 +1306,17 @@ public class IntentHandler {
          return IntentUtils.safeGetSerializableExtra(intent, EXTRA_TAB_LAUNCH_TYPE);
      }
  
@@ -229,7 +229,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/IntentHandler.j
      /**
       * Creates an Intent that will launch a ChromeTabbedActivity on the new tab page. The Intent
       * will be trusted and therefore able to launch Incognito tabs.
-@@ -1424,7 +1438,7 @@ public class IntentHandler {
+@@ -1432,7 +1446,7 @@ public class IntentHandler {
          String headers = getExtraHeadersFromIntent(intent);
          headers = maybeAddAdditionalContentHeaders(intent, url, headers);
  
@@ -285,7 +285,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/LaunchIntentDis
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/init/ProcessInitializationHandler.java b/chrome/android/java/src/org/chromium/chrome/browser/init/ProcessInitializationHandler.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/init/ProcessInitializationHandler.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/init/ProcessInitializationHandler.java
-@@ -82,6 +82,7 @@ import org.chromium.chrome.browser.tabpersistence.TabStateFileManager;
+@@ -85,6 +85,7 @@ import org.chromium.chrome.browser.tabmodel.TabPersistentStore;
  import org.chromium.chrome.browser.ui.cars.DrivingRestrictionsManager;
  import org.chromium.chrome.browser.ui.hats.SurveyClientFactory;
  import org.chromium.chrome.browser.ui.searchactivityutils.SearchActivityPreferencesManager;
@@ -293,15 +293,14 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/init/ProcessIni
  import org.chromium.chrome.browser.usb.UsbNotificationManager;
  import org.chromium.chrome.browser.util.AfterStartupTaskUtils;
  import org.chromium.chrome.browser.webapps.WebApkUninstallTracker;
-@@ -466,6 +467,8 @@ public class ProcessInitializationHandler {
+@@ -480,6 +481,7 @@ public class ProcessInitializationHandler {
                          ::makeDeferredRecordings);
-         deferredStartupHandler.addDeferredTask(WebApkUninstallTracker::runDeferredTasks);
+         tasks.add(WebApkUninstallTracker::runDeferredTasks);
  
-+        deferredStartupHandler.addDeferredTask(
-+                () -> SharedIntentShareActivity.updateComponentEnabledState());
-         deferredStartupHandler.addDeferredTask(
-                 () -> IncognitoTabLauncher.updateComponentEnabledState());
-         deferredStartupHandler.addDeferredTask(
++        tasks.add(SharedIntentShareActivity::updateComponentEnabledState);
+         tasks.add(IncognitoTabLauncher::updateComponentEnabledState);
+         tasks.add(OfflineContentAvailabilityStatusProvider::getInstance);
+         tasks.add(() -> EnterpriseInfo.getInstance().logDeviceEnterpriseInfo());
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/sharing/shared_intent/SharedIntentShareActivity.java b/chrome/android/java/src/org/chromium/chrome/browser/sharing/shared_intent/SharedIntentShareActivity.java
 new file mode 100644
 --- /dev/null
@@ -469,7 +468,7 @@ new file mode 100644
 diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browser/flags/android/chrome_feature_list.cc
 --- a/chrome/browser/flags/android/chrome_feature_list.cc
 +++ b/chrome/browser/flags/android/chrome_feature_list.cc
-@@ -263,6 +263,7 @@ const base::Feature* const kFeaturesExposedToJava[] = {
+@@ -261,6 +261,7 @@ const base::Feature* const kFeaturesExposedToJava[] = {
      &kReengagementNotification,
      &kSearchReadyOmniboxFeature,
      &kRelatedSearchesAllLanguage,
@@ -486,12 +485,12 @@ diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/f
      public static final String READER_MODE_IN_CCT = "ReaderModeInCCT";
 +    public static final String SHARED_INTENT_UI = "SharedIntentUI";
      public static final String RECORD_SUPPRESSION_METRICS = "RecordSuppressionMetrics";
-     public static final String RECOVER_FROM_NEVER_SAVE_ANDROID =
-             "RecoverFromNeverSaveAndroid_LAUNCHED";
+     public static final String REDIRECT_EXPLICIT_CTA_INTENTS_TO_EXISTING_ACTIVITY =
+             "RedirectExplicitCTAIntentsToExistingActivity";
 diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chrome/browser/ui/android/strings/android_chrome_strings.grd
 --- a/chrome/browser/ui/android/strings/android_chrome_strings.grd
 +++ b/chrome/browser/ui/android/strings/android_chrome_strings.grd
-@@ -5282,6 +5282,19 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>clear the Chrome da
+@@ -5366,6 +5366,19 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>delete the Chrome d
          Make sure a phone app is enabled on this device
        </message>
  

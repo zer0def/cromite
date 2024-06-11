@@ -43,7 +43,7 @@ diff --git a/chrome/browser/engagement/important_sites_util.cc b/chrome/browser/
  #include "components/site_engagement/core/mojom/site_engagement_details.mojom.h"
  #include "components/webapps/browser/banners/app_banner_settings_helper.h"
  #include "net/base/registry_controlled_domains/registry_controlled_domain.h"
-@@ -388,6 +389,10 @@ void ImportantSitesUtil::RegisterProfilePrefs(
+@@ -386,6 +387,10 @@ void ImportantSitesUtil::RegisterProfilePrefs(
  // static
  std::set<std::string> ImportantSitesUtil::GetInstalledRegisterableDomains(
      Profile* profile) {
@@ -54,7 +54,7 @@ diff --git a/chrome/browser/engagement/important_sites_util.cc b/chrome/browser/
    std::set<GURL> installed_origins = GetOriginsWithInstalledWebApps(profile);
    std::set<std::string> registerable_domains;
  
-@@ -402,6 +407,10 @@ std::vector<ImportantDomainInfo>
+@@ -400,6 +405,10 @@ std::vector<ImportantDomainInfo>
  ImportantSitesUtil::GetImportantRegisterableDomains(Profile* profile,
                                                      size_t max_results) {
    SCOPED_UMA_HISTOGRAM_TIMER("Storage.ImportantSites.GenerationTime");

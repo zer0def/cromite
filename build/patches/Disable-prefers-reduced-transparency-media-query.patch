@@ -4,11 +4,11 @@ Subject: Disable prefers-reduced-transparency media query
 
 This feature can be used for fingerprinting as it exposes a user preference
 ---
- third_party/blink/renderer/core/css/media_query_exp.cc      | 3 ++-
- .../blink/renderer/core/css/parser/media_query_parser.cc    | 4 ++--
- .../blink/renderer/core/preferences/preference_manager.idl  | 2 +-
- .../blink/renderer/platform/runtime_enabled_features.json5  | 6 +++++-
- 4 files changed, 10 insertions(+), 5 deletions(-)
+ third_party/blink/renderer/core/css/media_query_exp.cc        | 3 ++-
+ .../blink/renderer/core/css/parser/media_query_parser.cc      | 4 ++--
+ .../blink/renderer/core/preferences/preference_manager.idl    | 2 +-
+ .../blink/renderer/platform/runtime_enabled_features.json5    | 4 ++++
+ 4 files changed, 9 insertions(+), 4 deletions(-)
 
 diff --git a/third_party/blink/renderer/core/css/media_query_exp.cc b/third_party/blink/renderer/core/css/media_query_exp.cc
 --- a/third_party/blink/renderer/core/css/media_query_exp.cc
@@ -26,8 +26,8 @@ diff --git a/third_party/blink/renderer/core/css/media_query_exp.cc b/third_part
 diff --git a/third_party/blink/renderer/core/css/parser/media_query_parser.cc b/third_party/blink/renderer/core/css/parser/media_query_parser.cc
 --- a/third_party/blink/renderer/core/css/parser/media_query_parser.cc
 +++ b/third_party/blink/renderer/core/css/parser/media_query_parser.cc
-@@ -80,8 +80,8 @@ class MediaQueryFeatureSet : public MediaQueryParser::FeatureSet {
-             RuntimeEnabledFeatures::CSSUpdateMediaFeatureEnabled()) ||
+@@ -81,8 +81,8 @@ class MediaQueryFeatureSet : public MediaQueryParser::FeatureSet {
+            feature == media_feature_names::kUpdateMediaFeature ||
             (feature == media_feature_names::kPrefersReducedDataMediaFeature &&
              RuntimeEnabledFeatures::PrefersReducedDataEnabled()) ||
 -           feature ==
@@ -51,17 +51,15 @@ diff --git a/third_party/blink/renderer/core/preferences/preference_manager.idl 
 diff --git a/third_party/blink/renderer/platform/runtime_enabled_features.json5 b/third_party/blink/renderer/platform/runtime_enabled_features.json5
 --- a/third_party/blink/renderer/platform/runtime_enabled_features.json5
 +++ b/third_party/blink/renderer/platform/runtime_enabled_features.json5
-@@ -3033,7 +3033,11 @@
-       settable_from_internals: true,
-     },
-     {
--      name: "PrefersReducedData",
-+      name: "PrefersReducedData", // must be
-+      status: "experimental",     // disabled
-+    },
-+    {
-+      name: "PrefersReducedTransparency",
+@@ -3069,6 +3069,10 @@
+       name: "PrefersReducedData",
        status: "experimental",
      },
++    {
++      name: "PrefersReducedTransparency",
++      status: "experimental",
++    },
      // This feature is deprecated and we are evangelizing affected sites.
+     // A deprecation trial is underway, starting in M125.
+     // See https://crbug.com/40352864 for current status
 --

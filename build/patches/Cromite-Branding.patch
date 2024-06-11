@@ -25,8 +25,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../mipmap-xxxhdpi/app_icon.png               | Bin 9667 -> 20837 bytes
  .../mipmap-xxxhdpi/layered_app_icon.png       | Bin 3652 -> 29220 bytes
  .../layered_app_icon_background.png           | Bin 3519 -> 142032 bytes
- .../chrome/browser/omaha/UpdateConfigs.java   |   2 +-
- .../inline/BromiteInlineUpdateController.java |  21 +++-
+ .../inline/BromiteInlineUpdateController.java |  19 +++-
  chrome/app/extensions_strings.grdp            |   4 +-
  chrome/app/settings_strings.grdp              |   2 +-
  chrome/app/theme/chromium/BRANDING            |   8 +-
@@ -35,9 +34,10 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../theme/chromium/win/tiles/SmallLogo.png    | Bin 9784 -> 12363 bytes
  .../chromium/product_logo_32.png              | Bin 822 -> 2301 bytes
  chrome/browser/BUILD.gn                       |   1 +
+ .../chrome/browser/omaha/UpdateConfigs.java   |   2 +-
  .../prefs/chrome_pref_service_factory.cc      |   6 +-
  .../profiles/profile_shortcut_manager_win.cc  |   2 +-
- .../settings/settings_menu/settings_menu.html |   5 +-
+ .../settings/settings_menu/settings_menu.html |  14 ++-
  .../strings/android_chrome_strings.grd        |   2 +-
  chrome/common/url_constants.h                 |   4 +-
  .../strings/android/browser_ui_strings.grd    |   2 +-
@@ -51,9 +51,10 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../chromium/product_logo_white.png           | Bin 1417 -> 3040 bytes
  .../chromium/product_logo.png                 | Bin 2714 -> 7923 bytes
  .../chromium/product_logo_white.png           | Bin 2512 -> 6790 bytes
+ content/child/runtime_features.cc             |  23 +++--
  tools/grit/grit/grd_reader.py                 |  35 +++++++
- ui/base/ui_base_features.cc                   |   2 +
- 49 files changed, 155 insertions(+), 100 deletions(-)
+ ui/base/ui_base_features.cc                   |   3 +
+ 50 files changed, 175 insertions(+), 111 deletions(-)
 
 diff --git a/build/BUILD.gn b/build/BUILD.gn
 --- a/build/BUILD.gn
@@ -9112,22 +9113,10 @@ zk0U>@{Db0uvVi{o$%=-6@&Jp4mhhHYo~{+5O$ZdgIR*B?vJ5$!R3PXBkQ0>lqcPjJ
 zG!=nXw2&abs#xr~fFDF!vq@X7`+qtd5cw$r{cp#9R6!ToGG#p=PkT1k)Wlt8^P%Pg
 W=g!Ha2?pSwIRxeC=1^|uclqCxqvpf_
 
-diff --git a/chrome/android/java/src/org/chromium/chrome/browser/omaha/UpdateConfigs.java b/chrome/android/java/src/org/chromium/chrome/browser/omaha/UpdateConfigs.java
---- a/chrome/android/java/src/org/chromium/chrome/browser/omaha/UpdateConfigs.java
-+++ b/chrome/android/java/src/org/chromium/chrome/browser/omaha/UpdateConfigs.java
-@@ -37,7 +37,7 @@ public class UpdateConfigs {
-     private static final String UPDATE_AVAILABLE_SWITCH_VALUE = "update_available";
-     private static final String UNSUPPORTED_OS_VERSION_SWITCH_VALUE = "unsupported_os_version";
- 
--    private static final long DEFAULT_UPDATE_NOTIFICATION_INTERVAL = 3 * DateUtils.DAY_IN_MILLIS;
-+    private static final long DEFAULT_UPDATE_NOTIFICATION_INTERVAL = 1 * DateUtils.DAY_IN_MILLIS;
-     private static final long DEFAULT_UPDATE_ATTRIBUTION_WINDOW_MS = 2 * DateUtils.DAY_IN_MILLIS;
- 
-     /** Possible update flow configurations. */
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/omaha/inline/BromiteInlineUpdateController.java b/chrome/android/java/src/org/chromium/chrome/browser/omaha/inline/BromiteInlineUpdateController.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/omaha/inline/BromiteInlineUpdateController.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/omaha/inline/BromiteInlineUpdateController.java
-@@ -61,10 +61,10 @@ import org.chromium.chrome.browser.omaha.VersionNumber;
+@@ -62,10 +62,10 @@ import org.chromium.chrome.browser.endpoint_fetcher.EndpointResponse;
  public class BromiteInlineUpdateController implements InlineUpdateController {
  
      private static final String TAG = "BromiteInlineUpdateController";
@@ -9140,9 +9129,9 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/omaha/inline/Br
 +    private final String UPSTREAM_VERSION_URL = "";
 +    public static final String VULNERABLE_VERSION_DOC_URL = "";
  
-     public static String getDownloadUrl() {
-         return UPDATE_VERSION_URL + BuildConfig.BUILD_TARGET_CPU + "_ChromePublic.apk";
-@@ -213,11 +213,20 @@ public class BromiteInlineUpdateController implements InlineUpdateController {
+     @Override
+     public String getDownloadUrl() {
+@@ -223,6 +223,13 @@ public class BromiteInlineUpdateController implements InlineUpdateController {
                          Log.i(TAG, "BromiteUpdater: obtained response '%s' and redirect URL '%s'", endpointResponse.getResponseString(), redirectURL);
                          if (redirectURL.indexOf(REDIRECT_URL_PREFIX) == 0) {
                              redirectURL = redirectURL.substring(REDIRECT_URL_PREFIX.length());
@@ -9156,14 +9145,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/omaha/inline/Br
                              String[] parts = redirectURL.split(Pattern.quote("/"));
                              if (parts.length > 0) {
                                  VersionNumber version = VersionNumber.fromString(parts[0]);
-                                 if (version != null) {
-                                     versionFound = true;
-+                                    if (UPSTREAM_VERSION_URL.equals(""))
-+                                        OmahaBase.updateLastPushedTimeStamp(System.currentTimeMillis());
-                                     OmahaBase.setLatestModifiedVersion(parts[0]);
-                                     callback.onResult(version);
-                                     return;
-@@ -240,6 +249,10 @@ public class BromiteInlineUpdateController implements InlineUpdateController {
+@@ -252,6 +259,10 @@ public class BromiteInlineUpdateController implements InlineUpdateController {
      }
  
      private void checkLatestUpstreamVersion(final Callback<VersionNumber> callback) {
@@ -9198,7 +9180,7 @@ diff --git a/chrome/app/extensions_strings.grdp b/chrome/app/extensions_strings.
 diff --git a/chrome/app/settings_strings.grdp b/chrome/app/settings_strings.grdp
 --- a/chrome/app/settings_strings.grdp
 +++ b/chrome/app/settings_strings.grdp
-@@ -323,7 +323,7 @@
+@@ -402,7 +402,7 @@
      Change
    </message>
    <message name="IDS_SETTINGS_WEB_STORE" desc="Sub-label about choosing something from the Chrome Web Store.">
@@ -13152,7 +13134,7 @@ e)fqMZZ`3a)Ds&5H<cfp<0000<MNUMnLSTYHt&Yn8
 diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -2095,6 +2095,7 @@ static_library("browser") {
+@@ -2103,6 +2103,7 @@ static_library("browser") {
      "//build:chromeos_buildflags",
      "//build/config/chromebox_for_meetings:buildflags",
      "//build/config/compiler:compiler_buildflags",
@@ -13160,6 +13142,18 @@ diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
      "//cc",
      "//chrome:extra_resources",
      "//chrome:resources",
+diff --git a/chrome/browser/omaha/android/java/src/org/chromium/chrome/browser/omaha/UpdateConfigs.java b/chrome/browser/omaha/android/java/src/org/chromium/chrome/browser/omaha/UpdateConfigs.java
+--- a/chrome/browser/omaha/android/java/src/org/chromium/chrome/browser/omaha/UpdateConfigs.java
++++ b/chrome/browser/omaha/android/java/src/org/chromium/chrome/browser/omaha/UpdateConfigs.java
+@@ -37,7 +37,7 @@ public class UpdateConfigs {
+     private static final String UPDATE_AVAILABLE_SWITCH_VALUE = "update_available";
+     private static final String UNSUPPORTED_OS_VERSION_SWITCH_VALUE = "unsupported_os_version";
+ 
+-    private static final long DEFAULT_UPDATE_NOTIFICATION_INTERVAL = 3 * DateUtils.DAY_IN_MILLIS;
++    private static final long DEFAULT_UPDATE_NOTIFICATION_INTERVAL = 1 * DateUtils.DAY_IN_MILLIS;
+     private static final long DEFAULT_UPDATE_ATTRIBUTION_WINDOW_MS = 2 * DateUtils.DAY_IN_MILLIS;
+ 
+     /** Possible update flow configurations. */
 diff --git a/chrome/browser/prefs/chrome_pref_service_factory.cc b/chrome/browser/prefs/chrome_pref_service_factory.cc
 --- a/chrome/browser/prefs/chrome_pref_service_factory.cc
 +++ b/chrome/browser/prefs/chrome_pref_service_factory.cc
@@ -13171,7 +13165,7 @@ diff --git a/chrome/browser/prefs/chrome_pref_service_factory.cc b/chrome/browse
  #include "chrome/browser/browser_process.h"
  #include "chrome/browser/policy/chrome_browser_policy_connector.h"
  #include "chrome/browser/prefs/chrome_command_line_pref_store.h"
-@@ -270,10 +271,7 @@ std::unique_ptr<ProfilePrefStoreManager> CreateProfilePrefStoreManager(
+@@ -273,10 +274,7 @@ std::unique_ptr<ProfilePrefStoreManager> CreateProfilePrefStoreManager(
  #endif
    std::string seed;
    CHECK(ui::ResourceBundle::HasSharedInstance());
@@ -13198,23 +13192,38 @@ diff --git a/chrome/browser/profiles/profile_shortcut_manager_win.cc b/chrome/br
 diff --git a/chrome/browser/resources/settings/settings_menu/settings_menu.html b/chrome/browser/resources/settings/settings_menu/settings_menu.html
 --- a/chrome/browser/resources/settings/settings_menu/settings_menu.html
 +++ b/chrome/browser/resources/settings/settings_menu/settings_menu.html
-@@ -31,9 +31,10 @@
+@@ -10,6 +10,18 @@
+         -webkit-tap-highlight-color: transparent;
        }
  
-       #aboutIcon {
--        --cr-icon-image: url(//resources/images/chrome_logo_dark.svg);
++      #aboutIcon {
 +        background: url('chrome://theme/current-channel-logo@1x');
 +        background-size: 20px 20px;
 +        filter: grayscale();
-         -webkit-mask-size: 18px;
--        background-color: var(--iron-icon-fill-color);
-         display: block;
-         height: var(--cr-icon-size);
-         margin-inline-end: 20px;
++        -webkit-mask-size: 18px;
++        display: block;
++        height: var(--cr-icon-size);
++        margin-inline-end: 20px;
++        margin-inline-start: 0;
++        width: var(--cr-icon-size);
++      }
++
+       #menu {
+         color: var(--google-grey-700);
+         display: flex;
+@@ -162,7 +174,7 @@
+         </a>
+         <a role="menuitem" id="about-menu" href="/help"
+             class="cr-nav-menu-item">
+-          <iron-icon icon="settings:about"></iron-icon>
++          <span id="aboutIcon" class="cr-icon" role="presentation"></span>
+           $i18n{aboutPageTitle}
+           <cr-ripple></cr-ripple>
+         </a>
 diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chrome/browser/ui/android/strings/android_chrome_strings.grd
 --- a/chrome/browser/ui/android/strings/android_chrome_strings.grd
 +++ b/chrome/browser/ui/android/strings/android_chrome_strings.grd
-@@ -2169,7 +2169,7 @@ Your Google account may have other forms of browsing history like searches and a
+@@ -2200,7 +2200,7 @@ Your Google account may have other forms of browsing history like searches and a
          About Chrome
        </message>
        <message name="IDS_LEGAL_INFORMATION_SUMMARY" desc="Summary for legal information" meaning="Android">
@@ -13242,12 +13251,12 @@ diff --git a/chrome/common/url_constants.h b/chrome/common/url_constants.h
 -inline constexpr char16_t kChromiumProjectURL[] = u"https://www.chromium.org/";
 +inline constexpr char16_t kChromiumProjectURL[] = u"https://www.cromite.org/";
  
- inline constexpr char16_t kContentSettingsExceptionsLearnMoreURL[] =
-     u"https://support.google.com/chrome?p=settings_manage_exceptions";
+ #if BUILDFLAG(GOOGLE_CHROME_BRANDING)
+ // The URL for the "Clear browsing data in Chrome" help center article.
 diff --git a/components/browser_ui/strings/android/browser_ui_strings.grd b/components/browser_ui/strings/android/browser_ui_strings.grd
 --- a/components/browser_ui/strings/android/browser_ui_strings.grd
 +++ b/components/browser_ui/strings/android/browser_ui_strings.grd
-@@ -987,7 +987,7 @@
+@@ -977,7 +977,7 @@
  
        <!-- Accessibility preferences -->
        <message name="IDS_PREFS_ACCESSIBILITY" desc="Title of Accessibility settings, which allows the user to change webpage font sizes. [CHAR_LIMIT=32]">
@@ -18853,6 +18862,95 @@ z%lwlC#@8v20MrdyXS4Cd9v0(a*!707Mi)DWKCPo$-?g#BRX!@}3RwzBwgOM1&^{Rc
 z3=3bI32q;3&^A^#@RQ;k{^t41Rq+f34W3u|*@1288y{>q;|6&;qJI})ZE0^oH1|#U
 EKU(of)Bpeg
 
+diff --git a/content/child/runtime_features.cc b/content/child/runtime_features.cc
+--- a/content/child/runtime_features.cc
++++ b/content/child/runtime_features.cc
+@@ -616,7 +616,7 @@ void ResolveInvalidConfigurations() {
+        base::FeatureList::IsEnabled(
+            features::kPrivacySandboxAdsAPIsM1Override)) &&
+       !base::FeatureList::IsEnabled(blink::features::kFencedFrames)) {
+-    LOG_IF(WARNING, WebRuntimeFeatures::IsFencedFramesEnabled())
++    CHECK(!WebRuntimeFeatures::IsFencedFramesEnabled())
+         << "Fenced frames cannot be enabled in this configuration. Use --"
+         << switches::kEnableFeatures << "="
+         << blink::features::kFencedFrames.name << " instead.";
+@@ -626,9 +626,8 @@ void ResolveInvalidConfigurations() {
+   if (!base::FeatureList::IsEnabled(blink::features::kFencedFrames) &&
+       base::FeatureList::IsEnabled(
+           blink::features::kFencedFramesLocalUnpartitionedDataAccess)) {
+-    LOG_IF(
+-        WARNING,
+-        WebRuntimeFeatures::IsFencedFramesLocalUnpartitionedDataAccessEnabled())
++    CHECK(
++        !WebRuntimeFeatures::IsFencedFramesLocalUnpartitionedDataAccessEnabled())
+         << "Fenced frames must be enabled in order to enable local "
+            "unpartitioned "
+         << "data access. Use --" << switches::kEnableFeatures << "="
+@@ -641,7 +640,7 @@ void ResolveInvalidConfigurations() {
+   // The Document API should be additionally gated by the
+   // `kBrowsingTopicsDocumentAPI` feature.
+   if (!base::FeatureList::IsEnabled(blink::features::kBrowsingTopics)) {
+-    LOG_IF(WARNING, WebRuntimeFeatures::IsTopicsAPIEnabled())
++    CHECK(!WebRuntimeFeatures::IsTopicsAPIEnabled())
+         << "Topics cannot be enabled in this configuration. Use --"
+         << switches::kEnableFeatures << "="
+         << blink::features::kBrowsingTopics.name << " in addition.";
+@@ -661,7 +660,7 @@ void ResolveInvalidConfigurations() {
+   }
+ 
+   if (!base::FeatureList::IsEnabled(blink::features::kSharedStorageAPI)) {
+-    LOG_IF(WARNING, WebRuntimeFeatures::IsSharedStorageAPIEnabled())
++    CHECK(!WebRuntimeFeatures::IsSharedStorageAPIEnabled())
+         << "SharedStorage cannot be enabled in this "
+            "configuration. Use --"
+         << switches::kEnableFeatures << "="
+@@ -671,7 +670,7 @@ void ResolveInvalidConfigurations() {
+ 
+   if (!base::FeatureList::IsEnabled(blink::features::kSharedStorageAPIM118) ||
+       !base::FeatureList::IsEnabled(blink::features::kSharedStorageAPI)) {
+-    LOG_IF(WARNING, WebRuntimeFeatures::IsSharedStorageAPIM118Enabled())
++    CHECK(!WebRuntimeFeatures::IsSharedStorageAPIM118Enabled())
+         << "SharedStorage for M118+ cannot be enabled in this "
+            "configuration. Use --"
+         << switches::kEnableFeatures << "="
+@@ -682,7 +681,7 @@ void ResolveInvalidConfigurations() {
+ 
+   if (!base::FeatureList::IsEnabled(blink::features::kSharedStorageAPIM125) ||
+       !base::FeatureList::IsEnabled(blink::features::kSharedStorageAPI)) {
+-    LOG_IF(WARNING, WebRuntimeFeatures::IsSharedStorageAPIM125Enabled())
++    CHECK(!WebRuntimeFeatures::IsSharedStorageAPIM125Enabled())
+         << "SharedStorage for M125+ cannot be enabled in this "
+            "configuration. Use --"
+         << switches::kEnableFeatures << "="
+@@ -693,7 +692,7 @@ void ResolveInvalidConfigurations() {
+ 
+   if (!base::FeatureList::IsEnabled(
+           attribution_reporting::features::kConversionMeasurement)) {
+-    LOG_IF(WARNING, WebRuntimeFeatures::IsAttributionReportingEnabled())
++    CHECK(!WebRuntimeFeatures::IsAttributionReportingEnabled())
+         << "AttributionReporting cannot be enabled in this "
+            "configuration. Use --"
+         << switches::kEnableFeatures << "="
+@@ -706,8 +705,8 @@ void ResolveInvalidConfigurations() {
+           attribution_reporting::features::kConversionMeasurement) ||
+       !base::FeatureList::IsEnabled(
+           network::features::kAttributionReportingCrossAppWeb)) {
+-    LOG_IF(WARNING,
+-           WebRuntimeFeatures::IsAttributionReportingCrossAppWebEnabled())
++    CHECK(
++           !WebRuntimeFeatures::IsAttributionReportingCrossAppWebEnabled())
+         << "AttributionReportingCrossAppWeb cannot be enabled in this "
+            "configuration. Use --"
+         << switches::kEnableFeatures << "="
+@@ -718,7 +717,7 @@ void ResolveInvalidConfigurations() {
+   }
+ 
+   if (!base::FeatureList::IsEnabled(blink::features::kInterestGroupStorage)) {
+-    LOG_IF(WARNING, WebRuntimeFeatures::IsAdInterestGroupAPIEnabled())
++    CHECK(!WebRuntimeFeatures::IsAdInterestGroupAPIEnabled())
+         << "AdInterestGroupAPI cannot be enabled in this "
+            "configuration. Use --"
+         << switches::kEnableFeatures << "="
 diff --git a/tools/grit/grit/grd_reader.py b/tools/grit/grit/grd_reader.py
 --- a/tools/grit/grit/grd_reader.py
 +++ b/tools/grit/grit/grd_reader.py
@@ -18908,11 +19006,12 @@ diff --git a/tools/grit/grit/grd_reader.py b/tools/grit/grit/grd_reader.py
 diff --git a/ui/base/ui_base_features.cc b/ui/base/ui_base_features.cc
 --- a/ui/base/ui_base_features.cc
 +++ b/ui/base/ui_base_features.cc
-@@ -659,4 +659,6 @@ BASE_FEATURE(kUseGammaContrastRegistrySettings,
+@@ -549,4 +549,7 @@ BASE_FEATURE(kUseGammaContrastRegistrySettings,
+ BASE_FEATURE(kBubbleFrameViewTitleIsHeading,
+              "BubbleFrameViewTitleIsHeading",
               base::FEATURE_ENABLED_BY_DEFAULT);
- #endif  // BUILDFLAG(IS_WIN)
- 
++
 +SET_CROMITE_FEATURE_ENABLED(kChromeRefresh2023);
-+SET_CROMITE_FEATURE_ENABLED(kChromeWebuiRefresh2023);
++SET_CROMITE_FEATURE_ENABLED(kChromeRefreshSecondary2023);
  }  // namespace features
 --
