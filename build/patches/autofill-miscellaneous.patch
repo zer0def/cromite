@@ -14,10 +14,10 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../ui/autofill/chrome_autofill_client.cc     |  7 +-
  .../autofill_crowdsourcing_manager.cc         | 69 ++-----------------
  .../autofill_crowdsourcing_manager.h          |  2 -
- .../autofill/core/common/autofill_features.cc |  1 +
+ .../autofill/core/common/autofill_features.cc |  2 +
  .../autofill/core/common/autofill_prefs.cc    | 10 +--
  .../password_generation_frame_helper.cc       |  4 --
- 7 files changed, 13 insertions(+), 82 deletions(-)
+ 7 files changed, 14 insertions(+), 82 deletions(-)
 
 diff --git a/chrome/browser/prefs/browser_prefs.cc b/chrome/browser/prefs/browser_prefs.cc
 --- a/chrome/browser/prefs/browser_prefs.cc
@@ -159,11 +159,12 @@ diff --git a/components/autofill/core/browser/crowdsourcing/autofill_crowdsourci
 diff --git a/components/autofill/core/common/autofill_features.cc b/components/autofill/core/common/autofill_features.cc
 --- a/components/autofill/core/common/autofill_features.cc
 +++ b/components/autofill/core/common/autofill_features.cc
-@@ -828,6 +828,7 @@ BASE_FEATURE(kAutofillUploadThrottling,
+@@ -828,6 +828,8 @@ BASE_FEATURE(kAutofillUploadThrottling,
               "AutofillUploadThrottling",
               base::FEATURE_ENABLED_BY_DEFAULT);
  
 +SET_CROMITE_FEATURE_DISABLED(kAutofillServerCommunication);
++SET_CROMITE_FEATURE_ENABLED(kAutofillPopupZOrderSecuritySurface);
  }  // namespace test
  
  }  // namespace autofill::features
