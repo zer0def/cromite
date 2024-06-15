@@ -1,18 +1,16 @@
 #!/bin/bash
 
-set -euo pipefail
+FOLDER=$1
+SCRIPT_FOLDER="$(dirname "$0")"
 
-SCRIPT_FOLDER="$(realpath "$(dirname "$0")")"
-SCRIPT="$SCRIPT_FOLDER/extract-patch-data.sh"
+OUTPUT="$SCRIPT_FOLDER"/../docs/PATCHES.md
+test -f $OUTPUT && rm $OUTPUT
 
-OUTPUT="$SCRIPT_FOLDER/../docs/PATCHES.md"
-rm -f "$OUTPUT"
+for filename in "$FOLDER"/*.patch; do
+    bash $SCRIPT_FOLDER/extract-patch-data.sh $filename >>$OUTPUT
+done
 
-pushd "$1" >/dev/null
+sort -k1 -t"|" -o $OUTPUT $OUTPUT
 
-for filename in *.patch; do
-    (echo "Filename: $filename"; cat "$filename") | bash "$SCRIPT"
-done | sort -k1 -t"|" -o "$OUTPUT"
-
-sed -i '1s/^/| Patch | Message |\n/' "$OUTPUT"
-sed -i '2s/^/|--------|--------|\n/' "$OUTPUT"
+sed -i '1s/^/| Patch | Message |\n/' $OUTPUT
+sed -i '2s/^/|--------|--------|\n/' $OUTPUT
