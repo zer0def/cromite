@@ -32,19 +32,33 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+
+      - name: "Get value from dispatch"
+        run: |
+          if [ -z "${RTAG}" ]; then
+            echo "RTAG=$GITHUB_SHA" >> $GITHUB_ENV
+            echo "RTAG=$RTAG"
+          fi
+
       - name: Checkout 'uazo/cromite' ${{ env.BRANCH }}
         uses: actions/checkout@v2
         with:
             repository: 'uazo/cromite'
             ref: ${{ github.event.inputs.rtag }}
+            path: 'cromite'
             fetch-depth: 1
 
       - name: Generate patches doc
         run: |
-          bash ./tools/extract-all-patch-data.sh ./build/patches
+          export HOME=$GITHUB_WORKSPACE
+
+          bash ~/cromite/tools/extract-all-patch-data.sh ~/cromite/build/patches
 
       - name: Check differences CHANGES=${{ env.CHANGES }}
         run: |
+          export HOME=$GITHUB_WORKSPACE
+
+          cd ~/cromite
           CHANGES=0 && git diff --quiet || CHANGES=1
           echo "CHANGES=$CHANGES" >> $GITHUB_ENV
 
