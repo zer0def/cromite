@@ -2,6 +2,9 @@
 
 set -euo pipefail
 
+MESSAGE=""
+LICENSE=""
+
 while read -r current_line; do
     if [[ $current_line =~ ^Filename:* ]]; then
         FILENAME=${current_line:9}
@@ -25,19 +28,13 @@ while read -r current_line; do
         break
 
     elif [ -n "$current_line" ]; then
-        if [ -n  "$MESSAGE" ]; then
+        if [ -n "$MESSAGE" ]; then
             MESSAGE+="<br>"
         fi
         MESSAGE+=$current_line
 
     fi
 done
-
-# echo FROM: $FROM
-# echo SUBJECT: $SUBJECT
-# echo DATE: $DATE
-# echo LICENSE: $LICENSE
-# echo -e MESSAGE: $MESSAGE
 
 echo "|**$SUBJECT**" \
      "<br><sub><nobr>$DATE</nobr>" \
