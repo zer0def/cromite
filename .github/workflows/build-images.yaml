@@ -48,7 +48,7 @@ jobs:
 
       - name: Enable proxy on container
         shell: bash
-        if: ${{ github.event.inputs.type != 'ubuntu-latest' }}
+        if: ${{ github.event.inputs.type != '' && github.event.inputs.type != 'ubuntu-latest' }}
         run: |
           if ! [[ -z "${HTTP_PROXY}" ]]; then
             PROXY_ADDR=http://$(hostname -I | cut -d' ' -f1 | xargs):8118
