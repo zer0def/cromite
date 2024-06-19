@@ -1199,10 +1199,10 @@ diff --git a/chrome/browser/ui/webui/chrome_web_ui_controller_factory.cc b/chrom
  #include "chrome/browser/ui/webui/internals/internals_ui.h"
  #include "chrome/browser/ui/webui/interstitials/interstitial_ui.h"
  #include "chrome/browser/ui/webui/intro/intro_ui.h"
-@@ -427,8 +426,6 @@ WebUIFactoryFunction GetWebUIFactoryFunction(WebUI* web_ui,
-   if (url.host_piece() == chrome::kChromeUIFlagsHost &&
-       FlagsDeprecatedUI::IsDeprecatedUrl(url))
-     return &NewWebUI<FlagsDeprecatedUI>;
+@@ -430,8 +429,6 @@ WebUIFactoryFunction GetWebUIFactoryFunction(WebUI* web_ui,
+   if (url.host_piece() == chrome::kChromeUIFlagsHost) {
+     return &NewWebUI<FlagsUI>;
+   }
 -  if (url.host_piece() == chrome::kChromeUIGCMInternalsHost)
 -    return &NewWebUI<GCMInternalsUI>;
    if (url.host_piece() == chrome::kChromeUIInternalsHost)
