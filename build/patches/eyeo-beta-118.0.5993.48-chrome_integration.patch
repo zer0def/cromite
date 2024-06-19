@@ -2874,7 +2874,7 @@ diff --git a/chrome/browser/ui/webui/chrome_web_ui_controller_factory.cc b/chrom
  #include "chrome/browser/ui/webui/components/components_ui.h"
  #include "chrome/browser/ui/webui/constrained_web_dialog_ui.h"
  #include "chrome/browser/ui/webui/crashes_ui.h"
-@@ -475,6 +480,9 @@ WebUIFactoryFunction GetWebUIFactoryFunction(WebUI* web_ui,
+@@ -478,6 +483,9 @@ WebUIFactoryFunction GetWebUIFactoryFunction(WebUI* web_ui,
      return &NewWebUI<UsbInternalsUI>;
    if (url.host_piece() == chrome::kChromeUIUserActionsHost)
      return &NewWebUI<UserActionsUI>;
