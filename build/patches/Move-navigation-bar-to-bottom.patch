@@ -25,6 +25,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../tab_management/TabGroupUiViewBinder.java  |   3 +
  .../TabListContainerViewBinder.java           |  15 +-
  .../tab_management/TabListCoordinator.java    | 151 +++++++++++++++++-
+ .../TabListEmptyCoordinator.java              |   7 +-
  .../tab_management/TabListRecyclerView.java   |  19 ++-
  .../tab_management/TabSwitcherMediator.java   |  27 +++-
  .../settings/AccessibilitySettings.java       |  26 +++
@@ -87,7 +88,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../AccessibilitySettingsDelegate.java        |   7 +
  .../render_widget_host_view_android.cc        |   3 +
  .../Move-navigation-bar-to-bottom.inc         |  17 ++
- 74 files changed, 1017 insertions(+), 89 deletions(-)
+ 75 files changed, 1023 insertions(+), 90 deletions(-)
  create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Move-navigation-bar-to-bottom.inc
 
 diff --git a/cc/base/features.cc b/cc/base/features.cc
@@ -667,6 +668,30 @@ diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser
          mMediator.registerOnScrolledListener(mRecyclerView);
      }
  
+diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabListEmptyCoordinator.java b/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabListEmptyCoordinator.java
+--- a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabListEmptyCoordinator.java
++++ b/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabListEmptyCoordinator.java
+@@ -15,6 +15,7 @@ import org.chromium.chrome.browser.browser_controls.BrowserControlsStateProvider
+ import org.chromium.chrome.tab_ui.R;
+ import org.chromium.ui.modelutil.ListObservable;
+ import org.chromium.ui.modelutil.ListObservable.ListObserver;
++import org.chromium.chrome.browser.flags.ChromeFeatureList;
+ 
+ /**
+  * Empty coordinator that is responsible for showing an empty state view in tab switcher when we are
+@@ -131,7 +132,11 @@ class TabListEmptyCoordinator {
+             int toolbarHeightPx = mBrowserControlsStateProvider.getTopControlsHeight();
+             FrameLayout.LayoutParams emptyViewParams =
+                     (FrameLayout.LayoutParams) mEmptyView.getLayoutParams();
+-            emptyViewParams.topMargin = toolbarHeightPx;
++            if (ChromeFeatureList.sMoveTopToolbarToBottom.isEnabled()) {
++                emptyViewParams.bottomMargin = toolbarHeightPx;
++            } else {
++                emptyViewParams.topMargin = toolbarHeightPx;
++            }
+             mEmptyView.setLayoutParams(emptyViewParams);
+         }
+         setEmptyViewVisibility(View.GONE);
 diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabListRecyclerView.java b/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabListRecyclerView.java
 --- a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabListRecyclerView.java
 +++ b/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabListRecyclerView.java
