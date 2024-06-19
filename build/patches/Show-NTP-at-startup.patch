@@ -9,16 +9,17 @@ Until the real tab is opened, no data is retrieved.
 License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
  .../android/java/res/xml/homepage_preferences.xml   |  6 ++++++
+ .../chrome/browser/BrowserRestartActivity.java      |  1 +
  .../chrome/browser/ChromeInactivityTracker.java     | 13 +++++++++++++
  .../chrome/browser/ChromeTabbedActivity.java        |  4 +++-
- .../chrome/browser/tasks/ReturnToChromeUtil.java    |  8 +++++++-
+ .../chrome/browser/tasks/ReturnToChromeUtil.java    | 12 +++++++++++-
  .../browser/preferences/ChromePreferenceKeys.java   |  2 ++
  .../preferences/LegacyChromePreferenceKeys.java     |  1 +
  .../java/res/layout/single_tab_view_layout.xml      | 11 +++++++++--
  .../single_tab/SingleTabSwitcherOnNtpMediator.java  | 10 ++++------
  .../show-ntp-at-startup.grdp                        |  9 +++++++++
  .../chrome_feature_list_cc/show-ntp-at-startup.inc  |  2 ++
- 10 files changed, 56 insertions(+), 10 deletions(-)
+ 11 files changed, 61 insertions(+), 10 deletions(-)
  create mode 100644 chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/show-ntp-at-startup.grdp
  create mode 100644 cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/show-ntp-at-startup.inc
 
@@ -38,6 +39,17 @@ diff --git a/chrome/android/java/res/xml/homepage_preferences.xml b/chrome/andro
      <org.chromium.chrome.browser.homepage.settings.RadioButtonGroupHomepagePreference
          android:key="homepage_radio_group"
          android:selectable="false"
+diff --git a/chrome/android/java/src/org/chromium/chrome/browser/BrowserRestartActivity.java b/chrome/android/java/src/org/chromium/chrome/browser/BrowserRestartActivity.java
+--- a/chrome/android/java/src/org/chromium/chrome/browser/BrowserRestartActivity.java
++++ b/chrome/android/java/src/org/chromium/chrome/browser/BrowserRestartActivity.java
+@@ -67,6 +67,7 @@ public class BrowserRestartActivity extends Activity {
+             Intent restartIntent = new Intent(Intent.ACTION_MAIN);
+             restartIntent.setPackage(context.getPackageName());
+             restartIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
++            restartIntent.putExtra(BrowserRestartActivity.EXTRA_RESTART, true);
+             context.startActivity(restartIntent);
+         }
+ 
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ChromeInactivityTracker.java b/chrome/android/java/src/org/chromium/chrome/browser/ChromeInactivityTracker.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/ChromeInactivityTracker.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/ChromeInactivityTracker.java
@@ -92,12 +104,23 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedAct
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tasks/ReturnToChromeUtil.java b/chrome/android/java/src/org/chromium/chrome/browser/tasks/ReturnToChromeUtil.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/tasks/ReturnToChromeUtil.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/tasks/ReturnToChromeUtil.java
-@@ -631,6 +631,12 @@ public final class ReturnToChromeUtil {
+@@ -35,6 +35,7 @@ import org.chromium.base.supplier.ObservableSupplierImpl;
+ import org.chromium.base.supplier.OneshotSupplier;
+ import org.chromium.base.supplier.Supplier;
+ import org.chromium.chrome.browser.ActivityTabProvider;
++import org.chromium.chrome.browser.BrowserRestartActivity;
+ import org.chromium.chrome.browser.ChromeInactivityTracker;
+ import org.chromium.chrome.browser.IntentHandler;
+ import org.chromium.chrome.browser.app.ChromeActivity;
+@@ -631,6 +632,15 @@ public final class ReturnToChromeUtil {
              }
          }
  
-+        if (IntentUtils.isMainIntentFromLauncher(intent)
-+                && inactivityTracker.isNewStartup()) {
++        boolean isMainIntentFromLauncherOrRestart =
++                IntentUtils.isMainIntentFromLauncher(intent)
++                || IntentUtils.safeGetBooleanExtra(
++                        intent, BrowserRestartActivity.EXTRA_RESTART, false);
++        if (isMainIntentFromLauncherOrRestart && inactivityTracker.isNewStartup()) {
 +            inactivityTracker.setIsStartup(false);
 +            return true;
 +        }
@@ -105,7 +128,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tasks/ReturnToC
          // Checks whether to show the Start surface due to feature flag TAB_SWITCHER_ON_RETURN_MS.
          long lastVisibleTimeMs = inactivityTracker.getLastVisibleTimeMs();
          long lastBackgroundTimeMs = inactivityTracker.getLastBackgroundedTimeMs();
-@@ -778,7 +784,7 @@ public final class ReturnToChromeUtil {
+@@ -778,7 +788,7 @@ public final class ReturnToChromeUtil {
              TabModel currentTabModel,
              TabCreator tabCreator,
              HomeSurfaceTracker homeSurfaceTracker) {
