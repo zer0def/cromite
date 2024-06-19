@@ -292,6 +292,8 @@ Enable-Do-Not-Track-by-default.patch
 Media-fingerprinting-mitigations.patch
 Use-BoringSSL-for-RandBytes.patch
 Restore-chrome-password-store.patch
+Close-Sessions-On-Ip-Change.patch
+Ask-for-restart-on-connection-change.patch
 
 Disable-wip-Android-Hub.patch
 Temp-PerformanceNavigationTiming-privacy-fix.patch
