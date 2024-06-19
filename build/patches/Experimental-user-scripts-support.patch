@@ -509,7 +509,7 @@ diff --git a/chrome/browser/ui/webui/chrome_web_ui_controller_factory.cc b/chrom
  #include "content/public/browser/web_contents.h"
  #include "content/public/browser/web_ui.h"
  #include "content/public/common/content_client.h"
-@@ -474,6 +475,10 @@ WebUIFactoryFunction GetWebUIFactoryFunction(WebUI* web_ui,
+@@ -477,6 +478,10 @@ WebUIFactoryFunction GetWebUIFactoryFunction(WebUI* web_ui,
      return &NewWebUI<UserActionsUI>;
    if (url.host_piece() == chrome::kChromeUIVersionHost)
      return &NewWebUI<VersionUI>;

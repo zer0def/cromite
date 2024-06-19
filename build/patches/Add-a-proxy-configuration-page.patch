@@ -681,7 +681,7 @@ diff --git a/chrome/browser/ui/webui/chrome_web_ui_controller_factory.cc b/chrom
  #include "chrome/browser/ui/webui/predictors/predictors_ui.h"
  #include "chrome/browser/ui/webui/privacy_sandbox/privacy_sandbox_internals_ui.h"
  #include "chrome/browser/ui/webui/segmentation_internals/segmentation_internals_ui.h"
-@@ -436,6 +437,8 @@ WebUIFactoryFunction GetWebUIFactoryFunction(WebUI* web_ui,
+@@ -439,6 +440,8 @@ WebUIFactoryFunction GetWebUIFactoryFunction(WebUI* web_ui,
    }
    if (url.host_piece() == chrome::kChromeUINetExportHost)
      return &NewWebUI<NetExportUI>;

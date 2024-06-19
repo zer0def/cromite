@@ -1009,7 +1009,7 @@ diff --git a/chrome/browser/ui/webui/chrome_web_ui_controller_factory.cc b/chrom
  #else  // BUILDFLAG(IS_ANDROID)
  #include "chrome/browser/media/router/discovery/access_code/access_code_cast_feature.h"
  #include "chrome/browser/media/router/media_router_feature.h"
-@@ -576,6 +578,10 @@ WebUIFactoryFunction GetWebUIFactoryFunction(WebUI* web_ui,
+@@ -579,6 +581,10 @@ WebUIFactoryFunction GetWebUIFactoryFunction(WebUI* web_ui,
      return &NewWebUI<WebAppInternalsUI>;
    }
  #endif  // !BUILDFLAG(IS_ANDROID)
