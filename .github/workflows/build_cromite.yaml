@@ -257,7 +257,7 @@ jobs:
           echo "::endgroup::"
 
           # temporary workaround for https://github.com/uazo/cromite/issues/1161
-          ninja -C out/x64 chrome_public_bundle || ninja -C out/x64 chrome_public_bundle
+          ninja -C out/x64 chrome_public_bundle || true
           ninja -C out/x64 chrome_public_apk
 
           cp ../../cromite/build/RELEASE out/x64
