@@ -91,6 +91,28 @@ you can activate the 'RendererAppContainer' flag from the command line with
   --enable-features=RendererAppContainer
 ```
 
+### Making Cromite work in Ubuntu 24.04 and its derivatives (kubuntu, etc)
+This happens because, starting with Ubuntu 24.04, Apparmor
+restricts the use of unprivileged user namespaces. To fix this, you have several options:
+#### 1. Creating an apparmor profile for cromite
+Create `/etc/apparmor.d/chrome`, and write:
+```
+abi <abi/4.0>,
+include <tunables/global>
+
+profile cromite /home/user/cromite/chrome-lin/chrome flags=(unconfined) {
+  userns,
+
+  include if exists <local/chrome>
+}
+```
+replacing the cromite binary path with where you have placed cromite.
+
+Now, run `sudo apparmor_parser -r /etc/apparmor.d/cromite` to apply the changes.
+#### 2. Disabling the restriction until next reboot
+`sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0`
+#### 3. Disabling the restriction permanently
+Add `kernel.apparmor_restrict_unprivileged_userns=0` to the file `/etc/sysctl.d/60-apparmor-namespace.conf`.  Create the file if not exists.
 ### Auto-update setup for linux
 working in progress in https://github.com/uazo/cromite/issues/771
 
