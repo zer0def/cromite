@@ -21,11 +21,11 @@ but since the goal is a reboot, this should not be the case.
 License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
  .../ConnectivityDetector.java                 |   1 -
- .../indicator/OfflineDetector.java            | 108 +++++++++++++++++-
+ .../indicator/OfflineDetector.java            | 111 +++++++++++++++++-
  .../OfflineIndicatorControllerV2.java         |  15 ++-
  .../tabbed_mode/TabbedRootUiCoordinator.java  |   5 +-
  .../tabmodel/TabModelSelectorBase.java        |   7 ++
- .../sAskForRestartOnConnectionChange.java     |  32 ++++++
+ .../sAskForRestartOnConnectionChange.java     |  32 +++++
  .../browser/tabmodel/TabModelSelector.java    |   2 +
  .../browser/tabmodel/TabModelUtils.java       |  20 ++++
  .../browser/tabmodel/TabWindowManager.java    |   2 +
@@ -34,20 +34,21 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../android/java/res/layout/snackbar.xml      |  10 ++
  .../ui/messages/snackbar/Snackbar.java        |  16 +++
  .../ui/messages/snackbar/SnackbarManager.java |   6 +
- .../ui/messages/snackbar/SnackbarView.java    |  13 ++-
+ .../ui/messages/snackbar/SnackbarView.java    |  13 +-
  .../web_contents/web_contents_android.cc      |  16 +++
  .../web_contents/web_contents_android.h       |   1 +
  .../browser/web_contents/web_contents_impl.cc |   2 +
  .../browser/webcontents/WebContentsImpl.java  |   8 ++
  .../content_public/browser/WebContents.java   |   2 +
- .../Ask-for-restart-on-connection-change.inc  |  13 +++
+ .../browser/test/mock/MockWebContents.java    |   3 +
+ .../Ask-for-restart-on-connection-change.inc  |  13 ++
  .../Ask-for-restart-on-connection-change.inc  |   3 +
  .../Ask-for-restart-on-connection-change.inc  |   1 +
  .../blink/renderer/core/dom/document.cc       |   1 +
  .../blink/renderer/core/frame/local_frame.cc  |   2 +
  .../main_thread/frame_scheduler_impl.cc       |   2 +
  .../main_thread/page_scheduler_impl.cc        |   9 +-
- 27 files changed, 306 insertions(+), 10 deletions(-)
+ 28 files changed, 312 insertions(+), 10 deletions(-)
  create mode 100644 chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/cromite/sAskForRestartOnConnectionChange.java
  create mode 100644 chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Ask-for-restart-on-connection-change.grdp
  create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Ask-for-restart-on-connection-change.inc
@@ -68,7 +69,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/net/connectivit
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/offlinepages/indicator/OfflineDetector.java b/chrome/android/java/src/org/chromium/chrome/browser/offlinepages/indicator/OfflineDetector.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/offlinepages/indicator/OfflineDetector.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/offlinepages/indicator/OfflineDetector.java
-@@ -21,16 +21,37 @@ import org.chromium.base.version_info.VersionInfo;
+@@ -21,16 +21,38 @@ import org.chromium.base.version_info.VersionInfo;
  import org.chromium.chrome.browser.flags.ChromeFeatureList;
  import org.chromium.chrome.browser.net.connectivitydetector.ConnectivityDetector;
  import org.chromium.chrome.browser.net.connectivitydetector.ConnectivityDetector.ConnectionState;
@@ -89,6 +90,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/offlinepages/in
 +import org.chromium.chrome.browser.ui.messages.snackbar.SnackbarManager;
 +import org.chromium.chrome.browser.ui.messages.snackbar.INeedSnackbarManager;
 +import org.chromium.chrome.browser.ui.messages.snackbar.Snackbar;
++import org.chromium.chrome.browser.tasks.tab_management.TabSwitcherLayout;
 +import org.chromium.chrome.browser.tab.Tab;
 +import org.chromium.chrome.browser.tabmodel.TabModelUtils;
 +import org.chromium.chrome.browser.tabmodel.TabModelSelector;
@@ -109,7 +111,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/offlinepages/in
      // If the connection is online, then we report that immediately via |mIsOfflineCallback|.
      // |STATUS_INDICATOR_WAIT_ON_OFFLINE_DURATION_MS| and
      // |mStatusIndicatorWaitOnSwitchOnlineToOfflineDurationMs| control the duration before
-@@ -116,6 +137,11 @@ class OfflineDetector
+@@ -116,6 +138,11 @@ class OfflineDetector
  
      private static final String TAG = "OfflineDetector";
  
@@ -121,7 +123,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/offlinepages/in
      /**
       * Constructs the offline indicator.
       * @param isOfflineCallback The {@link Callback} is invoked when the connectivity status is
-@@ -127,7 +153,13 @@ class OfflineDetector
+@@ -127,7 +154,13 @@ class OfflineDetector
      OfflineDetector(
              Callback<Boolean> isOfflineCallback,
              Callback<Boolean> isForegroundCallback,
@@ -136,15 +138,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/offlinepages/in
          mIsOfflineCallback = isOfflineCallback;
          mIsForegroundCallback = isForegroundCallback;
          mContext = context;
-@@ -183,6 +215,7 @@ class OfflineDetector
- 
-     @Override
-     public void onConnectionStateChanged(int connectionState) {
-+        checkLastNetworkId();
-         boolean previousLastReportedStateByOfflineDetector =
-                 mIsOfflineLastReportedByConnectivityDetector;
-         mIsOfflineLastReportedByConnectivityDetector =
-@@ -231,6 +264,73 @@ class OfflineDetector
+@@ -231,6 +264,75 @@ class OfflineDetector
          updateState();
      }
  
@@ -211,13 +205,23 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/offlinepages/in
 +    // TabWindowManager.Observer
 +    @Override
 +    public void onSceneChange(Layout layout) {
-+        SnackbarManager snackbarManager = mSnackbarManagerSupplier.get();
-+        snackbarManager.dismissSnackbars(this);
++        if (!(layout instanceof TabSwitcherLayout)) {
++            SnackbarManager snackbarManager = mSnackbarManagerSupplier.get();
++            snackbarManager.dismissSnackbars(this);
++        }
 +    }
 +
      private void logToAdbConsoleNow(String prefix) {
          Log.i(
                  TAG,
+@@ -316,6 +418,7 @@ class OfflineDetector
+      ** Calls |mUpdateOfflineStatusIndicatorDelayedRunnable| to update the connection state.
+      */
+     private void updateState() {
++        checkLastNetworkId();
+         mHandler.removeCallbacks(mUpdateOfflineStatusIndicatorDelayedRunnable);
+ 
+         // Do not update state while the app is in background.
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/offlinepages/indicator/OfflineIndicatorControllerV2.java b/chrome/android/java/src/org/chromium/chrome/browser/offlinepages/indicator/OfflineIndicatorControllerV2.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/offlinepages/indicator/OfflineIndicatorControllerV2.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/offlinepages/indicator/OfflineIndicatorControllerV2.java
@@ -631,6 +635,19 @@ diff --git a/content/public/android/java/src/org/chromium/content_public/browser
      /**
       * @return true if the renderer is in fullscreen mode.
       */
+diff --git a/content/public/test/android/javatests/src/org/chromium/content_public/browser/test/mock/MockWebContents.java b/content/public/test/android/javatests/src/org/chromium/content_public/browser/test/mock/MockWebContents.java
+--- a/content/public/test/android/javatests/src/org/chromium/content_public/browser/test/mock/MockWebContents.java
++++ b/content/public/test/android/javatests/src/org/chromium/content_public/browser/test/mock/MockWebContents.java
+@@ -197,6 +197,9 @@ public class MockWebContents implements WebContents {
+     @Override
+     public void setFocus(boolean hasFocus) {}
+ 
++    @Override
++    public void setPageFrozen(boolean frozen) {}
++
+     @Override
+     public boolean isFullscreenForCurrentTab() {
+         return false;
 diff --git a/cromite_flags/chrome/browser/about_flags_cc/Ask-for-restart-on-connection-change.inc b/cromite_flags/chrome/browser/about_flags_cc/Ask-for-restart-on-connection-change.inc
 new file mode 100644
 --- /dev/null
