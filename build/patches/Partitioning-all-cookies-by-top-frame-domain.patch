@@ -10,12 +10,13 @@ samesite=none first-party cookies are sent in third-party contexts.
 License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
  .../browser/chrome_content_browser_client.cc  |  2 +-
+ .../extensions/api/cookies/cookies_helpers.cc |  4 ++
  .../net/profile_network_context_service.cc    | 12 ++--
  .../privacy_sandbox_settings_delegate.cc      |  1 +
  ...storage_access_grant_permission_context.cc | 12 ++++
  .../experiment/experiment_manager_impl.cc     |  1 +
  .../core/browser/cookie_settings.cc           |  2 +
- .../core/common/cookie_settings_base.cc       | 58 -------------------
+ .../core/common/cookie_settings_base.cc       | 60 +------------------
  ...ioning-all-cookies-by-top-frame-domain.inc |  3 +
  ...ioning-all-cookies-by-top-frame-domain.inc |  1 +
  ...ioning-all-cookies-by-top-frame-domain.inc |  1 +
@@ -33,7 +34,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../modules/cookie_store/cookie_store.cc      |  3 +
  .../cookie_store_delete_options.idl           |  2 +-
  ui/webui/webui_allowlist.cc                   |  1 +
- 24 files changed, 71 insertions(+), 83 deletions(-)
+ 25 files changed, 76 insertions(+), 84 deletions(-)
  create mode 100644 cromite_flags/components/content_settings/core/common/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
  create mode 100644 cromite_flags/components/permissions/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
  create mode 100644 cromite_flags/content/public/common/content_features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
@@ -51,6 +52,20 @@ diff --git a/chrome/browser/chrome_content_browser_client.cc b/chrome/browser/ch
    }
    return cookie_settings->IsFullCookieAccessAllowed(
        url, storage_key.ToNetSiteForCookies(),
+diff --git a/chrome/browser/extensions/api/cookies/cookies_helpers.cc b/chrome/browser/extensions/api/cookies/cookies_helpers.cc
+--- a/chrome/browser/extensions/api/cookies/cookies_helpers.cc
++++ b/chrome/browser/extensions/api/cookies/cookies_helpers.cc
+@@ -255,6 +255,10 @@ bool ValidateCookieApiPartitionKey(
+ bool CookieMatchesPartitionKeyCollection(
+     const net::CookiePartitionKeyCollection& cookie_partition_key_collection,
+     const net::CanonicalCookie& cookie) {
++  if (cookie_partition_key_collection.ContainsAllKeys() ||
++      cookie_partition_key_collection.IsEmpty()) {
++    return true;
++  }
+   if (!cookie.IsPartitioned()) {
+     return cookie_partition_key_collection.ContainsAllKeys() ||
+            cookie_partition_key_collection.IsEmpty();
 diff --git a/chrome/browser/net/profile_network_context_service.cc b/chrome/browser/net/profile_network_context_service.cc
 --- a/chrome/browser/net/profile_network_context_service.cc
 +++ b/chrome/browser/net/profile_network_context_service.cc
@@ -223,6 +238,15 @@ diff --git a/components/content_settings/core/common/cookie_settings_base.cc b/c
    if (is_explicit_setting) {
      return AllowAllCookies{
          ThirdPartyCookieAllowMechanism::kAllowByExplicitSetting};
+@@ -623,7 +565,7 @@ CookieSettingsBase::GetCookieSettingInternal(
+     }
+     return CookieSettingWithMetadata{/*cookie_setting=*/CONTENT_SETTING_ALLOW,
+                                      /*allow_partitioned_cookies=*/true,
+-                                     /*is_explicit_setting=*/false,
++                                     /*is_explicit_setting=*/true,
+                                      /*third_party_cookie_allow_mechanism=*/
+                                      ThirdPartyCookieAllowMechanism::kNone};
+   }
 diff --git a/cromite_flags/components/content_settings/core/common/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc b/cromite_flags/components/content_settings/core/common/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
 new file mode 100644
 --- /dev/null
