@@ -34,6 +34,8 @@ vpython -vpython-spec .vpython -vpython-root $VPYTHON_VIRTUALENV_ROOT -vpython-l
 vpython3 -vpython-spec .vpython3 -vpython-root $VPYTHON_VIRTUALENV_ROOT -vpython-log-level debug -vpython-tool install
 
 echo -e ${RED} -------- download pgo profiles ${NC}
+python3 tools/update_pgo_profiles.py --target=android-arm64 update --gs-url-base=chromium-optimization-profiles/pgo_profiles
+python3 tools/update_pgo_profiles.py --target=android-arm32 update --gs-url-base=chromium-optimization-profiles/pgo_profiles
 python3 tools/update_pgo_profiles.py --target=win64 update --gs-url-base=chromium-optimization-profiles/pgo_profiles
 python3 tools/update_pgo_profiles.py --target=linux update --gs-url-base=chromium-optimization-profiles/pgo_profiles
 
