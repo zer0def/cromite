@@ -10484,7 +10484,7 @@ diff --git a/ipc/ipc_message_start.h b/ipc/ipc_message_start.h
 diff --git a/tools/gritsettings/resource_ids.spec b/tools/gritsettings/resource_ids.spec
 --- a/tools/gritsettings/resource_ids.spec
 +++ b/tools/gritsettings/resource_ids.spec
-@@ -1012,6 +1012,12 @@
+@@ -1015,6 +1015,12 @@
    "components/search_engine_descriptions_strings.grd": {
      "messages": [7260],
    },
