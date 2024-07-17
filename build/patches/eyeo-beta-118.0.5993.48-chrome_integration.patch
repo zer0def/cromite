@@ -2187,7 +2187,7 @@ diff --git a/chrome/browser/resources/BUILD.gn b/chrome/browser/resources/BUILD.
  
  import("//build/config/chromeos/ui_mode.gni")
  import("//chrome/browser/buildflags.gni")
-@@ -235,6 +238,7 @@ if (!is_android) {
+@@ -249,6 +252,7 @@ if (!is_android) {
  group("dev_ui_resources") {
    public_deps = [
      "accessibility:resources",
@@ -2195,7 +2195,7 @@ diff --git a/chrome/browser/resources/BUILD.gn b/chrome/browser/resources/BUILD.
      "bluetooth_internals:resources",
      "browsing_topics:resources",
      "components:resources",
-@@ -293,6 +297,7 @@ repack("dev_ui_paks") {
+@@ -307,6 +311,7 @@ repack("dev_ui_paks") {
  
    sources = [
      "$root_gen_dir/chrome/accessibility_resources.pak",

@@ -53128,7 +53128,7 @@ diff --git a/tools/gritsettings/resource_ids.spec b/tools/gritsettings/resource_
  # This file is used to assign starting resource ids for resources and strings
  # used by Chromium.  This is done to ensure that resource ids are unique
  # across all the grd files.  If you are adding a new grd file, please add
-@@ -731,6 +735,10 @@
+@@ -734,6 +738,10 @@
     "META": {"sizes": {"includes": [10]}},
      "includes": [5460],
    },
