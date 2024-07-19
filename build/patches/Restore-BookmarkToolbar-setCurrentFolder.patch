@@ -1,0 +1,79 @@
+From: uazo <uazo@users.noreply.github.com>
+Date: Thu, 18 Jul 2024 14:03:12 +0000
+Subject: Restore BookmarkToolbar#setCurrentFolder
+
+restore https://chromium-review.googlesource.com/c/chromium/src/+/5554182
+
+License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
+---
+ .../chromium/chrome/browser/bookmarks/BookmarkToolbar.java  | 6 ++++++
+ .../chrome/browser/bookmarks/BookmarkToolbarMediator.java   | 1 +
+ .../chrome/browser/bookmarks/BookmarkToolbarProperties.java | 1 +
+ .../chrome/browser/bookmarks/BookmarkToolbarViewBinder.java | 2 ++
+ 4 files changed, 10 insertions(+)
+
+diff --git a/chrome/android/java/src/org/chromium/chrome/browser/bookmarks/BookmarkToolbar.java b/chrome/android/java/src/org/chromium/chrome/browser/bookmarks/BookmarkToolbar.java
+--- a/chrome/android/java/src/org/chromium/chrome/browser/bookmarks/BookmarkToolbar.java
++++ b/chrome/android/java/src/org/chromium/chrome/browser/bookmarks/BookmarkToolbar.java
+@@ -10,6 +10,7 @@ import android.view.MenuItem;
+ import android.view.View.OnClickListener;
+ 
+ import androidx.annotation.IdRes;
++import androidx.annotation.Nullable;
+ import androidx.appcompat.widget.Toolbar.OnMenuItemClickListener;
+ import androidx.core.view.MenuCompat;
+ 
+@@ -33,6 +34,7 @@ public class BookmarkToolbar extends SelectableListToolbar<BookmarkId>
+     private BookmarkOpener mBookmarkOpener;
+     private SelectionDelegate<BookmarkId> mSelectionDelegate;
+ 
++    private @Nullable BookmarkItem mCurrentFolder;
+     private boolean mEditButtonVisible;
+     private boolean mNewFolderButtonVisible;
+     private boolean mNewFolderButtonEnabled;
+@@ -167,6 +169,10 @@ public class BookmarkToolbar extends SelectableListToolbar<BookmarkId>
+         getMenu().findItem(id).setChecked(true);
+     }
+ 
++    void setCurrentFolder(BookmarkId folder) {
++        mCurrentFolder = mBookmarkModel.getBookmarkById(folder);
++    }
++
+     void setNavigateBackRunnable(Runnable navigateBackRunnable) {
+         mNavigateBackRunnable = navigateBackRunnable;
+     }
+diff --git a/chrome/android/java/src/org/chromium/chrome/browser/bookmarks/BookmarkToolbarMediator.java b/chrome/android/java/src/org/chromium/chrome/browser/bookmarks/BookmarkToolbarMediator.java
+--- a/chrome/android/java/src/org/chromium/chrome/browser/bookmarks/BookmarkToolbarMediator.java
++++ b/chrome/android/java/src/org/chromium/chrome/browser/bookmarks/BookmarkToolbarMediator.java
+@@ -290,6 +290,7 @@ class BookmarkToolbarMediator
+     @Override
+     public void onFolderStateSet(BookmarkId folder) {
+         mCurrentFolder = folder;
++        mModel.set(BookmarkToolbarProperties.CURRENT_FOLDER, mCurrentFolder);
+ 
+         BookmarkItem folderItem =
+                 mCurrentFolder == null ? null : mBookmarkModel.getBookmarkById(mCurrentFolder);
+diff --git a/chrome/android/java/src/org/chromium/chrome/browser/bookmarks/BookmarkToolbarProperties.java b/chrome/android/java/src/org/chromium/chrome/browser/bookmarks/BookmarkToolbarProperties.java
+--- a/chrome/android/java/src/org/chromium/chrome/browser/bookmarks/BookmarkToolbarProperties.java
++++ b/chrome/android/java/src/org/chromium/chrome/browser/bookmarks/BookmarkToolbarProperties.java
+@@ -88,6 +88,7 @@ class BookmarkToolbarProperties {
+         NEW_FOLDER_BUTTON_VISIBLE,
+         NEW_FOLDER_BUTTON_ENABLED,
+         NAVIGATION_BUTTON_STATE,
++        CURRENT_FOLDER,
+         SORT_MENU_IDS,
+         SORT_MENU_IDS_ENABLED,
+         CHECKED_SORT_MENU_ID,
+diff --git a/chrome/android/java/src/org/chromium/chrome/browser/bookmarks/BookmarkToolbarViewBinder.java b/chrome/android/java/src/org/chromium/chrome/browser/bookmarks/BookmarkToolbarViewBinder.java
+--- a/chrome/android/java/src/org/chromium/chrome/browser/bookmarks/BookmarkToolbarViewBinder.java
++++ b/chrome/android/java/src/org/chromium/chrome/browser/bookmarks/BookmarkToolbarViewBinder.java
+@@ -52,6 +52,8 @@ class BookmarkToolbarViewBinder {
+         } else if (key == BookmarkToolbarProperties.CHECKED_VIEW_MENU_ID) {
+             bookmarkToolbar.setCheckedViewMenuId(
+                     model.get(BookmarkToolbarProperties.CHECKED_VIEW_MENU_ID));
++        } else if (key == BookmarkToolbarProperties.CURRENT_FOLDER) {
++            bookmarkToolbar.setCurrentFolder(model.get(BookmarkToolbarProperties.CURRENT_FOLDER));
+         } else if (key == BookmarkToolbarProperties.NAVIGATE_BACK_RUNNABLE) {
+             bookmarkToolbar.setNavigateBackRunnable(
+                     model.get(BookmarkToolbarProperties.NAVIGATE_BACK_RUNNABLE));
+--
