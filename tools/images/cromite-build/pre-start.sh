@@ -77,6 +77,7 @@ python3 third_party/depot_tools/download_from_google_storage.py	\
     --bucket chromium-browser-clang/rc \
     -s build/toolchain/win/rc/linux64/rc.sha1
 
-echo -e ${RED} -------- download win clang prebuilds ${NC}
+echo -e ${RED} -------- download clang prebuilds ${NC}
 cd $WORKSPACE/chromium/src
 python3 tools/clang/scripts/update.py --package=clang --host-os=win --no-clear=true
+python3 tools/clang/scripts/update.py --package=clang --host-os=linux --no-clear=true
