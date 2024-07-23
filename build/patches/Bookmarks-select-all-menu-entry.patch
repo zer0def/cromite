@@ -31,7 +31,7 @@ diff --git a/chrome/android/java/res/menu/bookmark_toolbar_menu_improved.xml b/c
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/bookmarks/BookmarkToolbar.java b/chrome/android/java/src/org/chromium/chrome/browser/bookmarks/BookmarkToolbar.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/bookmarks/BookmarkToolbar.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/bookmarks/BookmarkToolbar.java
-@@ -25,6 +25,8 @@ import java.util.ArrayList;
+@@ -26,6 +26,8 @@ import java.util.ArrayList;
  import java.util.List;
  import java.util.function.Function;
  
@@ -40,7 +40,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/bookmarks/Bookm
  /**
   * Main toolbar of bookmark UI. It is responsible for displaying title and buttons associated with
   * the current context.
-@@ -183,12 +185,16 @@ public class BookmarkToolbar extends SelectableListToolbar<BookmarkId>
+@@ -189,12 +191,16 @@ public class BookmarkToolbar extends SelectableListToolbar<BookmarkId>
      void setCurrentFolder(BookmarkId folder) {
          mCurrentFolder = mBookmarkModel.getBookmarkById(folder);
          enableImportExportMenu();
@@ -57,7 +57,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/bookmarks/Bookm
      }
  
      void setNavigateBackRunnable(Runnable navigateBackRunnable) {
-@@ -215,6 +221,17 @@ public class BookmarkToolbar extends SelectableListToolbar<BookmarkId>
+@@ -221,6 +227,17 @@ public class BookmarkToolbar extends SelectableListToolbar<BookmarkId>
              mExportBookmarkRunnable.run();
              return true;
          }
@@ -75,7 +75,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/bookmarks/Bookm
          return mMenuIdClickedFunction.apply(menuItem.getItemId());
      }
  
-@@ -232,6 +249,7 @@ public class BookmarkToolbar extends SelectableListToolbar<BookmarkId>
+@@ -238,6 +255,7 @@ public class BookmarkToolbar extends SelectableListToolbar<BookmarkId>
  
          getMenu().findItem(R.id.import_menu_id).setVisible(mCurrentFolder != null);
          getMenu().findItem(R.id.export_menu_id).setVisible(mCurrentFolder != null);

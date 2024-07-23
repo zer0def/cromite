@@ -122,7 +122,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/privacy/setting
  /** Fragment to keep track of the all the privacy related preferences. */
  public class PrivacySettings extends ChromeBaseSettingsFragment
 -        implements Preference.OnPreferenceChangeListener, FragmentSettingsLauncher {
-+        implements Preference.OnPreferenceChangeListener, FragmentSettingsLauncher, INeedSnackbarManage {
++        implements Preference.OnPreferenceChangeListener, FragmentSettingsLauncher, INeedSnackbarManager {
 +
 +    private SnackbarManager mSnackbarManager;
 +    private Snackbar mSnackbar;

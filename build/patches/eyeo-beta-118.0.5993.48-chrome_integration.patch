@@ -2047,7 +2047,7 @@ diff --git a/chrome/browser/chrome_browser_interface_binders.cc b/chrome/browser
  #include "chrome/browser/ui/webui/browsing_topics/browsing_topics_internals_ui.h"
  #include "chrome/browser/ui/webui/data_sharing_internals/data_sharing_internals_ui.h"
  #include "chrome/browser/ui/webui/engagement/site_engagement_ui.h"
-@@ -1118,6 +1123,10 @@ void PopulateChromeWebUIFrameBinders(
+@@ -1121,6 +1126,10 @@ void PopulateChromeWebUIFrameBinders(
        media::mojom::MediaEngagementScoreDetailsProvider, MediaEngagementUI>(
        map);
  

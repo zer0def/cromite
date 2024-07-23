@@ -11,7 +11,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../web_package/signed_exchange_handler.h     |   2 +
  .../web_package/signed_exchange_loader.cc     |   2 +-
  net/http/transport_security_state.cc          | 109 ++++++++++++------
- net/http/transport_security_state.h           |  38 +++---
+ net/http/transport_security_state.h           |  39 ++++---
  net/quic/crypto/proof_verifier_chromium.cc    |   5 +-
  net/quic/quic_chromium_client_session.cc      |   2 +-
  net/socket/ssl_client_socket_impl.cc          |   5 +-
@@ -22,7 +22,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  services/network/network_context.cc           |  31 +++--
  services/network/network_context.h            |  13 ++-
  .../public/mojom/network_context.mojom        |   9 +-
- 18 files changed, 172 insertions(+), 102 deletions(-)
+ 18 files changed, 173 insertions(+), 102 deletions(-)
 
 diff --git a/chrome/browser/ssl/https_upgrades_interceptor.cc b/chrome/browser/ssl/https_upgrades_interceptor.cc
 --- a/chrome/browser/ssl/https_upgrades_interceptor.cc
@@ -448,7 +448,15 @@ diff --git a/net/http/transport_security_state.cc b/net/http/transport_security_
 diff --git a/net/http/transport_security_state.h b/net/http/transport_security_state.h
 --- a/net/http/transport_security_state.h
 +++ b/net/http/transport_security_state.h
-@@ -297,13 +297,14 @@ class NET_EXPORT TransportSecurityState {
+@@ -289,6 +289,7 @@ class NET_EXPORT TransportSecurityState {
+   // As ShouldUpgradeToSSL(), but also returns whether the decision came from
+   // static or dynamic state, for metrics.
+   SSLUpgradeDecision GetSSLUpgradeDecision(
++      const NetworkAnonymizationKey& nak,
+       const std::string& host,
+       const NetLogWithSource& net_log = NetLogWithSource());
+ 
+@@ -297,13 +298,14 @@ class NET_EXPORT TransportSecurityState {
    // primary public interface; direct access to STS and PKP states is best
    // left to tests. The caller needs to handle the optional pinning override
    // when is_issued_by_known_root is false.
@@ -467,7 +475,7 @@ diff --git a/net/http/transport_security_state.h b/net/http/transport_security_s
  
    // Returns CT_REQUIREMENTS_NOT_MET if a connection violates CT policy
    // requirements: that is, if a connection to |host|, using the validated
-@@ -387,7 +388,7 @@ class NET_EXPORT TransportSecurityState {
+@@ -387,7 +389,7 @@ class NET_EXPORT TransportSecurityState {
    //
    // If an entry is deleted, the new state will be persisted through
    // the Delegate (if any).
@@ -476,7 +484,7 @@ diff --git a/net/http/transport_security_state.h b/net/http/transport_security_s
  
    // Returns true and updates |*result| if |host| has dynamic or static
    // HSTS/HPKP (respectively) state. If multiple entries match |host|, dynamic
-@@ -397,8 +398,8 @@ class NET_EXPORT TransportSecurityState {
+@@ -397,8 +399,8 @@ class NET_EXPORT TransportSecurityState {
    //
    // Note that these methods are not const because they opportunistically remove
    // entries that have expired.
@@ -487,7 +495,7 @@ diff --git a/net/http/transport_security_state.h b/net/http/transport_security_s
  
    // Returns true and updates |*result| iff |host| has static HSTS/HPKP
    // (respectively) state. If multiple entries match |host|, the most specific
-@@ -412,22 +413,24 @@ class NET_EXPORT TransportSecurityState {
+@@ -412,22 +414,24 @@ class NET_EXPORT TransportSecurityState {
    //
    // Note that these methods are not const because they opportunistically remove
    // entries that have expired.
@@ -517,7 +525,7 @@ diff --git a/net/http/transport_security_state.h b/net/http/transport_security_s
                 const base::Time& expiry,
                 bool include_subdomains,
                 const HashValueVector& hashes);
-@@ -465,7 +468,7 @@ class NET_EXPORT TransportSecurityState {
+@@ -465,7 +469,7 @@ class NET_EXPORT TransportSecurityState {
    typedef std::map<HashedHost, STSState> STSStateMap;
    typedef std::map<HashedHost, PKPState> PKPStateMap;
  
@@ -526,7 +534,7 @@ diff --git a/net/http/transport_security_state.h b/net/http/transport_security_s
  
    // IsBuildTimely returns true if the current build is new enough ensure that
    // built in security information (i.e. HSTS preloading and pinning
-@@ -475,7 +478,8 @@ class NET_EXPORT TransportSecurityState {
+@@ -475,7 +479,8 @@ class NET_EXPORT TransportSecurityState {
    // Helper method for actually checking pins.
    PKPStatus CheckPublicKeyPinsImpl(const HostPortPair& host_port_pair,
                                     bool is_issued_by_known_root,
@@ -536,7 +544,7 @@ diff --git a/net/http/transport_security_state.h b/net/http/transport_security_s
  
    // If a Delegate is present, notify it that the internal state has
    // changed.
-@@ -485,11 +489,13 @@ class NET_EXPORT TransportSecurityState {
+@@ -485,11 +490,13 @@ class NET_EXPORT TransportSecurityState {
    // any previous state for the |host|, including static entries.
    //
    // The new state for |host| is persisted using the Delegate (if any).

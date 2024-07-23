@@ -8,10 +8,10 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  chrome/android/chrome_java_sources.gni        |  1 -
  .../android/java/res/xml/main_preferences.xml |  5 -----
  .../browser/settings/SettingsActivity.java    | 19 -------------------
- .../settings/SettingsLauncherImpl.java        |  4 +---
+ .../settings/SettingsLauncherImpl.java        |  6 ++----
  chrome/browser/BUILD.gn                       |  1 -
  .../suggestions/action/OmniboxPedal.java      |  3 ---
- 7 files changed, 1 insertion(+), 37 deletions(-)
+ 7 files changed, 2 insertions(+), 38 deletions(-)
 
 diff --git a/chrome/android/BUILD.gn b/chrome/android/BUILD.gn
 --- a/chrome/android/BUILD.gn
@@ -125,6 +125,15 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/settings/Settin
              case SettingsFragment.MAIN:
              case SettingsFragment.PAYMENT_METHODS:
              case SettingsFragment.SITE:
+@@ -132,7 +130,7 @@ public class SettingsLauncherImpl implements SettingsLauncher {
+             case SettingsFragment.PAYMENT_METHODS:
+                 return AutofillPaymentMethodsFragment.class;
+             case SettingsFragment.SAFETY_CHECK:
+-                return SafetyCheckSettingsFragment.class;
++                return null;
+             case SettingsFragment.SITE:
+                 return SiteSettings.class;
+             case SettingsFragment.ACCESSIBILITY:
 diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn

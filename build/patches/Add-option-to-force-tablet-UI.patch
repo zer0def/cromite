@@ -21,7 +21,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../preferences/ChromePreferenceKeys.java     |  1 +
  .../preferences/ChromeSharedPreferences.java  |  8 ++++++
  .../LegacyChromePreferenceKeys.java           |  1 +
- .../SingleTabSwitcherOnNtpMediator.java       |  3 +-
+ .../SingleTabSwitcherOnNtpMediator.java       |  1 +
  .../omnibox/LocationBarCoordinator.java       |  2 +-
  .../strings/android_chrome_strings.grd        |  7 +++++
  .../java/res/layout/control_container.xml     | 12 ++++----
@@ -36,7 +36,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../res/xml/accessibility_preferences.xml     |  5 ++++
  .../AccessibilitySettingsDelegate.java        | 11 ++++++++
  .../chromium/ui/base/DeviceFormFactor.java    |  9 ++++++
- 32 files changed, 168 insertions(+), 33 deletions(-)
+ 32 files changed, 167 insertions(+), 32 deletions(-)
 
 diff --git a/chrome/android/features/start_surface/java/src/org/chromium/chrome/features/start_surface/StartSurfaceMediator.java b/chrome/android/features/start_surface/java/src/org/chromium/chrome/features/start_surface/StartSurfaceMediator.java
 --- a/chrome/android/features/start_surface/java/src/org/chromium/chrome/features/start_surface/StartSurfaceMediator.java
@@ -385,15 +385,6 @@ diff --git a/chrome/browser/single_tab/android/java/src/org/chromium/chrome/brow
  import org.chromium.ui.modelutil.PropertyModel;
  import org.chromium.url.GURL;
  
-@@ -87,7 +88,7 @@ public class SingleTabSwitcherOnNtpMediator {
-         mSingleTabCardClickedCallback = singleTabCardClickedCallback;
-         mSeeMoreLinkClickedCallback = seeMoreLinkClickedCallback;
-         mUiConfig = uiConfig;
--        mIsTablet = isTablet;
-+        mIsTablet = isTablet && !DeviceFormFactor.isForceTabletUI();
-         mModuleDelegate = moduleDelegate;
- 
-         mMarginForPhoneAndNarrowWindowOnTablet =
 diff --git a/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/browser/omnibox/LocationBarCoordinator.java b/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/browser/omnibox/LocationBarCoordinator.java
 --- a/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/browser/omnibox/LocationBarCoordinator.java
 +++ b/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/browser/omnibox/LocationBarCoordinator.java

@@ -114,7 +114,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../user_scripts/renderer/script_context.h    |  67 ++
  .../user_scripts/renderer/script_injection.cc | 295 +++++++
  .../user_scripts/renderer/script_injection.h  | 155 ++++
- .../renderer/script_injection_manager.cc      | 415 +++++++++
+ .../renderer/script_injection_manager.cc      | 414 +++++++++
  .../renderer/script_injection_manager.h       | 100 +++
  .../user_scripts/renderer/script_injector.h   |  96 +++
  .../user_scripts/renderer/scripts_run_info.cc |  31 +
@@ -123,7 +123,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../renderer/user_script_injector.h           |  86 ++
  .../user_scripts/renderer/user_script_set.cc  | 264 ++++++
  .../user_scripts/renderer/user_script_set.h   | 101 +++
- .../renderer/user_script_set_manager.cc       |  77 ++
+ .../renderer/user_script_set_manager.cc       |  76 ++
  .../renderer/user_script_set_manager.h        |  63 ++
  .../renderer/user_scripts_dispatcher.cc       |  36 +
  .../renderer/user_scripts_dispatcher.h        |  49 ++
@@ -135,7 +135,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../Experimental-user-scripts-support.inc     |  13 +
  ipc/ipc_message_start.h                       |   1 +
  tools/gritsettings/resource_ids.spec          |   6 +
- 108 files changed, 9494 insertions(+), 2 deletions(-)
+ 108 files changed, 9492 insertions(+), 2 deletions(-)
  create mode 100644 components/user_scripts/README.md
  create mode 100755 components/user_scripts/android/BUILD.gn
  create mode 100644 components/user_scripts/android/java/res/layout/accept_script_item.xml
@@ -1299,7 +1299,7 @@ new file mode 100755
 +
 +        SettingsLauncher settingsLauncher = new SettingsLauncherImpl();
 +        Intent intent = settingsLauncher.createSettingsActivityIntent(
-+                context, UserScriptsPreferences.class.getName(),
++                context, UserScriptsPreferences.class,
 +                UserScriptsPreferences.createFragmentArgsForInstall(filePath));
 +        IntentUtils.safeStartActivity(context, intent);
 +
@@ -8483,7 +8483,7 @@ diff --git a/components/user_scripts/renderer/script_injection_manager.cc b/comp
 new file mode 100755
 --- /dev/null
 +++ b/components/user_scripts/renderer/script_injection_manager.cc
-@@ -0,0 +1,415 @@
+@@ -0,0 +1,414 @@
 +// Copyright 2014 The Chromium Authors. All rights reserved.
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
@@ -8538,8 +8538,7 @@ new file mode 100755
 +    case UserScript::RUN_LOCATION_LAST:
 +      break;
 +  }
-+  NOTREACHED();
-+  return UserScript::RUN_LOCATION_LAST;
++  NOTREACHED_NORETURN();
 +}
 +
 +}  // namespace
@@ -9917,7 +9916,7 @@ diff --git a/components/user_scripts/renderer/user_script_set_manager.cc b/compo
 new file mode 100755
 --- /dev/null
 +++ b/components/user_scripts/renderer/user_script_set_manager.cc
-@@ -0,0 +1,77 @@
+@@ -0,0 +1,76 @@
 +#include "user_script_set_manager.h"
 +
 +#include "base/logging.h"
@@ -9971,8 +9970,7 @@ new file mode 100755
 +void UserScriptSetManager::OnUpdateUserScripts(
 +    base::ReadOnlySharedMemoryRegion shared_memory) {
 +  if (!shared_memory.IsValid()) {
-+    NOTREACHED() << "Bad scripts handle";
-+    return;
++    NOTREACHED_NORETURN() << "Bad scripts handle";
 +  }
 +
 +  UserScriptSet* scripts = NULL;
@@ -9995,7 +9993,6 @@ new file mode 100755
 +}
 +
 +}
-\ No newline at end of file
 diff --git a/components/user_scripts/renderer/user_script_set_manager.h b/components/user_scripts/renderer/user_script_set_manager.h
 new file mode 100755
 --- /dev/null

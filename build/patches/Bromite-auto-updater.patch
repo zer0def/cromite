@@ -33,12 +33,13 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../browser/omaha/UpdateStatusProvider.java   | 168 +++++++----
  .../browser/omaha/VersionNumberGetter.java    |   3 +-
  .../omaha/inline/InlineUpdateController.java  |  57 ++++
+ .../safety_hub/SafetyHubFetchService.java     |   5 -
  .../strings/android_chrome_strings.grd        |  23 +-
  .../endpoint_fetcher/endpoint_fetcher.cc      | 101 ++++++-
  .../endpoint_fetcher/endpoint_fetcher.h       |  23 +-
  .../Bromite-auto-updater.inc                  |   3 +
  .../Bromite-auto-updater.inc                  |   1 +
- 30 files changed, 1225 insertions(+), 69 deletions(-)
+ 31 files changed, 1225 insertions(+), 74 deletions(-)
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/omaha/CromiteUpdateStatusProvider.java
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/omaha/inline/BromiteInlineUpdateController.java
  create mode 100644 chrome/browser/endpoint_fetcher/BUILD.gn
@@ -752,7 +753,7 @@ new file mode 100644
 +#include "chrome/browser/endpoint_fetcher/jni_headers/EndpointFetcher_jni.h"
 +#include "chrome/browser/endpoint_fetcher/jni_headers/EndpointResponse_jni.h"
 +#include "chrome/browser/endpoint_fetcher/jni_headers/EndpointHeaderResponse_jni.h"
-+#include "chrome/browser/profiles/profile_android.h"
++#include "chrome/browser/profiles/profile.h"
 +#include "chrome/browser/signin/identity_manager_factory.h"
 +#include "chrome/common/channel_info.h"
 +#include "components/signin/public/base/consent_level.h"
@@ -812,7 +813,7 @@ new file mode 100644
 +  std::vector<std::string> scopes;
 +  base::android::AppendJavaStringArrayToStringVector(env, jscopes, &scopes);
 +  auto endpoint_fetcher = std::make_unique<EndpointFetcher>(
-+      ProfileAndroid::FromProfileAndroid(jprofile)
++      Profile::FromJavaObject(jprofile)
 +          ->GetDefaultStoragePartition()
 +          ->GetURLLoaderFactoryForBrowserProcess(),
 +      base::android::ConvertJavaStringToUTF8(env, joauth_consumer_name),
@@ -823,7 +824,7 @@ new file mode 100644
 +      net::NetworkTrafficAnnotationTag::FromJavaAnnotation(
 +          jannotation_hash_code),
 +      IdentityManagerFactory::GetForProfile(
-+          ProfileAndroid::FromProfileAndroid(jprofile)),
++          Profile::FromJavaObject(jprofile)),
 +      // TODO(crbug.com/1466445): ConsentLevel::kSync is deprecated and should
 +      //     be removed. See ConsentLevel::kSync documentation for details.
 +      signin::ConsentLevel::kSync);
@@ -844,7 +845,7 @@ new file mode 100644
 +    jint jannotation_hash_code,
 +    const base::android::JavaParamRef<jobject>& jcallback) {
 +  auto endpoint_fetcher = std::make_unique<EndpointFetcher>(
-+      ProfileAndroid::FromProfileAndroid(jprofile)
++      Profile::FromJavaObject(jprofile)
 +          ->GetDefaultStoragePartition()
 +          ->GetURLLoaderFactoryForBrowserProcess(),
 +      GURL(base::android::ConvertJavaStringToUTF8(env, jurl)),
@@ -871,7 +872,7 @@ new file mode 100644
 +    jint jannotation_hash_code,
 +    const base::android::JavaParamRef<jobject>& jcallback) {
 +  auto endpoint_fetcher = std::make_unique<EndpointFetcher>(
-+      ProfileAndroid::FromProfileAndroid(jprofile)
++      Profile::FromJavaObject(jprofile)
 +        ->GetDefaultStoragePartition()
 +        ->GetURLLoaderFactoryForBrowserProcess(),
 +      GURL(base::android::ConvertJavaStringToUTF8(env, jurl)),
@@ -1645,6 +1646,28 @@ new file mode 100644
 +     */
 +    void completeUpdate();
 +}
+diff --git a/chrome/browser/safety_hub/android/java/src/org/chromium/chrome/browser/safety_hub/SafetyHubFetchService.java b/chrome/browser/safety_hub/android/java/src/org/chromium/chrome/browser/safety_hub/SafetyHubFetchService.java
+--- a/chrome/browser/safety_hub/android/java/src/org/chromium/chrome/browser/safety_hub/SafetyHubFetchService.java
++++ b/chrome/browser/safety_hub/android/java/src/org/chromium/chrome/browser/safety_hub/SafetyHubFetchService.java
+@@ -53,9 +53,6 @@ public class SafetyHubFetchService implements SyncService.SyncStateChangedListen
+         if (syncService != null) {
+             syncService.addSyncStateChangedListener(this);
+         }
+-
+-        // Fetch latest update status.
+-        UpdateStatusProvider.getInstance().addObserver(mUpdateCallback);
+     }
+ 
+     @Override
+@@ -64,8 +61,6 @@ public class SafetyHubFetchService implements SyncService.SyncStateChangedListen
+         if (syncService != null) {
+             syncService.removeSyncStateChangedListener(this);
+         }
+-
+-        UpdateStatusProvider.getInstance().removeObserver(mUpdateCallback);
+     }
+ 
+     /** See {@link ChromeActivitySessionTracker#onForegroundSessionStart()}. */
 diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chrome/browser/ui/android/strings/android_chrome_strings.grd
 --- a/chrome/browser/ui/android/strings/android_chrome_strings.grd
 +++ b/chrome/browser/ui/android/strings/android_chrome_strings.grd

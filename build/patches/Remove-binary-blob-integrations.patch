@@ -53,7 +53,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  chrome/browser/ui/BUILD.gn                    |   3 -
  chrome/browser/ui/android/omnibox/BUILD.gn    |   4 -
  .../FullscreenSigninMediator.java             |  12 +-
- chrome/browser/ui/webauthn/sheet_models.cc    |   8 +-
+ chrome/browser/ui/webauthn/sheet_models.cc    |   9 +-
  .../webui/chrome_web_ui_controller_factory.cc |   3 -
  chrome/browser/webauthn/android/BUILD.gn      |   1 -
  .../CableAuthenticatorModuleProvider.java     |  35 +-
@@ -108,7 +108,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../preconditions/javatests/BUILD.gn          |   1 -
  .../gms/ChromiumPlayServicesAvailability.java |  10 +-
  third_party/cardboard/BUILD.gn                |   4 -
- 84 files changed, 116 insertions(+), 2227 deletions(-)
+ 84 files changed, 116 insertions(+), 2228 deletions(-)
  create mode 100644 components/webauthn/android/java/src/org/chromium/components/webauthn/ConditionalUiState.java
 
 diff --git a/android_webview/expectations/system_webview_bundle.AndroidManifest.expected b/android_webview/expectations/system_webview_bundle.AndroidManifest.expected
@@ -1173,8 +1173,11 @@ diff --git a/chrome/browser/ui/android/signin/java/src/org/chromium/chrome/brows
 diff --git a/chrome/browser/ui/webauthn/sheet_models.cc b/chrome/browser/ui/webauthn/sheet_models.cc
 --- a/chrome/browser/ui/webauthn/sheet_models.cc
 +++ b/chrome/browser/ui/webauthn/sheet_models.cc
-@@ -1608,13 +1608,7 @@ bool AuthenticatorMultiSourcePickerSheetModel::IsManageDevicesButtonVisible()
-   using Mechanism = AuthenticatorRequestDialogModel::Mechanism;
+@@ -1605,16 +1605,9 @@ AuthenticatorMultiSourcePickerSheetModel::
+ 
+ bool AuthenticatorMultiSourcePickerSheetModel::IsManageDevicesButtonVisible()
+     const {
+-  using Mechanism = AuthenticatorRequestDialogModel::Mechanism;
    // If any phones or passkeys from a phone are shown then also show a button
    // that goes to the settings page to manage them.
 -  return base::ranges::any_of(

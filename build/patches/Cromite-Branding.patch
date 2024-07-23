@@ -53,8 +53,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../chromium/product_logo_white.png           | Bin 2512 -> 6790 bytes
  content/child/runtime_features.cc             |  23 +++--
  tools/grit/grit/grd_reader.py                 |  35 +++++++
- ui/base/ui_base_features.cc                   |   2 +
- 50 files changed, 174 insertions(+), 111 deletions(-)
+ 49 files changed, 172 insertions(+), 111 deletions(-)
 
 diff --git a/build/BUILD.gn b/build/BUILD.gn
 --- a/build/BUILD.gn
@@ -19003,14 +19002,4 @@ diff --git a/tools/grit/grit/grd_reader.py b/tools/grit/grit/grd_reader.py
  
  class GrdPartContentHandler(xml.sax.handler.ContentHandler):
    def __init__(self, parent):
-diff --git a/ui/base/ui_base_features.cc b/ui/base/ui_base_features.cc
---- a/ui/base/ui_base_features.cc
-+++ b/ui/base/ui_base_features.cc
-@@ -529,4 +529,6 @@ BASE_FEATURE(kEnableGestureBeginEndTypes,
-              "EnableGestureBeginEndTypes",
-              base::FEATURE_DISABLED_BY_DEFAULT);
- 
-+SET_CROMITE_FEATURE_ENABLED(kChromeRefresh2023);
-+SET_CROMITE_FEATURE_ENABLED(kChromeRefreshSecondary2023);
- }  // namespace features
 --

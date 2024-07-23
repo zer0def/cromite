@@ -34,7 +34,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../autofill/AutofillManagerWrapper.java      |  5 +-
  .../components/autofill/AutofillProvider.java |  7 ++
  .../BrowserSelectionActionMenuDelegate.java   | 62 ++++++++++++++
- .../browser/content_autofill_driver.cc        | 12 +++
+ .../browser/content_autofill_driver.cc        | 13 +++
  .../content/browser/content_autofill_driver.h | 10 +++
  .../content_autofill_driver_factory.cc        | 12 +++
  .../content/renderer/autofill_agent.cc        |  6 ++
@@ -47,7 +47,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../autofill/core/common/autofill_features.h  |  4 -
  .../autofill/core/common/autofill_prefs.cc    |  4 +-
  .../autofill/core/common/autofill_prefs.h     |  5 ++
- 32 files changed, 267 insertions(+), 96 deletions(-)
+ 32 files changed, 268 insertions(+), 96 deletions(-)
  create mode 100644 components/android_autofill/browser/java/src/org/chromium/components/autofill/BrowserSelectionActionMenuDelegate.java
 
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/password_manager/settings/PasswordSettings.java b/chrome/android/java/src/org/chromium/chrome/browser/password_manager/settings/PasswordSettings.java
@@ -671,20 +671,21 @@ new file mode 100644
 diff --git a/components/autofill/content/browser/content_autofill_driver.cc b/components/autofill/content/browser/content_autofill_driver.cc
 --- a/components/autofill/content/browser/content_autofill_driver.cc
 +++ b/components/autofill/content/browser/content_autofill_driver.cc
-@@ -247,6 +247,12 @@ void RouteToManager(ContentAutofillDriver& source,
+@@ -247,6 +247,13 @@ void RouteToManager(ContentAutofillDriver& source,
          AutofillManager& manager = target.GetAutofillManager();
          (manager.*
           manager_fun)(WithNewVersion(std::forward<ManagerArgs>(args))...);
 +
-+        AutofillManager& secondary_autofill_manager = target.secondary_autofill_manager();
++        raw_ptr<AutofillManager> secondary_autofill_manager =
++                                    target.secondary_autofill_manager();
 +        if (secondary_autofill_manager) {
-+          (secondary_autofill_manager.*
++          (secondary_autofill_manager->*
 +           manager_fun)(WithNewVersion(std::forward<ManagerArgs>(args))...);
 +        }
        },
        source, Lift(source, std::forward<ActualArgs>(args))...);
  }
-@@ -589,6 +595,8 @@ void ContentAutofillDriver::JavaScriptChangedAutofilledValue(
+@@ -589,6 +596,8 @@ void ContentAutofillDriver::JavaScriptChangedAutofilledValue(
  void ContentAutofillDriver::Reset() {
    owner_->router().UnregisterDriver(*this, /*driver_is_dying=*/false);
    autofill_manager_->Reset();
@@ -693,7 +694,7 @@ diff --git a/components/autofill/content/browser/content_autofill_driver.cc b/co
  }
  
  const mojo::AssociatedRemote<mojom::AutofillAgent>&
-@@ -601,6 +609,10 @@ ContentAutofillDriver::GetAutofillAgent() {
+@@ -601,6 +610,10 @@ ContentAutofillDriver::GetAutofillAgent() {
    return autofill_agent_;
  }
  

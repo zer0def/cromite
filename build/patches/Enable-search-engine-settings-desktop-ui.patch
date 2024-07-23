@@ -12,6 +12,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  chrome/app/settings_strings.grdp              |   3 +
  chrome/app/settings_strings_android.grdp      | 260 ++++++++++++++++++
  chrome/browser/BUILD.gn                       |   3 +
+ .../chrome_browser_interface_binders.cc       |  12 +
  chrome/browser/resources/BUILD.gn             |   6 +
  chrome/browser/resources/settings/BUILD.gn    |   2 +-
  .../resources/settings/page_visibility.ts     |  30 +-
@@ -24,7 +25,8 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../browser/resources/settings/settings.html  |   8 +-
  .../settings/settings_ui/settings_ui.html     |   6 +
  .../resources/settings_shared/BUILD.gn        |   2 +-
- .../browser/search_engines/android/BUILD.gn   |   1 +
+ chrome/browser/search/background/BUILD.gn     |   4 +-
+ .../browser/search_engines/android/BUILD.gn   |   2 +
  .../java/res/layout/search_engine_layout.xml  |  25 ++
  .../settings/SearchEngineSettings.java        |  19 ++
  chrome/browser/ui/BUILD.gn                    |  12 +
@@ -43,11 +45,12 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  ...ings_localized_strings_provider_android.cc | 198 +++++++++++++
  ...tings_localized_strings_provider_android.h |  19 ++
  .../ui/webui/settings/settings_ui_android.cc  | 134 +++++++++
- .../ui/webui/settings/settings_ui_android.h   | 127 +++++++++
+ .../ui/webui/settings/settings_ui_android.h   | 119 ++++++++
  chrome/chrome_paks.gni                        |  11 +
  .../browser_ui/settings/SettingsLauncher.java |   2 +
  .../search_engine_desktop_ui.grdp             |   6 +
  .../android/template_url_service_android.cc   |   2 +-
+ .../search_engines/search_engines_switches.cc |   1 +
  .../search_engines/template_url_service.cc    |   8 +-
  .../search_engines/template_url_service.h     |   6 +-
  content/browser/webui/web_ui_impl.cc          |  14 +-
@@ -67,7 +70,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  ui/webui/resources/include_polymer.gni        |   2 +-
  ui/webui/resources/js/BUILD.gn                |   2 +-
  ui/webui/resources/js/load_time_data.ts       |  17 +-
- 60 files changed, 1097 insertions(+), 61 deletions(-)
+ 63 files changed, 1106 insertions(+), 62 deletions(-)
  create mode 100644 chrome/app/settings_strings_android.grdp
  create mode 100644 chrome/browser/search_engines/android/java/res/layout/search_engine_layout.xml
  create mode 100644 chrome/browser/ui/webui/settings/settings_localized_strings_provider_android.cc
@@ -418,6 +421,35 @@ diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
    } else {
      #!is_android
      sources += [
+diff --git a/chrome/browser/chrome_browser_interface_binders.cc b/chrome/browser/chrome_browser_interface_binders.cc
+--- a/chrome/browser/chrome_browser_interface_binders.cc
++++ b/chrome/browser/chrome_browser_interface_binders.cc
+@@ -145,6 +145,9 @@
+ #endif
+ 
+ #if BUILDFLAG(IS_ANDROID)
++#include "ui/webui/resources/cr_components/help_bubble/help_bubble.mojom.h"
++#include "ui/webui/resources/cr_components/customize_color_scheme_mode/customize_color_scheme_mode.mojom.h"
++#include "chrome/browser/ui/webui/settings/settings_ui_android.h"
+ #include "chrome/browser/android/dom_distiller/distiller_ui_handle_android.h"
+ #include "chrome/browser/offline_pages/android/offline_page_auto_fetcher.h"
+ #include "chrome/browser/ui/webui/feed_internals/feed_internals.mojom.h"
+@@ -1168,6 +1171,15 @@ void PopulateChromeWebUIFrameBinders(
+       app_management::mojom::PageHandlerFactory, WebAppSettingsUI>(map);
+ #endif
+ 
++#if BUILDFLAG(IS_ANDROID)
++  RegisterWebUIControllerInterfaceBinder<
++      help_bubble::mojom::HelpBubbleHandlerFactory, settings::SettingsUI>(map);
++
++  RegisterWebUIControllerInterfaceBinder<
++      customize_color_scheme_mode::mojom::
++          CustomizeColorSchemeModeHandlerFactory, settings::SettingsUI>(map);
++#endif
++
+ #if !BUILDFLAG(IS_ANDROID)
+   if (search_engines::IsChoiceScreenFlagEnabled(
+           search_engines::ChoicePromo::kAny)) {
 diff --git a/chrome/browser/resources/BUILD.gn b/chrome/browser/resources/BUILD.gn
 --- a/chrome/browser/resources/BUILD.gn
 +++ b/chrome/browser/resources/BUILD.gn
@@ -705,6 +737,30 @@ diff --git a/chrome/browser/resources/settings_shared/BUILD.gn b/chrome/browser/
  
  build_webui("build") {
    grd_prefix = "settings_shared"
+diff --git a/chrome/browser/search/background/BUILD.gn b/chrome/browser/search/background/BUILD.gn
+--- a/chrome/browser/search/background/BUILD.gn
++++ b/chrome/browser/search/background/BUILD.gn
+@@ -2,10 +2,11 @@
+ # Use of this source code is governed by a BSD-style license that can be
+ # found in the LICENSE file.
+ 
+-assert(is_win || is_mac || is_linux || is_chromeos)
++# assert(is_win || is_mac || is_linux || is_chromeos)
+ 
+ import("//third_party/protobuf/proto_library.gni")
+ 
++if (!is_android) {
+ source_set("background") {
+   public = [
+     "ntp_background_data.h",
+@@ -61,6 +62,7 @@ source_set("background") {
+     "//ui/gfx/codec",
+   ]
+ }
++}
+ 
+ proto_library("ntp_background_proto") {
+   sources = [ "ntp_background.proto" ]
 diff --git a/chrome/browser/search_engines/android/BUILD.gn b/chrome/browser/search_engines/android/BUILD.gn
 --- a/chrome/browser/search_engines/android/BUILD.gn
 +++ b/chrome/browser/search_engines/android/BUILD.gn
@@ -716,6 +772,14 @@ diff --git a/chrome/browser/search_engines/android/BUILD.gn b/chrome/browser/sea
      "java/res/layout/search_engine_choice_item.xml",
      "java/res/layout/search_engine_choice_view.xml",
      "java/res/layout/search_engine_recent_title.xml",
+@@ -86,6 +87,7 @@ android_resources("java_resources") {
+     "java/res/values/ids.xml",
+   ]
+   deps = [
++    "//chrome/browser/search/background:ntp_background_proto",
+     "//chrome/browser/ui/android/strings:ui_strings_grd",
+     "//components/browser_ui/styles/android:java_resources",
+     "//components/browser_ui/widget/android:java_resources",
 diff --git a/chrome/browser/search_engines/android/java/res/layout/search_engine_layout.xml b/chrome/browser/search_engines/android/java/res/layout/search_engine_layout.xml
 new file mode 100644
 --- /dev/null
@@ -1005,7 +1069,7 @@ diff --git a/chrome/browser/ui/webui/chrome_web_ui_controller_factory.cc b/chrom
  #include "chrome/browser/ui/webui/webapks/webapks_ui.h"
  #include "components/feed/buildflags.h"
  #include "components/feed/feed_feature_list.h"
-+#include "chrome/browser/ui/webui/settings/settings_ui.h"
++#include "chrome/browser/ui/webui/settings/settings_ui_android.h"
 +#include "chrome/browser/ui/webui/settings/settings_utils.h"
  #else  // BUILDFLAG(IS_ANDROID)
  #include "chrome/browser/media/router/discovery/access_code/access_code_cast_feature.h"
@@ -1516,7 +1580,7 @@ new file mode 100644
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
-+#include "chrome/browser/ui/webui/settings/settings_ui.h"
++#include "chrome/browser/ui/webui/settings/settings_ui_android.h"
 +
 +#include <stddef.h>
 +
@@ -1634,14 +1698,14 @@ new file mode 100644
 +    mojo::PendingReceiver<help_bubble::mojom::HelpBubbleHandler> handler) {
 +}
 +
-+void SettingsUI::CreateCustomizeColorSchemeModeHandler(
-+    mojo::PendingRemote<
-+        customize_color_scheme_mode::mojom::CustomizeColorSchemeModeClient>
-+        client,
-+    mojo::PendingReceiver<
-+        customize_color_scheme_mode::mojom::CustomizeColorSchemeModeHandler>
-+        handler) {
-+}
++void SettingsUI::BindInterface(
++    mojo::PendingReceiver<help_bubble::mojom::HelpBubbleHandlerFactory>
++        pending_receiver) {}
++
++void SettingsUI::BindInterface(
++    mojo::PendingReceiver<customize_color_scheme_mode::mojom::
++                            CustomizeColorSchemeModeHandlerFactory>
++        pending_receiver) {}
 +
 +WEB_UI_CONTROLLER_TYPE_IMPL(SettingsUI)
 +
@@ -1650,7 +1714,7 @@ diff --git a/chrome/browser/ui/webui/settings/settings_ui_android.h b/chrome/bro
 new file mode 100644
 --- /dev/null
 +++ b/chrome/browser/ui/webui/settings/settings_ui_android.h
-@@ -0,0 +1,127 @@
+@@ -0,0 +1,119 @@
 +#ifndef CHROME_BROWSER_UI_WEBUI_SETTINGS_SETTINGS_UI_ANDROID_H_
 +#define CHROME_BROWSER_UI_WEBUI_SETTINGS_SETTINGS_UI_ANDROID_H_
 +
@@ -1764,14 +1828,6 @@ new file mode 100644
 +      mojo::PendingReceiver<help_bubble::mojom::HelpBubbleHandler> handler)
 +      override;
 +
-+  void CreateCustomizeColorSchemeModeHandler(
-+      mojo::PendingRemote<
-+          customize_color_scheme_mode::mojom::CustomizeColorSchemeModeClient>
-+          client,
-+      mojo::PendingReceiver<
-+          customize_color_scheme_mode::mojom::CustomizeColorSchemeModeHandler>
-+          handler) override;
-+
 +  WEB_UI_CONTROLLER_TYPE_DECL();
 +};
 +
@@ -1834,6 +1890,17 @@ diff --git a/components/search_engines/android/template_url_service_android.cc b
      }
  
      // Only one search engine can be marked as coming from Play at a time.
+diff --git a/components/search_engines/search_engines_switches.cc b/components/search_engines/search_engines_switches.cc
+--- a/components/search_engines/search_engines_switches.cc
++++ b/components/search_engines/search_engines_switches.cc
+@@ -36,6 +36,7 @@ COMPONENT_EXPORT(SEARCH_ENGINES_SWITCHES)
+ BASE_FEATURE(kSearchEngineChoiceTrigger,
+              "SearchEngineChoiceTrigger",
+              base::FEATURE_ENABLED_BY_DEFAULT);
++SET_CROMITE_FEATURE_DISABLED(kSearchEngineChoiceTrigger);
+ 
+ COMPONENT_EXPORT(SEARCH_ENGINES_SWITCHES)
+ BASE_FEATURE(kSearchEngineChoiceAttribution,
 diff --git a/components/search_engines/template_url_service.cc b/components/search_engines/template_url_service.cc
 --- a/components/search_engines/template_url_service.cc
 +++ b/components/search_engines/template_url_service.cc

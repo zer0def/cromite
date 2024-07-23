@@ -12,8 +12,8 @@ deactivation of all pop-ups (default disabled)
 ---
  .../android/java/res/xml/main_preferences.xml |   19 +-
  chrome/browser/BUILD.gn                       |    2 -
- .../adblock/adblock_content_browser_client.cc |  285 +-
- .../adblock/adblock_content_browser_client.h  |   48 +-
+ .../adblock/adblock_content_browser_client.cc |  291 +-
+ .../adblock/adblock_content_browser_client.h  |   54 +-
  .../browser/chrome_content_browser_client.cc  |    6 +-
  .../browser/chrome_content_browser_client.h   |    6 +-
  .../adblock_private/adblock_private_api.cc    |   74 +-
@@ -32,7 +32,7 @@ deactivation of all pop-ups (default disabled)
  chrome/browser/resources/settings/settings.ts |    1 +
  .../settings/settings_menu/settings_menu.html |    5 +
  chrome/browser/ui/tab_helpers.cc              |    6 +-
- .../adblock_internals_page_handler_impl.cc    |   20 +-
+ .../adblock_internals_page_handler_impl.cc    |   23 +-
  .../common/extensions/api/_api_features.json  |    4 +-
  .../extensions/api/_permission_features.json  |    8 -
  .../common/extensions/api/adblock_private.idl |    8 +
@@ -51,7 +51,7 @@ deactivation of all pop-ups (default disabled)
  .../settings/AdblockSettingsFragment.java     |   51 +-
  components/adblock/content/browser/BUILD.gn   |   18 +-
  .../adblock_controller_factory_base.cc        |    5 +-
- .../browser/adblock_url_loader_factory.cc     |   65 +-
+ .../browser/adblock_url_loader_factory.cc     |   68 +-
  .../browser/adblock_url_loader_factory.h      |    7 +-
  .../browser/adblock_webcontents_observer.cc   |   25 +-
  .../browser/adblock_webcontents_observer.h    |    5 +-
@@ -95,7 +95,7 @@ deactivation of all pop-ups (default disabled)
  .../filtering_configuration_maintainer_impl.h |    4 +-
  .../ongoing_subscription_request_impl.cc      |   33 +-
  .../preloaded_subscription_provider_impl.cc   |    4 +-
- .../adblock/core/subscription/subscription.cc |   19 +
+ .../adblock/core/subscription/subscription.cc |   18 +
  .../adblock/core/subscription/subscription.h  |    3 +
  .../subscription_collection_impl.cc           |    1 +
  .../core/subscription/subscription_config.cc  |   20 +-
@@ -130,7 +130,7 @@ deactivation of all pop-ups (default disabled)
  .../blink/renderer/core/css/style_engine.h    |    1 +
  .../renderer/core/exported/web_document.cc    |   15 +-
  .../definitions/adblock_private.d.ts          |   14 +
- 120 files changed, 6140 insertions(+), 1299 deletions(-)
+ 120 files changed, 6147 insertions(+), 1309 deletions(-)
  create mode 100644 chrome/browser/resources/settings/adblock_page/adblock_page.html
  create mode 100644 chrome/browser/resources/settings/adblock_page/adblock_page.ts
  rename components/adblock/android/java/res/xml/{adblock_preferences.xml => eyeo_adblock_preferences.xml} (56%)
@@ -350,7 +350,8 @@ diff --git a/chrome/browser/adblock/adblock_content_browser_client.cc b/chrome/b
      const GURL& url,
 +    const url::Origin& initiator_origin,
      const net::SiteForCookies& site_for_cookies,
-     const absl::optional<std::string>& user_agent,
+-    const absl::optional<std::string>& user_agent,
++    const std::optional<std::string>& user_agent,
      mojo::PendingRemote<network::mojom::WebSocketHandshakeClient>
          handshake_client) {
 -  if (IsFilteringNeeded(frame)) {
@@ -377,7 +378,8 @@ diff --git a/chrome/browser/adblock/adblock_content_browser_client.cc b/chrome/b
      const GURL& url,
 +    const url::Origin& initiator_origin,
      const net::SiteForCookies& site_for_cookies,
-     const absl::optional<std::string>& user_agent,
+-    const absl::optional<std::string>& user_agent,
++    const std::optional<std::string>& user_agent,
      mojo::PendingRemote<network::mojom::WebSocketHandshakeClient>
          handshake_client) {
 -  auto* frame = content::RenderFrameHost::FromID(render_frame_host_id);
@@ -411,7 +413,8 @@ diff --git a/chrome/browser/adblock/adblock_content_browser_client.cc b/chrome/b
      const GURL& url,
 +    const url::Origin& initiator_origin,
      const net::SiteForCookies& site_for_cookies,
-     const absl::optional<std::string>& user_agent,
+-    const absl::optional<std::string>& user_agent,
++    const std::optional<std::string>& user_agent,
      mojo::PendingRemote<network::mojom::WebSocketHandshakeClient>
          handshake_client,
      adblock::FilterMatchResult result) {
@@ -640,7 +643,8 @@ diff --git a/chrome/browser/adblock/adblock_content_browser_client.h b/chrome/br
        const GURL& url,
 +      const url::Origin& initiator_origin,
        const net::SiteForCookies& site_for_cookies,
-       const absl::optional<std::string>& user_agent,
+-      const absl::optional<std::string>& user_agent,
++      const std::optional<std::string>& user_agent,
        mojo::PendingRemote<network::mojom::WebSocketHandshakeClient>
            handshake_client) override;
  
@@ -695,7 +699,8 @@ diff --git a/chrome/browser/adblock/adblock_content_browser_client.h b/chrome/br
        const GURL& url,
 +      const url::Origin& initiator_origin,
        const net::SiteForCookies& site_for_cookies,
-       const absl::optional<std::string>& user_agent,
+-      const absl::optional<std::string>& user_agent,
++      const std::optional<std::string>& user_agent,
        mojo::PendingRemote<network::mojom::WebSocketHandshakeClient>
            handshake_client);
    void OnWebSocketFilterCheckCompleted(
@@ -705,7 +710,8 @@ diff --git a/chrome/browser/adblock/adblock_content_browser_client.h b/chrome/br
        const GURL& url,
 +      const url::Origin& initiator_origin,
        const net::SiteForCookies& site_for_cookies,
-       const absl::optional<std::string>& user_agent,
+-      const absl::optional<std::string>& user_agent,
++      const std::optional<std::string>& user_agent,
        mojo::PendingRemote<network::mojom::WebSocketHandshakeClient>
            handshake_client,
        adblock::FilterMatchResult result);
@@ -1706,7 +1712,17 @@ diff --git a/chrome/browser/ui/webui/adblock_internals/adblock_internals_page_ha
  #include "components/adblock/core/session_stats.h"
  #include "components/adblock/core/subscription/subscription_config.h"
  #include "components/adblock/core/subscription/subscription_service.h"
-@@ -53,6 +52,13 @@ std::string DebugLine(std::string name, int value, int level) {
+@@ -41,8 +40,7 @@ std::string SubscriptionInstallationStateToString(
+     case State::Unknown:
+       return "Unknown";
+   }
+-  NOTREACHED();
+-  return "";
++  NOTREACHED_NORETURN();
+ }
+ 
+ std::string DebugLine(std::string name, std::string value, int level) {
+@@ -53,6 +51,13 @@ std::string DebugLine(std::string name, int value, int level) {
    return DebugLine(name, std::to_string(value), level);
  }
  
@@ -1720,7 +1736,7 @@ diff --git a/chrome/browser/ui/webui/adblock_internals/adblock_internals_page_ha
  }  // namespace
  
  AdblockInternalsPageHandlerImpl::AdblockInternalsPageHandlerImpl(
-@@ -90,17 +96,13 @@ void AdblockInternalsPageHandlerImpl::GetDebugInfo(
+@@ -90,17 +95,13 @@ void AdblockInternalsPageHandlerImpl::GetDebugInfo(
        content += DebugLine("Title", it->GetTitle(), 2);
        content += DebugLine("Version", it->GetCurrentVersion(), 2);
        content += DebugLine("Last update",
@@ -2614,7 +2630,7 @@ diff --git a/components/adblock/content/browser/adblock_url_loader_factory.cc b/
        return ContentType::Script;
      case network::mojom::RequestDestination::kImage:
        return ContentType::Image;
-@@ -101,11 +103,10 @@ ContentType ToAdblockResourceType(const network::ResourceRequest& request) {
+@@ -101,16 +103,14 @@ ContentType ToAdblockResourceType(const network::ResourceRequest& request) {
        return ContentType::Other;
      case network::mojom::RequestDestination::kWebBundle:
        return ContentType::WebBundle;
@@ -2627,7 +2643,13 @@ diff --git a/components/adblock/content/browser/adblock_url_loader_factory.cc b/
      case network::mojom::RequestDestination::kWebIdentity:
        return ContentType::Other;
    }
-@@ -186,8 +187,13 @@ class AdblockURLLoaderFactory::InProgressRequest
+-  NOTREACHED();
+-  return ContentType::Other;
++  NOTREACHED_NORETURN();
+ }
+ 
+ }  // namespace
+@@ -186,8 +186,13 @@ class AdblockURLLoaderFactory::InProgressRequest
    void OnRequestError(int error_code);
    void CheckFilterMatch(CheckFilterMatchCallback callback);
    void ProcessResponseHeaders(
@@ -2641,7 +2663,7 @@ diff --git a/components/adblock/content/browser/adblock_url_loader_factory.cc b/
    void CheckRewriteFilterMatch(CheckRewriteFilterMatchCallback callback);
    void OnRequestUrlClassified(CheckFilterMatchCallback callback,
                                FilterMatchResult result);
-@@ -307,7 +313,9 @@ void AdblockURLLoaderFactory::InProgressRequest::OnReceiveResponse(
+@@ -307,7 +312,9 @@ void AdblockURLLoaderFactory::InProgressRequest::OnReceiveResponse(
    VLOG(1) << "[eyeo] Sending headers for processing: " << request_url_;
    client_receiver_.Pause();
    const scoped_refptr<net::HttpResponseHeaders>& headers = head->headers;
@@ -2651,7 +2673,7 @@ diff --git a/components/adblock/content/browser/adblock_url_loader_factory.cc b/
        headers, base::BindOnce(&InProgressRequest::OnProcessHeadersResult,
                                weak_factory_.GetWeakPtr(), std::move(head),
                                std::move(body), std::move(cached_metadata)));
-@@ -344,12 +352,6 @@ void AdblockURLLoaderFactory::InProgressRequest::OnRequestError(
+@@ -344,12 +351,6 @@ void AdblockURLLoaderFactory::InProgressRequest::OnRequestError(
  
  void AdblockURLLoaderFactory::InProgressRequest::CheckFilterMatch(
      CheckFilterMatchCallback callback) {
@@ -2664,7 +2686,7 @@ diff --git a/components/adblock/content/browser/adblock_url_loader_factory.cc b/
    auto subscription_service = factory_->config_.subscription_service;
    if (is_document_request_) {
      auto* host = content::RenderFrameHost::FromID(factory_->host_id_);
-@@ -386,9 +388,10 @@ void AdblockURLLoaderFactory::InProgressRequest::CheckFilterMatch(
+@@ -386,9 +387,10 @@ void AdblockURLLoaderFactory::InProgressRequest::CheckFilterMatch(
                                    FilterMatchResult::kNoRule);
      }
    } else {
@@ -2677,7 +2699,7 @@ diff --git a/components/adblock/content/browser/adblock_url_loader_factory.cc b/
          base::BindOnce(
              &AdblockURLLoaderFactory::InProgressRequest::OnRequestUrlClassified,
              weak_factory_.GetWeakPtr(),
-@@ -399,6 +402,7 @@ void AdblockURLLoaderFactory::InProgressRequest::CheckFilterMatch(
+@@ -399,6 +401,7 @@ void AdblockURLLoaderFactory::InProgressRequest::CheckFilterMatch(
  }
  
  void AdblockURLLoaderFactory::InProgressRequest::ProcessResponseHeaders(
@@ -2685,7 +2707,7 @@ diff --git a/components/adblock/content/browser/adblock_url_loader_factory.cc b/
      const scoped_refptr<net::HttpResponseHeaders>& headers,
      ProcessResponseHeadersCallback callback) {
    if (!factory_->CheckHostValid()) {
-@@ -407,6 +411,36 @@ void AdblockURLLoaderFactory::InProgressRequest::ProcessResponseHeaders(
+@@ -407,6 +410,36 @@ void AdblockURLLoaderFactory::InProgressRequest::ProcessResponseHeaders(
      return;
    }
  
@@ -2722,7 +2744,7 @@ diff --git a/components/adblock/content/browser/adblock_url_loader_factory.cc b/
    auto subscription_service = factory_->config_.subscription_service;
    factory_->config_.resource_classifier->CheckResponseFilterMatch(
        subscription_service->GetCurrentSnapshot(), request_url_,
-@@ -677,12 +711,13 @@ void AdblockURLLoaderFactory::InProgressRequest::OnRequestFilterMatchResult(
+@@ -677,12 +710,13 @@ void AdblockURLLoaderFactory::InProgressRequest::OnRequestFilterMatchResult(
  
  AdblockURLLoaderFactory::AdblockURLLoaderFactory(
      AdblockURLLoaderFactoryConfig config,
@@ -2738,7 +2760,7 @@ diff --git a/components/adblock/content/browser/adblock_url_loader_factory.cc b/
        host_id_(host_id),
        user_agent_string_(std::move(user_agent_string)),
        on_disconnect_(std::move(on_disconnect)) {
-@@ -691,10 +726,12 @@ AdblockURLLoaderFactory::AdblockURLLoaderFactory(
+@@ -691,10 +725,12 @@ AdblockURLLoaderFactory::AdblockURLLoaderFactory(
    DCHECK(config_.element_hider);
    DCHECK(config_.sitekey_storage);
    DCHECK(config_.csp_injector);
@@ -4902,7 +4924,7 @@ diff --git a/components/adblock/core/subscription/preloaded_subscription_provide
 diff --git a/components/adblock/core/subscription/subscription.cc b/components/adblock/core/subscription/subscription.cc
 --- a/components/adblock/core/subscription/subscription.cc
 +++ b/components/adblock/core/subscription/subscription.cc
-@@ -16,9 +16,28 @@
+@@ -16,9 +16,27 @@
   */
  
  #include "components/adblock/core/subscription/subscription.h"
@@ -4926,8 +4948,7 @@ diff --git a/components/adblock/core/subscription/subscription.cc b/components/a
 +    case State::Unknown:
 +      return "Unknown";
 +  }
-+  NOTREACHED();
-+  return "";
++  NOTREACHED_NORETURN();
 +}
 +
  }  // namespace adblock

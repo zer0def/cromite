@@ -372,7 +372,7 @@ new file mode 100644
 + private:
 +  explicit LastTabStandingTrackerTabHelper(content::WebContents* webContents);
 +  friend class content::WebContentsUserData<LastTabStandingTrackerTabHelper>;
-+  absl::optional<url::Origin> last_committed_origin_;
++  std::optional<url::Origin> last_committed_origin_;
 +
 +  WEB_CONTENTS_USER_DATA_KEY_DECL();
 +};
