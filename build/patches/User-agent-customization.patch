@@ -571,7 +571,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tab/TabImpl.jav
  /**
   * Implementation of the interface {@link Tab}. Contains and manages a {@link ContentView}. This
   * class is not intended to be extended.
-@@ -1909,9 +1915,6 @@ class TabImpl implements Tab {
+@@ -1923,9 +1929,6 @@ class TabImpl implements Tab {
              }
  
              if (mWebContents != null) {
@@ -581,7 +581,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tab/TabImpl.jav
                  mWebContents.getNavigationController().loadIfNecessary();
              }
              mIsBeingRestored = true;
-@@ -2225,6 +2228,11 @@ class TabImpl implements Tab {
+@@ -2239,6 +2242,11 @@ class TabImpl implements Tab {
              url = webContents.getVisibleUrl();
          }
  
@@ -593,7 +593,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tab/TabImpl.jav
          // Do not override UA if there is a tab level setting.
          if (tabUserAgent != TabUserAgent.DEFAULT) {
              recordHistogramUseDesktopUserAgent(currentRequestDesktopSite);
-@@ -2304,6 +2312,54 @@ class TabImpl implements Tab {
+@@ -2318,6 +2326,54 @@ class TabImpl implements Tab {
          }
      }
  
