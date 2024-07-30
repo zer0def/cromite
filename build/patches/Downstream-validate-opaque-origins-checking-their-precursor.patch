@@ -1,0 +1,201 @@
+From: uazo <uazo@users.noreply.github.com>
+Date: Mon, 29 Jul 2024 10:22:46 +0000
+Subject: Downstream validate opaque origins checking their precursor
+
+commit https://source.chromium.org/chromium/chromium/src/+/4043b7370f9b845cd06f07296e115c7094662c66
+---
+ content/browser/renderer_host/ipc_utils.cc    | 55 +++++++++++++++----
+ .../renderer_host/render_frame_host_impl.cc   | 47 ++++++++++------
+ .../renderer_host/render_frame_host_impl.h    |  7 ++-
+ content/public/browser/render_frame_host.h    |  2 +-
+ 4 files changed, 79 insertions(+), 32 deletions(-)
+
+diff --git a/content/browser/renderer_host/ipc_utils.cc b/content/browser/renderer_host/ipc_utils.cc
+--- a/content/browser/renderer_host/ipc_utils.cc
++++ b/content/browser/renderer_host/ipc_utils.cc
+@@ -12,6 +12,7 @@
+ #include "content/browser/child_process_security_policy_impl.h"
+ #include "content/browser/renderer_host/frame_tree_node.h"
+ #include "content/browser/renderer_host/render_frame_host_impl.h"
++#include "content/common/features.h"
+ #include "content/common/frame.mojom.h"
+ #include "content/common/navigation_params_utils.h"
+ #include "content/public/browser/browser_context.h"
+@@ -50,18 +51,48 @@ bool VerifyInitiatorOrigin(
+     const RenderFrameHostImpl* current_rfh = nullptr,
+     GURL* navigation_url = nullptr,
+     std::optional<blink::LocalFrameToken>* initiator_frame_token = nullptr) {
+-  // TODO(acolwell, nasko): https://crbug.com/1029092: Ensure the precursor of
+-  // opaque origins matches the origin lock.  One known problematic case are
+-  // reloads initiated from error pages - see the following
+-  // RenderFrameHostManagerTest tests:
+-  // 1. ErrorPageNavigationReload:
+-  //    - renderer origin lock = chrome-error://chromewebdata/
+-  //    - precursor of initiator origin = http://127.0.0.1:.../
+-  // 2. ErrorPageNavigationReload_InSubframe_BlockedByClient
+-  //    - renderer origin lock = http://b.com:.../
+-  //    - precursor of initiator origin = http://c.com:.../
+-  if (initiator_origin.opaque())
+-    return true;
++  // from https://chromium-review.googlesource.com/c/chromium/src/+/5590305
++
++  // TODO(crbug.com/40109437): Ideally, origin verification should be performed
++  // even if `initiator_origin` is opaque, to ensure that the precursor origin
++  // matches the process lock. However, there are a couple of cases where this
++  // doesn't yet work, which are documented and skipped below.
++  if (initiator_origin.opaque()) {
++    // TODO(alexmos): This used to allow all opaque origins; this behavior is
++    // now behind a kill switch and should be removed once the rollout in M128
++    // is complete.
++    if (!base::FeatureList::IsEnabled(
++            features::kAdditionalOpaqueOriginEnforcements)) {
++      return true;
++    }
++
++    // Reloads initiated from error pages may currently lead to a precursor
++    // mismatch, since the error page loads with an opaque origin with the
++    // original URL's origin as its precursor, which may not match the error
++    // page's process lock. This is seen in the following
++    // RenderFrameHostManagerTest tests:
++    // 1. ErrorPageNavigationReload:
++    //    - renderer origin lock = chrome-error://chromewebdata/
++    //    - precursor of initiator origin = http://127.0.0.1:.../
++    // 2. ErrorPageNavigationReload_InSubframe_BlockedByClient
++    //    - renderer origin lock = http://b.com:.../
++    //    - precursor of initiator origin = http://c.com:.../
++    if (current_rfh && current_rfh->IsErrorDocument()) {
++      return true;
++    }
++
++    // Certain (e.g., data:) navigations in subframes of MHTML documents may
++    // have precursor origins that do not match the process lock of the MHTML
++    // document. This is seen in NavigationMhtmlBrowserTest.DataIframe, where:
++    //   - renderer origin lock = { file:/// sandboxed }
++    //   - precursor of initiator origin = http://8.8.8.8/
++    // Note that RenderFrameHostImpl::CanCommitOriginAndUrl() similarly allows
++    // such navigations to commit, and it also ensures that they can only commit
++    // in the main frame MHTML document's process.
++    if (current_rfh && current_rfh->IsMhtmlSubframe()) {
++      return true;
++    }
++  }
+ 
+   auto* policy = ChildProcessSecurityPolicyImpl::GetInstance();
+   if (!policy->HostsOrigin(process_id, initiator_origin)) {
+diff --git a/content/browser/renderer_host/render_frame_host_impl.cc b/content/browser/renderer_host/render_frame_host_impl.cc
+--- a/content/browser/renderer_host/render_frame_host_impl.cc
++++ b/content/browser/renderer_host/render_frame_host_impl.cc
+@@ -2529,7 +2529,7 @@ void RenderFrameHostImpl::GetOpenGraphMetadata(
+   }
+ }
+ 
+-bool RenderFrameHostImpl::IsErrorDocument() {
++bool RenderFrameHostImpl::IsErrorDocument() const {
+   // This shouldn't be called before committing the document as this value is
+   // set during call to RenderFrameHostImpl::DidNavigate which happens after
+   // commit.
+@@ -4606,6 +4606,16 @@ void RenderFrameHostImpl::SetOriginDependentStateOfNewFrame(
+   // object could be configured incorrectly if it were initialized before
+   // knowing the value of |last_committed_origin_|. More at crbug.com/1112959.
+   ResetPermissionsPolicy({});
++
++  // New empty frames created on error page documents are also considered error
++  // documents. Otherwise, site isolation enforcements would get confused by a
++  // non-error document attempting to do things in an error process. Error pages
++  // do not normally have subframes (or do window.open, which would also go
++  // through here), but it's possible to inject new frames into error pages via
++  // DevTools, for example.
++  if (creator_frame) {
++    is_error_document_ = creator_frame->is_error_document_;
++  }
+ }
+ 
+ FrameTreeNode* RenderFrameHostImpl::AddChild(
+@@ -10123,6 +10133,10 @@ void RenderFrameHostImpl::ResetWaitingState() {
+   page_close_state_ = PageCloseState::kNotClosing;
+ }
+ 
++bool RenderFrameHostImpl::IsMhtmlSubframe() const {
++  return !is_main_frame() && GetMainFrame()->is_mhtml_document();
++}
++
+ CanCommitStatus RenderFrameHostImpl::CanCommitOriginAndUrl(
+     const url::Origin& origin,
+     const GURL& url,
+@@ -10154,24 +10168,23 @@ CanCommitStatus RenderFrameHostImpl::CanCommitOriginAndUrl(
+   // which the frame was at the time of generating the MHTML
+   // (e.g. "http://localhost"). In such cases, don't verify the URL, but require
+   // the URL to commit in the process of the main frame.
+-  if (!is_main_frame()) {
++  if (IsMhtmlSubframe()) {
+     RenderFrameHostImpl* main_frame = GetMainFrame();
+-    if (main_frame->is_mhtml_document()) {
+-      if (IsSameSiteInstance(main_frame))
+-        return CanCommitStatus::CAN_COMMIT_ORIGIN_AND_URL;
+-
+-      // If an MHTML subframe commits in a different process (even one that
+-      // appears correct for the subframe's URL), then we aren't correctly
+-      // loading it from the archive and should kill the renderer.
+-      static auto* const oopif_in_mhtml_page_key =
+-          base::debug::AllocateCrashKeyString(
+-              "oopif_in_mhtml_page", base::debug::CrashKeySize::Size32);
+-      base::debug::SetCrashKeyString(
+-          oopif_in_mhtml_page_key,
+-          is_mhtml_document() ? "is_mhtml_doc" : "not_mhtml_doc");
+-      LogCanCommitOriginAndUrlFailureReason("oopif_in_mhtml_page");
+-      return CanCommitStatus::CANNOT_COMMIT_URL;
++    if (IsSameSiteInstance(main_frame)) {
++      return CanCommitStatus::CAN_COMMIT_ORIGIN_AND_URL;
+     }
++
++    // If an MHTML subframe commits in a different process (even one that
++    // appears correct for the subframe's URL), then we aren't correctly
++    // loading it from the archive and should kill the renderer.
++    static auto* const oopif_in_mhtml_page_key =
++        base::debug::AllocateCrashKeyString("oopif_in_mhtml_page",
++                                            base::debug::CrashKeySize::Size32);
++    base::debug::SetCrashKeyString(
++        oopif_in_mhtml_page_key,
++        is_mhtml_document() ? "is_mhtml_doc" : "not_mhtml_doc");
++    LogCanCommitOriginAndUrlFailureReason("oopif_in_mhtml_page");
++    return CanCommitStatus::CANNOT_COMMIT_URL;
+   }
+ 
+   // Same-document navigations cannot change origins, as long as these checks
+diff --git a/content/browser/renderer_host/render_frame_host_impl.h b/content/browser/renderer_host/render_frame_host_impl.h
+--- a/content/browser/renderer_host/render_frame_host_impl.h
++++ b/content/browser/renderer_host/render_frame_host_impl.h
+@@ -564,7 +564,7 @@ class CONTENT_EXPORT RenderFrameHostImpl
+   void GetOpenGraphMetadata(
+       base::OnceCallback<void(blink::mojom::OpenGraphMetadataPtr)> callback)
+       override;
+-  bool IsErrorDocument() override;
++  bool IsErrorDocument() const override;
+   DocumentRef GetDocumentRef() override;
+   WeakDocumentPtr GetWeakDocumentPtr() override;
+   void EnableMojoJsBindings(
+@@ -1725,7 +1725,10 @@ class CONTENT_EXPORT RenderFrameHostImpl
+   network::mojom::WebSandboxFlags active_sandbox_flags() {
+     return policy_container_host_->sandbox_flags();
+   }
+-  bool is_mhtml_document() { return is_mhtml_document_; }
++  bool is_mhtml_document() const { return is_mhtml_document_; }
++
++  // Returns whether this document is a subframe of a MHTML document.
++  bool IsMhtmlSubframe() const;
+ 
+   ReloadType reload_type() { return reload_type_; }
+ 
+diff --git a/content/public/browser/render_frame_host.h b/content/public/browser/render_frame_host.h
+--- a/content/public/browser/render_frame_host.h
++++ b/content/public/browser/render_frame_host.h
+@@ -1068,7 +1068,7 @@ class CONTENT_EXPORT RenderFrameHost : public IPC::Listener,
+   // site can’t be reached".
+   // This can't be called for pending commit RFH because the value is set
+   // during call to RenderFrameHostImpl::DidNavigate which happens after commit.
+-  virtual bool IsErrorDocument() = 0;
++  virtual bool IsErrorDocument() const = 0;
+ 
+   // Return checked and weak references, respectively, to the current document
+   // in this RenderFrameHost, which will be no longer valid once the
+--
