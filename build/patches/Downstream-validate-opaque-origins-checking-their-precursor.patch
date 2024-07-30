@@ -85,7 +85,7 @@ diff --git a/content/browser/renderer_host/ipc_utils.cc b/content/browser/render
 diff --git a/content/browser/renderer_host/render_frame_host_impl.cc b/content/browser/renderer_host/render_frame_host_impl.cc
 --- a/content/browser/renderer_host/render_frame_host_impl.cc
 +++ b/content/browser/renderer_host/render_frame_host_impl.cc
-@@ -2529,7 +2529,7 @@ void RenderFrameHostImpl::GetOpenGraphMetadata(
+@@ -2525,7 +2525,7 @@ void RenderFrameHostImpl::GetOpenGraphMetadata(
    }
  }
  
@@ -94,7 +94,7 @@ diff --git a/content/browser/renderer_host/render_frame_host_impl.cc b/content/b
    // This shouldn't be called before committing the document as this value is
    // set during call to RenderFrameHostImpl::DidNavigate which happens after
    // commit.
-@@ -4606,6 +4606,16 @@ void RenderFrameHostImpl::SetOriginDependentStateOfNewFrame(
+@@ -4596,6 +4596,16 @@ void RenderFrameHostImpl::SetOriginDependentStateOfNewFrame(
    // object could be configured incorrectly if it were initialized before
    // knowing the value of |last_committed_origin_|. More at crbug.com/1112959.
    ResetPermissionsPolicy({});
@@ -111,7 +111,7 @@ diff --git a/content/browser/renderer_host/render_frame_host_impl.cc b/content/b
  }
  
  FrameTreeNode* RenderFrameHostImpl::AddChild(
-@@ -10123,6 +10133,10 @@ void RenderFrameHostImpl::ResetWaitingState() {
+@@ -10113,6 +10123,10 @@ void RenderFrameHostImpl::ResetWaitingState() {
    page_close_state_ = PageCloseState::kNotClosing;
  }
  
@@ -122,7 +122,7 @@ diff --git a/content/browser/renderer_host/render_frame_host_impl.cc b/content/b
  CanCommitStatus RenderFrameHostImpl::CanCommitOriginAndUrl(
      const url::Origin& origin,
      const GURL& url,
-@@ -10154,24 +10168,23 @@ CanCommitStatus RenderFrameHostImpl::CanCommitOriginAndUrl(
+@@ -10144,24 +10158,23 @@ CanCommitStatus RenderFrameHostImpl::CanCommitOriginAndUrl(
    // which the frame was at the time of generating the MHTML
    // (e.g. "http://localhost"). In such cases, don't verify the URL, but require
    // the URL to commit in the process of the main frame.
@@ -165,7 +165,7 @@ diff --git a/content/browser/renderer_host/render_frame_host_impl.cc b/content/b
 diff --git a/content/browser/renderer_host/render_frame_host_impl.h b/content/browser/renderer_host/render_frame_host_impl.h
 --- a/content/browser/renderer_host/render_frame_host_impl.h
 +++ b/content/browser/renderer_host/render_frame_host_impl.h
-@@ -564,7 +564,7 @@ class CONTENT_EXPORT RenderFrameHostImpl
+@@ -556,7 +556,7 @@ class CONTENT_EXPORT RenderFrameHostImpl
    void GetOpenGraphMetadata(
        base::OnceCallback<void(blink::mojom::OpenGraphMetadataPtr)> callback)
        override;
@@ -174,7 +174,7 @@ diff --git a/content/browser/renderer_host/render_frame_host_impl.h b/content/br
    DocumentRef GetDocumentRef() override;
    WeakDocumentPtr GetWeakDocumentPtr() override;
    void EnableMojoJsBindings(
-@@ -1725,7 +1725,10 @@ class CONTENT_EXPORT RenderFrameHostImpl
+@@ -1717,7 +1717,10 @@ class CONTENT_EXPORT RenderFrameHostImpl
    network::mojom::WebSandboxFlags active_sandbox_flags() {
      return policy_container_host_->sandbox_flags();
    }
@@ -189,7 +189,7 @@ diff --git a/content/browser/renderer_host/render_frame_host_impl.h b/content/br
 diff --git a/content/public/browser/render_frame_host.h b/content/public/browser/render_frame_host.h
 --- a/content/public/browser/render_frame_host.h
 +++ b/content/public/browser/render_frame_host.h
-@@ -1068,7 +1068,7 @@ class CONTENT_EXPORT RenderFrameHost : public IPC::Listener,
+@@ -1061,7 +1061,7 @@ class CONTENT_EXPORT RenderFrameHost : public IPC::Listener,
    // site can’t be reached".
    // This can't be called for pending commit RFH because the value is set
    // during call to RenderFrameHostImpl::DidNavigate which happens after commit.
