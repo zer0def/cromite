@@ -16,7 +16,8 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../renderer/modules/webaudio/base_audio_context.h |  2 ++
  .../modules/webaudio/offline_audio_context.cc      |  1 +
  .../renderer/modules/webaudio/realtime_analyser.cc |  7 +++++++
- 10 files changed, 54 insertions(+), 1 deletion(-)
+ .../platform/runtime_enabled_features.json5        |  4 ++--
+ 11 files changed, 56 insertions(+), 3 deletions(-)
  create mode 100644 cromite_flags/chrome/browser/about_flags_cc/AudioBuffer-AnalyserNode-fp-mitigations.inc
  create mode 100644 cromite_flags/third_party/blink/common/features_cc/AudioBuffer-AnalyserNode-fp-mitigations.inc
  create mode 100644 cromite_flags/third_party/blink/common/features_h/AudioBuffer-AnalyserNode-fp-mitigations.inc
@@ -203,4 +204,18 @@ diff --git a/third_party/blink/renderer/modules/webaudio/realtime_analyser.cc b/
      }
    }
  }
+diff --git a/third_party/blink/renderer/platform/runtime_enabled_features.json5 b/third_party/blink/renderer/platform/runtime_enabled_features.json5
+--- a/third_party/blink/renderer/platform/runtime_enabled_features.json5
++++ b/third_party/blink/renderer/platform/runtime_enabled_features.json5
+@@ -375,8 +375,8 @@
+     {
+       // AudioContext.playoutStats interface.
+       // https://chromestatus.com/feature/5172818344148992
+-      name: "AudioContextPlayoutStats",
+-      status: "experimental",
++      name: "AudioContextPlayoutStats",   // keep AudioContextPlayoutStats
++      status: "experimental",             // experimental
+     },
+     {
+       name: "AudioContextSetSinkId",
 --
