@@ -9,7 +9,6 @@ Allows flags to be defined in separate files.
 Activates a new cromite tab in chrome://flags with only the flags
 added and changed. In android added chrome://flags/cromite
 in the setting ui.
-Currently in wip
 
 Need: bromite-build-utils.patch
 License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
@@ -17,15 +16,15 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  base/BUILD.gn                                 |   4 +-
  base/android/feature_map.cc                   |   5 +
  .../base/cached_flags/CachedFlag.java         |   8 +-
- base/feature_list.cc                          |  76 +++++++++
- base/feature_list.h                           |  72 ++++++++-
+ base/feature_list.cc                          |  76 ++++++++
+ base/feature_list.h                           |  72 +++++++-
  build/android/gyp/java_cpp_features.py        |  17 ++
  chrome/android/java/res/values/values.xml     |   3 +
  .../java/res/xml/privacy_preferences.xml      |   4 +
  .../settings/AccessibilitySettings.java       |   5 +-
  .../homepage/settings/HomepageSettings.java   |   2 +-
  .../privacy/settings/PrivacySettings.java     |   2 +-
- .../browser/settings/SettingsActivity.java    |  36 +++++
+ .../browser/settings/SettingsActivity.java    |  36 ++++
  chrome/browser/about_flags.cc                 |  11 ++
  chrome/browser/browser_features.cc            |   1 +
  chrome/browser/flags/BUILD.gn                 |  13 ++
@@ -33,9 +32,9 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../flags/android/chrome_feature_list.h       |   1 +
  .../browser/flags/ChromeFeatureList.java      |  13 +-
  .../flags/cromite/include_all_directory.java  |   1 +
- .../java_template/CromiteCachedFlag.java.tmpl |  47 ++++++
+ .../java_template/CromiteCachedFlag.java.tmpl |  47 +++++
  chrome/browser/settings/BUILD.gn              |   1 +
- .../settings/ChromeBaseSettingsFragment.java  |  47 ++++++
+ .../settings/ChromeBaseSettingsFragment.java  |  47 +++++
  .../strings/android_chrome_strings.grd        |   1 +
  .../placeholder.txt                           |   1 +
  chrome/browser/ui/ui_features.cc              |   1 +
@@ -46,7 +45,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  components/components_strings.grd             |   1 +
  .../content_settings/core/common/features.cc  |   1 +
  .../placeholder.txt                           |   1 +
- components/flags_ui/flags_state.cc            |  55 ++++++-
+ components/flags_ui/flags_state.cc            |  55 +++++-
  components/flags_ui/resources/app.html        |  42 ++++-
  components/flags_ui/resources/app.ts          |  41 ++++-
  components/flags_ui/resources/experiment.html |   7 +-
@@ -54,12 +53,13 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../flags_ui/resources/flags_browser_proxy.ts |   5 +
  .../core/offline_page_feature.cc              |   1 +
  .../offline_pages/core/offline_page_feature.h |   1 +
+ .../browser/features/password_features.cc     |   1 +
  components/permissions/features.cc            |   1 +
  .../version_ui/version_handler_helper.cc      |   2 +-
  content/common/features.cc                    |   1 +
  content/public/common/content_features.cc     |   1 +
  content/public/common/content_features.h      |   1 +
- cromite_flags/BUILD.gn                        | 150 ++++++++++++++++++
+ cromite_flags/BUILD.gn                        | 168 ++++++++++++++++++
  .../browser/about_flags_cc/placeholder.txt    |   1 +
  .../browser_features_cc/placeholder.txt       |   1 +
  .../chrome_feature_list_cc/placeholder.txt    |   1 +
@@ -70,6 +70,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../core/common/features_cc/placeholder.txt   |   1 +
  .../offline_page_feature_cc/placeholder.txt   |   1 +
  .../offline_page_feature_h/placeholder.txt    |   1 +
+ .../password_features_cc/placeholder.txt      |   1 +
  .../permissions/features_cc/placeholder.txt   |   1 +
  .../common/features_cc/placeholder.txt        |   1 +
  .../content_features_cc/placeholder.txt       |   1 +
@@ -82,6 +83,8 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../public/cpp/features_h/placeholder.txt     |   1 +
  .../blink/common/features_cc/placeholder.txt  |   1 +
  .../blink/common/features_h/placeholder.txt   |   1 +
+ .../ui/base/features_cc/placeholder.txt       |   1 +
+ .../ui/base/features_h/placeholder.txt        |   1 +
  media/base/media_switches.cc                  |   2 +-
  media/base/media_switches.h                   |   2 +-
  net/base/features.cc                          |   1 +
@@ -90,7 +93,9 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  services/network/public/cpp/features.h        |   1 +
  third_party/blink/common/features.cc          |   1 +
  third_party/blink/public/common/features.h    |   1 +
- 76 files changed, 738 insertions(+), 22 deletions(-)
+ ui/base/ui_base_features.cc                   |   1 +
+ ui/base/ui_base_features.h                    |   1 +
+ 82 files changed, 762 insertions(+), 22 deletions(-)
  create mode 100644 chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/cromite/include_all_directory.java
  create mode 100644 chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/cromite/java_template/CromiteCachedFlag.java.tmpl
  create mode 100644 chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/placeholder.txt
@@ -106,6 +111,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  create mode 100755 cromite_flags/components/content_settings/core/common/features_cc/placeholder.txt
  create mode 100755 cromite_flags/components/offline_pages/core/offline_page_feature_cc/placeholder.txt
  create mode 100755 cromite_flags/components/offline_pages/core/offline_page_feature_h/placeholder.txt
+ create mode 100755 cromite_flags/components/password_manager/core/browser/features/password_features_cc/placeholder.txt
  create mode 100755 cromite_flags/components/permissions/features_cc/placeholder.txt
  create mode 100755 cromite_flags/content/common/features_cc/placeholder.txt
  create mode 100755 cromite_flags/content/public/common/content_features_cc/placeholder.txt
@@ -118,6 +124,8 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  create mode 100755 cromite_flags/services/network/public/cpp/features_h/placeholder.txt
  create mode 100755 cromite_flags/third_party/blink/common/features_cc/placeholder.txt
  create mode 100755 cromite_flags/third_party/blink/common/features_h/placeholder.txt
+ create mode 100755 cromite_flags/ui/base/features_cc/placeholder.txt
+ create mode 100755 cromite_flags/ui/base/features_h/placeholder.txt
 
 diff --git a/base/BUILD.gn b/base/BUILD.gn
 --- a/base/BUILD.gn
@@ -1356,6 +1364,15 @@ diff --git a/components/offline_pages/core/offline_page_feature.h b/components/o
  }  // namespace offline_pages
  
  #endif  // COMPONENTS_OFFLINE_PAGES_CORE_OFFLINE_PAGE_FEATURE_H_
+diff --git a/components/password_manager/core/browser/features/password_features.cc b/components/password_manager/core/browser/features/password_features.cc
+--- a/components/password_manager/core/browser/features/password_features.cc
++++ b/components/password_manager/core/browser/features/password_features.cc
+@@ -206,4 +206,5 @@ BASE_FEATURE(kUsernameFirstFlowWithIntermediateValuesVoting,
+              "UsernameFirstFlowWithIntermediateValuesVoting",
+              base::FEATURE_ENABLED_BY_DEFAULT);
+ 
++#include "cromite_flags/components_password_manager_core_browser_features_password_features_cc.inc"
+ }  // namespace password_manager::features
 diff --git a/components/permissions/features.cc b/components/permissions/features.cc
 --- a/components/permissions/features.cc
 +++ b/components/permissions/features.cc
@@ -1412,7 +1429,7 @@ diff --git a/cromite_flags/BUILD.gn b/cromite_flags/BUILD.gn
 new file mode 100755
 --- /dev/null
 +++ b/cromite_flags/BUILD.gn
-@@ -0,0 +1,150 @@
+@@ -0,0 +1,168 @@
 +# This file is part of Bromite.
 +
 +# Bromite is free software: you can redistribute it and/or modify
@@ -1538,6 +1555,21 @@ new file mode 100755
 +  output_file = "services_network_public_cpp_features_h.inc"
 +}
 +
++cpp_bromite_include("ui_base_features_cc") {
++  inputs = [ "//cromite_flags/ui/base/features_cc/placeholder.txt" ]
++  output_file = "ui_base_features_cc.inc"
++}
++
++cpp_bromite_include("ui_base_features_h") {
++  inputs = [ "//cromite_flags/ui/base/features_h/placeholder.txt" ]
++  output_file = "ui_base_features_h.inc"
++}
++
++cpp_bromite_include("components_password_manager_core_browser_features_password_features_cc") {
++  inputs = [ "//cromite_flags/components/password_manager/core/browser/features/password_features_cc/placeholder.txt" ]
++  output_file = "components_password_manager_core_browser_features_password_features_cc.inc"
++}
++
 +component("cromite_flags") {
 +  deps = [
 +    ":content_common_features_cc",
@@ -1547,6 +1579,7 @@ new file mode 100755
 +    ":components_permissions_features_cc",
 +    ":components_offline_pages_core_offline_page_feature_cc",
 +    ":components_offline_pages_core_offline_page_feature_h",
++    ":components_password_manager_core_browser_features_password_features_cc",
 +    ":media_base_media_switches_cc",
 +    ":media_base_media_switches_h",
 +    ":net_base_features_cc",
@@ -1561,6 +1594,8 @@ new file mode 100755
 +    ":services_network_public_cpp_features_h",
 +    ":third_party_blink_common_features_cc",
 +    ":third_party_blink_common_features_h",
++    ":ui_base_features_cc",
++    ":ui_base_features_h",
 +  ]
 +}
 diff --git a/cromite_flags/chrome/browser/about_flags_cc/placeholder.txt b/cromite_flags/chrome/browser/about_flags_cc/placeholder.txt
@@ -1621,6 +1656,12 @@ diff --git a/cromite_flags/components/offline_pages/core/offline_page_feature_h/
 new file mode 100755
 --- /dev/null
 +++ b/cromite_flags/components/offline_pages/core/offline_page_feature_h/placeholder.txt
+@@ -0,0 +1 @@
++this file is intentionally empty
+diff --git a/cromite_flags/components/password_manager/core/browser/features/password_features_cc/placeholder.txt b/cromite_flags/components/password_manager/core/browser/features/password_features_cc/placeholder.txt
+new file mode 100755
+--- /dev/null
++++ b/cromite_flags/components/password_manager/core/browser/features/password_features_cc/placeholder.txt
 @@ -0,0 +1 @@
 +this file is intentionally empty
 diff --git a/cromite_flags/components/permissions/features_cc/placeholder.txt b/cromite_flags/components/permissions/features_cc/placeholder.txt
@@ -1693,6 +1734,18 @@ diff --git a/cromite_flags/third_party/blink/common/features_h/placeholder.txt b
 new file mode 100755
 --- /dev/null
 +++ b/cromite_flags/third_party/blink/common/features_h/placeholder.txt
+@@ -0,0 +1 @@
++this file is intentionally empty
+diff --git a/cromite_flags/ui/base/features_cc/placeholder.txt b/cromite_flags/ui/base/features_cc/placeholder.txt
+new file mode 100755
+--- /dev/null
++++ b/cromite_flags/ui/base/features_cc/placeholder.txt
+@@ -0,0 +1 @@
++this file is intentionally empty
+diff --git a/cromite_flags/ui/base/features_h/placeholder.txt b/cromite_flags/ui/base/features_h/placeholder.txt
+new file mode 100755
+--- /dev/null
++++ b/cromite_flags/ui/base/features_h/placeholder.txt
 @@ -0,0 +1 @@
 +this file is intentionally empty
 diff --git a/media/base/media_switches.cc b/media/base/media_switches.cc
@@ -1776,4 +1829,24 @@ diff --git a/third_party/blink/public/common/features.h b/third_party/blink/publ
  }  // namespace features
  }  // namespace blink
  
+diff --git a/ui/base/ui_base_features.cc b/ui/base/ui_base_features.cc
+--- a/ui/base/ui_base_features.cc
++++ b/ui/base/ui_base_features.cc
+@@ -529,4 +529,5 @@ BASE_FEATURE(kEnableGestureBeginEndTypes,
+              "EnableGestureBeginEndTypes",
+              base::FEATURE_DISABLED_BY_DEFAULT);
+ 
++#include "cromite_flags/ui_base_features_cc.inc"
+ }  // namespace features
+diff --git a/ui/base/ui_base_features.h b/ui/base/ui_base_features.h
+--- a/ui/base/ui_base_features.h
++++ b/ui/base/ui_base_features.h
+@@ -247,6 +247,7 @@ BASE_DECLARE_FEATURE(kBubbleFrameViewTitleIsHeading);
+ COMPONENT_EXPORT(UI_BASE_FEATURES)
+ BASE_DECLARE_FEATURE(kEnableGestureBeginEndTypes);
+ 
++#include "cromite_flags/ui_base_features_h.inc"
+ }  // namespace features
+ 
+ #endif  // UI_BASE_UI_BASE_FEATURES_H_
 --
