@@ -177,6 +177,7 @@ Enable-third-party-storage-partitioning.patch
 Restore-adaptive-button-in-top-toolbar-customization.patch
 Add-kill-switch-for-unsupported-clangd-flags.patch
 
+# cromite patches
 WIN-enable-pdf-plugin.patch
 WIN-disable-annotate-downloads.patch
 WIN-enable-HighEfficiencyMode-by-default.patch
@@ -292,9 +293,12 @@ Enable-Do-Not-Track-by-default.patch
 Media-fingerprinting-mitigations.patch
 Use-BoringSSL-for-RandBytes.patch
 Restore-chrome-password-store.patch
+Disable-support-for-pointer-device-id.patch
+Disable-CSS-blink-feature-support.patch
 Close-Sessions-On-Ip-Change.patch
 Ask-for-restart-on-connection-change.patch
 
+# temporary patches
 Disable-wip-Android-Hub.patch
 Temp-PerformanceNavigationTiming-privacy-fix.patch
 Temp-disable-predictive-back-gesture.patch
@@ -302,7 +306,10 @@ TEMP-Add-a-log-to-track-strange-behavior.patch
 Temp-guard-FileSystemAccessPersistentPermissions.patch
 Never-treat-Proguard-warnings-as-errors.patch
 Fix-chromium-build-bugs.patch
+Downstream-validate-opaque-origins-checking-their-precursor.patch
+Temp-try-to-fix-DIPS-service.patch
 
+# adblock patches
 eyeo-beta-118.0.5993.48-base.patch
 eyeo-beta-118.0.5993.48-chrome_integration.patch
 eyeo-beta-118.0.5993.48-android_api.patch
