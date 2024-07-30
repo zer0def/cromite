@@ -7,7 +7,6 @@ Subject: Allow 'ninja -t compdb' accept one target
  1 file changed, 61 insertions(+), 3 deletions(-)
 
 diff --git a/src/ninja.cc b/src/ninja.cc
-index ed004ac8f1fe1a5107db8b1f5c02c4ba957daef4..bbb79da561ddec497863230cd99ffbe98b9a76e5 100644
 --- a/src/ninja.cc
 +++ b/src/ninja.cc
 @@ -17,6 +17,7 @@
@@ -119,3 +118,5 @@ index ed004ac8f1fe1a5107db8b1f5c02c4ba957daef4..bbb79da561ddec497863230cd99ffbe9
        case 'd':
          if (!DebugEnable(optarg))
            return 1;
+-- 
+2.25.1
