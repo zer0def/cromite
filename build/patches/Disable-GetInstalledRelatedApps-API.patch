@@ -4,12 +4,12 @@ Subject: Disable GetInstalledRelatedApps API
 
 License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
- .../components/installedapp/InstalledAppProviderImpl.java | 1 +
- .../browser/installedapp/installed_app_provider_impl.cc   | 2 +-
- .../features_cc/Disable-GetInstalledRelatedApps-API.inc   | 8 ++++++++
- .../Disable-GetInstalledRelatedApps-API.inc               | 2 ++
- .../renderer/platform/runtime_enabled_features.json5      | 2 +-
- 5 files changed, 13 insertions(+), 2 deletions(-)
+ .../components/installedapp/InstalledAppProviderImpl.java  | 1 +
+ .../browser/installedapp/installed_app_provider_impl.cc    | 2 +-
+ .../features_cc/Disable-GetInstalledRelatedApps-API.inc    | 7 +++++++
+ .../Disable-GetInstalledRelatedApps-API.inc                | 2 ++
+ .../blink/renderer/platform/runtime_enabled_features.json5 | 2 +-
+ 5 files changed, 12 insertions(+), 2 deletions(-)
  create mode 100644 cromite_flags/content/common/features_cc/Disable-GetInstalledRelatedApps-API.inc
  create mode 100644 cromite_flags/content/public/common/content_features_cc/Disable-GetInstalledRelatedApps-API.inc
 
@@ -40,7 +40,7 @@ diff --git a/cromite_flags/content/common/features_cc/Disable-GetInstalledRelate
 new file mode 100644
 --- /dev/null
 +++ b/cromite_flags/content/common/features_cc/Disable-GetInstalledRelatedApps-API.inc
-@@ -0,0 +1,8 @@
+@@ -0,0 +1,7 @@
 +SET_CROMITE_FEATURE_DISABLED(kFilterInstalledAppsWebAppMatching);
 +
 +#if BUILDFLAG(IS_WIN)
@@ -48,7 +48,6 @@ new file mode 100644
 +SET_CROMITE_FEATURE_DISABLED(kFilterInstalledAppsWinMatching);
 +
 +#endif
-+
 diff --git a/cromite_flags/content/public/common/content_features_cc/Disable-GetInstalledRelatedApps-API.inc b/cromite_flags/content/public/common/content_features_cc/Disable-GetInstalledRelatedApps-API.inc
 new file mode 100644
 --- /dev/null

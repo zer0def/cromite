@@ -21,7 +21,7 @@ diff --git a/chrome/browser/dips/dips_service.cc b/chrome/browser/dips/dips_serv
 diff --git a/chrome/browser/ui/tab_helpers.cc b/chrome/browser/ui/tab_helpers.cc
 --- a/chrome/browser/ui/tab_helpers.cc
 +++ b/chrome/browser/ui/tab_helpers.cc
-@@ -515,7 +515,9 @@ void TabHelpers::AttachTabHelpers(WebContents* web_contents) {
+@@ -493,7 +493,9 @@ void TabHelpers::AttachTabHelpers(WebContents* web_contents) {
    PrefsTabHelper::CreateForWebContents(web_contents);
    prerender::NoStatePrefetchTabHelper::CreateForWebContents(web_contents);
    RecentlyAudibleHelper::CreateForWebContents(web_contents);
