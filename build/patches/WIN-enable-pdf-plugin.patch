@@ -10,7 +10,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 diff --git a/third_party/blink/renderer/core/frame/local_frame.cc b/third_party/blink/renderer/core/frame/local_frame.cc
 --- a/third_party/blink/renderer/core/frame/local_frame.cc
 +++ b/third_party/blink/renderer/core/frame/local_frame.cc
-@@ -2253,7 +2253,9 @@ WebContentSettingsClient* LocalFrame::GetContentSettingsClient() {
+@@ -2257,7 +2257,9 @@ WebContentSettingsClient* LocalFrame::GetContentSettingsClient() {
  }
  
  PluginData* LocalFrame::GetPluginData() const {

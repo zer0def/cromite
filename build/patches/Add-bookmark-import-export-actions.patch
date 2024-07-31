@@ -729,7 +729,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/bookmarks/Bookm
  
      static final PropertyKey[] ALL_KEYS = {
          BOOKMARK_OPENER,
-@@ -108,6 +112,8 @@ class BookmarkToolbarProperties {
+@@ -109,6 +113,8 @@ class BookmarkToolbarProperties {
          SELECTION_MODE_SHOW_OPEN_IN_INCOGNITO,
          SELECTION_MODE_SHOW_MOVE,
          SELECTION_MODE_SHOW_MARK_READ,
