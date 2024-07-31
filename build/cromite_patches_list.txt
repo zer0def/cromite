@@ -296,6 +296,7 @@ Disable-support-for-pointer-device-id.patch
 Disable-CSS-blink-feature-support.patch
 Close-Sessions-On-Ip-Change.patch
 Ask-for-restart-on-connection-change.patch
+Bubble-Locking-on-UI-DevTools.patch
 
 # temporary patches
 Disable-wip-Android-Hub.patch
