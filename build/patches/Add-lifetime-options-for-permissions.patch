@@ -410,7 +410,7 @@ diff --git a/components/content_settings/core/common/content_settings_enums.mojo
 diff --git a/components/page_info/android/java/src/org/chromium/components/page_info/PageInfoController.java b/components/page_info/android/java/src/org/chromium/components/page_info/PageInfoController.java
 --- a/components/page_info/android/java/src/org/chromium/components/page_info/PageInfoController.java
 +++ b/components/page_info/android/java/src/org/chromium/components/page_info/PageInfoController.java
-@@ -422,9 +422,9 @@ public class PageInfoController
+@@ -421,9 +421,9 @@ public class PageInfoController
              String name,
              String nameMidSentence,
              int type,

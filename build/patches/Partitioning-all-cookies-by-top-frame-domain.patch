@@ -175,7 +175,7 @@ diff --git a/components/content_settings/core/common/cookie_settings_base.cc b/c
  constexpr StorageAccessResult GetStorageAccessResult(
      ThirdPartyCookieAllowMechanism mechanism) {
    using AllowMechanism = ThirdPartyCookieAllowMechanism;
-@@ -542,70 +532,16 @@ CookieSettingsBase::DecideAccess(
+@@ -546,70 +536,16 @@ CookieSettingsBase::DecideAccess(
      return AllowAllCookies{ThirdPartyCookieAllowMechanism::kNone};
    }
  
@@ -246,7 +246,7 @@ diff --git a/components/content_settings/core/common/cookie_settings_base.cc b/c
    return AllowPartitionedCookies{};
  }
  
-@@ -637,7 +573,7 @@ CookieSettingsBase::GetCookieSettingInternal(
+@@ -641,7 +577,7 @@ CookieSettingsBase::GetCookieSettingInternal(
      }
      return CookieSettingWithMetadata{/*cookie_setting=*/CONTENT_SETTING_ALLOW,
                                       /*allow_partitioned_cookies=*/true,

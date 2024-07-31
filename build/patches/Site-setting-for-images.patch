@@ -323,7 +323,7 @@ diff --git a/third_party/blink/public/platform/web_content_settings_client.h b/t
 diff --git a/third_party/blink/renderer/core/frame/local_frame.cc b/third_party/blink/renderer/core/frame/local_frame.cc
 --- a/third_party/blink/renderer/core/frame/local_frame.cc
 +++ b/third_party/blink/renderer/core/frame/local_frame.cc
-@@ -4003,13 +4003,6 @@ const mojom::RendererContentSettingsPtr& LocalFrame::GetContentSettings() {
+@@ -4028,13 +4028,6 @@ const mojom::RendererContentSettingsPtr& LocalFrame::GetContentSettings() {
    return loader_.GetDocumentLoader()->GetContentSettings();
  }
  
