@@ -256,7 +256,6 @@ Enable-ImprovedBookmarks-by-default.patch
 Partition-MediaDeviceId-by-default.patch
 Keep-disabled-FetchLaterAPI.patch
 Disable-ranker-url-fetcher.patch
-Show-full-urls-for-bookmark.patch
 Disable-prefers-reduced-transparency-media-query.patch
 libjxl-0-8-2.patch
 Add-support-to-jxl.patch
