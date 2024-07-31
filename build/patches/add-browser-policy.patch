@@ -4,7 +4,7 @@ Subject: Add browser policy
 
 License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
- base/win/win_util.cc                          |  63 +--------
+ base/win/win_util.cc                          |  63 +-------
  chrome/android/java/AndroidManifest.xml       |   4 -
  .../privacy_preferences_manager_impl.cc       |   5 +
  .../metrics/chrome_feature_list_creator.cc    |  12 ++
@@ -16,13 +16,13 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../throttled_gaia_auth_fetcher.cc            |   5 +
  chrome/browser/signin/chrome_signin_client.cc |   7 +-
  .../browser/signin/dice_response_handler.cc   |   2 +
- .../ui/webui/policy/policy_ui_handler.cc      | 104 +++++++++++++-
+ .../ui/webui/policy/policy_ui_handler.cc      | 104 ++++++++++++-
  .../ui/webui/policy/policy_ui_handler.h       |   2 +
  .../strings/android/browser_ui_strings.grd    |   2 +-
  .../commerce/core/commerce_feature_list.cc    |  65 ++-------
  .../core/browser/browser_policy_connector.cc  |   3 +
  .../common/command_line_policy_provider.cc    |   3 +
- .../core/common/policy_loader_command_line.cc | 132 +++++++++++++++---
+ .../core/common/policy_loader_command_line.cc | 137 ++++++++++++++++--
  .../policy/core/common/policy_pref_names.cc   |   3 +
  .../policy/core/common/policy_pref_names.h    |   1 +
  .../policy/core/common/policy_service_impl.cc |   3 +
@@ -36,7 +36,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../gaia_cookie_manager_service.cc            |   4 +
  google_apis/gaia/gaia_auth_fetcher.cc         |   1 +
  net/socket/ssl_client_socket_impl.cc          |   3 +
- 32 files changed, 318 insertions(+), 150 deletions(-)
+ 32 files changed, 323 insertions(+), 150 deletions(-)
 
 diff --git a/base/win/win_util.cc b/base/win/win_util.cc
 --- a/base/win/win_util.cc
@@ -674,7 +674,7 @@ diff --git a/components/policy/core/common/policy_loader_command_line.cc b/compo
  
  namespace policy {
  
-@@ -21,25 +46,100 @@ PolicyLoaderCommandLine::~PolicyLoaderCommandLine() = default;
+@@ -21,25 +46,105 @@ PolicyLoaderCommandLine::~PolicyLoaderCommandLine() = default;
  
  PolicyBundle PolicyLoaderCommandLine::Load() {
    PolicyBundle bundle;
@@ -762,6 +762,11 @@ diff --git a/components/policy/core/common/policy_loader_command_line.cc b/compo
 +
 +#if !BUILDFLAG(IS_ANDROID)
 +  AddPolicy(disabled_policies_list, policy_map, policy::key::kSideSearchEnabled, base::Value(false));
++#endif
++
++#if BUILDFLAG(IS_WIN)
++  AddPolicy(disabled_policies_list, policy_map, policy::key::kExtensionManifestV2Availability, base::Value(/*Enabled*/ 2));
++  AddPolicy(disabled_policies_list, policy_map, policy::key::kDynamicCodeSettings, base::Value(/*DisabledForBrowser*/ 1));
 +#endif
 +
 +  // kFirstPartySetsEnabled
