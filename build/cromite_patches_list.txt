@@ -21,7 +21,7 @@ Always-use-new-tab-page-for-default-home-page.patch
 disable-battery-status-updater.patch
 Battery-API-return-nothing.patch
 updater-disable-updater-pings.patch
-Disable-omission-of-URL-elements-in-Omnibox.patch
+Disable-omission-of-URL-elements.patch
 Modify-default-preferences.patch
 Do-not-store-passwords-by-default.patch
 Disable-NTP-remote-suggestions-by-default.patch
