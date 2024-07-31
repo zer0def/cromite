@@ -51,9 +51,11 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../chromium/product_logo_white.png           | Bin 1417 -> 3040 bytes
  .../chromium/product_logo.png                 | Bin 2714 -> 7923 bytes
  .../chromium/product_logo_white.png           | Bin 2512 -> 6790 bytes
+ .../version_ui/resources/about_version.ts     |   2 +-
+ .../resources/about_version_mobile.css        |   9 ++
  content/child/runtime_features.cc             |  23 +++--
  tools/grit/grit/grd_reader.py                 |  35 +++++++
- 49 files changed, 172 insertions(+), 111 deletions(-)
+ 51 files changed, 182 insertions(+), 112 deletions(-)
 
 diff --git a/build/BUILD.gn b/build/BUILD.gn
 --- a/build/BUILD.gn
@@ -18861,6 +18863,34 @@ z%lwlC#@8v20MrdyXS4Cd9v0(a*!707Mi)DWKCPo$-?g#BRX!@}3RwzBwgOM1&^{Rc
 z3=3bI32q;3&^A^#@RQ;k{^t41Rq+f34W3u|*@1288y{>q;|6&;qJI})ZE0^oH1|#U
 EKU(of)Bpeg
 
+diff --git a/components/version_ui/resources/about_version.ts b/components/version_ui/resources/about_version.ts
+--- a/components/version_ui/resources/about_version.ts
++++ b/components/version_ui/resources/about_version.ts
+@@ -183,7 +183,7 @@ function initialize() {
+   // </if>
+ 
+   chrome.send('requestVersionInfo');
+-  const includeVariationsCmd = location.search.includes('show-variations-cmd');
++  const includeVariationsCmd = true;
+   sendWithPromise('requestVariationInfo', includeVariationsCmd)
+       .then(handleVariationInfo);
+   sendWithPromise('requestPathInfo').then(handlePathInfo);
+diff --git a/components/version_ui/resources/about_version_mobile.css b/components/version_ui/resources/about_version_mobile.css
+--- a/components/version_ui/resources/about_version_mobile.css
++++ b/components/version_ui/resources/about_version_mobile.css
+@@ -17,3 +17,12 @@
+   margin-left: auto;
+   margin-right: auto;
+ }
++
++tr, td {
++  display: block;
++  text-align: left !important;
++}
++
++td:last-child {
++  margin-bottom: 8px;
++}
 diff --git a/content/child/runtime_features.cc b/content/child/runtime_features.cc
 --- a/content/child/runtime_features.cc
 +++ b/content/child/runtime_features.cc
