@@ -25,7 +25,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../tab_management/TabGroupUiViewBinder.java  |   3 +
  .../TabListContainerViewBinder.java           |  15 +-
  .../tab_management/TabListCoordinator.java    | 153 +++++++++++++++++-
- .../TabListEmptyCoordinator.java              |  15 +-
+ .../TabListEmptyCoordinator.java              |  17 +-
  .../tab_management/TabListRecyclerView.java   |  19 ++-
  .../tab_management/TabSwitcherMediator.java   |  27 +++-
  .../settings/AccessibilitySettings.java       |  26 +++
@@ -88,7 +88,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../AccessibilitySettingsDelegate.java        |   7 +
  .../render_widget_host_view_android.cc        |   3 +
  .../Move-navigation-bar-to-bottom.inc         |  17 ++
- 75 files changed, 987 insertions(+), 81 deletions(-)
+ 75 files changed, 989 insertions(+), 81 deletions(-)
  create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Move-navigation-bar-to-bottom.inc
 
 diff --git a/cc/base/features.cc b/cc/base/features.cc
@@ -712,17 +712,19 @@ diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser
          mListObserver =
                  new ListObserver<Void>() {
                      @Override
-@@ -121,6 +127,13 @@ class TabListEmptyCoordinator {
+@@ -121,6 +127,15 @@ class TabListEmptyCoordinator {
      public void attachEmptyView() {
          if (mEmptyView != null && mEmptyView.getParent() == null) {
              mRootView.addView(mEmptyView);
++            FrameLayout.LayoutParams emptyViewParams =
++                    (FrameLayout.LayoutParams) mEmptyView.getLayoutParams();
++            int toolbarHeightPx = mBrowserControlsStateProvider.getTopControlsHeight();
 +            if (ChromeFeatureList.sMoveTopToolbarToBottom.isEnabled()) {
-+                FrameLayout.LayoutParams emptyViewParams =
-+                        (FrameLayout.LayoutParams) mEmptyView.getLayoutParams();
-+                int toolbarHeightPx = mBrowserControlsStateProvider.getTopControlsHeight();
 +                emptyViewParams.bottomMargin = toolbarHeightPx;
-+                mEmptyView.setLayoutParams(emptyViewParams);
++            } else {
++                emptyViewParams.topMargin = toolbarHeightPx;
 +            }
++            mEmptyView.setLayoutParams(emptyViewParams);
          }
          setEmptyViewVisibility(View.GONE);
      }
