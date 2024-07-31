@@ -9,9 +9,9 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../chrome/browser/bookmarks/BookmarkToolbar.java    | 12 ++++++++++++
  .../bookmarks/BookmarkToolbarCoordinator.java        |  1 +
  .../browser/bookmarks/BookmarkToolbarMediator.java   |  1 +
- .../browser/bookmarks/BookmarkToolbarProperties.java |  8 ++++++++
+ .../browser/bookmarks/BookmarkToolbarProperties.java |  9 +++++++++
  .../browser/bookmarks/BookmarkToolbarViewBinder.java |  4 ++++
- 5 files changed, 26 insertions(+)
+ 5 files changed, 27 insertions(+)
 
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/bookmarks/BookmarkToolbar.java b/chrome/android/java/src/org/chromium/chrome/browser/bookmarks/BookmarkToolbar.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/bookmarks/BookmarkToolbar.java
@@ -117,10 +117,11 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/bookmarks/Bookm
      /** Callables to delegate business logic back to the mediator */
      static final WritableObjectPropertyKey<Function<Integer, Boolean>> MENU_ID_CLICKED_FUNCTION =
              new WritableObjectPropertyKey<>();
-@@ -88,6 +95,7 @@ class BookmarkToolbarProperties {
+@@ -88,6 +95,8 @@ class BookmarkToolbarProperties {
          NEW_FOLDER_BUTTON_VISIBLE,
          NEW_FOLDER_BUTTON_ENABLED,
          NAVIGATION_BUTTON_STATE,
++        BOOKMARK_MODEL,
 +        CURRENT_FOLDER,
          SORT_MENU_IDS,
          SORT_MENU_IDS_ENABLED,
