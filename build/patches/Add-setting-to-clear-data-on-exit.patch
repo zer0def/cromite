@@ -12,7 +12,9 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  chrome/app/settings_strings.grdp              | 10 +++
  .../browsing_data/browsing_data_bridge.cc     |  2 +-
  .../chrome_browsing_data_lifetime_manager.cc  | 22 +++++-
- .../chrome_browsing_data_remover_delegate.cc  | 13 ++++
+ .../chrome_browsing_data_remover_constants.h  |  3 +-
+ .../chrome_browsing_data_remover_delegate.cc  | 18 +++++
+ chrome/browser/dips/dips_service.cc           |  2 +-
  .../api/settings_private/prefs_util.cc        | 17 +++++
  .../browser/profiles/ProfileManagerUtils.java |  5 ++
  .../profiles/android/profile_manager_utils.cc |  5 ++
@@ -22,7 +24,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../clear_browsing_data_dialog.ts             |  2 +
  .../strings/android_chrome_strings.grd        |  3 +
  .../settings_localized_strings_provider.cc    |  1 +
- .../content/browsing_data_helper.cc           |  5 +-
+ .../content/browsing_data_helper.cc           |  9 ++-
  .../core/browsing_data_policies_utils.cc      | 20 ++---
  .../core/browsing_data_policies_utils.h       | 11 +++
  .../browsing_data/core/browsing_data_utils.cc | 31 ++++++++
@@ -31,7 +33,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  components/browsing_data/core/pref_names.h    | 10 +++
  .../search_engines/template_url_service.cc    |  1 +
  content/browser/storage_partition_impl.cc     |  1 +
- 27 files changed, 316 insertions(+), 18 deletions(-)
+ 29 files changed, 326 insertions(+), 22 deletions(-)
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/browsing_data/ClearBrowsingDataFragmentAtStart.java
 
 diff --git a/chrome/android/chrome_java_sources.gni b/chrome/android/chrome_java_sources.gni
@@ -280,6 +282,19 @@ diff --git a/chrome/browser/browsing_data/chrome_browsing_data_lifetime_manager.
    bool sync_disabled = !SyncServiceFactory::IsSyncAllowed(profile_);
    // Condition is satisfied if sync is fully disabled by policy.
    if (sync_disabled) {
+diff --git a/chrome/browser/browsing_data/chrome_browsing_data_remover_constants.h b/chrome/browser/browsing_data/chrome_browsing_data_remover_constants.h
+--- a/chrome/browser/browsing_data/chrome_browsing_data_remover_constants.h
++++ b/chrome/browser/browsing_data/chrome_browsing_data_remover_constants.h
+@@ -32,8 +32,7 @@ constexpr DataType DATA_TYPE_SITE_USAGE_DATA = DATA_TYPE_EMBEDDER_BEGIN << 4;
+ constexpr DataType DATA_TYPE_DURABLE_PERMISSION = DATA_TYPE_EMBEDDER_BEGIN << 5;
+ constexpr DataType DATA_TYPE_EXTERNAL_PROTOCOL_DATA = DATA_TYPE_EMBEDDER_BEGIN
+                                                       << 6;
+-constexpr DataType DATA_TYPE_HOSTED_APP_DATA_TEST_ONLY =
+-    DATA_TYPE_EMBEDDER_BEGIN << 7;
++constexpr DataType DATA_TYPE_SKIP_SSL_HOST_STATE = DATA_TYPE_EMBEDDER_BEGIN << 7;
+ constexpr DataType DATA_TYPE_CONTENT_SETTINGS = DATA_TYPE_EMBEDDER_BEGIN << 8;
+ constexpr DataType DATA_TYPE_BOOKMARKS = DATA_TYPE_EMBEDDER_BEGIN << 9;
+ constexpr DataType DATA_TYPE_ISOLATED_ORIGINS = DATA_TYPE_EMBEDDER_BEGIN << 10;
 diff --git a/chrome/browser/browsing_data/chrome_browsing_data_remover_delegate.cc b/chrome/browser/browsing_data/chrome_browsing_data_remover_delegate.cc
 --- a/chrome/browser/browsing_data/chrome_browsing_data_remover_delegate.cc
 +++ b/chrome/browser/browsing_data/chrome_browsing_data_remover_delegate.cc
@@ -313,7 +328,19 @@ diff --git a/chrome/browser/browsing_data/chrome_browsing_data_remover_delegate.
      base::ThreadPool::PostTaskAndReply(
          FROM_HERE, {base::TaskPriority::USER_VISIBLE, base::MayBlock()},
          base::BindOnce(
-@@ -588,9 +595,13 @@ void ChromeBrowsingDataRemoverDelegate::RemoveEmbedderData(
+@@ -560,6 +567,11 @@ void ChromeBrowsingDataRemoverDelegate::RemoveEmbedderData(
+     // and SSL host state are scoped to hosts and represent them as std::string.
+     // Rename the method to indicate its more general usage.
+     if (profile_->GetSSLHostStateDelegate()) {
++      bool skip = false;
++      if (remove_mask & chrome_browsing_data_remover::DATA_TYPE_SKIP_SSL_HOST_STATE) {
++        skip = true;
++      }
++      if (!skip)
+       profile_->GetSSLHostStateDelegate()->Clear(
+           filter_builder->MatchesAllOriginsAndDomains()
+               ? base::RepeatingCallback<bool(const std::string&)>()
+@@ -588,9 +600,13 @@ void ChromeBrowsingDataRemoverDelegate::RemoveEmbedderData(
      }
  
      device_event_log::Clear(delete_begin_, delete_end_);
@@ -327,7 +354,7 @@ diff --git a/chrome/browser/browsing_data/chrome_browsing_data_remover_delegate.
      content::BackgroundTracingManager::GetInstance().DeleteTracesInDateRange(
          delete_begin_, delete_end_);
  
-@@ -1257,6 +1268,8 @@ void ChromeBrowsingDataRemoverDelegate::RemoveEmbedderData(
+@@ -1257,6 +1273,8 @@ void ChromeBrowsingDataRemoverDelegate::RemoveEmbedderData(
  
      if (should_clear_zero_suggest_and_session_token && template_url_service)
        template_url_service->ClearSessionToken();
@@ -336,6 +363,18 @@ diff --git a/chrome/browser/browsing_data/chrome_browsing_data_remover_delegate.
    }
  
    //////////////////////////////////////////////////////////////////////////////
+diff --git a/chrome/browser/dips/dips_service.cc b/chrome/browser/dips/dips_service.cc
+--- a/chrome/browser/dips/dips_service.cc
++++ b/chrome/browser/dips/dips_service.cc
+@@ -193,7 +193,7 @@ class StateClearer : public content::BrowsingDataRemover::Observer {
+     }
+     remover->RemoveWithFilterAndReply(
+         base::Time::Min(), base::Time::Max(),
+-        remove_mask |
++        remove_mask | chrome_browsing_data_remover::DATA_TYPE_SKIP_SSL_HOST_STATE |
+             content::BrowsingDataRemover::DATA_TYPE_AVOID_CLOSING_CONNECTIONS,
+         content::BrowsingDataRemover::ORIGIN_TYPE_UNPROTECTED_WEB |
+             content::BrowsingDataRemover::ORIGIN_TYPE_PROTECTED_WEB,
 diff --git a/chrome/browser/extensions/api/settings_private/prefs_util.cc b/chrome/browser/extensions/api/settings_private/prefs_util.cc
 --- a/chrome/browser/extensions/api/settings_private/prefs_util.cc
 +++ b/chrome/browser/extensions/api/settings_private/prefs_util.cc
@@ -538,14 +577,17 @@ diff --git a/chrome/browser/ui/webui/settings/settings_localized_strings_provide
 diff --git a/components/browsing_data/content/browsing_data_helper.cc b/components/browsing_data/content/browsing_data_helper.cc
 --- a/components/browsing_data/content/browsing_data_helper.cc
 +++ b/components/browsing_data/content/browsing_data_helper.cc
-@@ -40,8 +40,11 @@ bool WebsiteSettingsFilterAdapter(
+@@ -40,8 +40,13 @@ bool WebsiteSettingsFilterAdapter(
    // this filter is used for is DURABLE_STORAGE, which also only uses
    // origin-scoped patterns. Such patterns can be directly translated to a GURL.
    GURL url(primary_pattern.ToString());
 -  DCHECK(url.is_valid()) << "url: '" << url.possibly_invalid_spec() << "' "
+-                         << "pattern: '" << primary_pattern.ToString() << "'";
 +  if (!url.is_valid()) {
++    // COOKIE_CONTROLS_METADATA are in the form
++    //   'https://[%2A.]domain.ext'
 +    LOG(INFO) << "url: '" << url.possibly_invalid_spec() << "' "
-                          << "pattern: '" << primary_pattern.ToString() << "'";
++              << "pattern: '" << primary_pattern.ToString() << "'";
 +    return true;
 +  }
    return predicate.Run(url);
