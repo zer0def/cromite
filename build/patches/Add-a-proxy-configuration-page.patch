@@ -977,7 +977,7 @@ new file mode 100644
 +  }
 +
 +  if (const std::string* pacURL = config.FindString("pac_url")) {
-+    absl::optional<bool> pacMandatory = config.FindBool("pac_mandatory");
++    std::optional<bool> pacMandatory = config.FindBool("pac_mandatory");
 +    auto proxyConfig = net::ProxyConfig::CreateFromCustomPacURL(
 +                                GURL(*pacURL));
 +    proxyConfig.set_pac_mandatory(pacMandatory.value_or(false));
@@ -1037,7 +1037,7 @@ new file mode 100644
 +    if (bypass_rules == nullptr)
 +      return;
 +
-+    absl::optional<bool> reverse_bypass = rules->FindBool("reverse_bypass");
++    std::optional<bool> reverse_bypass = rules->FindBool("reverse_bypass");
 +
 +    proxyConfig.proxy_rules().bypass_rules.ParseFromString(*bypass_rules);
 +    proxyConfig.proxy_rules().reverse_bypass = reverse_bypass.value_or(false);

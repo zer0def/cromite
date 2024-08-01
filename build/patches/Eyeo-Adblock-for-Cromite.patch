@@ -350,7 +350,7 @@ diff --git a/chrome/browser/adblock/adblock_content_browser_client.cc b/chrome/b
      const GURL& url,
 +    const url::Origin& initiator_origin,
      const net::SiteForCookies& site_for_cookies,
--    const absl::optional<std::string>& user_agent,
+-    const std::optional<std::string>& user_agent,
 +    const std::optional<std::string>& user_agent,
      mojo::PendingRemote<network::mojom::WebSocketHandshakeClient>
          handshake_client) {
@@ -378,7 +378,7 @@ diff --git a/chrome/browser/adblock/adblock_content_browser_client.cc b/chrome/b
      const GURL& url,
 +    const url::Origin& initiator_origin,
      const net::SiteForCookies& site_for_cookies,
--    const absl::optional<std::string>& user_agent,
+-    const std::optional<std::string>& user_agent,
 +    const std::optional<std::string>& user_agent,
      mojo::PendingRemote<network::mojom::WebSocketHandshakeClient>
          handshake_client) {
@@ -413,7 +413,7 @@ diff --git a/chrome/browser/adblock/adblock_content_browser_client.cc b/chrome/b
      const GURL& url,
 +    const url::Origin& initiator_origin,
      const net::SiteForCookies& site_for_cookies,
--    const absl::optional<std::string>& user_agent,
+-    const std::optional<std::string>& user_agent,
 +    const std::optional<std::string>& user_agent,
      mojo::PendingRemote<network::mojom::WebSocketHandshakeClient>
          handshake_client,
@@ -563,7 +563,7 @@ diff --git a/chrome/browser/adblock/adblock_content_browser_client.cc b/chrome/b
      int render_process_id,
      URLLoaderFactoryType type,
      const url::Origin& request_initiator,
--    absl::optional<int64_t> navigation_id,
+-    std::optional<int64_t> navigation_id,
 +    const net::IsolationInfo& isolation_info,
 +    std::optional<int64_t> navigation_id,
      ukm::SourceIdObj ukm_source_id,
@@ -643,7 +643,7 @@ diff --git a/chrome/browser/adblock/adblock_content_browser_client.h b/chrome/br
        const GURL& url,
 +      const url::Origin& initiator_origin,
        const net::SiteForCookies& site_for_cookies,
--      const absl::optional<std::string>& user_agent,
+-      const std::optional<std::string>& user_agent,
 +      const std::optional<std::string>& user_agent,
        mojo::PendingRemote<network::mojom::WebSocketHandshakeClient>
            handshake_client) override;
@@ -664,7 +664,7 @@ diff --git a/chrome/browser/adblock/adblock_content_browser_client.h b/chrome/br
        int render_process_id,
        URLLoaderFactoryType type,
        const url::Origin& request_initiator,
--      absl::optional<int64_t> navigation_id,
+-      std::optional<int64_t> navigation_id,
 +      const net::IsolationInfo& isolation_info,
 +      std::optional<int64_t> navigation_id,
        ukm::SourceIdObj ukm_source_id,
@@ -699,7 +699,7 @@ diff --git a/chrome/browser/adblock/adblock_content_browser_client.h b/chrome/br
        const GURL& url,
 +      const url::Origin& initiator_origin,
        const net::SiteForCookies& site_for_cookies,
--      const absl::optional<std::string>& user_agent,
+-      const std::optional<std::string>& user_agent,
 +      const std::optional<std::string>& user_agent,
        mojo::PendingRemote<network::mojom::WebSocketHandshakeClient>
            handshake_client);
@@ -710,7 +710,7 @@ diff --git a/chrome/browser/adblock/adblock_content_browser_client.h b/chrome/br
        const GURL& url,
 +      const url::Origin& initiator_origin,
        const net::SiteForCookies& site_for_cookies,
--      const absl::optional<std::string>& user_agent,
+-      const std::optional<std::string>& user_agent,
 +      const std::optional<std::string>& user_agent,
        mojo::PendingRemote<network::mojom::WebSocketHandshakeClient>
            handshake_client,
@@ -854,7 +854,7 @@ diff --git a/chrome/browser/extensions/api/adblock_private/adblock_private_api.c
 +AdblockPrivateSetPrivilegedFiltersEnabledFunction::~AdblockPrivateSetPrivilegedFiltersEnabledFunction() {}
 +
 +ExtensionFunction::ResponseAction AdblockPrivateSetPrivilegedFiltersEnabledFunction::Run() {
-+  absl::optional<api::adblock_private::SetEnabled::Params> params =
++  std::optional<api::adblock_private::SetEnabled::Params> params =
 +      api::adblock_private::SetEnabled::Params::Create(args());
 +  EXTENSION_FUNCTION_VALIDATE(params);
 +
@@ -4357,7 +4357,7 @@ diff --git a/components/adblock/core/converter/flatbuffer_converter.cc b/compone
 diff --git a/components/adblock/core/converter/parser/metadata.cc b/components/adblock/core/converter/parser/metadata.cc
 --- a/components/adblock/core/converter/parser/metadata.cc
 +++ b/components/adblock/core/converter/parser/metadata.cc
-@@ -58,13 +58,6 @@ absl::optional<Metadata> Metadata::FromStream(std::istream& filter_stream) {
+@@ -58,13 +58,6 @@ std::optional<Metadata> Metadata::FromStream(std::istream& filter_stream) {
      if (key == "homepage") {
        homepage = value;
      } else if (key == "redirect") {
@@ -4428,7 +4428,7 @@ diff --git a/components/adblock/core/converter/parser/url_filter.cc b/components
      piece.remove_suffix(1);
    }
    if (piece.find('|') == base::StringPiece::npos) {
-@@ -108,21 +112,21 @@ absl::optional<UrlFilter> UrlFilter::FromString(std::string filter_str) {
+@@ -108,21 +112,21 @@ std::optional<UrlFilter> UrlFilter::FromString(std::string filter_str) {
  
      if (options->Csp().has_value() && options->Csp().value().empty() &&
          !is_allowing) {
@@ -4456,7 +4456,7 @@ diff --git a/components/adblock/core/converter/parser/url_filter.cc b/components
 diff --git a/components/adblock/core/converter/parser/url_filter_options.cc b/components/adblock/core/converter/parser/url_filter_options.cc
 --- a/components/adblock/core/converter/parser/url_filter_options.cc
 +++ b/components/adblock/core/converter/parser/url_filter_options.cc
-@@ -88,20 +88,14 @@ absl::optional<UrlFilterOptions> UrlFilterOptions::FromString(
+@@ -88,20 +88,14 @@ std::optional<UrlFilterOptions> UrlFilterOptions::FromString(
        }
        domains = DomainOption::FromString(value, kDomainOrSitekeySeparator);
      } else if (key == "sitekey") {
@@ -4483,7 +4483,7 @@ diff --git a/components/adblock/core/converter/parser/url_filter_options.cc b/co
      } else {
        ContentType content_type = ContentTypeFromString(key);
        if (content_type != ContentType::Unknown) {
-@@ -184,6 +178,7 @@ absl::optional<UrlFilterOptions::RewriteOption> UrlFilterOptions::ParseRewrite(
+@@ -184,6 +178,7 @@ std::optional<UrlFilterOptions::RewriteOption> UrlFilterOptions::ParseRewrite(
  // static
  SiteKeys UrlFilterOptions::ParseSitekeys(const std::string& sitekey_value) {
    SiteKeys sitekeys;
@@ -4663,7 +4663,7 @@ diff --git a/components/adblock/core/sitekey_storage_impl.cc b/components/adbloc
      return;
 @@ -53,6 +55,7 @@ void SitekeyStorageImpl::ProcessResponseHeaders(
  
- absl::optional<std::pair<GURL, SiteKey>>
+ std::optional<std::pair<GURL, SiteKey>>
  SitekeyStorageImpl::FindSiteKeyForAnyUrl(const std::vector<GURL>& urls) const {
 +  if ((true)) return {};
    DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);

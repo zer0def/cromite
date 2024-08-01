@@ -548,13 +548,13 @@ new file mode 100644
 +  return it->second.allowed;
 +}
 +
-+absl::optional<builders::EntryDecoder> FirewallService::GetEntry(
++std::optional<builders::EntryDecoder> FirewallService::GetEntry(
 +                                int32_t unique_id_hash_code) const {
 +  const auto it = decode_map_.find(unique_id_hash_code);
 +  if (it == decode_map_.end())
 +    return absl::nullopt;
 +
-+  return absl::optional<builders::EntryDecoder>(it->second);
++  return std::optional<builders::EntryDecoder>(it->second);
 +}
 +
 +}
@@ -608,7 +608,7 @@ new file mode 100644
 +  ~FirewallService();
 +
 +  bool IsAllowed(int32_t unique_id_hash_code);
-+  absl::optional<builders::EntryDecoder> GetEntry(int32_t unique_id_hash_code) const;
++  std::optional<builders::EntryDecoder> GetEntry(int32_t unique_id_hash_code) const;
 +
 + private:
 +  raw_ptr<PrefService> pref_service_;
