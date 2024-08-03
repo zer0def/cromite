@@ -115,7 +115,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/customtabs/Cust
 diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chrome/browser/ui/android/strings/android_chrome_strings.grd
 --- a/chrome/browser/ui/android/strings/android_chrome_strings.grd
 +++ b/chrome/browser/ui/android/strings/android_chrome_strings.grd
-@@ -311,6 +311,10 @@ CHAR_LIMIT guidelines:
+@@ -312,6 +312,10 @@ CHAR_LIMIT guidelines:
          USB
        </message>
  

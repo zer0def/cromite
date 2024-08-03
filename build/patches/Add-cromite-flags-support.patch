@@ -1383,7 +1383,7 @@ diff --git a/components/offline_pages/core/offline_page_feature.h b/components/o
 diff --git a/components/password_manager/core/browser/features/password_features.cc b/components/password_manager/core/browser/features/password_features.cc
 --- a/components/password_manager/core/browser/features/password_features.cc
 +++ b/components/password_manager/core/browser/features/password_features.cc
-@@ -206,4 +206,5 @@ BASE_FEATURE(kUsernameFirstFlowWithIntermediateValuesVoting,
+@@ -207,4 +207,5 @@ BASE_FEATURE(kUsernameFirstFlowWithIntermediateValuesVoting,
               "UsernameFirstFlowWithIntermediateValuesVoting",
               base::FEATURE_ENABLED_BY_DEFAULT);
  

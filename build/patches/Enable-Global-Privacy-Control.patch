@@ -811,7 +811,7 @@ diff --git a/third_party/blink/renderer/platform/loader/fetch/url_loader/dedicat
 diff --git a/third_party/blink/renderer/platform/runtime_enabled_features.json5 b/third_party/blink/renderer/platform/runtime_enabled_features.json5
 --- a/third_party/blink/renderer/platform/runtime_enabled_features.json5
 +++ b/third_party/blink/renderer/platform/runtime_enabled_features.json5
-@@ -1880,6 +1880,11 @@
+@@ -1886,6 +1886,11 @@
        status: "stable",
        base_feature: "none",
      },
