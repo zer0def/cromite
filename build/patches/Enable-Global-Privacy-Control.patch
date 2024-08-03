@@ -111,9 +111,9 @@ diff --git a/chrome/android/java/res/xml/privacy_preferences.xml b/chrome/androi
 +        android:key="gpc"
 +        android:title="@string/gpc_title"
 +        android:fragment="org.chromium.chrome.browser.privacy.settings.GpcSettings" />
-     <org.chromium.components.browser_ui.settings.ChromeSwitchPreference
-         android:key="allow_custom_tab_intents"
-         android:title="@string/allow_custom_tab_intents_title"
+     <org.chromium.chrome.browser.about_settings.HyperlinkPreference
+         android:key="cromite_flags"
+         android:title="@string/cromite_flags_title"
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/GpcSettings.java b/chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/GpcSettings.java
 new file mode 100644
 --- /dev/null
@@ -811,7 +811,7 @@ diff --git a/third_party/blink/renderer/platform/loader/fetch/url_loader/dedicat
 diff --git a/third_party/blink/renderer/platform/runtime_enabled_features.json5 b/third_party/blink/renderer/platform/runtime_enabled_features.json5
 --- a/third_party/blink/renderer/platform/runtime_enabled_features.json5
 +++ b/third_party/blink/renderer/platform/runtime_enabled_features.json5
-@@ -1886,6 +1886,11 @@
+@@ -1880,6 +1880,11 @@
        status: "stable",
        base_feature: "none",
      },

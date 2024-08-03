@@ -691,7 +691,7 @@ diff --git a/chrome/renderer/chrome_render_thread_observer.cc b/chrome/renderer/
 diff --git a/components/components_strings.grd b/components/components_strings.grd
 --- a/components/components_strings.grd
 +++ b/components/components_strings.grd
-@@ -337,6 +337,7 @@
+@@ -338,6 +338,7 @@
        <part file="user_education_strings.grdp" />
        <part file="version_ui_strings.grdp" />
        <part file="webapps_strings.grdp" />
@@ -5426,7 +5426,7 @@ new file mode 100755
 +    intersection_schemes = valid_schemes_ & other.valid_schemes_;
 +
 +  if (intersection_schemes == URLPattern::SCHEME_NONE)
-+    return absl::nullopt;
++    return std::nullopt;
 +
 +  {
 +    // In a few cases, we can (mostly) return a copy of one of the patterns.
@@ -5488,7 +5488,7 @@ new file mode 100755
 +      !get_intersection(port_, other.port_, &URLPattern::MatchesPortPattern,
 +                        &port) ||
 +      !get_intersection(path_, other.path_, &URLPattern::MatchesPath, &path)) {
-+    return absl::nullopt;
++    return std::nullopt;
 +  }
 +
 +  // Only match subdomains if both patterns match subdomains.
@@ -9356,11 +9356,11 @@ new file mode 100755
 +}
 +
 +std::optional<CSSOrigin> UserScriptInjector::GetCssOrigin() const {
-+  return absl::nullopt;
++  return std::nullopt;
 +}
 +
 +const std::optional<std::string> UserScriptInjector::GetInjectionKey() const {
-+  return absl::nullopt;
++  return std::nullopt;
 +}
 +
 +bool UserScriptInjector::ShouldInjectJs(

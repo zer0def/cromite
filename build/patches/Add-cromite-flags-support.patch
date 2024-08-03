@@ -36,6 +36,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  chrome/browser/settings/BUILD.gn              |   1 +
  .../settings/ChromeBaseSettingsFragment.java  |  47 +++++
  .../strings/android_chrome_strings.grd        |   1 +
+ .../Add-cromite-flags-support.grdp            |   9 +
  .../placeholder.txt                           |   1 +
  chrome/browser/ui/ui_features.cc              |   1 +
  chrome/common/chrome_features.cc              |   1 +
@@ -95,9 +96,10 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  third_party/blink/public/common/features.h    |   1 +
  ui/base/ui_base_features.cc                   |   1 +
  ui/base/ui_base_features.h                    |   1 +
- 82 files changed, 762 insertions(+), 22 deletions(-)
+ 83 files changed, 771 insertions(+), 22 deletions(-)
  create mode 100644 chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/cromite/include_all_directory.java
  create mode 100644 chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/cromite/java_template/CromiteCachedFlag.java.tmpl
+ create mode 100644 chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Add-cromite-flags-support.grdp
  create mode 100644 chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/placeholder.txt
  create mode 100644 components/cromite_components_strings_grd/placeholder.txt
  create mode 100755 cromite_flags/BUILD.gn
@@ -436,10 +438,10 @@ diff --git a/chrome/android/java/res/values/values.xml b/chrome/android/java/res
 diff --git a/chrome/android/java/res/xml/privacy_preferences.xml b/chrome/android/java/res/xml/privacy_preferences.xml
 --- a/chrome/android/java/res/xml/privacy_preferences.xml
 +++ b/chrome/android/java/res/xml/privacy_preferences.xml
-@@ -75,6 +75,10 @@ found in the LICENSE file.
-         android:title="@string/tabgrid_use_icons_title"
-         android:summary="@string/tabgrid_use_icons_summary"
-         android:defaultValue="false" />
+@@ -55,6 +55,10 @@ found in the LICENSE file.
+         android:key="do_not_track"
+         android:title="@string/do_not_track_title"
+         android:fragment="org.chromium.chrome.browser.privacy.settings.DoNotTrackSettings" />
 +    <org.chromium.chrome.browser.about_settings.HyperlinkPreference
 +        android:key="cromite_flags"
 +        android:title="@string/cromite_flags_title"
@@ -456,9 +458,9 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/accessibility/s
  import org.chromium.chrome.browser.settings.SettingsLauncherImpl;
 +import org.chromium.chrome.browser.settings.ChromeBaseSettingsFragment;
  import org.chromium.components.browser_ui.accessibility.AccessibilitySettingsDelegate;
- import org.chromium.components.browser_ui.accessibility.AccessibilitySettingsDelegate.BooleanPreferenceDelegate;
  import org.chromium.components.browser_ui.accessibility.FontSizePrefs;
-@@ -34,7 +35,7 @@ import org.chromium.content_public.browser.ContentFeatureList;
+ import org.chromium.components.browser_ui.accessibility.FontSizePrefs.FontSizePrefsObserver;
+@@ -33,7 +34,7 @@ import org.chromium.content_public.browser.ContentFeatureList;
  import org.chromium.content_public.browser.ContentFeatureMap;
  
  /** Fragment to keep track of all the accessibility related preferences. */
@@ -467,7 +469,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/accessibility/s
          implements Preference.OnPreferenceChangeListener {
      public static final String PREF_TEXT_SCALE = "text_scale";
      public static final String PREF_PAGE_ZOOM_DEFAULT_ZOOM = "page_zoom_default_zoom";
-@@ -108,7 +109,7 @@ public class AccessibilitySettings extends PreferenceFragmentCompat
+@@ -92,7 +93,7 @@ public class AccessibilitySettings extends PreferenceFragmentCompat
      }
  
      @Override
@@ -479,7 +481,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/accessibility/s
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/homepage/settings/HomepageSettings.java b/chrome/android/java/src/org/chromium/chrome/browser/homepage/settings/HomepageSettings.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/homepage/settings/HomepageSettings.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/homepage/settings/HomepageSettings.java
-@@ -37,7 +37,7 @@ public class HomepageSettings extends ChromeBaseSettingsFragment {
+@@ -34,7 +34,7 @@ public class HomepageSettings extends ChromeBaseSettingsFragment {
      private RadioButtonGroupHomepagePreference mRadioButtons;
  
      @Override
@@ -491,8 +493,8 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/homepage/settin
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/PrivacySettings.java b/chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/PrivacySettings.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/PrivacySettings.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/PrivacySettings.java
-@@ -127,7 +127,7 @@ public class PrivacySettings extends ChromeBaseSettingsFragment
-     private static final String PREF_HISTORY_EXPIRE_DAYS_THRESHOLD = "history_expire_days_threshold";
+@@ -78,7 +78,7 @@ public class PrivacySettings extends ChromeBaseSettingsFragment
+     private SettingsLauncher mSettingsLauncher;
  
      @Override
 -    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -511,15 +513,15 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/settings/Settin
  import android.annotation.SuppressLint;
  import android.content.Context;
  import android.content.Intent;
-@@ -85,6 +86,7 @@ import org.chromium.chrome.browser.ui.device_lock.MissingDeviceLockLauncher;
- import org.chromium.chrome.browser.ui.messages.snackbar.INeedSnackbarManager;
+@@ -88,6 +89,7 @@ import org.chromium.chrome.browser.sync.settings.ManageSyncSettings;
+ import org.chromium.chrome.browser.ui.device_lock.MissingDeviceLockLauncher;
  import org.chromium.chrome.browser.ui.messages.snackbar.SnackbarManager;
  import org.chromium.chrome.browser.ui.messages.snackbar.SnackbarManager.SnackbarManageable;
 +import org.chromium.chrome.browser.ui.messages.snackbar.Snackbar;
  import org.chromium.components.browser_ui.bottomsheet.BottomSheetController;
  import org.chromium.components.browser_ui.bottomsheet.BottomSheetControllerFactory;
  import org.chromium.components.browser_ui.bottomsheet.ManagedBottomSheetController;
-@@ -126,6 +128,36 @@ public class SettingsActivity extends ChromeBaseAppCompatActivity
+@@ -128,6 +130,36 @@ public class SettingsActivity extends ChromeBaseAppCompatActivity
          implements PreferenceFragmentCompat.OnPreferenceStartFragmentCallback,
                  SnackbarManageable,
                  DisplayStyleObserver {
@@ -556,9 +558,9 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/settings/Settin
      @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
      public static final String EXTRA_SHOW_FRAGMENT = "show_fragment";
  
-@@ -379,6 +411,10 @@ public class SettingsActivity extends ChromeBaseAppCompatActivity
-                 ((AccessibilitySettings) fragment)
-                     .getDelegate()).setSnackbarManager(mSnackbarManager);
+@@ -373,6 +405,10 @@ public class SettingsActivity extends ChromeBaseAppCompatActivity
+             ((PrivacySandboxSettingsBaseFragment) fragment)
+                     .setSnackbarManager(getSnackbarManager());
          }
 +        if (fragment instanceof ChromeBaseSettingsFragment) {
 +            ((ChromeBaseSettingsFragment)fragment).setRequestRestartDelegate(
@@ -570,7 +572,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/settings/Settin
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -376,6 +376,10 @@ using flags_ui::kOsLinux;
+@@ -370,6 +370,10 @@ using flags_ui::kOsLinux;
  using flags_ui::kOsMac;
  using flags_ui::kOsWin;
  
@@ -581,7 +583,7 @@ diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
  namespace about_flags {
  
  namespace {
-@@ -4076,6 +4080,10 @@ const FeatureEntry::FeatureVariation kAutofillUpstreamUpdatedUiOptions[] = {
+@@ -4089,6 +4093,10 @@ const FeatureEntry::FeatureVariation kAutofillUpstreamUpdatedUiOptions[] = {
       kAutofillUpstreamUpdatedUi_Education_Animated,
       std::size(kAutofillUpstreamUpdatedUi_Education_Animated), nullptr}};
  
@@ -592,7 +594,7 @@ diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
  // RECORDING USER METRICS FOR FLAGS:
  // -----------------------------------------------------------------------------
  // The first line of the entry is the internal name.
-@@ -4102,6 +4110,9 @@ const FeatureEntry::FeatureVariation kAutofillUpstreamUpdatedUiOptions[] = {
+@@ -4115,6 +4123,9 @@ const FeatureEntry::FeatureVariation kAutofillUpstreamUpdatedUiOptions[] = {
  const FeatureEntry kFeatureEntries[] = {
  // Include generated flags for flag unexpiry; see //docs/flag_expiry.md and
  // //tools/flags/generate_unexpire_flags.py.
@@ -614,7 +616,7 @@ diff --git a/chrome/browser/browser_features.cc b/chrome/browser/browser_feature
 diff --git a/chrome/browser/flags/BUILD.gn b/chrome/browser/flags/BUILD.gn
 --- a/chrome/browser/flags/BUILD.gn
 +++ b/chrome/browser/flags/BUILD.gn
-@@ -13,9 +13,14 @@ android_library("java") {
+@@ -12,9 +12,14 @@ android_library("java") {
      "android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureMap.java",
      "android/java/src/org/chromium/chrome/browser/flags/ChromeSessionState.java",
    ]
@@ -629,7 +631,7 @@ diff --git a/chrome/browser/flags/BUILD.gn b/chrome/browser/flags/BUILD.gn
      "//base/version_info/android:version_constants_java",
      "//build:chromeos_buildflags",
      "//build/android:build_java",
-@@ -25,12 +30,20 @@ android_library("java") {
+@@ -24,12 +29,20 @@ android_library("java") {
      "//third_party/jni_zero:jni_zero_java",
    ]
    srcjar_deps = [
@@ -653,7 +655,7 @@ diff --git a/chrome/browser/flags/BUILD.gn b/chrome/browser/flags/BUILD.gn
 diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browser/flags/android/chrome_feature_list.cc
 --- a/chrome/browser/flags/android/chrome_feature_list.cc
 +++ b/chrome/browser/flags/android/chrome_feature_list.cc
-@@ -1036,5 +1036,6 @@ BASE_FEATURE(kWebApkAllowIconUpdate,
+@@ -1018,5 +1018,6 @@ BASE_FEATURE(kWebApkAllowIconUpdate,
               "WebApkAllowIconUpdate",
               base::FEATURE_DISABLED_BY_DEFAULT);
  
@@ -685,7 +687,7 @@ diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/f
  import java.util.List;
  import java.util.Map;
  
-@@ -719,7 +723,7 @@ public abstract class ChromeFeatureList {
+@@ -695,7 +699,7 @@ public abstract class ChromeFeatureList {
      public static final CachedFlag sVerticalAutomotiveBackButtonToolbar =
              newCachedFlag(VERTICAL_AUTOMOTIVE_BACK_BUTTON_TOOLBAR, true);
  
@@ -693,8 +695,8 @@ diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/f
 +    public static final List<CachedFlag> sFlagsCachedFullBrowserChromium =
              List.of(
                      sAccountReauthenticationRecentTimeWindow,
-                     sAllowUserCertificates,
-@@ -816,6 +820,13 @@ public abstract class ChromeFeatureList {
+                     sAndroidAppIntegration,
+@@ -788,6 +792,13 @@ public abstract class ChromeFeatureList {
                      sUseLibunwindstackNativeUnwinderAndroid,
                      sVerticalAutomotiveBackButtonToolbar);
  
@@ -852,6 +854,20 @@ diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chro
        <!-- NOTE: Generic strings used across multiple features belong in //components/browser_ui/strings/android. -->
  
         <!-- Cookie Controls -->
+diff --git a/chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Add-cromite-flags-support.grdp b/chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Add-cromite-flags-support.grdp
+new file mode 100644
+--- /dev/null
++++ b/chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Add-cromite-flags-support.grdp
+@@ -0,0 +1,9 @@
++<?xml version="1.0" encoding="utf-8"?>
++<grit-part>
++    <message name="IDS_RELAUNCH" desc="Relaunch message">
++        Relaunch
++    </message>
++    <message name="IDS_UI_RELAUNCH_NOTICE" desc="Summary for relaunch message">
++        Your changes will take effect the next time you relaunch Cromite.
++    </message>
++</grit-part>
 diff --git a/chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/placeholder.txt b/chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/placeholder.txt
 new file mode 100644
 --- /dev/null
@@ -887,8 +903,8 @@ diff --git a/components/browser_ui/accessibility/android/java/res/xml/accessibil
 +<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
 +                  xmlns:app="http://schemas.android.com/apk/res-auto">
  
-     <org.chromium.components.browser_ui.settings.ChromeSwitchPreference
-         android:key="enable_accessibility"
+     <org.chromium.chrome.browser.accessibility.settings.TextScalePreference
+         android:key="text_scale"
 diff --git a/components/browser_ui/settings/android/java/res/values/attrs.xml b/components/browser_ui/settings/android/java/res/values/attrs.xml
 --- a/components/browser_ui/settings/android/java/res/values/attrs.xml
 +++ b/components/browser_ui/settings/android/java/res/values/attrs.xml
@@ -950,14 +966,14 @@ diff --git a/components/browser_ui/settings/android/widget/java/src/org/chromium
 diff --git a/components/components_strings.grd b/components/components_strings.grd
 --- a/components/components_strings.grd
 +++ b/components/components_strings.grd
-@@ -338,6 +338,7 @@
-       <part file="version_ui_strings.grdp" />
-       <part file="webapps_strings.grdp" />
-       <part file="user_scripts/strings/userscripts_strings.grdp" />
+@@ -281,6 +281,7 @@
+   </translations>
+   <release seq="1">
+     <messages fallback_to_english="true">
 +      <part file="cromite_components_strings_grd/placeholder.txt"/>
-       <part file="history_clusters_strings.grdp" />
-       <if expr="is_android">
-         <part file="android_system_error_page_strings.grdp" />
+       <part file="arc_strings.grdp" />
+       <part file="autofill_payments_strings.grdp" />
+       <part file="autofill_strings.grdp" />
 diff --git a/components/content_settings/core/common/features.cc b/components/content_settings/core/common/features.cc
 --- a/components/content_settings/core/common/features.cc
 +++ b/components/content_settings/core/common/features.cc
@@ -1367,7 +1383,7 @@ diff --git a/components/offline_pages/core/offline_page_feature.h b/components/o
 diff --git a/components/password_manager/core/browser/features/password_features.cc b/components/password_manager/core/browser/features/password_features.cc
 --- a/components/password_manager/core/browser/features/password_features.cc
 +++ b/components/password_manager/core/browser/features/password_features.cc
-@@ -207,4 +207,5 @@ BASE_FEATURE(kUsernameFirstFlowWithIntermediateValuesVoting,
+@@ -206,4 +206,5 @@ BASE_FEATURE(kUsernameFirstFlowWithIntermediateValuesVoting,
               "UsernameFirstFlowWithIntermediateValuesVoting",
               base::FEATURE_ENABLED_BY_DEFAULT);
  
@@ -1771,7 +1787,7 @@ diff --git a/media/base/media_switches.h b/media/base/media_switches.h
 diff --git a/net/base/features.cc b/net/base/features.cc
 --- a/net/base/features.cc
 +++ b/net/base/features.cc
-@@ -550,4 +550,5 @@ BASE_FEATURE(kSpdySessionForProxyAdditionalChecks,
+@@ -549,4 +549,5 @@ BASE_FEATURE(kSpdySessionForProxyAdditionalChecks,
               "SpdySessionForProxyAdditionalChecks",
               base::FEATURE_ENABLED_BY_DEFAULT);
  
@@ -1811,7 +1827,7 @@ diff --git a/services/network/public/cpp/features.h b/services/network/public/cp
 diff --git a/third_party/blink/common/features.cc b/third_party/blink/common/features.cc
 --- a/third_party/blink/common/features.cc
 +++ b/third_party/blink/common/features.cc
-@@ -2678,5 +2678,6 @@ BASE_FEATURE(kOptimizeLoadingDataUrls,
+@@ -2677,5 +2677,6 @@ BASE_FEATURE(kOptimizeLoadingDataUrls,
               "OptimizeLoadingDataUrls",
               base::FEATURE_DISABLED_BY_DEFAULT);
  
@@ -1821,7 +1837,7 @@ diff --git a/third_party/blink/common/features.cc b/third_party/blink/common/fea
 diff --git a/third_party/blink/public/common/features.h b/third_party/blink/public/common/features.h
 --- a/third_party/blink/public/common/features.h
 +++ b/third_party/blink/public/common/features.h
-@@ -1747,6 +1747,7 @@ BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE(kRenderSizeInScoreAdBrowserSignals);
+@@ -1744,6 +1744,7 @@ BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE(kRenderSizeInScoreAdBrowserSignals);
  // Optimize loading data: URLs.
  BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE(kOptimizeLoadingDataUrls);
  
@@ -1832,7 +1848,7 @@ diff --git a/third_party/blink/public/common/features.h b/third_party/blink/publ
 diff --git a/ui/base/ui_base_features.cc b/ui/base/ui_base_features.cc
 --- a/ui/base/ui_base_features.cc
 +++ b/ui/base/ui_base_features.cc
-@@ -529,4 +529,5 @@ BASE_FEATURE(kEnableGestureBeginEndTypes,
+@@ -521,4 +521,5 @@ BASE_FEATURE(kEnableGestureBeginEndTypes,
               "EnableGestureBeginEndTypes",
               base::FEATURE_DISABLED_BY_DEFAULT);
  
@@ -1841,7 +1857,7 @@ diff --git a/ui/base/ui_base_features.cc b/ui/base/ui_base_features.cc
 diff --git a/ui/base/ui_base_features.h b/ui/base/ui_base_features.h
 --- a/ui/base/ui_base_features.h
 +++ b/ui/base/ui_base_features.h
-@@ -247,6 +247,7 @@ BASE_DECLARE_FEATURE(kBubbleFrameViewTitleIsHeading);
+@@ -245,6 +245,7 @@ BASE_DECLARE_FEATURE(kBubbleFrameViewTitleIsHeading);
  COMPONENT_EXPORT(UI_BASE_FEATURES)
  BASE_DECLARE_FEATURE(kEnableGestureBeginEndTypes);
  
