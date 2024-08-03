@@ -864,7 +864,7 @@ diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/AccessibilitySettings.java b/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/AccessibilitySettings.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/AccessibilitySettings.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/AccessibilitySettings.java
-@@ -50,6 +50,11 @@ public class AccessibilitySettings extends PreferenceFragmentCompat
+@@ -51,6 +51,11 @@ public class AccessibilitySettings extends ChromeBaseSettingsFragment
      private BooleanPreferenceDelegate mForceTabletUIDelegate;
      static final String PREF_FORCE_TABLET_UI = "force_tablet_ui";
  
@@ -876,7 +876,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/accessibility/s
      private TextScalePreference mTextScalePref;
      private PageZoomPreference mPageZoomDefaultZoomPref;
      private ChromeSwitchPreference mPageZoomIncludeOSAdjustment;
-@@ -85,6 +90,10 @@ public class AccessibilitySettings extends PreferenceFragmentCompat
+@@ -86,6 +91,10 @@ public class AccessibilitySettings extends ChromeBaseSettingsFragment
          mFontSizePrefs = FontSizePrefs.getInstance(delegate.getBrowserContextHandle());
      }
  
@@ -887,7 +887,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/accessibility/s
      @Override
      public void onActivityCreated(Bundle savedInstanceState) {
          super.onActivityCreated(savedInstanceState);
-@@ -153,6 +162,18 @@ public class AccessibilitySettings extends PreferenceFragmentCompat
+@@ -154,6 +163,18 @@ public class AccessibilitySettings extends ChromeBaseSettingsFragment
          forceTabletUiPref.setChecked(mForceTabletUIDelegate.isEnabled());
          forceTabletUiPref.setOnPreferenceChangeListener(this);
  
@@ -906,7 +906,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/accessibility/s
          Preference captions = findPreference(PREF_CAPTIONS);
          captions.setOnPreferenceClickListener(
                  preference -> {
-@@ -236,6 +257,11 @@ public class AccessibilitySettings extends PreferenceFragmentCompat
+@@ -237,6 +258,11 @@ public class AccessibilitySettings extends ChromeBaseSettingsFragment
                      mDelegate.getBrowserContextHandle(), (Integer) newValue);
          } else if (PREF_PAGE_ZOOM_ALWAYS_SHOW.equals(preference.getKey())) {
              PageZoomUtils.setShouldAlwaysShowZoomMenuItem((Boolean) newValue);
@@ -1701,7 +1701,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/searchwidget/Se
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/settings/SettingsActivity.java b/chrome/android/java/src/org/chromium/chrome/browser/settings/SettingsActivity.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/settings/SettingsActivity.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/settings/SettingsActivity.java
-@@ -374,6 +374,11 @@ public class SettingsActivity extends ChromeBaseAppCompatActivity
+@@ -410,6 +410,11 @@ public class SettingsActivity extends ChromeBaseAppCompatActivity
          if (fragment instanceof INeedSnackbarManager) {
              ((INeedSnackbarManager)fragment).setSnackbarManager(mSnackbarManager);
          }
@@ -2117,7 +2117,7 @@ diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browse
 diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 --- a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 +++ b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
-@@ -361,6 +361,10 @@ public abstract class ChromeFeatureList {
+@@ -365,6 +365,10 @@ public abstract class ChromeFeatureList {
              "NavBarColorMatchesTabBackground";
      public static final String NEW_TAB_SEARCH_ENGINE_URL_ANDROID = "NewTabSearchEngineUrlAndroid";
      public static final String NOTIFICATION_ONE_TAP_UNSUBSCRIBE = "NotificationOneTapUnsubscribe";
@@ -2128,7 +2128,7 @@ diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/f
      public static final String NOTIFICATION_PERMISSION_VARIANT = "NotificationPermissionVariant";
      public static final String NOTIFICATION_PERMISSION_BOTTOM_SHEET =
              "NotificationPermissionBottomSheet";
-@@ -641,6 +645,10 @@ public abstract class ChromeFeatureList {
+@@ -645,6 +649,10 @@ public abstract class ChromeFeatureList {
      public static final CachedFlag sPriceInsights = newCachedFlag(PRICE_INSIGHTS, false);
      public static final CachedFlag sPrivacyGuideAndroid3 =
              newCachedFlag(PRIVACY_GUIDE_ANDROID_3, false);
@@ -2139,7 +2139,7 @@ diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/f
      public static final CachedFlag sPrivacyGuidePreloadAndroid =
              newCachedFlag(PRIVACY_GUIDE_PRELOAD_ANDROID, false);
      public static final CachedFlag sOptimizationGuidePushNotifications =
-@@ -767,6 +775,8 @@ public abstract class ChromeFeatureList {
+@@ -771,6 +779,8 @@ public abstract class ChromeFeatureList {
                      sPrivacyGuideAndroid3,
                      sPrivacyGuidePreloadAndroid,
                      sOptimizationGuidePushNotifications,
@@ -2512,7 +2512,7 @@ diff --git a/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/brow
 diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chrome/browser/ui/android/strings/android_chrome_strings.grd
 --- a/chrome/browser/ui/android/strings/android_chrome_strings.grd
 +++ b/chrome/browser/ui/android/strings/android_chrome_strings.grd
-@@ -1696,6 +1696,12 @@ Your Google account may have other forms of browsing history like searches and a
+@@ -1691,6 +1691,12 @@ Your Google account may have other forms of browsing history like searches and a
        <message name="IDS_FORCE_TABLET_UI_TITLE" desc="Title of the preference that allows the user to update force tablet UI settings.">
          Force Tablet Mode
        </message>
@@ -2886,7 +2886,7 @@ diff --git a/chrome/browser/ui/android/toolbar/java/src/org/chromium/chrome/brow
 diff --git a/components/browser_ui/accessibility/android/java/res/xml/accessibility_preferences.xml b/components/browser_ui/accessibility/android/java/res/xml/accessibility_preferences.xml
 --- a/components/browser_ui/accessibility/android/java/res/xml/accessibility_preferences.xml
 +++ b/components/browser_ui/accessibility/android/java/res/xml/accessibility_preferences.xml
-@@ -59,4 +59,12 @@ found in the LICENSE file.
+@@ -60,4 +60,12 @@ found in the LICENSE file.
          android:key="image_descriptions"
          android:title="@string/image_descriptions_settings_title" />
  

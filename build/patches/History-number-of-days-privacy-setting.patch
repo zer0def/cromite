@@ -38,7 +38,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 diff --git a/chrome/android/java/res/xml/privacy_preferences.xml b/chrome/android/java/res/xml/privacy_preferences.xml
 --- a/chrome/android/java/res/xml/privacy_preferences.xml
 +++ b/chrome/android/java/res/xml/privacy_preferences.xml
-@@ -124,6 +124,12 @@ found in the LICENSE file.
+@@ -128,6 +128,12 @@ found in the LICENSE file.
          android:title="@string/cablev2_paask_title"
          android:summary="@string/cablev2_paask_body"
          android:fragment="org.chromium.chrome.browser.webauthn.PrivacySettingsFragment" />
@@ -79,7 +79,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/privacy/setting
 +    private static final String PREF_HISTORY_EXPIRE_DAYS_THRESHOLD = "history_expire_days_threshold";
 +
      @Override
-     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+     public void onCreatePreferencesCromite(Bundle savedInstanceState, String rootKey) {
          getActivity().setTitle(R.string.prefs_privacy_security);
 @@ -236,6 +242,40 @@ public class PrivacySettings extends ChromeBaseSettingsFragment
          Preference syncAndServicesLink = findPreference(PREF_SYNC_AND_SERVICES_LINK);
@@ -245,7 +245,7 @@ diff --git a/chrome/browser/resources/settings/privacy_page/privacy_page.ts b/ch
 diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chrome/browser/ui/android/strings/android_chrome_strings.grd
 --- a/chrome/browser/ui/android/strings/android_chrome_strings.grd
 +++ b/chrome/browser/ui/android/strings/android_chrome_strings.grd
-@@ -1281,6 +1281,18 @@ Your Google account may have other forms of browsing history like searches and a
+@@ -1282,6 +1282,18 @@ Your Google account may have other forms of browsing history like searches and a
        <message name="IDS_CLEAR_HISTORY_TITLE" desc="Title for Clear History in Clear Browsing Data dialog">
          Browsing history
        </message>

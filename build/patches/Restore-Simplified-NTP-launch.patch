@@ -707,7 +707,7 @@ diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browse
 diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 --- a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 +++ b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
-@@ -349,6 +349,7 @@ public abstract class ChromeFeatureList {
+@@ -353,6 +353,7 @@ public abstract class ChromeFeatureList {
      public static final String MAYLAUNCHURL_USES_SEPARATE_STORAGE_PARTITION =
              "MayLaunchUrlUsesSeparateStoragePartition";
      public static final String MESSAGES_FOR_ANDROID_ADS_BLOCKED = "MessagesForAndroidAdsBlocked";
@@ -715,7 +715,7 @@ diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/f
      public static final String SEARCH_READY_OMNIBOX = "SearchReadyOmnibox";
      public static final String MIGRATE_ACCOUNT_MANAGEMENT_SETTINGS_TO_CAPABILITIES =
              "MigrateAccountManagementSettingsToCapabilities";
-@@ -625,7 +626,7 @@ public abstract class ChromeFeatureList {
+@@ -629,7 +630,7 @@ public abstract class ChromeFeatureList {
      public static final CachedFlag sIncognitoReauthenticationForAndroid =
              newCachedFlag(INCOGNITO_REAUTHENTICATION_FOR_ANDROID, true);
      public static final CachedFlag sLogoPolish = newCachedFlag(LOGO_POLISH, false);
@@ -724,7 +724,7 @@ diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/f
      public static final CachedFlag sMultiInstanceApplicationStatusCleanup =
              newCachedFlag(MUlTI_INSTANCE_APPLICATION_STATUS_CLEANUP, false);
      public static final CachedFlag sNavBarColorMatchesTabBackground =
-@@ -658,7 +659,7 @@ public abstract class ChromeFeatureList {
+@@ -662,7 +663,7 @@ public abstract class ChromeFeatureList {
              newCachedFlag(START_SURFACE_RETURN_TIME, true);
      public static final CachedFlag sStopAppIndexingReport =
              newCachedFlag(STOP_APP_INDEXING_REPORT, true);
