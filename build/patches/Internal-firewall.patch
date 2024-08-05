@@ -552,7 +552,7 @@ new file mode 100644
 +                                int32_t unique_id_hash_code) const {
 +  const auto it = decode_map_.find(unique_id_hash_code);
 +  if (it == decode_map_.end())
-+    return absl::nullopt;
++    return std::nullopt;
 +
 +  return std::optional<builders::EntryDecoder>(it->second);
 +}

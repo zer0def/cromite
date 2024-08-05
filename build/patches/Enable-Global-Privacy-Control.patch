@@ -111,9 +111,9 @@ diff --git a/chrome/android/java/res/xml/privacy_preferences.xml b/chrome/androi
 +        android:key="gpc"
 +        android:title="@string/gpc_title"
 +        android:fragment="org.chromium.chrome.browser.privacy.settings.GpcSettings" />
-     <org.chromium.components.browser_ui.settings.ChromeSwitchPreference
-         android:key="allow_custom_tab_intents"
-         android:title="@string/allow_custom_tab_intents_title"
+     <org.chromium.chrome.browser.about_settings.HyperlinkPreference
+         android:key="cromite_flags"
+         android:title="@string/cromite_flags_title"
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/GpcSettings.java b/chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/GpcSettings.java
 new file mode 100644
 --- /dev/null

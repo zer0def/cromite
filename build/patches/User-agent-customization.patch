@@ -1036,7 +1036,7 @@ diff --git a/chrome/browser/tabmodel/internal/android/java/src/org/chromium/chro
 diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chrome/browser/ui/android/strings/android_chrome_strings.grd
 --- a/chrome/browser/ui/android/strings/android_chrome_strings.grd
 +++ b/chrome/browser/ui/android/strings/android_chrome_strings.grd
-@@ -231,6 +231,32 @@ CHAR_LIMIT guidelines:
+@@ -232,6 +232,32 @@ CHAR_LIMIT guidelines:
          Visit help page
        </message>
  
