@@ -85,6 +85,7 @@ deactivation of all pop-ups (default disabled)
  .../core/converter/parser/test/test_rules.txt |   21 +
  .../core/converter/parser/url_filter.cc       |   10 +-
  .../converter/parser/url_filter_options.cc    |   21 +-
+ .../converter/parser/url_filter_options.h     |    1 +
  .../serializer/flatbuffer_serializer.cc       |   82 +-
  components/adblock/core/features.cc           |    3 +-
  components/adblock/core/hash/schema_hash.h    |   10 +
@@ -130,7 +131,7 @@ deactivation of all pop-ups (default disabled)
  .../blink/renderer/core/css/style_engine.h    |    1 +
  .../renderer/core/exported/web_document.cc    |   15 +-
  .../definitions/adblock_private.d.ts          |   14 +
- 120 files changed, 6139 insertions(+), 1301 deletions(-)
+121 files changed, 6140 insertions(+), 1301 deletions(-)
  create mode 100644 chrome/browser/resources/settings/adblock_page/adblock_page.html
  create mode 100644 chrome/browser/resources/settings/adblock_page/adblock_page.ts
  rename components/adblock/android/java/res/xml/{adblock_preferences.xml => eyeo_adblock_preferences.xml} (56%)
@@ -4499,6 +4500,17 @@ diff --git a/components/adblock/core/converter/parser/url_filter_options.cc b/co
    // replace \x2c with actual ,
    static re2::RE2 r1("([^\\\\])\\\\x2c");
    re2::RE2::GlobalReplace(&headers_value, r1, "\\1,");
+diff --git a/components/adblock/core/converter/parser/url_filter_options.h b/components/adblock/core/converter/parser/url_filter_options.h
+--- a/components/adblock/core/converter/parser/url_filter_options.h
++++ b/components/adblock/core/converter/parser/url_filter_options.h
+@@ -18,6 +18,7 @@
+ #ifndef COMPONENTS_ADBLOCK_CORE_CONVERTER_PARSER_URL_FILTER_OPTIONS_H_
+ #define COMPONENTS_ADBLOCK_CORE_CONVERTER_PARSER_URL_FILTER_OPTIONS_H_
+ 
++#include <cstdint>
+ #include <set>
+ #include <string>
+ #include <vector>
 diff --git a/components/adblock/core/converter/serializer/flatbuffer_serializer.cc b/components/adblock/core/converter/serializer/flatbuffer_serializer.cc
 --- a/components/adblock/core/converter/serializer/flatbuffer_serializer.cc
 +++ b/components/adblock/core/converter/serializer/flatbuffer_serializer.cc
