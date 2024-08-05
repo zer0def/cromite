@@ -174,8 +174,8 @@ jobs:
           echo "::endgroup::"
 
           echo "::group::-------- gn args"
-          gn args out/x64/ --list --short
-          gn args out/x64/ --list >out/chr_x64/gn_list
+          gn args out/chr_x64/ --list --short
+          gn args out/chr_x64/ --list >out/chr_x64/gn_list
           echo "::endgroup::"
 
           ninja -C out/chr_x64 chrome_public_apk
@@ -193,8 +193,8 @@ jobs:
           echo "::endgroup::"
 
           echo "::group::-------- gn args"
-          gn args out/x64/ --list --short
-          gn args out/x64/ --list >out/chr_arm64/gn_list
+          gn args out/chr_arm64/ --list --short
+          gn args out/chr_arm64/ --list >out/chr_arm64/gn_list
           echo "::endgroup::"
 
           ninja -C out/chr_arm64 chrome_public_apk
@@ -212,8 +212,8 @@ jobs:
           echo "::endgroup::"
 
           echo "::group::-------- gn args"
-          gn args out/x64/ --list --short
-          gn args out/x64/ --list >out/chr_arm/gn_list
+          gn args out/chr_arm/ --list --short
+          gn args out/chr_arm/ --list >out/chr_arm/gn_list
           echo "::endgroup::"
 
           ninja -C out/chr_arm chrome_public_apk
