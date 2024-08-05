@@ -1,7 +1,11 @@
+Do-not-link-with-libatomic.patch
 bromite-build-utils.patch
+Add-cromite-flags-support.patch
+Fix-chromium-vanilla.patch
+Final-patch-for-chromium-vanilla.patch
+
 Remove-EV-certificates.patch
 do-not-hide-.orig-files.patch
-Do-not-link-with-libatomic.patch
 do-not-add-suffix-to-package-name.patch
 exit-on-failure-of-inclusion.patch
 Move-some-account-settings-back-to-privacy-settings.patch
@@ -21,7 +25,7 @@ Always-use-new-tab-page-for-default-home-page.patch
 disable-battery-status-updater.patch
 Battery-API-return-nothing.patch
 updater-disable-updater-pings.patch
-Disable-omission-of-URL-elements-in-Omnibox.patch
+Disable-omission-of-URL-elements.patch
 Modify-default-preferences.patch
 Do-not-store-passwords-by-default.patch
 Disable-NTP-remote-suggestions-by-default.patch
@@ -256,7 +260,6 @@ Enable-ImprovedBookmarks-by-default.patch
 Partition-MediaDeviceId-by-default.patch
 Keep-disabled-FetchLaterAPI.patch
 Disable-ranker-url-fetcher.patch
-Show-full-urls-for-bookmark.patch
 Disable-prefers-reduced-transparency-media-query.patch
 libjxl-0-8-2.patch
 Add-support-to-jxl.patch
@@ -265,7 +268,6 @@ Keep-Manta-Service-Disabled.patch
 Disable-Service-and-Shared-workers-on-3P-iframe.patch
 Disable-Real-Box.patch
 Always-allow-inspect-fallback.patch
-Add-cromite-flags-support.patch
 Add-PartialLowEndModeOnMidRangeDevices-flag.patch
 Use-list-mode-for-tab-switcher.patch
 Chrome-web-store-protection.patch
@@ -297,8 +299,9 @@ Disable-support-for-pointer-device-id.patch
 Disable-CSS-blink-feature-support.patch
 Close-Sessions-On-Ip-Change.patch
 Ask-for-restart-on-connection-change.patch
+Bubble-Locking-on-UI-DevTools.patch
 
-# temporary patches
+# temporary or wip patches
 Disable-wip-Android-Hub.patch
 Temp-PerformanceNavigationTiming-privacy-fix.patch
 Temp-disable-predictive-back-gesture.patch

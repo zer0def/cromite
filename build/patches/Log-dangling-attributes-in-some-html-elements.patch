@@ -331,7 +331,7 @@ diff --git a/third_party/blink/renderer/core/page/frame_tree.cc b/third_party/bl
 diff --git a/third_party/blink/renderer/platform/runtime_enabled_features.json5 b/third_party/blink/renderer/platform/runtime_enabled_features.json5
 --- a/third_party/blink/renderer/platform/runtime_enabled_features.json5
 +++ b/third_party/blink/renderer/platform/runtime_enabled_features.json5
-@@ -1457,8 +1457,8 @@
+@@ -1463,8 +1463,8 @@
        // Experiment with preventing some instances of mutation XSS
        // by escaping "<" and ">" in attribute values.
        // See: crbug.com/1175016
@@ -342,7 +342,7 @@ diff --git a/third_party/blink/renderer/platform/runtime_enabled_features.json5 
      },
      {
        name: "EventTimingInteractionCount",
-@@ -2364,6 +2364,12 @@
+@@ -2370,6 +2370,12 @@
        name: "MacFontsDeprecateFontTraitsWorkaround",
        status: "stable",
      },

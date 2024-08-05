@@ -30,7 +30,6 @@ sudo cp $WORKSPACE/goma_auth.py $WORKSPACE/goma/
 echo -e ${RED} -------- prepare vpython virtual environment ${NC}
 rm -rf /tmp/vpython*
 cd $WORKSPACE/chromium/src
-vpython -vpython-spec .vpython -vpython-root $VPYTHON_VIRTUALENV_ROOT -vpython-log-level debug -vpython-tool install
 vpython3 -vpython-spec .vpython3 -vpython-root $VPYTHON_VIRTUALENV_ROOT -vpython-log-level debug -vpython-tool install
 
 echo -e ${RED} -------- download pgo profiles ${NC}
@@ -66,9 +65,9 @@ CXX=clang++ ./configure.py --bootstrap
 
 echo -e ${RED} -------- download clang indexer ${NC}
 cd $WORKSPACE/
-wget https://github.com/clangd/clangd/releases/download/snapshot_20211205/clangd_indexing_tools-linux-snapshot_20211205.zip
-unzip clangd_indexing_tools-linux-snapshot_20211205.zip
-rm clangd_indexing_tools-linux-snapshot_20211205.zip
+wget https://github.com/clangd/clangd/releases/download/17.0.3/clangd_indexing_tools-linux-17.0.3.zip
+unzip clangd_indexing_tools-linux-17.0.3.zip
+rm clangd_indexing_tools-linux-17.0.3.zip
 
 echo -e ${RED} -------- download rc ${NC}
 cd $WORKSPACE/chromium/src

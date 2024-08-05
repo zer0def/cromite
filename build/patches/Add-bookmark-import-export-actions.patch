@@ -729,7 +729,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/bookmarks/Bookm
  
      static final PropertyKey[] ALL_KEYS = {
          BOOKMARK_OPENER,
-@@ -108,6 +112,8 @@ class BookmarkToolbarProperties {
+@@ -109,6 +113,8 @@ class BookmarkToolbarProperties {
          SELECTION_MODE_SHOW_OPEN_IN_INCOGNITO,
          SELECTION_MODE_SHOW_MOVE,
          SELECTION_MODE_SHOW_MARK_READ,
@@ -1376,7 +1376,7 @@ diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browse
 diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 --- a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 +++ b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
-@@ -517,6 +517,7 @@ public abstract class ChromeFeatureList {
+@@ -521,6 +521,7 @@ public abstract class ChromeFeatureList {
      public static final String VERTICAL_AUTOMOTIVE_BACK_BUTTON_TOOLBAR =
              "VerticalAutomotiveBackButtonToolbar";
      public static final String VISITED_URL_RANKING_SERVICE = "VisitedURLRankingService";
@@ -1450,7 +1450,7 @@ diff --git a/chrome/browser/preferences/android/java/src/org/chromium/chrome/bro
 diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chrome/browser/ui/android/strings/android_chrome_strings.grd
 --- a/chrome/browser/ui/android/strings/android_chrome_strings.grd
 +++ b/chrome/browser/ui/android/strings/android_chrome_strings.grd
-@@ -245,6 +245,24 @@ CHAR_LIMIT guidelines:
+@@ -246,6 +246,24 @@ CHAR_LIMIT guidelines:
        <message name="IDS_NOTIFICATION_CATEGORY_SITES" desc="Label for notifications from websites, within a list of notification categories. [CHAR_LIMIT=32]">
          Sites
        </message>

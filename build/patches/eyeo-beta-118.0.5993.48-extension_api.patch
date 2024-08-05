@@ -463,7 +463,7 @@ new file mode 100644
 +AdblockPrivateSetEnabledFunction::~AdblockPrivateSetEnabledFunction() {}
 +
 +ExtensionFunction::ResponseAction AdblockPrivateSetEnabledFunction::Run() {
-+  absl::optional<api::adblock_private::SetEnabled::Params> params =
++  std::optional<api::adblock_private::SetEnabled::Params> params =
 +      api::adblock_private::SetEnabled::Params::Create(args());
 +  EXTENSION_FUNCTION_VALIDATE(params);
 +
@@ -501,7 +501,7 @@ new file mode 100644
 +
 +ExtensionFunction::ResponseAction
 +AdblockPrivateSetAcceptableAdsEnabledFunction::Run() {
-+  absl::optional<api::adblock_private::SetAcceptableAdsEnabled::Params> params =
++  std::optional<api::adblock_private::SetAcceptableAdsEnabled::Params> params =
 +      api::adblock_private::SetAcceptableAdsEnabled::Params::Create(args());
 +  EXTENSION_FUNCTION_VALIDATE(params);
 +
@@ -574,7 +574,7 @@ new file mode 100644
 +
 +ExtensionFunction::ResponseAction
 +AdblockPrivateInstallSubscriptionFunction::Run() {
-+  absl::optional<api::adblock_private::InstallSubscription::Params> params =
++  std::optional<api::adblock_private::InstallSubscription::Params> params =
 +      api::adblock_private::InstallSubscription::Params::Create(args());
 +  EXTENSION_FUNCTION_VALIDATE(params);
 +  auto url = GURL{params->url};
@@ -595,7 +595,7 @@ new file mode 100644
 +
 +ExtensionFunction::ResponseAction
 +AdblockPrivateUninstallSubscriptionFunction::Run() {
-+  absl::optional<api::adblock_private::UninstallSubscription::Params> params =
++  std::optional<api::adblock_private::UninstallSubscription::Params> params =
 +      api::adblock_private::UninstallSubscription::Params::Create(args());
 +  EXTENSION_FUNCTION_VALIDATE(params);
 +  auto url = GURL{params->url};
@@ -637,7 +637,7 @@ new file mode 100644
 +
 +ExtensionFunction::ResponseAction
 +AdblockPrivateAddAllowedDomainFunction::Run() {
-+  absl::optional<api::adblock_private::AddAllowedDomain::Params> params =
++  std::optional<api::adblock_private::AddAllowedDomain::Params> params =
 +      api::adblock_private::AddAllowedDomain::Params::Create(args());
 +  EXTENSION_FUNCTION_VALIDATE(params);
 +  auto* adblock_configuration =
@@ -658,7 +658,7 @@ new file mode 100644
 +
 +ExtensionFunction::ResponseAction
 +AdblockPrivateRemoveAllowedDomainFunction::Run() {
-+  absl::optional<api::adblock_private::RemoveAllowedDomain::Params> params =
++  std::optional<api::adblock_private::RemoveAllowedDomain::Params> params =
 +      api::adblock_private::RemoveAllowedDomain::Params::Create(args());
 +  EXTENSION_FUNCTION_VALIDATE(params);
 +  auto* adblock_configuration =
@@ -698,7 +698,7 @@ new file mode 100644
 +    ~AdblockPrivateAddCustomFilterFunction() {}
 +
 +ExtensionFunction::ResponseAction AdblockPrivateAddCustomFilterFunction::Run() {
-+  absl::optional<api::adblock_private::AddCustomFilter::Params> params =
++  std::optional<api::adblock_private::AddCustomFilter::Params> params =
 +      api::adblock_private::AddCustomFilter::Params::Create(args());
 +  EXTENSION_FUNCTION_VALIDATE(params);
 +  auto* adblock_configuration =
@@ -738,7 +738,7 @@ new file mode 100644
 +
 +ExtensionFunction::ResponseAction
 +AdblockPrivateRemoveCustomFilterFunction::Run() {
-+  absl::optional<api::adblock_private::RemoveCustomFilter::Params> params =
++  std::optional<api::adblock_private::RemoveCustomFilter::Params> params =
 +      api::adblock_private::RemoveCustomFilter::Params::Create(args());
 +  EXTENSION_FUNCTION_VALIDATE(params);
 +  auto* adblock_configuration =
@@ -2551,7 +2551,7 @@ new file mode 100644
 +
 +ExtensionFunction::ResponseAction
 +EyeoFilteringPrivateCreateConfigurationFunction::Run() {
-+  absl::optional<api::eyeo_filtering_private::CreateConfiguration::Params>
++  std::optional<api::eyeo_filtering_private::CreateConfiguration::Params>
 +      params(api::eyeo_filtering_private::CreateConfiguration::Params::Create(
 +          args()));
 +  EXTENSION_FUNCTION_VALIDATE(params);
@@ -2584,7 +2584,7 @@ new file mode 100644
 +
 +ExtensionFunction::ResponseAction
 +EyeoFilteringPrivateRemoveConfigurationFunction::Run() {
-+  absl::optional<api::eyeo_filtering_private::RemoveConfiguration::Params>
++  std::optional<api::eyeo_filtering_private::RemoveConfiguration::Params>
 +      params(api::eyeo_filtering_private::RemoveConfiguration::Params::Create(
 +          args()));
 +  EXTENSION_FUNCTION_VALIDATE(params);
@@ -2635,7 +2635,7 @@ new file mode 100644
 +
 +ExtensionFunction::ResponseAction
 +EyeoFilteringPrivateSetEnabledFunction::Run() {
-+  absl::optional<api::eyeo_filtering_private::SetEnabled::Params> params(
++  std::optional<api::eyeo_filtering_private::SetEnabled::Params> params(
 +      api::eyeo_filtering_private::SetEnabled::Params::Create(args()));
 +  EXTENSION_FUNCTION_VALIDATE(params);
 +  auto* configuration =
@@ -2655,7 +2655,7 @@ new file mode 100644
 +    ~EyeoFilteringPrivateIsEnabledFunction() = default;
 +
 +ExtensionFunction::ResponseAction EyeoFilteringPrivateIsEnabledFunction::Run() {
-+  absl::optional<api::eyeo_filtering_private::IsEnabled::Params> params(
++  std::optional<api::eyeo_filtering_private::IsEnabled::Params> params(
 +      api::eyeo_filtering_private::IsEnabled::Params::Create(args()));
 +  EXTENSION_FUNCTION_VALIDATE(params);
 +  auto* configuration =
@@ -2690,7 +2690,7 @@ new file mode 100644
 +
 +ExtensionFunction::ResponseAction
 +EyeoFilteringPrivateSubscribeToFilterListFunction::Run() {
-+  absl::optional<api::eyeo_filtering_private::SubscribeToFilterList::Params>
++  std::optional<api::eyeo_filtering_private::SubscribeToFilterList::Params>
 +      params(api::eyeo_filtering_private::SubscribeToFilterList::Params::Create(
 +          args()));
 +  EXTENSION_FUNCTION_VALIDATE(params);
@@ -2718,7 +2718,7 @@ new file mode 100644
 +
 +ExtensionFunction::ResponseAction
 +EyeoFilteringPrivateUnsubscribeFromFilterListFunction::Run() {
-+  absl::optional<api::eyeo_filtering_private::UnsubscribeFromFilterList::Params>
++  std::optional<api::eyeo_filtering_private::UnsubscribeFromFilterList::Params>
 +      params(api::eyeo_filtering_private::UnsubscribeFromFilterList::Params::
 +                 Create(args()));
 +  EXTENSION_FUNCTION_VALIDATE(params);
@@ -2746,7 +2746,7 @@ new file mode 100644
 +
 +ExtensionFunction::ResponseAction
 +EyeoFilteringPrivateGetFilterListsFunction::Run() {
-+  absl::optional<api::eyeo_filtering_private::GetFilterLists::Params> params(
++  std::optional<api::eyeo_filtering_private::GetFilterLists::Params> params(
 +      api::eyeo_filtering_private::GetFilterLists::Params::Create(args()));
 +  EXTENSION_FUNCTION_VALIDATE(params);
 +  auto* configuration =
@@ -2772,7 +2772,7 @@ new file mode 100644
 +
 +ExtensionFunction::ResponseAction
 +EyeoFilteringPrivateAddAllowedDomainFunction::Run() {
-+  absl::optional<api::eyeo_filtering_private::AddAllowedDomain::Params> params(
++  std::optional<api::eyeo_filtering_private::AddAllowedDomain::Params> params(
 +      api::eyeo_filtering_private::AddAllowedDomain::Params::Create(args()));
 +  EXTENSION_FUNCTION_VALIDATE(params);
 +  auto* configuration =
@@ -2793,7 +2793,7 @@ new file mode 100644
 +
 +ExtensionFunction::ResponseAction
 +EyeoFilteringPrivateRemoveAllowedDomainFunction::Run() {
-+  absl::optional<api::eyeo_filtering_private::RemoveAllowedDomain::Params>
++  std::optional<api::eyeo_filtering_private::RemoveAllowedDomain::Params>
 +      params(api::eyeo_filtering_private::RemoveAllowedDomain::Params::Create(
 +          args()));
 +  EXTENSION_FUNCTION_VALIDATE(params);
@@ -2815,7 +2815,7 @@ new file mode 100644
 +
 +ExtensionFunction::ResponseAction
 +EyeoFilteringPrivateGetAllowedDomainsFunction::Run() {
-+  absl::optional<api::eyeo_filtering_private::GetAllowedDomains::Params> params(
++  std::optional<api::eyeo_filtering_private::GetAllowedDomains::Params> params(
 +      api::eyeo_filtering_private::GetAllowedDomains::Params::Create(args()));
 +  EXTENSION_FUNCTION_VALIDATE(params);
 +  auto* configuration =
@@ -2837,7 +2837,7 @@ new file mode 100644
 +
 +ExtensionFunction::ResponseAction
 +EyeoFilteringPrivateAddCustomFilterFunction::Run() {
-+  absl::optional<api::eyeo_filtering_private::AddCustomFilter::Params> params(
++  std::optional<api::eyeo_filtering_private::AddCustomFilter::Params> params(
 +      api::eyeo_filtering_private::AddCustomFilter::Params::Create(args()));
 +  EXTENSION_FUNCTION_VALIDATE(params);
 +  auto* configuration =
@@ -2858,7 +2858,7 @@ new file mode 100644
 +
 +ExtensionFunction::ResponseAction
 +EyeoFilteringPrivateRemoveCustomFilterFunction::Run() {
-+  absl::optional<api::eyeo_filtering_private::RemoveCustomFilter::Params>
++  std::optional<api::eyeo_filtering_private::RemoveCustomFilter::Params>
 +      params(api::eyeo_filtering_private::RemoveCustomFilter::Params::Create(
 +          args()));
 +  EXTENSION_FUNCTION_VALIDATE(params);
@@ -2874,7 +2874,7 @@ new file mode 100644
 +
 +ExtensionFunction::ResponseAction
 +EyeoFilteringPrivateGetCustomFiltersFunction::Run() {
-+  absl::optional<api::eyeo_filtering_private::GetCustomFilters::Params> params(
++  std::optional<api::eyeo_filtering_private::GetCustomFilters::Params> params(
 +      api::eyeo_filtering_private::GetCustomFilters::Params::Create(args()));
 +  EXTENSION_FUNCTION_VALIDATE(params);
 +  auto* configuration =

@@ -74,7 +74,7 @@ jobs:
           path: cromite
           base: ${{ env.BRANCH }}
           add-paths: |
-            build/patches/*.patch
+            docs/*.md
           commit-message: '[AUTO][DOC] Generate patches doc for master branch'
           title: '[AUTO][DOC] Generate patches doc for master branch'
           body: ${{ env.MESSAGE }}

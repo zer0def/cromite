@@ -28,3 +28,11 @@ chrome-infra-packages.appspot.com
 
 # for pip
 .pypi.org
+
+# for appium
+registry.npmjs.org
+deb.nodesource.com
+
+# for browserstack
+api-cloud.browserstack.com
+hub-cloud.browserstack.com

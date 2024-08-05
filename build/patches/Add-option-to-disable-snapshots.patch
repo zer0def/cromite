@@ -72,7 +72,7 @@ diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser
 diff --git a/chrome/android/java/res/xml/privacy_preferences.xml b/chrome/android/java/res/xml/privacy_preferences.xml
 --- a/chrome/android/java/res/xml/privacy_preferences.xml
 +++ b/chrome/android/java/res/xml/privacy_preferences.xml
-@@ -70,6 +70,11 @@ found in the LICENSE file.
+@@ -74,6 +74,11 @@ found in the LICENSE file.
          android:title="@string/open_external_links_incognito_title"
          android:summary="@string/open_external_links_incognito_summary"
          android:defaultValue="false" />
@@ -209,7 +209,7 @@ diff --git a/chrome/browser/tab_ui/android/java/src/org/chromium/chrome/browser/
 diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chrome/browser/ui/android/strings/android_chrome_strings.grd
 --- a/chrome/browser/ui/android/strings/android_chrome_strings.grd
 +++ b/chrome/browser/ui/android/strings/android_chrome_strings.grd
-@@ -5664,6 +5664,14 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>delete the Chrome d
+@@ -5659,6 +5659,14 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>delete the Chrome d
          Your <ph name="FQDN">%1$s<ex>www.amazon.com</ex></ph> timer ran out. It'll start again tomorrow.
        </message>
  

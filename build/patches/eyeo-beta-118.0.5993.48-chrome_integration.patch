@@ -384,7 +384,7 @@ new file mode 100644
 +    WebSocketFactory factory,
 +    const GURL& url,
 +    const net::SiteForCookies& site_for_cookies,
-+    const absl::optional<std::string>& user_agent,
++    const std::optional<std::string>& user_agent,
 +    mojo::PendingRemote<network::mojom::WebSocketHandshakeClient>
 +        handshake_client) {
 +  if (IsFilteringNeeded(frame)) {
@@ -404,7 +404,7 @@ new file mode 100644
 +    WebSocketFactory factory,
 +    const GURL& url,
 +    const net::SiteForCookies& site_for_cookies,
-+    const absl::optional<std::string>& user_agent,
++    const std::optional<std::string>& user_agent,
 +    mojo::PendingRemote<network::mojom::WebSocketHandshakeClient>
 +        handshake_client) {
 +  auto* frame = content::RenderFrameHost::FromID(render_frame_host_id);
@@ -431,7 +431,7 @@ new file mode 100644
 +    ChromeContentBrowserClient::WebSocketFactory factory,
 +    const GURL& url,
 +    const net::SiteForCookies& site_for_cookies,
-+    const absl::optional<std::string>& user_agent,
++    const std::optional<std::string>& user_agent,
 +    mojo::PendingRemote<network::mojom::WebSocketHandshakeClient>
 +        handshake_client,
 +    adblock::FilterMatchResult result) {
@@ -468,7 +468,7 @@ new file mode 100644
 +    int render_process_id,
 +    URLLoaderFactoryType type,
 +    const url::Origin& request_initiator,
-+    absl::optional<int64_t> navigation_id,
++    std::optional<int64_t> navigation_id,
 +    ukm::SourceIdObj ukm_source_id,
 +    mojo::PendingReceiver<network::mojom::URLLoaderFactory>* factory_receiver,
 +    mojo::PendingRemote<network::mojom::TrustedURLLoaderHeaderClient>*
@@ -583,7 +583,7 @@ new file mode 100644
 +      WebSocketFactory factory,
 +      const GURL& url,
 +      const net::SiteForCookies& site_for_cookies,
-+      const absl::optional<std::string>& user_agent,
++      const std::optional<std::string>& user_agent,
 +      mojo::PendingRemote<network::mojom::WebSocketHandshakeClient>
 +          handshake_client) override;
 +
@@ -593,7 +593,7 @@ new file mode 100644
 +      int render_process_id,
 +      URLLoaderFactoryType type,
 +      const url::Origin& request_initiator,
-+      absl::optional<int64_t> navigation_id,
++      std::optional<int64_t> navigation_id,
 +      ukm::SourceIdObj ukm_source_id,
 +      mojo::PendingReceiver<network::mojom::URLLoaderFactory>* factory_receiver,
 +      mojo::PendingRemote<network::mojom::TrustedURLLoaderHeaderClient>*
@@ -610,7 +610,7 @@ new file mode 100644
 +      WebSocketFactory factory,
 +      const GURL& url,
 +      const net::SiteForCookies& site_for_cookies,
-+      const absl::optional<std::string>& user_agent,
++      const std::optional<std::string>& user_agent,
 +      mojo::PendingRemote<network::mojom::WebSocketHandshakeClient>
 +          handshake_client);
 +  void OnWebSocketFilterCheckCompleted(
@@ -618,7 +618,7 @@ new file mode 100644
 +      ChromeContentBrowserClient::WebSocketFactory factory,
 +      const GURL& url,
 +      const net::SiteForCookies& site_for_cookies,
-+      const absl::optional<std::string>& user_agent,
++      const std::optional<std::string>& user_agent,
 +      mojo::PendingRemote<network::mojom::WebSocketHandshakeClient>
 +          handshake_client,
 +      adblock::FilterMatchResult result);

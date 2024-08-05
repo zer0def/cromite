@@ -71,7 +71,7 @@ diff --git a/chrome/android/java/res/xml/main_preferences.xml b/chrome/android/j
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/settings/SettingsActivity.java b/chrome/android/java/src/org/chromium/chrome/browser/settings/SettingsActivity.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/settings/SettingsActivity.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/settings/SettingsActivity.java
-@@ -70,10 +70,6 @@ import org.chromium.chrome.browser.profiles.Profile;
+@@ -71,10 +71,6 @@ import org.chromium.chrome.browser.profiles.Profile;
  import org.chromium.chrome.browser.profiles.ProfileManager;
  import org.chromium.chrome.browser.profiles.ProfileManagerUtils;
  import org.chromium.chrome.browser.safe_browsing.settings.SafeBrowsingSettingsFragmentBase;
@@ -82,7 +82,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/settings/Settin
  import org.chromium.chrome.browser.safety_hub.SafetyHubBaseFragment;
  import org.chromium.chrome.browser.safety_hub.SafetyHubFragment;
  import org.chromium.chrome.browser.safety_hub.SafetyHubModuleDelegateImpl;
-@@ -559,21 +555,6 @@ public class SettingsActivity extends ChromeBaseAppCompatActivity
+@@ -595,21 +591,6 @@ public class SettingsActivity extends ChromeBaseAppCompatActivity
              baseSiteSettingsFragment.setCustomTabIntentHelper(
                      LaunchIntentDispatcher::createCustomTabActivityIntent);
          }

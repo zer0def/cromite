@@ -697,7 +697,7 @@ diff --git a/third_party/blink/renderer/core/dom/document.cc b/third_party/blink
 diff --git a/third_party/blink/renderer/core/frame/local_frame.cc b/third_party/blink/renderer/core/frame/local_frame.cc
 --- a/third_party/blink/renderer/core/frame/local_frame.cc
 +++ b/third_party/blink/renderer/core/frame/local_frame.cc
-@@ -3172,6 +3172,7 @@ void LocalFrame::DidFreeze() {
+@@ -3197,6 +3197,7 @@ void LocalFrame::DidFreeze() {
    LoaderFreezeMode freeze_mode = GetLoaderFreezeMode();
    GetDocument()->Fetcher()->SetDefersLoading(freeze_mode);
    Loader().SetDefersLoading(freeze_mode);
@@ -705,7 +705,7 @@ diff --git a/third_party/blink/renderer/core/frame/local_frame.cc b/third_party/
  }
  
  void LocalFrame::DidResume() {
-@@ -3186,6 +3187,7 @@ void LocalFrame::DidResume() {
+@@ -3211,6 +3212,7 @@ void LocalFrame::DidResume() {
    GetDocument()->Fetcher()->SetDefersLoading(LoaderFreezeMode::kNone);
    Loader().SetDefersLoading(LoaderFreezeMode::kNone);
  

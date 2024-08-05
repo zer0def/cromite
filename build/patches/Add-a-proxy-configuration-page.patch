@@ -50,7 +50,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 diff --git a/chrome/android/java/res/values/values.xml b/chrome/android/java/res/values/values.xml
 --- a/chrome/android/java/res/values/values.xml
 +++ b/chrome/android/java/res/values/values.xml
-@@ -19,6 +19,9 @@ found in the LICENSE file.
+@@ -22,6 +22,9 @@ found in the LICENSE file.
      <!-- Compositor Tab Title Text -->
      <bool name="compositor_tab_title_fake_bold_text">true</bool>
  
@@ -977,7 +977,7 @@ new file mode 100644
 +  }
 +
 +  if (const std::string* pacURL = config.FindString("pac_url")) {
-+    absl::optional<bool> pacMandatory = config.FindBool("pac_mandatory");
++    std::optional<bool> pacMandatory = config.FindBool("pac_mandatory");
 +    auto proxyConfig = net::ProxyConfig::CreateFromCustomPacURL(
 +                                GURL(*pacURL));
 +    proxyConfig.set_pac_mandatory(pacMandatory.value_or(false));
@@ -1037,7 +1037,7 @@ new file mode 100644
 +    if (bypass_rules == nullptr)
 +      return;
 +
-+    absl::optional<bool> reverse_bypass = rules->FindBool("reverse_bypass");
++    std::optional<bool> reverse_bypass = rules->FindBool("reverse_bypass");
 +
 +    proxyConfig.proxy_rules().bypass_rules.ParseFromString(*bypass_rules);
 +    proxyConfig.proxy_rules().reverse_bypass = reverse_bypass.value_or(false);

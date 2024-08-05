@@ -691,7 +691,7 @@ diff --git a/chrome/renderer/chrome_render_thread_observer.cc b/chrome/renderer/
 diff --git a/components/components_strings.grd b/components/components_strings.grd
 --- a/components/components_strings.grd
 +++ b/components/components_strings.grd
-@@ -337,6 +337,7 @@
+@@ -338,6 +338,7 @@
        <part file="user_education_strings.grdp" />
        <part file="version_ui_strings.grdp" />
        <part file="webapps_strings.grdp" />
@@ -5414,7 +5414,7 @@ new file mode 100755
 +         MatchesPath(StripTrailingWildcard(other.path()));
 +}
 +
-+absl::optional<URLPattern> URLPattern::CreateIntersection(
++std::optional<URLPattern> URLPattern::CreateIntersection(
 +    const URLPattern& other) const {
 +  // Easy case: Schemes don't overlap. Return nullopt.
 +  int intersection_schemes = URLPattern::SCHEME_NONE;
@@ -5426,7 +5426,7 @@ new file mode 100755
 +    intersection_schemes = valid_schemes_ & other.valid_schemes_;
 +
 +  if (intersection_schemes == URLPattern::SCHEME_NONE)
-+    return absl::nullopt;
++    return std::nullopt;
 +
 +  {
 +    // In a few cases, we can (mostly) return a copy of one of the patterns.
@@ -5488,7 +5488,7 @@ new file mode 100755
 +      !get_intersection(port_, other.port_, &URLPattern::MatchesPortPattern,
 +                        &port) ||
 +      !get_intersection(path_, other.path_, &URLPattern::MatchesPath, &path)) {
-+    return absl::nullopt;
++    return std::nullopt;
 +  }
 +
 +  // Only match subdomains if both patterns match subdomains.
@@ -5816,7 +5816,7 @@ new file mode 100755
 +  //   contains another, it will be handled correctly, but this method does not
 +  //   deal with cases like /*a* and /*b* (where technically the intersection
 +  //   is /*a*b*|/*b*a*); the intersection returned for that case will be empty.
-+  absl::optional<URLPattern> CreateIntersection(const URLPattern& other) const;
++  std::optional<URLPattern> CreateIntersection(const URLPattern& other) const;
 +
 +  // Converts this URLPattern into an equivalent set of URLPatterns that don't
 +  // use a wildcard in the scheme component. If this URLPattern doesn't use a
@@ -5984,7 +5984,7 @@ new file mode 100755
 +  // they have with the other patterns.
 +  for (const auto* pattern : unique_set1) {
 +    for (const auto* pattern2 : unique_set2) {
-+      absl::optional<URLPattern> intersection =
++      std::optional<URLPattern> intersection =
 +          pattern->CreateIntersection(*pattern2);
 +      if (intersection)
 +        result.patterns_.insert(std::move(*intersection));
@@ -8280,7 +8280,7 @@ new file mode 100755
 +  }
 +
 +void ScriptInjection::OnJsInjectionCompleted(
-+    absl::optional<base::Value> results,
++    std::optional<base::Value> results,
 +    base::TimeTicks start_time) {
 +  DCHECK(!did_inject_js_);
 +
@@ -8304,13 +8304,13 @@ new file mode 100755
 +      run_location_, injected_stylesheets, num_injected_stylesheets);
 +  blink::WebLocalFrame* web_frame = render_frame_->GetWebFrame();
 +  // Default CSS origin is "author", but can be overridden to "user" by scripts.
-+  absl::optional<CSSOrigin> css_origin = injector_->GetCssOrigin();
++  std::optional<CSSOrigin> css_origin = injector_->GetCssOrigin();
 +  blink::WebCssOrigin blink_css_origin =
 +      css_origin && *css_origin == CSS_ORIGIN_USER
 +          ? blink::WebCssOrigin::kUser
 +          : blink::WebCssOrigin::kAuthor;
 +  blink::WebStyleSheetKey style_sheet_key;
-+  if (const absl::optional<std::string>& injection_key =
++  if (const std::optional<std::string>& injection_key =
 +          injector_->GetInjectionKey())
 +    style_sheet_key = blink::WebString::FromASCII(*injection_key);
 +  for (const blink::WebString& css : css_sources)
@@ -8414,7 +8414,7 @@ new file mode 100755
 +
 +  // Called when JS injection for the given frame has been completed or
 +  // cancelled.
-+  void OnJsInjectionCompleted(absl::optional<base::Value> results,
++  void OnJsInjectionCompleted(std::optional<base::Value> results,
 +                              base::TimeTicks start_time);
 +
 + private:
@@ -8465,7 +8465,7 @@ new file mode 100755
 +  bool log_activity_;
 +
 +  // Results storage.
-+  absl::optional<base::Value> execution_result_;
++  std::optional<base::Value> execution_result_;
 +
 +  // The callback to run upon completing asynchronously.
 +  CompletionCallback async_completion_callback_;
@@ -9052,10 +9052,10 @@ new file mode 100755
 +  virtual bool IsUserGesture() const = 0;
 +
 +  // Returns the CSS origin of this injection.
-+  virtual absl::optional<CSSOrigin> GetCssOrigin() const = 0;
++  virtual std::optional<CSSOrigin> GetCssOrigin() const = 0;
 +
 +  // Returns the key for this injection, if it's a CSS injection.
-+  virtual const absl::optional<std::string> GetInjectionKey() const = 0;
++  virtual const std::optional<std::string> GetInjectionKey() const = 0;
 +
 +  // Returns true if the script expects results.
 +  virtual bool ExpectsResults() const = 0;
@@ -9090,7 +9090,7 @@ new file mode 100755
 +  // |render_frame| contains the render frame, or null if the frame was
 +  // invalidated.
 +  virtual void OnInjectionComplete(
-+      absl::optional<base::Value> execution_result,
++      std::optional<base::Value> execution_result,
 +      UserScript::RunLocation run_location,
 +      content::RenderFrame* render_frame) = 0;
 +
@@ -9355,12 +9355,12 @@ new file mode 100755
 +  return false;
 +}
 +
-+absl::optional<CSSOrigin> UserScriptInjector::GetCssOrigin() const {
-+  return absl::nullopt;
++std::optional<CSSOrigin> UserScriptInjector::GetCssOrigin() const {
++  return std::nullopt;
 +}
 +
-+const absl::optional<std::string> UserScriptInjector::GetInjectionKey() const {
-+  return absl::nullopt;
++const std::optional<std::string> UserScriptInjector::GetInjectionKey() const {
++  return std::nullopt;
 +}
 +
 +bool UserScriptInjector::ShouldInjectJs(
@@ -9437,7 +9437,7 @@ new file mode 100755
 +}
 +
 +void UserScriptInjector::OnInjectionComplete(
-+    absl::optional<base::Value> execution_result,
++    std::optional<base::Value> execution_result,
 +    UserScript::RunLocation run_location,
 +    content::RenderFrame* render_frame) {}
 +
@@ -9493,8 +9493,8 @@ new file mode 100755
 +  // ScriptInjector implementation.
 +  UserScript::InjectionType script_type() const override;
 +  bool IsUserGesture() const override;
-+  absl::optional<CSSOrigin> GetCssOrigin() const override;
-+  const absl::optional<std::string> GetInjectionKey() const override;
++  std::optional<CSSOrigin> GetCssOrigin() const override;
++  const std::optional<std::string> GetInjectionKey() const override;
 +  bool ExpectsResults() const override;
 +  bool ShouldInjectJs(
 +      UserScript::RunLocation run_location,
@@ -9510,7 +9510,7 @@ new file mode 100755
 +      UserScript::RunLocation run_location,
 +      std::set<std::string>* injected_stylesheets,
 +      size_t* num_injected_stylesheets) const override;
-+  void OnInjectionComplete(absl::optional<base::Value> execution_result,
++  void OnInjectionComplete(std::optional<base::Value> execution_result,
 +                           UserScript::RunLocation run_location,
 +                           content::RenderFrame* render_frame) override;
 +  void OnWillNotInject(InjectFailureReason reason,

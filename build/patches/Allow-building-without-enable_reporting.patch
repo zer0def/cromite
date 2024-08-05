@@ -82,7 +82,7 @@ diff --git a/content/browser/network/cross_origin_embedder_policy_reporter.cc b/
          kType, context_url_, blink::mojom::ReportBody::New(std::move(list))));
    }
 +#if BUILDFLAG(ENABLE_REPORTING)
-+  const absl::optional<std::string>& endpoint =
++  const std::optional<std::string>& endpoint =
 +      report_only ? report_only_endpoint_ : endpoint_;
    if (endpoint) {
      base::Value::Dict body_to_pass;
@@ -362,7 +362,7 @@ diff --git a/third_party/blink/renderer/core/frame/local_frame.cc b/third_party/
  #include "services/network/public/cpp/features.h"
  #include "services/network/public/mojom/content_security_policy.mojom-blink.h"
  #include "services/network/public/mojom/source_location.mojom-blink.h"
-@@ -2735,9 +2736,11 @@ void LocalFrame::MainFrameFirstMeaningfulPaint() {
+@@ -2760,9 +2761,11 @@ void LocalFrame::MainFrameFirstMeaningfulPaint() {
    v8_local_compile_hints_producer_->GenerateData(kIsFinalData);
  }
  
