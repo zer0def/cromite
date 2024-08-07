@@ -31,7 +31,6 @@ use_sysroot=false
 webview_includes_weblayer=false
 enable_arcore=false
 enable_openxr=false
-enable_gvr_services=false
 enable_feed_v2=false
 enable_cardboard=false
 is_high_end_android=true
@@ -93,6 +92,9 @@ enable_bound_session_credentials = false
 
 # Use LogErrorNotReached() for NOTREACHED_IN_MIGRATION() 
 enable_log_error_not_reached = true
+
+# Allows building without //third_party/unrar included, for license reasons
+safe_browsing_use_unrar = false
 
 declare_args() {
   _is_debug_build = ""
