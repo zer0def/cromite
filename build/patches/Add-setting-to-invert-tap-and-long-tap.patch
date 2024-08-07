@@ -13,13 +13,13 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../ChromeAccessibilitySettingsDelegate.java  | 18 ++++++++++
  .../contextmenu/ChromeContextMenuItem.java    |  5 ++-
  .../ChromeContextMenuPopulator.java           |  5 +++
- .../tab/TabContextMenuItemDelegate.java       |  8 +++++
- .../contextmenu/ContextMenuItemDelegate.java  |  2 ++
+ .../tab/TabContextMenuItemDelegate.java       |  9 +++++
  .../flags/android/chrome_feature_list.cc      |  1 +
  .../browser/flags/ChromeFeatureList.java      |  5 +++
  .../strings/android_chrome_strings.grd        |  9 +++++
  .../res/xml/accessibility_preferences.xml     |  5 +++
  .../AccessibilitySettingsDelegate.java        |  2 ++
+ .../contextmenu/ContextMenuItemDelegate.java  |  2 ++
  ...Add-setting-to-invert-tap-and-long-tap.inc |  8 +++++
  ...Add-setting-to-invert-tap-and-long-tap.inc |  3 ++
  ...Add-setting-to-invert-tap-and-long-tap.inc |  1 +
@@ -29,7 +29,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../renderer/core/html/html_image_element.h   |  2 ++
  .../core/page/context_menu_controller.cc      | 33 ++++++++++++-----
  .../core/page/context_menu_controller.h       |  5 +--
- 21 files changed, 165 insertions(+), 20 deletions(-)
+ 21 files changed, 166 insertions(+), 20 deletions(-)
  create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Add-setting-to-invert-tap-and-long-tap.inc
  create mode 100644 cromite_flags/third_party/blink/common/features_cc/Add-setting-to-invert-tap-and-long-tap.inc
  create mode 100644 cromite_flags/third_party/blink/common/features_h/Add-setting-to-invert-tap-and-long-tap.inc
@@ -37,7 +37,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 diff --git a/chrome/android/java/res/values/ids.xml b/chrome/android/java/res/values/ids.xml
 --- a/chrome/android/java/res/values/ids.xml
 +++ b/chrome/android/java/res/values/ids.xml
-@@ -91,6 +91,7 @@ found in the LICENSE file.
+@@ -88,6 +88,7 @@ found in the LICENSE file.
  
      <!-- Menu item IDs for FullscreenActivities -->
      <item type="id" name="contextmenu_open_in_chrome" />
@@ -142,7 +142,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/contextmenu/Chr
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/contextmenu/ChromeContextMenuPopulator.java b/chrome/android/java/src/org/chromium/chrome/browser/contextmenu/ChromeContextMenuPopulator.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/contextmenu/ChromeContextMenuPopulator.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/contextmenu/ChromeContextMenuPopulator.java
-@@ -266,6 +266,9 @@ public class ChromeContextMenuPopulator implements ContextMenuPopulator {
+@@ -273,6 +273,9 @@ public class ChromeContextMenuPopulator implements ContextMenuPopulator {
  
          if (mParams.isAnchor()) {
              ModelList linkGroup = new ModelList();
@@ -152,7 +152,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/contextmenu/Chr
              if (FirstRunStatus.getFirstRunFlowComplete()
                      && !isEmptyUrl(mParams.getUrl())
                      && UrlUtilities.isAcceptedScheme(mParams.getUrl())) {
-@@ -631,6 +634,8 @@ public class ChromeContextMenuPopulator implements ContextMenuPopulator {
+@@ -638,6 +641,8 @@ public class ChromeContextMenuPopulator implements ContextMenuPopulator {
                                  getProfile(),
                                  false);
                      });
@@ -164,7 +164,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/contextmenu/Chr
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tab/TabContextMenuItemDelegate.java b/chrome/android/java/src/org/chromium/chrome/browser/tab/TabContextMenuItemDelegate.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/tab/TabContextMenuItemDelegate.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/tab/TabContextMenuItemDelegate.java
-@@ -297,6 +297,14 @@ public class TabContextMenuItemDelegate implements ContextMenuItemDelegate {
+@@ -328,11 +328,20 @@ public class TabContextMenuItemDelegate implements ContextMenuItemDelegate {
          mTab.loadUrl(loadUrlParams);
      }
  
@@ -176,27 +176,21 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tab/TabContextM
 +        mTab.loadUrl(loadUrlParams);
 +    }
 +
-     @Override
+     /**
+      * Called when the {@code url} is of an image and should be opened in a new page.
+      *
+      * @param url The image URL to open.
+      */
++    @Override
      public void onOpenImageInNewTab(GURL url, Referrer referrer) {
          LoadUrlParams loadUrlParams = new LoadUrlParams(url.getSpec());
-diff --git a/chrome/browser/contextmenu/java/src/org/chromium/chrome/browser/contextmenu/ContextMenuItemDelegate.java b/chrome/browser/contextmenu/java/src/org/chromium/chrome/browser/contextmenu/ContextMenuItemDelegate.java
---- a/chrome/browser/contextmenu/java/src/org/chromium/chrome/browser/contextmenu/ContextMenuItemDelegate.java
-+++ b/chrome/browser/contextmenu/java/src/org/chromium/chrome/browser/contextmenu/ContextMenuItemDelegate.java
-@@ -110,6 +110,8 @@ public interface ContextMenuItemDelegate {
-      */
-     void onOpenImageUrl(GURL url, Referrer referrer);
- 
-+    void onOpenUrl(GURL url, Referrer referrer);
-+
-     /**
-      * Called when the {@code url} is of an image and should be opened in a new tab.
-      * @param url The image URL to open.
+         loadUrlParams.setReferrer(referrer);
 diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browser/flags/android/chrome_feature_list.cc
 --- a/chrome/browser/flags/android/chrome_feature_list.cc
 +++ b/chrome/browser/flags/android/chrome_feature_list.cc
-@@ -293,6 +293,7 @@ const base::Feature* const kFeaturesExposedToJava[] = {
+@@ -303,6 +303,7 @@ const base::Feature* const kFeaturesExposedToJava[] = {
+     &kTabGroupCreationDialogAndroid,
      &kTabGroupParityAndroid,
-     &kTabIdMapAndroid,
      &kTabletTabSwitcherLongPressMenu,
 +    &blink::features::kShowAlwaysContextMenuOnLinks,
      &kTabletToolbarReordering,
@@ -205,7 +199,7 @@ diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browse
 diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 --- a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 +++ b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
-@@ -370,6 +370,8 @@ public abstract class ChromeFeatureList {
+@@ -378,6 +378,8 @@ public abstract class ChromeFeatureList {
              "DisableToolbarSwipeUp";
      public static final String MOVE_TOP_TOOLBAR_TO_BOTTOM =
              "MoveTopToolbarToBottom";
@@ -214,7 +208,7 @@ diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/f
      public static final String NOTIFICATION_PERMISSION_VARIANT = "NotificationPermissionVariant";
      public static final String NOTIFICATION_PERMISSION_BOTTOM_SHEET =
              "NotificationPermissionBottomSheet";
-@@ -654,6 +656,8 @@ public abstract class ChromeFeatureList {
+@@ -676,6 +678,8 @@ public abstract class ChromeFeatureList {
              newCachedFlag(DISABLE_TOOLBAR_SWIPE_UP, false);
      public static final CachedFlag sMoveTopToolbarToBottom =
              newCachedFlag(MOVE_TOP_TOOLBAR_TO_BOTTOM, false);
@@ -223,18 +217,18 @@ diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/f
      public static final CachedFlag sPrivacyGuidePreloadAndroid =
              newCachedFlag(PRIVACY_GUIDE_PRELOAD_ANDROID, false);
      public static final CachedFlag sOptimizationGuidePushNotifications =
-@@ -812,6 +816,7 @@ public abstract class ChromeFeatureList {
+@@ -836,6 +840,7 @@ public abstract class ChromeFeatureList {
                      sTabWindowManagerIndexReassignmentActivityNotInAppTasks,
                      sTabWindowManagerReportIndicesMismatch,
                      sUseChimeAndroidSdk,
 +                    sShowAlwaysContextMenuOnLinks,
                      sUseLibunwindstackNativeUnwinderAndroid,
-                     sVerticalAutomotiveBackButtonToolbar);
- 
+                     sVerticalAutomotiveBackButtonToolbar,
+                     sWebApkMinShellApkVersion);
 diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chrome/browser/ui/android/strings/android_chrome_strings.grd
 --- a/chrome/browser/ui/android/strings/android_chrome_strings.grd
 +++ b/chrome/browser/ui/android/strings/android_chrome_strings.grd
-@@ -1724,6 +1724,12 @@ Your Google account may have other forms of browsing history like searches and a
+@@ -1732,6 +1732,12 @@ Your Google account may have other forms of browsing history like searches and a
        <message name="IDS_DISABLE_TOOLBAR_SWIPE_UP" desc="Summary of the preference that allows the user to disable toolbar swipeup.">
          Disable toolbar swipe up
        </message>
@@ -247,7 +241,7 @@ diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chro
  
        <!-- Safety check -->
        <message name="IDS_PREFS_SAFETY_CHECK" desc="Title of the Safety check element in settings, allowing the user to check multiple areas of browser safety. [CHAR_LIMIT=32]">
-@@ -3011,6 +3017,9 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>delete the Chrome d
+@@ -3240,6 +3246,9 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>delete the Chrome d
        <message name="IDS_CONTEXTMENU_OPEN_IN_NEW_CHROME_TAB" desc="Context sensitive menu item to open the selected link in a new Chrome tab from Chrome Custom Tab. [CHAR_LIMIT=30]">
          Open in new Chrome tab
        </message>
@@ -284,6 +278,18 @@ diff --git a/components/browser_ui/accessibility/android/java/src/org/chromium/c
      /** @return The BrowserContextHandle that should be used to read and update settings. */
      BrowserContextHandle getBrowserContextHandle();
  
+diff --git a/components/embedder_support/android/java/src/org/chromium/components/embedder_support/contextmenu/ContextMenuItemDelegate.java b/components/embedder_support/android/java/src/org/chromium/components/embedder_support/contextmenu/ContextMenuItemDelegate.java
+--- a/components/embedder_support/android/java/src/org/chromium/components/embedder_support/contextmenu/ContextMenuItemDelegate.java
++++ b/components/embedder_support/android/java/src/org/chromium/components/embedder_support/contextmenu/ContextMenuItemDelegate.java
+@@ -148,6 +148,8 @@ public interface ContextMenuItemDelegate {
+      */
+     GURL getPageUrl();
+ 
++    void onOpenUrl(GURL url, Referrer referrer);
++
+     /**
+      * Called when the current embedder app is not the default to handle a View Intent.
+      *
 diff --git a/cromite_flags/chrome/browser/about_flags_cc/Add-setting-to-invert-tap-and-long-tap.inc b/cromite_flags/chrome/browser/about_flags_cc/Add-setting-to-invert-tap-and-long-tap.inc
 new file mode 100644
 --- /dev/null
@@ -340,7 +346,7 @@ diff --git a/third_party/blink/renderer/core/html/html_anchor_element.cc b/third
    LocalDOMWindow* window = GetDocument().domWindow();
    if (!window) {
      return;
-@@ -576,6 +588,15 @@ void HTMLAnchorElement::NavigateToHyperlink(ResourceRequest request,
+@@ -581,6 +593,15 @@ void HTMLAnchorElement::NavigateToHyperlink(ResourceRequest request,
              request.GetReferrerPolicy()));
    }
  
@@ -356,7 +362,7 @@ diff --git a/third_party/blink/renderer/core/html/html_anchor_element.cc b/third
    Frame* target_frame =
        frame->Tree().FindOrCreateFrameForNavigation(frame_request, target).frame;
  
-@@ -629,7 +650,7 @@ AtomicString HTMLAnchorElement::interestAction() const {
+@@ -634,7 +655,7 @@ AtomicString HTMLAnchorElement::interestAction() const {
    return g_empty_atom;
  }
  
@@ -365,7 +371,7 @@ diff --git a/third_party/blink/renderer/core/html/html_anchor_element.cc b/third
    event.SetDefaultHandled();
  
    LocalDOMWindow* window = GetDocument().domWindow();
-@@ -725,13 +746,12 @@ void HTMLAnchorElement::HandleClick(MouseEvent& event) {
+@@ -730,13 +751,12 @@ void HTMLAnchorElement::HandleClick(MouseEvent& event) {
      return;
    }
  
@@ -383,7 +389,7 @@ diff --git a/third_party/blink/renderer/core/html/html_anchor_element.cc b/third
      // We distinguish single/double click with some modifiers.
      // See the comment of `EventHandler.delayed_navigation_task_handle_`.
      auto task_handle = PostDelayedCancellableTask(
-@@ -741,7 +761,9 @@ void HTMLAnchorElement::HandleClick(MouseEvent& event) {
+@@ -746,7 +766,9 @@ void HTMLAnchorElement::HandleClick(MouseEvent& event) {
      frame->GetEventHandler().SetDelayedNavigationTaskHandle(
          std::move(task_handle));
    } else {
@@ -397,7 +403,7 @@ diff --git a/third_party/blink/renderer/core/html/html_anchor_element.cc b/third
 diff --git a/third_party/blink/renderer/core/html/html_anchor_element.h b/third_party/blink/renderer/core/html/html_anchor_element.h
 --- a/third_party/blink/renderer/core/html/html_anchor_element.h
 +++ b/third_party/blink/renderer/core/html/html_anchor_element.h
-@@ -112,6 +112,7 @@ class CORE_EXPORT HTMLAnchorElement : public HTMLElement, public DOMURLUtils {
+@@ -116,6 +116,7 @@ class CORE_EXPORT HTMLAnchorElement : public HTMLElement, public DOMURLUtils {
    AtomicString interestAction() const override;
  
    void Trace(Visitor*) const override;
@@ -405,7 +411,7 @@ diff --git a/third_party/blink/renderer/core/html/html_anchor_element.h b/third_
  
   protected:
    void ParseAttribute(const AttributeModificationParams&) override;
-@@ -143,7 +144,11 @@ class CORE_EXPORT HTMLAnchorElement : public HTMLElement, public DOMURLUtils {
+@@ -147,7 +148,11 @@ class CORE_EXPORT HTMLAnchorElement : public HTMLElement, public DOMURLUtils {
                             bool is_trusted,
                             base::TimeTicks platform_time_stamp,
                             KURL);
@@ -429,7 +435,7 @@ diff --git a/third_party/blink/renderer/core/html/html_image_element.cc b/third_
  #include "third_party/blink/renderer/core/frame/attribution_src_loader.h"
  #include "third_party/blink/renderer/core/frame/deprecation/deprecation.h"
  #include "third_party/blink/renderer/core/frame/local_dom_window.h"
-@@ -64,6 +65,7 @@
+@@ -63,6 +64,7 @@
  #include "third_party/blink/renderer/core/media_type_names.h"
  #include "third_party/blink/renderer/core/page/chrome_client.h"
  #include "third_party/blink/renderer/core/page/page.h"
@@ -437,7 +443,7 @@ diff --git a/third_party/blink/renderer/core/html/html_image_element.cc b/third_
  #include "third_party/blink/renderer/core/paint/timing/paint_timing.h"
  #include "third_party/blink/renderer/core/probe/core_probes.h"
  #include "third_party/blink/renderer/core/resize_observer/resize_observer_entry.h"
-@@ -800,6 +802,21 @@ void HTMLImageElement::DidFinishLifecycleUpdate(
+@@ -799,6 +801,21 @@ void HTMLImageElement::DidFinishLifecycleUpdate(
    }
  }
  
@@ -521,7 +527,7 @@ diff --git a/third_party/blink/renderer/core/page/context_menu_controller.cc b/t
    // Clear any previously set cached results if we are resetting the hit test
    // result.
    image_selection_cached_result_ = nullptr;
-@@ -833,11 +846,13 @@ bool ContextMenuController::ShowContextMenu(LocalFrame* frame,
+@@ -831,11 +844,13 @@ bool ContextMenuController::ShowContextMenu(LocalFrame* frame,
    SetAutofillData(result.InnerNode(), data);
    SetPasswordManagerData(result.InnerElement(), data);
  
