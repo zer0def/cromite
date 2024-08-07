@@ -24,14 +24,14 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -155,6 +155,7 @@
+@@ -153,6 +153,7 @@
  #include "components/send_tab_to_self/features.h"
  #include "components/services/heap_profiling/public/cpp/switches.h"
  #include "components/services/storage/public/cpp/buckets/bucket_info.h"
 +#include "components/site_engagement/core/features.h"
  #include "components/shared_highlighting/core/common/shared_highlighting_features.h"
+ #include "components/sharing_message/features.h"
  #include "components/signin/core/browser/dice_account_reconcilor_delegate.h"
- #include "components/signin/public/base/signin_buildflags.h"
 diff --git a/chrome/browser/engagement/important_sites_util.cc b/chrome/browser/engagement/important_sites_util.cc
 --- a/chrome/browser/engagement/important_sites_util.cc
 +++ b/chrome/browser/engagement/important_sites_util.cc
@@ -108,7 +108,7 @@ diff --git a/components/feature_engagement/public/feature_configurations.cc b/co
 +
  #if BUILDFLAG(IS_WIN) || BUILDFLAG(IS_APPLE) || BUILDFLAG(IS_LINUX) || \
      BUILDFLAG(IS_CHROMEOS)
-   if (kIPHPasswordsAccountStorageFeature.name == feature->name) {
+   if (kIPHPasswordsManagementBubbleAfterSaveFeature.name == feature->name) {
 diff --git a/components/site_engagement/content/site_engagement_score.cc b/components/site_engagement/content/site_engagement_score.cc
 --- a/components/site_engagement/content/site_engagement_score.cc
 +++ b/components/site_engagement/content/site_engagement_score.cc

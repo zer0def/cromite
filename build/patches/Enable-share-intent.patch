@@ -35,7 +35,7 @@ diff --git a/chrome/android/chrome_java_resources.gni b/chrome/android/chrome_ja
 --- a/chrome/android/chrome_java_resources.gni
 +++ b/chrome/android/chrome_java_resources.gni
 @@ -571,6 +571,7 @@ chrome_java_resources = [
-   "java/res/layout/signin_activity.xml",
+   "java/res/layout/signin_settings_card_view.xml",
    "java/res/layout/status_indicator_container.xml",
    "java/res/layout/suggestions_tile_view_condensed.xml",
 +  "java/res/layout/sharing_intent_content.xml",
@@ -45,7 +45,7 @@ diff --git a/chrome/android/chrome_java_resources.gni b/chrome/android/chrome_ja
 diff --git a/chrome/android/chrome_java_sources.gni b/chrome/android/chrome_java_sources.gni
 --- a/chrome/android/chrome_java_sources.gni
 +++ b/chrome/android/chrome_java_sources.gni
-@@ -1035,6 +1035,7 @@ chrome_java_sources = [
+@@ -1031,6 +1031,7 @@ chrome_java_sources = [
    "java/src/org/chromium/chrome/browser/signin/SyncConsentActivity.java",
    "java/src/org/chromium/chrome/browser/signin/SyncConsentActivityLauncherImpl.java",
    "java/src/org/chromium/chrome/browser/signin/SyncConsentFragment.java",
@@ -293,7 +293,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/init/ProcessIni
  import org.chromium.chrome.browser.usb.UsbNotificationManager;
  import org.chromium.chrome.browser.util.AfterStartupTaskUtils;
  import org.chromium.chrome.browser.webapps.ChromeWebApkHost;
-@@ -683,6 +684,7 @@ public class ProcessInitializationHandler {
+@@ -684,6 +685,7 @@ public class ProcessInitializationHandler {
                          ::makeDeferredRecordings);
          tasks.add(WebApkUninstallTracker::runDeferredTasks);
  
@@ -468,18 +468,18 @@ new file mode 100644
 diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browser/flags/android/chrome_feature_list.cc
 --- a/chrome/browser/flags/android/chrome_feature_list.cc
 +++ b/chrome/browser/flags/android/chrome_feature_list.cc
-@@ -275,6 +275,7 @@ const base::Feature* const kFeaturesExposedToJava[] = {
+@@ -286,6 +286,7 @@ const base::Feature* const kFeaturesExposedToJava[] = {
      &kReengagementNotification,
      &kSearchReadyOmniboxFeature,
      &kRelatedSearchesAllLanguage,
 +    &kSharedIntentUI,
      &kReportParentalControlSitesChild,
-     &kSearchEnginesPromoV3,
      &kSearchInCCT,
+     &kSearchResumptionModuleAndroid,
 diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 --- a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 +++ b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
-@@ -425,6 +425,7 @@ public abstract class ChromeFeatureList {
+@@ -435,6 +435,7 @@ public abstract class ChromeFeatureList {
      public static final String READER_MODE_IN_CCT = "ReaderModeInCCT";
      public static final String READING_LIST_ENABLE_SYNC_TRANSPORT_MODE_UPON_SIGNIN =
              "ReadingListEnableSyncTransportModeUponSignIn";
@@ -490,7 +490,7 @@ diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/f
 diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chrome/browser/ui/android/strings/android_chrome_strings.grd
 --- a/chrome/browser/ui/android/strings/android_chrome_strings.grd
 +++ b/chrome/browser/ui/android/strings/android_chrome_strings.grd
-@@ -5514,6 +5514,19 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>delete the Chrome d
+@@ -5764,6 +5764,19 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>delete the Chrome d
          Make sure a phone app is enabled on this device
        </message>
  

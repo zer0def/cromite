@@ -43,7 +43,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 diff --git a/chrome/browser/chrome_content_browser_client.cc b/chrome/browser/chrome_content_browser_client.cc
 --- a/chrome/browser/chrome_content_browser_client.cc
 +++ b/chrome/browser/chrome_content_browser_client.cc
-@@ -3524,7 +3524,7 @@ bool ChromeContentBrowserClient::IsFullCookieAccessAllowed(
+@@ -3653,7 +3653,7 @@ bool ChromeContentBrowserClient::IsFullCookieAccessAllowed(
    scoped_refptr<content_settings::CookieSettings> cookie_settings =
        CookieSettingsFactory::GetForProfile(profile);
    if (!cookie_settings) {
@@ -69,7 +69,7 @@ diff --git a/chrome/browser/extensions/api/cookies/cookies_helpers.cc b/chrome/b
 diff --git a/chrome/browser/net/profile_network_context_service.cc b/chrome/browser/net/profile_network_context_service.cc
 --- a/chrome/browser/net/profile_network_context_service.cc
 +++ b/chrome/browser/net/profile_network_context_service.cc
-@@ -799,16 +799,16 @@ ProfileNetworkContextService::CreateCookieManagerParams(
+@@ -791,16 +791,16 @@ ProfileNetworkContextService::CreateCookieManagerParams(
    // UI to interact with SameSite cookies on accounts.google.com, which is used
    // for displaying a list of available accounts on the NTP
    // (chrome://new-tab-page), etc.
@@ -95,7 +95,7 @@ diff --git a/chrome/browser/net/profile_network_context_service.cc b/chrome/brow
 diff --git a/chrome/browser/privacy_sandbox/privacy_sandbox_settings_delegate.cc b/chrome/browser/privacy_sandbox/privacy_sandbox_settings_delegate.cc
 --- a/chrome/browser/privacy_sandbox/privacy_sandbox_settings_delegate.cc
 +++ b/chrome/browser/privacy_sandbox/privacy_sandbox_settings_delegate.cc
-@@ -361,6 +361,7 @@ bool PrivacySandboxSettingsDelegate::IsCookieDeprecationLabelAllowed() const {
+@@ -359,6 +359,7 @@ bool PrivacySandboxSettingsDelegate::IsCookieDeprecationLabelAllowed() const {
  
  bool PrivacySandboxSettingsDelegate::
      AreThirdPartyCookiesBlockedByCookieDeprecationExperiment() const {
@@ -106,7 +106,7 @@ diff --git a/chrome/browser/privacy_sandbox/privacy_sandbox_settings_delegate.cc
 diff --git a/chrome/browser/storage_access_api/storage_access_grant_permission_context.cc b/chrome/browser/storage_access_api/storage_access_grant_permission_context.cc
 --- a/chrome/browser/storage_access_api/storage_access_grant_permission_context.cc
 +++ b/chrome/browser/storage_access_api/storage_access_grant_permission_context.cc
-@@ -425,6 +425,18 @@ void StorageAccessGrantPermissionContext::CheckForAutoGrantOrAutoDenial(
+@@ -420,6 +420,18 @@ void StorageAccessGrantPermissionContext::CheckForAutoGrantOrAutoDenial(
      permissions::PermissionRequestData request_data,
      permissions::BrowserPermissionCallback callback,
      net::FirstPartySetMetadata metadata) {
@@ -321,7 +321,7 @@ diff --git a/net/cookies/cookie_deletion_info.cc b/net/cookies/cookie_deletion_i
 diff --git a/net/cookies/cookie_monster.cc b/net/cookies/cookie_monster.cc
 --- a/net/cookies/cookie_monster.cc
 +++ b/net/cookies/cookie_monster.cc
-@@ -2230,6 +2230,7 @@ size_t CookieMonster::GarbageCollectPartitionedCookies(
+@@ -2238,6 +2238,7 @@ size_t CookieMonster::GarbageCollectPartitionedCookies(
    if (cookie_partition_it == partitioned_cookies_.end())
      return num_deleted;
  
@@ -384,7 +384,7 @@ diff --git a/net/extras/sqlite/sqlite_persistent_cookie_store.cc b/net/extras/sq
 diff --git a/net/url_request/url_request_http_job.cc b/net/url_request/url_request_http_job.cc
 --- a/net/url_request/url_request_http_job.cc
 +++ b/net/url_request/url_request_http_job.cc
-@@ -836,13 +836,9 @@ void URLRequestHttpJob::SetCookieHeaderAndStart(
+@@ -888,13 +888,9 @@ void URLRequestHttpJob::SetCookieHeaderAndStart(
      AnnotateAndMoveUserBlockedCookies(maybe_included_cookies, excluded_cookies);
    }
  
@@ -427,7 +427,7 @@ diff --git a/services/network/cookie_settings.cc b/services/network/cookie_setti
 diff --git a/services/network/restricted_cookie_manager.cc b/services/network/restricted_cookie_manager.cc
 --- a/services/network/restricted_cookie_manager.cc
 +++ b/services/network/restricted_cookie_manager.cc
-@@ -954,6 +954,12 @@ void RestrictedCookieManager::SetCookieFromString(
+@@ -905,6 +905,12 @@ void RestrictedCookieManager::SetCookieFromString(
  
    std::move(callback).Run();
  
@@ -453,7 +453,7 @@ diff --git a/third_party/blink/renderer/modules/cookie_store/cookie_init.idl b/t
 diff --git a/third_party/blink/renderer/modules/cookie_store/cookie_store.cc b/third_party/blink/renderer/modules/cookie_store/cookie_store.cc
 --- a/third_party/blink/renderer/modules/cookie_store/cookie_store.cc
 +++ b/third_party/blink/renderer/modules/cookie_store/cookie_store.cc
-@@ -340,6 +340,7 @@ ScriptPromise<IDLUndefined> CookieStore::set(ScriptState* script_state,
+@@ -348,6 +348,7 @@ ScriptPromise<IDLUndefined> CookieStore::set(ScriptState* script_state,
    CookieInit* set_options = CookieInit::Create();
    set_options->setName(name);
    set_options->setValue(value);
@@ -461,7 +461,7 @@ diff --git a/third_party/blink/renderer/modules/cookie_store/cookie_store.cc b/t
    return set(script_state, set_options, exception_state);
  }
  
-@@ -363,6 +364,7 @@ ScriptPromise<IDLUndefined> CookieStore::Delete(
+@@ -371,6 +372,7 @@ ScriptPromise<IDLUndefined> CookieStore::Delete(
    set_options->setName(name);
    set_options->setValue("deleted");
    set_options->setExpires(0);
@@ -469,7 +469,7 @@ diff --git a/third_party/blink/renderer/modules/cookie_store/cookie_store.cc b/t
    return DoWrite(script_state, set_options, exception_state);
  }
  
-@@ -378,6 +380,7 @@ ScriptPromise<IDLUndefined> CookieStore::Delete(
+@@ -386,6 +388,7 @@ ScriptPromise<IDLUndefined> CookieStore::Delete(
    set_options->setPath(options->path());
    set_options->setSameSite("strict");
    set_options->setPartitioned(options->partitioned());

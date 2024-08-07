@@ -10,10 +10,12 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 diff --git a/content/browser/file_system_access/features.cc b/content/browser/file_system_access/features.cc
 --- a/content/browser/file_system_access/features.cc
 +++ b/content/browser/file_system_access/features.cc
-@@ -41,4 +41,5 @@ BASE_FEATURE(kFileSystemAccessDirectoryIterationBlocklistCheck,
+@@ -24,6 +24,7 @@ BASE_FEATURE(kFileSystemAccessBFCache,
+ BASE_FEATURE(kFileSystemAccessDragAndDropCheckBlocklist,
+              "FileSystemAccessDragAndDropCheckBlocklist",
               base::FEATURE_DISABLED_BY_DEFAULT);
- #endif  // BUILDFLAG(IS_WIN)
- 
 +SET_CROMITE_FEATURE_ENABLED(kFileSystemAccessDragAndDropCheckBlocklist);
- }  // namespace content::features
+ 
+ // TODO(crbug.com/40896420): Remove this flag eventually.
+ // TODO(b/354661640): Temporarily disable this flag while investigating CrOS
 --

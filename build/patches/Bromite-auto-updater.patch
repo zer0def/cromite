@@ -31,7 +31,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../chrome/browser/omaha/OmahaPrefUtils.java  |  52 +++-
  .../chrome/browser/omaha/UpdateConfigs.java   |  27 +-
  .../browser/omaha/UpdateStatusProvider.java   | 168 +++++++----
- .../browser/omaha/VersionNumberGetter.java    |   3 +-
+ .../browser/omaha/VersionNumberGetter.java    |   4 +-
  .../omaha/inline/InlineUpdateController.java  |  57 ++++
  .../safety_hub/SafetyHubFetchService.java     |   5 -
  .../strings/android_chrome_strings.grd        |  23 +-
@@ -39,7 +39,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../endpoint_fetcher/endpoint_fetcher.h       |  23 +-
  .../Bromite-auto-updater.inc                  |   3 +
  .../Bromite-auto-updater.inc                  |   1 +
- 31 files changed, 1225 insertions(+), 74 deletions(-)
+ 31 files changed, 1225 insertions(+), 75 deletions(-)
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/omaha/CromiteUpdateStatusProvider.java
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/omaha/inline/BromiteInlineUpdateController.java
  create mode 100644 chrome/browser/endpoint_fetcher/BUILD.gn
@@ -81,7 +81,7 @@ diff --git a/build/config/android/rules.gni b/build/config/android/rules.gni
 diff --git a/chrome/android/chrome_java_sources.gni b/chrome/android/chrome_java_sources.gni
 --- a/chrome/android/chrome_java_sources.gni
 +++ b/chrome/android/chrome_java_sources.gni
-@@ -869,6 +869,8 @@ chrome_java_sources = [
+@@ -865,6 +865,8 @@ chrome_java_sources = [
    "java/src/org/chromium/chrome/browser/omaha/OmahaBase.java",
    "java/src/org/chromium/chrome/browser/omaha/OmahaDelegate.java",
    "java/src/org/chromium/chrome/browser/omaha/OmahaDelegateBase.java",
@@ -672,7 +672,7 @@ new file mode 100644
 diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -2779,6 +2779,12 @@ static_library("browser") {
+@@ -2766,6 +2766,12 @@ static_library("browser") {
    }
  
    if (is_android) {
@@ -1085,7 +1085,7 @@ new file mode 100644
 diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browser/flags/android/chrome_feature_list.cc
 --- a/chrome/browser/flags/android/chrome_feature_list.cc
 +++ b/chrome/browser/flags/android/chrome_feature_list.cc
-@@ -253,6 +253,7 @@ const base::Feature* const kFeaturesExposedToJava[] = {
+@@ -263,6 +263,7 @@ const base::Feature* const kFeaturesExposedToJava[] = {
      &kPriceChangeModule,
      &kPwaRestoreUi,
      &kPwaRestoreUiAtStartup,
@@ -1096,7 +1096,7 @@ diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browse
 diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 --- a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 +++ b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
-@@ -339,6 +339,7 @@ public abstract class ChromeFeatureList {
+@@ -345,6 +345,7 @@ public abstract class ChromeFeatureList {
      public static final String INCOGNITO_REAUTHENTICATION_FOR_ANDROID =
              "IncognitoReauthenticationForAndroid";
      public static final String INCOGNITO_SCREENSHOT = "IncognitoScreenshot";
@@ -1574,16 +1574,17 @@ diff --git a/chrome/browser/omaha/android/java/src/org/chromium/chrome/browser/o
 diff --git a/chrome/browser/omaha/android/java/src/org/chromium/chrome/browser/omaha/VersionNumberGetter.java b/chrome/browser/omaha/android/java/src/org/chromium/chrome/browser/omaha/VersionNumberGetter.java
 --- a/chrome/browser/omaha/android/java/src/org/chromium/chrome/browser/omaha/VersionNumberGetter.java
 +++ b/chrome/browser/omaha/android/java/src/org/chromium/chrome/browser/omaha/VersionNumberGetter.java
-@@ -51,7 +51,8 @@ public class VersionNumberGetter {
-     private static VersionNumberGetter sInstanceForTests;
+@@ -30,8 +30,8 @@ public class VersionNumberGetter {
  
-     /** If false, OmahaClient will never report that a newer version is available. */
--    private static boolean sEnableUpdateDetection = true;
-+    // it must be false to disable version control via Omaha server
-+    private static boolean sEnableUpdateDetection = false;
+     private static VersionNumberGetter sInstance = new VersionNumberGetter();
  
-     protected VersionNumberGetter() {}
+-    /** If true, OmahaClient will never report that a newer version is available. */
+-    private static boolean sDisableUpdateDetectionForTesting;
++    /** it must be true to disable version control via Omaha server. */
++    private static boolean sDisableUpdateDetectionForTesting = true;
  
+     @VisibleForTesting
+     static VersionNumberGetter getInstance() {
 diff --git a/chrome/browser/omaha/android/java/src/org/chromium/chrome/browser/omaha/inline/InlineUpdateController.java b/chrome/browser/omaha/android/java/src/org/chromium/chrome/browser/omaha/inline/InlineUpdateController.java
 new file mode 100644
 --- /dev/null
@@ -1649,19 +1650,19 @@ new file mode 100644
 diff --git a/chrome/browser/safety_hub/android/java/src/org/chromium/chrome/browser/safety_hub/SafetyHubFetchService.java b/chrome/browser/safety_hub/android/java/src/org/chromium/chrome/browser/safety_hub/SafetyHubFetchService.java
 --- a/chrome/browser/safety_hub/android/java/src/org/chromium/chrome/browser/safety_hub/SafetyHubFetchService.java
 +++ b/chrome/browser/safety_hub/android/java/src/org/chromium/chrome/browser/safety_hub/SafetyHubFetchService.java
-@@ -53,9 +53,6 @@ public class SafetyHubFetchService implements SyncService.SyncStateChangedListen
-         if (syncService != null) {
-             syncService.addSyncStateChangedListener(this);
+@@ -65,9 +65,6 @@ public class SafetyHubFetchService implements SigninManager.SignInStateObserver,
+         if (mSigninManager != null) {
+             mSigninManager.addSignInStateObserver(this);
          }
 -
 -        // Fetch latest update status.
 -        UpdateStatusProvider.getInstance().addObserver(mUpdateCallback);
      }
  
-     @Override
-@@ -64,8 +61,6 @@ public class SafetyHubFetchService implements SyncService.SyncStateChangedListen
-         if (syncService != null) {
-             syncService.removeSyncStateChangedListener(this);
+     void addObserver(Observer observer) {
+@@ -83,8 +80,6 @@ public class SafetyHubFetchService implements SigninManager.SignInStateObserver,
+         if (mSigninManager != null) {
+             mSigninManager.removeSignInStateObserver(this);
          }
 -
 -        UpdateStatusProvider.getInstance().removeObserver(mUpdateCallback);
@@ -1671,7 +1672,7 @@ diff --git a/chrome/browser/safety_hub/android/java/src/org/chromium/chrome/brow
 diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chrome/browser/ui/android/strings/android_chrome_strings.grd
 --- a/chrome/browser/ui/android/strings/android_chrome_strings.grd
 +++ b/chrome/browser/ui/android/strings/android_chrome_strings.grd
-@@ -2194,6 +2194,12 @@ Your Google account may have other forms of browsing history like searches and a
+@@ -2373,6 +2373,12 @@ Your Google account may have other forms of browsing history like searches and a
        <message name="IDS_DEPRECATION_WARNING" desc="Warning about Chrome updates no longer being supported">
          Chrome updates are no longer supported for this version of Android
        </message>
@@ -1684,7 +1685,7 @@ diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chro
  
        <!-- Account management UI strings. -->
        <message name="IDS_ACCOUNT_MANAGEMENT_TITLE" desc="Header title for the account management screen. [CHAR_LIMIT=32]">
-@@ -4045,7 +4051,10 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>delete the Chrome d
+@@ -4274,7 +4280,10 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>delete the Chrome d
  
        <!-- Main menu items -->
        <message name="IDS_MENU_UPDATE" desc="Menu item for updating chrome. [CHAR_LIMIT=24]">
@@ -1696,7 +1697,7 @@ diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chro
        </message>
        <message name="IDS_MENU_UPDATE_SUMMARY_DEFAULT" desc="Summary string for update menu item explaining that a newer version of Chrome is available. [CHAR_LIMIT=30]">
          Newer version is available
-@@ -4056,6 +4065,18 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>delete the Chrome d
+@@ -4285,6 +4294,18 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>delete the Chrome d
        <message name="IDS_MENU_UPDATE_UNSUPPORTED_SUMMARY_DEFAULT" desc="Summary string for update menu item explaining that the Android version on the device is unsupported. [CHAR_LIMIT=30]">
          Android version is unsupported
        </message>

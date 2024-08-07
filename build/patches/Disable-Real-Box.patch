@@ -13,7 +13,7 @@ Real-box is search box in ntp
 diff --git a/chrome/browser/prefs/browser_prefs.cc b/chrome/browser/prefs/browser_prefs.cc
 --- a/chrome/browser/prefs/browser_prefs.cc
 +++ b/chrome/browser/prefs/browser_prefs.cc
-@@ -2350,7 +2350,7 @@ void RegisterProfilePrefs(user_prefs::PrefRegistrySyncable* registry,
+@@ -2135,7 +2135,7 @@ void RegisterProfilePrefs(user_prefs::PrefRegistrySyncable* registry,
    registry->RegisterBooleanPref(
        prefs::kLensRegionSearchEnabled, true,
        user_prefs::PrefRegistrySyncable::SYNCABLE_PREF);
@@ -25,7 +25,7 @@ diff --git a/chrome/browser/prefs/browser_prefs.cc b/chrome/browser/prefs/browse
 diff --git a/chrome/browser/resources/new_tab_page/app.html b/chrome/browser/resources/new_tab_page/app.html
 --- a/chrome/browser/resources/new_tab_page/app.html
 +++ b/chrome/browser/resources/new_tab_page/app.html
-@@ -440,13 +440,6 @@
+@@ -429,13 +429,6 @@
        hidden$="[[!logoEnabled_]]">
    </ntp-logo>
    <div id="realboxContainer">
@@ -42,7 +42,7 @@ diff --git a/chrome/browser/resources/new_tab_page/app.html b/chrome/browser/res
 diff --git a/chrome/browser/ui/webui/searchbox/searchbox_handler.cc b/chrome/browser/ui/webui/searchbox/searchbox_handler.cc
 --- a/chrome/browser/ui/webui/searchbox/searchbox_handler.cc
 +++ b/chrome/browser/ui/webui/searchbox/searchbox_handler.cc
-@@ -455,6 +455,7 @@ void SearchboxHandler::SetupWebUIDataSource(content::WebUIDataSource* source,
+@@ -457,6 +457,7 @@ void SearchboxHandler::SetupWebUIDataSource(content::WebUIDataSource* source,
                                              Profile* profile,
                                              bool enable_voice_search,
                                              bool enable_lens_search) {
@@ -53,18 +53,18 @@ diff --git a/chrome/browser/ui/webui/searchbox/searchbox_handler.cc b/chrome/bro
 diff --git a/components/search/ntp_features.cc b/components/search/ntp_features.cc
 --- a/components/search/ntp_features.cc
 +++ b/components/search/ntp_features.cc
-@@ -176,7 +176,7 @@ BASE_FEATURE(kNtpHandleMostVisitedNavigationExplicitly,
-              base::FEATURE_ENABLED_BY_DEFAULT);
+@@ -169,7 +169,7 @@ BASE_FEATURE(kNtpHandleMostVisitedNavigationExplicitly,
  
  // If enabled, logo will be shown.
+ // This is a kill switch. Keep indefinitely.
 -BASE_FEATURE(kNtpLogo, "NtpLogo", base::FEATURE_ENABLED_BY_DEFAULT);
 +BASE_FEATURE(kNtpLogo, "NtpLogo", base::FEATURE_DISABLED_BY_DEFAULT);
  
- // If enabled, logo will fill up less vertical space.
- BASE_FEATURE(kNtpReducedLogoSpace,
-@@ -253,8 +253,8 @@ BASE_FEATURE(kNtpMostVisitedReflowOnOverflow,
- 
+ // If enabled, middle slot promo will be shown.
+ // This is a kill switch. Keep indefinitely.
+@@ -237,8 +237,8 @@ BASE_FEATURE(kNtpModulesRedesigned,
  // If enabled, OneGoogleBar will be shown.
+ // This is a kill switch. Keep indefinitely.
  BASE_FEATURE(kNtpOneGoogleBar,
 -             "NtpOneGoogleBar",
 -             base::FEATURE_ENABLED_BY_DEFAULT);

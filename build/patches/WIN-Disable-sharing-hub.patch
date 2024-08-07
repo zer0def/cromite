@@ -7,8 +7,8 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  chrome/browser/sharing_hub/sharing_hub_features.cc          | 2 +-
  chrome/browser/ui/browser_command_controller.cc             | 6 +++---
  chrome/browser/ui/browser_commands.cc                       | 1 +
- .../qrcode_generator/qrcode_generator_bubble_controller.cc  | 5 +----
- 4 files changed, 6 insertions(+), 8 deletions(-)
+ .../qrcode_generator/qrcode_generator_bubble_controller.cc  | 1 +
+ 4 files changed, 6 insertions(+), 4 deletions(-)
 
 diff --git a/chrome/browser/sharing_hub/sharing_hub_features.cc b/chrome/browser/sharing_hub/sharing_hub_features.cc
 --- a/chrome/browser/sharing_hub/sharing_hub_features.cc
@@ -25,7 +25,7 @@ diff --git a/chrome/browser/sharing_hub/sharing_hub_features.cc b/chrome/browser
 diff --git a/chrome/browser/ui/browser_command_controller.cc b/chrome/browser/ui/browser_command_controller.cc
 --- a/chrome/browser/ui/browser_command_controller.cc
 +++ b/chrome/browser/ui/browser_command_controller.cc
-@@ -1789,10 +1789,10 @@ void BrowserCommandController::UpdateCommandsForFullscreenMode() {
+@@ -1773,10 +1773,10 @@ void BrowserCommandController::UpdateCommandsForFullscreenMode() {
    command_updater_.UpdateCommandEnabled(IDC_CHROME_WHATS_NEW, show_main_ui);
  #endif
    command_updater_.UpdateCommandEnabled(IDC_CONTENT_CONTEXT_SHARING_SUBMENU,
@@ -42,7 +42,7 @@ diff --git a/chrome/browser/ui/browser_command_controller.cc b/chrome/browser/ui
 diff --git a/chrome/browser/ui/browser_commands.cc b/chrome/browser/ui/browser_commands.cc
 --- a/chrome/browser/ui/browser_commands.cc
 +++ b/chrome/browser/ui/browser_commands.cc
-@@ -1645,6 +1645,7 @@ void SendTabToSelf(Browser* browser) {
+@@ -1649,6 +1649,7 @@ void SendTabToSelf(Browser* browser) {
  }
  
  bool CanGenerateQrCode(const Browser* browser) {
@@ -53,16 +53,12 @@ diff --git a/chrome/browser/ui/browser_commands.cc b/chrome/browser/ui/browser_c
 diff --git a/chrome/browser/ui/qrcode_generator/qrcode_generator_bubble_controller.cc b/chrome/browser/ui/qrcode_generator/qrcode_generator_bubble_controller.cc
 --- a/chrome/browser/ui/qrcode_generator/qrcode_generator_bubble_controller.cc
 +++ b/chrome/browser/ui/qrcode_generator/qrcode_generator_bubble_controller.cc
-@@ -23,10 +23,7 @@ QRCodeGeneratorBubbleController::~QRCodeGeneratorBubbleController() {
+@@ -37,6 +37,7 @@ QRCodeGeneratorBubbleController::~QRCodeGeneratorBubbleController() {
  
  // static
  bool QRCodeGeneratorBubbleController::IsGeneratorAvailable(const GURL& url) {
--  if (!url.SchemeIsHTTPOrHTTPS())
--    return false;
--
--  return true;
-+  return false;
- }
++  if ((true)) return false;
+   if (!url.SchemeIsHTTPOrHTTPS())
+     return false;
  
- // static
 --
