@@ -2648,7 +2648,7 @@ new file mode 100644
 diff --git a/tools/metrics/histograms/enums.xml b/tools/metrics/histograms/enums.xml
 --- a/tools/metrics/histograms/enums.xml
 +++ b/tools/metrics/histograms/enums.xml
-@@ -20877,6 +20877,7 @@ from previous Chrome versions.
+@@ -20882,6 +20882,7 @@ from previous Chrome versions.
    <int value="188610022" label="NewMessageListView:enabled"/>
    <int value="189728101" label="FasterLocationReload:disabled"/>
    <int value="189777537" label="DisableInitialMostVisitedFadeIn:enabled"/>
