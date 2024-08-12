@@ -23,10 +23,10 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  third_party/blink/public/common/features.h    |   3 +
  third_party/blink/renderer/platform/BUILD.gn  |   1 +
  .../renderer/platform/fonts/font_cache.h      |   2 +-
- .../fonts/skia/bromite_allowed_fonts.h        | 270 ++++++++++++++++++
+ .../fonts/skia/bromite_allowed_fonts.h        | 271 ++++++++++++++++++
  .../platform/fonts/skia/font_cache_skia.cc    |  44 ++-
  .../platform/fonts/win/font_cache_skia_win.cc |   7 +-
- 11 files changed, 356 insertions(+), 9 deletions(-)
+ 11 files changed, 357 insertions(+), 9 deletions(-)
  create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Fonts-fingerprinting-mitigation.inc
  create mode 100644 cromite_flags/content/common/features_cc/Fonts-fingerprinting-mitigation.inc
  create mode 100644 cromite_flags/third_party/blink/common/features_cc/Fonts-fingerprinting-mitigation.inc
@@ -152,7 +152,7 @@ diff --git a/third_party/blink/renderer/platform/fonts/skia/bromite_allowed_font
 new file mode 100644
 --- /dev/null
 +++ b/third_party/blink/renderer/platform/fonts/skia/bromite_allowed_fonts.h
-@@ -0,0 +1,270 @@
+@@ -0,0 +1,271 @@
 +/*
 +    This file is part of Bromite.
 +
@@ -345,7 +345,8 @@ new file mode 100644
 +#endif
 +
 +template<int N>
-+bool IsInList(const std::u16string& font_name, const char16_t*(&list)[N]) {
++bool IsInList(const std::u16string& font_name, const char16_t*(&input)[N]) {
++  auto list = base::span(input);
 +  for(int t = 0; t < N; ++t)
 +    if (base::EqualsCaseInsensitiveASCII(font_name, list[t]))
 +      return true;

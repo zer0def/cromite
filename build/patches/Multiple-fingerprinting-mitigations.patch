@@ -38,7 +38,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../blink/renderer/core/dom/document.h        |   7 +
  .../blink/renderer/core/dom/element.cc        |   8 +
  third_party/blink/renderer/core/dom/range.cc  |  12 +-
- .../html/canvas/canvas_async_blob_creator.cc  |   5 +
+ .../html/canvas/canvas_async_blob_creator.cc  |   4 +
  .../renderer/core/html/canvas/text_metrics.cc |  18 ++
  .../renderer/core/html/canvas/text_metrics.h  |   2 +
  .../renderer/core/svg/svg_graphics_element.cc |   2 +
@@ -47,13 +47,14 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  third_party/blink/renderer/platform/BUILD.gn  |   5 +-
  .../platform/exported/web_runtime_features.cc |  13 ++
  .../platform/graphics/image_data_buffer.cc    |   8 +
- .../platform/graphics/static_bitmap_image.cc  | 155 ++++++++++++++++++
+ .../platform/graphics/static_bitmap_image.cc  | 154 ++++++++++++++++++
  .../platform/graphics/static_bitmap_image.h   |   2 +
  .../platform/runtime_enabled_features.json5   |   9 +
+ third_party/skia/include/core/SkPixmap.h      |  16 +-
  third_party/ungoogled/BUILD.gn                |  10 ++
  third_party/ungoogled/ungoogled_switches.cc   |  18 ++
  third_party/ungoogled/ungoogled_switches.h    |  18 ++
- 27 files changed, 393 insertions(+), 8 deletions(-)
+ 28 files changed, 399 insertions(+), 16 deletions(-)
  create mode 100755 cromite_flags/chrome/browser/about_flags_cc/Multiple-fingerprinting-mitigations.inc
  create mode 100644 third_party/ungoogled/BUILD.gn
  create mode 100644 third_party/ungoogled/ungoogled_switches.cc
@@ -324,13 +325,12 @@ diff --git a/third_party/blink/renderer/core/html/canvas/canvas_async_blob_creat
  #include "third_party/blink/renderer/platform/graphics/skia/skia_utils.h"
  #include "third_party/blink/renderer/platform/graphics/unaccelerated_static_bitmap_image.h"
  #include "third_party/blink/renderer/platform/heap/garbage_collected.h"
-@@ -219,6 +220,10 @@ CanvasAsyncBlobCreator::CanvasAsyncBlobCreator(
+@@ -219,6 +220,9 @@ CanvasAsyncBlobCreator::CanvasAsyncBlobCreator(
                             std::min(info.height(), max_dimension));
          src_data_.reset(info, src_data_.addr(), src_data_.rowBytes());
        }
 +      if (RuntimeEnabledFeatures::FingerprintingCanvasImageDataNoiseEnabled()) {
-+        StaticBitmapImage::ShuffleSubchannelColorData(src_data_.writable_addr(),
-+          src_data_.info(), 0, 0);
++        StaticBitmapImage::ShuffleSubchannelColorData(src_data_, 0, 0);
 +      }
      }
    }
@@ -487,7 +487,7 @@ diff --git a/third_party/blink/renderer/modules/canvas/canvas2d/base_rendering_c
      }
 +
 +    if (read_pixels_successful && RuntimeEnabledFeatures::FingerprintingCanvasImageDataNoiseEnabled()) {
-+      StaticBitmapImage::ShuffleSubchannelColorData(image_data_pixmap.addr(), image_data_pixmap.info(), sx, sy);
++      StaticBitmapImage::ShuffleSubchannelColorData(image_data_pixmap, sx, sy);
 +    }
    }
  
@@ -580,7 +580,7 @@ diff --git a/third_party/blink/renderer/platform/graphics/image_data_buffer.cc b
  
 +  if (RuntimeEnabledFeatures::FingerprintingCanvasImageDataNoiseEnabled()) {
 +    // shuffle subchannel color data within the pixmap
-+    StaticBitmapImage::ShuffleSubchannelColorData(pixmap_.writable_addr(), pixmap_.info(), 0, 0);
++    StaticBitmapImage::ShuffleSubchannelColorData(pixmap_, 0, 0);
 +  }
 +
    if (mime_type == kMimeTypeJpeg) {
@@ -608,16 +608,16 @@ diff --git a/third_party/blink/renderer/platform/graphics/static_bitmap_image.cc
  namespace blink {
  
  scoped_refptr<StaticBitmapImage> StaticBitmapImage::Create(
-@@ -115,4 +120,154 @@ void StaticBitmapImage::DrawHelper(cc::PaintCanvas* canvas,
+@@ -115,4 +120,153 @@ void StaticBitmapImage::DrawHelper(cc::PaintCanvas* canvas,
        WebCoreClampingModeToSkiaRectConstraint(draw_options.clamping_mode));
  }
  
 +// set the component to maximum-delta if it is >= maximum, or add to existing color component (color + delta)
 +#define shuffleComponent(color, max, delta) ( (color) >= (max) ? ((max)-(delta)) : ((color)+(delta)) )
 +
-+#define writable_addr(T, p, stride, x, y) (T*)((const char *)p + y * stride + x * sizeof(T))
-+
-+void StaticBitmapImage::ShuffleSubchannelColorData(const void *addr, const SkImageInfo& info, int srcX, int srcY) {
++void StaticBitmapImage::ShuffleSubchannelColorData(const SkPixmap& src_data,
++                                                   int srcX, int srcY) {
++  const SkImageInfo& info = src_data.info();
 +  auto w = info.width() - srcX, h = info.height() - srcY;
 +
 +  // skip tiny images; info.width()/height() can also be 0
@@ -658,7 +658,7 @@ diff --git a/third_party/blink/renderer/platform/graphics/static_bitmap_image.cc
 +    switch (colorType) {
 +      case kAlpha_8_SkColorType:
 +      {
-+         auto *pixel = writable_addr(uint8_t, addr, fRowBytes, x, y);
++         auto *pixel = src_data.writable_addr8(x, y);
 +         auto r = SkColorGetR(*pixel), g = SkColorGetG(*pixel), b = SkColorGetB(*pixel), a = SkColorGetA(*pixel);
 +
 +         r = shuffleComponent(r, UINT8_MAX-1, shuffleR);
@@ -671,13 +671,13 @@ diff --git a/third_party/blink/renderer/platform/graphics/static_bitmap_image.cc
 +      break;
 +      case kGray_8_SkColorType:
 +      {
-+         auto *pixel = writable_addr(uint8_t, addr, fRowBytes, x, y);
++         auto *pixel = src_data.writable_addr8(x, y);
 +         *pixel = shuffleComponent(*pixel, UINT8_MAX-1, shuffleB);
 +      }
 +      break;
 +      case kRGB_565_SkColorType:
 +      {
-+         auto *pixel = writable_addr(uint16_t, addr, fRowBytes, x, y);
++         auto *pixel = src_data.writable_addr16(x, y);
 +         unsigned    r = SkPacked16ToR32(*pixel);
 +         unsigned    g = SkPacked16ToG32(*pixel);
 +         unsigned    b = SkPacked16ToB32(*pixel);
@@ -695,7 +695,7 @@ diff --git a/third_party/blink/renderer/platform/graphics/static_bitmap_image.cc
 +      break;
 +      case kARGB_4444_SkColorType:
 +      {
-+         auto *pixel = writable_addr(uint16_t, addr, fRowBytes, x, y);
++         auto *pixel = src_data.writable_addr16(x, y);
 +         auto a = SkGetPackedA4444(*pixel), r = SkGetPackedR4444(*pixel), g = SkGetPackedG4444(*pixel), b = SkGetPackedB4444(*pixel);
 +
 +         r = shuffleComponent(r, 15, shuffleR);
@@ -713,7 +713,7 @@ diff --git a/third_party/blink/renderer/platform/graphics/static_bitmap_image.cc
 +      break;
 +      case kRGBA_8888_SkColorType:
 +      {
-+         auto *pixel = writable_addr(uint32_t, addr, fRowBytes, x, y);
++         auto *pixel = src_data.writable_addr32(x, y);
 +         auto a = SkGetPackedA32(*pixel), r = SkGetPackedR32(*pixel), g = SkGetPackedG32(*pixel), b = SkGetPackedB32(*pixel);
 +
 +         r = shuffleComponent(r, UINT8_MAX-1, shuffleR);
@@ -727,7 +727,7 @@ diff --git a/third_party/blink/renderer/platform/graphics/static_bitmap_image.cc
 +      break;
 +      case kBGRA_8888_SkColorType:
 +      {
-+         auto *pixel = writable_addr(uint32_t, addr, fRowBytes, x, y);
++         auto *pixel = src_data.writable_addr32(x, y);
 +         auto a = SkGetPackedA32(*pixel), b = SkGetPackedR32(*pixel), g = SkGetPackedG32(*pixel), r = SkGetPackedB32(*pixel);
 +
 +         r = shuffleComponent(r, UINT8_MAX-1, shuffleR);
@@ -759,7 +759,6 @@ diff --git a/third_party/blink/renderer/platform/graphics/static_bitmap_image.cc
 +  }
 +}
 +
-+#undef writable_addr
 +#undef shuffleComponent
 +
  }  // namespace blink
@@ -770,7 +769,7 @@ diff --git a/third_party/blink/renderer/platform/graphics/static_bitmap_image.h 
  
    StaticBitmapImage(ImageOrientation orientation) : orientation_(orientation) {}
  
-+  static void ShuffleSubchannelColorData(const void *addr, const SkImageInfo& info, int srcX, int srcY);
++  static void ShuffleSubchannelColorData(const SkPixmap& src_data, int srcX, int srcY);
 +
    bool IsStaticBitmapImage() const override { return true; }
  
@@ -794,6 +793,53 @@ diff --git a/third_party/blink/renderer/platform/runtime_enabled_features.json5 
      {
        name: "Notifications",
        public: true,
+diff --git a/third_party/skia/include/core/SkPixmap.h b/third_party/skia/include/core/SkPixmap.h
+--- a/third_party/skia/include/core/SkPixmap.h
++++ b/third_party/skia/include/core/SkPixmap.h
+@@ -396,8 +396,8 @@ public:
+         @return   readable unsigned 8-bit pointer to pixel at (x, y)
+     */
+     const uint8_t* addr8(int x, int y) const {
+-        SkASSERT((unsigned)x < (unsigned)fInfo.width());
+-        SkASSERT((unsigned)y < (unsigned)fInfo.height());
++        SkASSERT_RELEASE((unsigned)x < (unsigned)fInfo.width());
++        SkASSERT_RELEASE((unsigned)y < (unsigned)fInfo.height());
+         return (const uint8_t*)((const char*)this->addr8() + (size_t)y * fRowBytes + (x << 0));
+     }
+ 
+@@ -414,8 +414,8 @@ public:
+         @return   readable unsigned 16-bit pointer to pixel at (x, y)
+     */
+     const uint16_t* addr16(int x, int y) const {
+-        SkASSERT((unsigned)x < (unsigned)fInfo.width());
+-        SkASSERT((unsigned)y < (unsigned)fInfo.height());
++        SkASSERT_RELEASE((unsigned)x < (unsigned)fInfo.width());
++        SkASSERT_RELEASE((unsigned)y < (unsigned)fInfo.height());
+         return (const uint16_t*)((const char*)this->addr16() + (size_t)y * fRowBytes + (x << 1));
+     }
+ 
+@@ -432,8 +432,8 @@ public:
+         @return   readable unsigned 32-bit pointer to pixel at (x, y)
+     */
+     const uint32_t* addr32(int x, int y) const {
+-        SkASSERT((unsigned)x < (unsigned)fInfo.width());
+-        SkASSERT((unsigned)y < (unsigned)fInfo.height());
++        SkASSERT_RELEASE((unsigned)x < (unsigned)fInfo.width());
++        SkASSERT_RELEASE((unsigned)y < (unsigned)fInfo.height());
+         return (const uint32_t*)((const char*)this->addr32() + (size_t)y * fRowBytes + (x << 2));
+     }
+ 
+@@ -450,8 +450,8 @@ public:
+         @return   readable unsigned 64-bit pointer to pixel at (x, y)
+     */
+     const uint64_t* addr64(int x, int y) const {
+-        SkASSERT((unsigned)x < (unsigned)fInfo.width());
+-        SkASSERT((unsigned)y < (unsigned)fInfo.height());
++        SkASSERT_RELEASE((unsigned)x < (unsigned)fInfo.width());
++        SkASSERT_RELEASE((unsigned)y < (unsigned)fInfo.height());
+         return (const uint64_t*)((const char*)this->addr64() + (size_t)y * fRowBytes + (x << 3));
+     }
+ 
 diff --git a/third_party/ungoogled/BUILD.gn b/third_party/ungoogled/BUILD.gn
 new file mode 100644
 --- /dev/null
