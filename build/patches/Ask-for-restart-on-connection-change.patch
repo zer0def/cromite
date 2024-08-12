@@ -90,7 +90,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/offlinepages/in
 +import org.chromium.chrome.browser.ui.messages.snackbar.SnackbarManager;
 +import org.chromium.chrome.browser.ui.messages.snackbar.INeedSnackbarManager;
 +import org.chromium.chrome.browser.ui.messages.snackbar.Snackbar;
-+import org.chromium.chrome.browser.tasks.tab_management.TabSwitcherLayout;
++import org.chromium.chrome.browser.hub.HubLayout;
 +import org.chromium.chrome.browser.tab.Tab;
 +import org.chromium.chrome.browser.tabmodel.TabModelUtils;
 +import org.chromium.chrome.browser.tabmodel.TabModelSelector;
@@ -205,7 +205,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/offlinepages/in
 +    // TabWindowManager.Observer
 +    @Override
 +    public void onSceneChange(Layout layout) {
-+        if (!(layout instanceof TabSwitcherLayout)) {
++        if (!(layout instanceof HubLayout)) {
 +            SnackbarManager snackbarManager = mSnackbarManagerSupplier.get();
 +            snackbarManager.dismissSnackbars(this);
 +        }

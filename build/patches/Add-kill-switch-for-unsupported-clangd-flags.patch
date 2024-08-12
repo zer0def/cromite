@@ -7,9 +7,9 @@ Allows build with clangd by suppressing unsupported parameters
 Original License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 ---
- build/config/compiler/BUILD.gn | 10 +++++++++-
+ build/config/compiler/BUILD.gn | 11 ++++++++++-
  build_overrides/build.gni      |  3 +++
- 2 files changed, 12 insertions(+), 1 deletion(-)
+ 2 files changed, 13 insertions(+), 1 deletion(-)
 
 diff --git a/build/config/compiler/BUILD.gn b/build/config/compiler/BUILD.gn
 --- a/build/config/compiler/BUILD.gn
@@ -22,7 +22,7 @@ diff --git a/build/config/compiler/BUILD.gn b/build/config/compiler/BUILD.gn
        cflags_cc += [
          # TODO(crbug.com/328490295): Fix and re-enable for C flags.
          "-Wenum-compare-conditional",
-@@ -1965,6 +1964,15 @@ config("default_warnings") {
+@@ -1965,6 +1964,16 @@ config("default_warnings") {
          # TODO(crbug.com/344680447): Fix and re-enable.
          cflags_cc += [ "-Wno-missing-template-arg-list-after-template-kw" ]
        }
@@ -33,6 +33,7 @@ diff --git a/build/config/compiler/BUILD.gn b/build/config/compiler/BUILD.gn
 +        ]
 +        cflags_cc -= [
 +          "-Wno-c++11-narrowing-const-reference",
++          "-Wno-missing-template-arg-list-after-template-kw",
 +        ]
 +      }
      }

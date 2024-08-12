@@ -59,6 +59,12 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../browser/feed/FeedListContentManager.java  |   6 +-
  .../flags/android/chrome_feature_list.cc      |   3 +
  .../browser/flags/ChromeFeatureList.java      |  10 ++
+ chrome/browser/hub/internal/BUILD.gn          |   5 +
+ .../chrome/browser/hub/HubCoordinator.java    |   8 +
+ .../chrome/browser/hub/HubManagerImpl.java    |  17 +-
+ .../browser/hub/ReversedLinearLayout.java     |  42 +++++
+ .../android/res/layout/hub_layout.xml         |   4 +-
+ .../android/res/layout/hub_toolbar_layout.xml |   2 +-
  chrome/browser/prefs/browser_prefs.cc         |   2 +-
  .../chrome/browser/ui/appmenu/AppMenu.java    |  40 ++++-
  .../ui/appmenu/AppMenuHandlerImpl.java        |  10 ++
@@ -85,7 +91,8 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../AccessibilitySettingsDelegate.java        |   7 +
  .../render_widget_host_view_android.cc        |   3 +
  .../Move-navigation-bar-to-bottom.inc         |  17 ++
- 72 files changed, 930 insertions(+), 74 deletions(-)
+ 78 files changed, 1002 insertions(+), 80 deletions(-)
+ create mode 100644 chrome/browser/hub/internal/android/java/src/org/chromium/chrome/browser/hub/ReversedLinearLayout.java
  create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Move-navigation-bar-to-bottom.inc
 
 diff --git a/cc/base/features.cc b/cc/base/features.cc
@@ -1962,6 +1969,192 @@ diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/f
                      sPaintPreviewDemo,
                      sPrefetchBrowserInitiatedTriggers,
                      sQueryTiles,
+diff --git a/chrome/browser/hub/internal/BUILD.gn b/chrome/browser/hub/internal/BUILD.gn
+--- a/chrome/browser/hub/internal/BUILD.gn
++++ b/chrome/browser/hub/internal/BUILD.gn
+@@ -16,6 +16,7 @@ android_library("java") {
+     "//chrome/test/android:chrome_java_transit",
+   ]
+   sources = [
++    "android/java/src/org/chromium/chrome/browser/hub/ReversedLinearLayout.java",
+     "android/java/src/org/chromium/chrome/browser/hub/ApplyButtonData.java",
+     "android/java/src/org/chromium/chrome/browser/hub/FadeHubLayoutAnimationFactory.java",
+     "android/java/src/org/chromium/chrome/browser/hub/FadeHubLayoutAnimationFactoryImpl.java",
+@@ -68,6 +69,10 @@ android_library("java") {
+     "//third_party/androidx:androidx_interpolator_interpolator_java",
+     "//ui/android:ui_no_recycler_view_java",
+   ]
++  deps += [
++    "//base:base_cached_flags_java",
++    "//chrome/browser/flags:java",
++  ]
+ }
+ 
+ android_resources("java_resources") {
+diff --git a/chrome/browser/hub/internal/android/java/src/org/chromium/chrome/browser/hub/HubCoordinator.java b/chrome/browser/hub/internal/android/java/src/org/chromium/chrome/browser/hub/HubCoordinator.java
+--- a/chrome/browser/hub/internal/android/java/src/org/chromium/chrome/browser/hub/HubCoordinator.java
++++ b/chrome/browser/hub/internal/android/java/src/org/chromium/chrome/browser/hub/HubCoordinator.java
+@@ -8,6 +8,7 @@ import android.content.Context;
+ import android.view.LayoutInflater;
+ import android.view.View;
+ import android.widget.FrameLayout;
++import android.widget.LinearLayout;
+ 
+ import androidx.annotation.NonNull;
+ import androidx.annotation.Nullable;
+@@ -18,6 +19,7 @@ import org.chromium.base.supplier.ObservableSupplierImpl;
+ import org.chromium.base.supplier.OneshotSupplier;
+ import org.chromium.base.supplier.TransitiveObservableSupplier;
+ import org.chromium.chrome.browser.feature_engagement.TrackerFactory;
++import org.chromium.chrome.browser.flags.ChromeFeatureList;
+ import org.chromium.chrome.browser.profiles.ProfileProvider;
+ import org.chromium.chrome.browser.tab.Tab;
+ import org.chromium.chrome.browser.toolbar.menu_button.MenuButtonCoordinator;
+@@ -93,6 +95,12 @@ public class HubCoordinator implements PaneHubController, BackPressHandler {
+         HubPaneHostView hubPaneHostView = mContainerView.findViewById(R.id.hub_pane_host);
+         mHubPaneHostCoordinator =
+                 new HubPaneHostCoordinator(hubPaneHostView, paneManager.getFocusedPaneSupplier());
++        if (ChromeFeatureList.sMoveTopToolbarToBottom.isEnabled()) {
++            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams)
++                hubPaneHostView.getLayoutParams();
++            params.bottomMargin = hubToolbarView.getHeight();
++            hubPaneHostView.setLayoutParams(params);
++        }
+ 
+         mHubLayoutController = hubLayoutController;
+         mHandleBackPressSupplier = new ObservableSupplierImpl<>();
+diff --git a/chrome/browser/hub/internal/android/java/src/org/chromium/chrome/browser/hub/HubManagerImpl.java b/chrome/browser/hub/internal/android/java/src/org/chromium/chrome/browser/hub/HubManagerImpl.java
+--- a/chrome/browser/hub/internal/android/java/src/org/chromium/chrome/browser/hub/HubManagerImpl.java
++++ b/chrome/browser/hub/internal/android/java/src/org/chromium/chrome/browser/hub/HubManagerImpl.java
+@@ -6,6 +6,7 @@ package org.chromium.chrome.browser.hub;
+ 
+ import android.content.Context;
+ import android.view.View;
++import android.view.ViewGroup;
+ import android.widget.FrameLayout.LayoutParams;
+ 
+ import androidx.annotation.ColorInt;
+@@ -16,6 +17,7 @@ import org.chromium.base.ValueChangedCallback;
+ import org.chromium.base.supplier.ObservableSupplier;
+ import org.chromium.base.supplier.ObservableSupplierImpl;
+ import org.chromium.base.supplier.OneshotSupplier;
++import org.chromium.chrome.browser.flags.ChromeFeatureList;
+ import org.chromium.chrome.browser.back_press.BackPressManager;
+ import org.chromium.chrome.browser.profiles.ProfileProvider;
+ import org.chromium.chrome.browser.tab.Tab;
+@@ -111,7 +113,10 @@ public class HubManagerImpl implements HubManager, HubController {
+         LayoutParams params = (LayoutParams) mHubContainerView.getLayoutParams();
+         assert params != null : "HubContainerView should always have layout params.";
+         mStatusIndicatorHeight = height;
+-        params.topMargin = mStatusIndicatorHeight + mAppHeaderHeight;
++        if (ChromeFeatureList.sMoveTopToolbarToBottom.isEnabled())
++            params.bottomMargin = mStatusIndicatorHeight + mAppHeaderHeight;
++        else
++            params.topMargin = mStatusIndicatorHeight + mAppHeaderHeight;
+         mHubContainerView.setLayoutParams(params);
+     }
+ 
+@@ -121,7 +126,10 @@ public class HubManagerImpl implements HubManager, HubController {
+         LayoutParams params = (LayoutParams) mHubContainerView.getLayoutParams();
+         assert params != null : "HubContainerView should always have layout params.";
+         mAppHeaderHeight = height;
+-        params.topMargin = mStatusIndicatorHeight + mAppHeaderHeight;
++        if (ChromeFeatureList.sMoveTopToolbarToBottom.isEnabled())
++            params.bottomMargin = mStatusIndicatorHeight + mAppHeaderHeight;
++        else
++            params.topMargin = mStatusIndicatorHeight + mAppHeaderHeight;
+         mHubContainerView.setLayoutParams(params);
+     }
+ 
+@@ -242,6 +250,9 @@ public class HubManagerImpl implements HubManager, HubController {
+             mMenuOrKeyboardActionController.registerMenuOrKeyboardActionHandler(
+                     menuOrKeyboardActionHandler);
+         }
+-        mSnackbarManager.setParentView(mHubContainerView);
++        if (ChromeFeatureList.sMoveTopToolbarToBottom.isEnabled())
++            mSnackbarManager.setParentView((ViewGroup)getPaneHostView());
++        else
++            mSnackbarManager.setParentView(mHubContainerView);
+     }
+ }
+diff --git a/chrome/browser/hub/internal/android/java/src/org/chromium/chrome/browser/hub/ReversedLinearLayout.java b/chrome/browser/hub/internal/android/java/src/org/chromium/chrome/browser/hub/ReversedLinearLayout.java
+new file mode 100644
+--- /dev/null
++++ b/chrome/browser/hub/internal/android/java/src/org/chromium/chrome/browser/hub/ReversedLinearLayout.java
+@@ -0,0 +1,42 @@
++package org.chromium.chrome.browser.hub;
++
++import android.content.Context;
++import android.util.AttributeSet;
++import android.widget.LinearLayout;
++import android.view.Gravity;
++import android.view.View;
++
++import org.chromium.chrome.browser.flags.ChromeFeatureList;
++
++public class ReversedLinearLayout extends LinearLayout {
++    private boolean mReversedLayout;
++
++	public ReversedLinearLayout(Context context) {
++		super(context);
++        setReversedLayout();
++	}
++
++	public ReversedLinearLayout(Context context, AttributeSet attrs) {
++		super(context, attrs);
++        setReversedLayout();
++	}
++
++	public ReversedLinearLayout(Context context, AttributeSet attrs, int defStyle) {
++		super(context, attrs, defStyle);
++        setReversedLayout();
++	}
++
++    private void setReversedLayout() {
++        mReversedLayout = ChromeFeatureList.sMoveTopToolbarToBottom.isEnabled();
++        if (mReversedLayout)
++            setGravity(Gravity.START | Gravity.BOTTOM);
++    }
++
++    @Override
++    public View getChildAt(int i) {
++        if (mReversedLayout)
++		    return super.getChildAt(getChildCount() - 1 - i);
++        else
++            return super.getChildAt(i);
++	}
++}
+diff --git a/chrome/browser/hub/internal/android/res/layout/hub_layout.xml b/chrome/browser/hub/internal/android/res/layout/hub_layout.xml
+--- a/chrome/browser/hub/internal/android/res/layout/hub_layout.xml
++++ b/chrome/browser/hub/internal/android/res/layout/hub_layout.xml
+@@ -4,7 +4,7 @@ Copyright 2023 The Chromium Authors
+ Use of this source code is governed by a BSD-style license that can be
+ found in the LICENSE file.
+ -->
+-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
++<org.chromium.chrome.browser.hub.ReversedLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+   android:layout_width="match_parent"
+   android:layout_height="match_parent"
+   android:orientation="vertical">
+@@ -13,4 +13,4 @@ found in the LICENSE file.
+ 
+   <include layout="@layout/hub_pane_host_layout" />
+ 
+-</LinearLayout>
+\ No newline at end of file
++</org.chromium.chrome.browser.hub.ReversedLinearLayout>
+diff --git a/chrome/browser/hub/internal/android/res/layout/hub_toolbar_layout.xml b/chrome/browser/hub/internal/android/res/layout/hub_toolbar_layout.xml
+--- a/chrome/browser/hub/internal/android/res/layout/hub_toolbar_layout.xml
++++ b/chrome/browser/hub/internal/android/res/layout/hub_toolbar_layout.xml
+@@ -9,7 +9,7 @@ found in the LICENSE file.
+   xmlns:app="http://schemas.android.com/apk/res-auto"
+   android:id="@+id/hub_toolbar"
+   android:layout_width="match_parent"
+-  android:layout_height="wrap_content"
++  android:layout_height="@dimen/toolbar_height_no_shadow"
+   android:orientation="vertical">
+ 
+   <FrameLayout
 diff --git a/chrome/browser/prefs/browser_prefs.cc b/chrome/browser/prefs/browser_prefs.cc
 --- a/chrome/browser/prefs/browser_prefs.cc
 +++ b/chrome/browser/prefs/browser_prefs.cc
@@ -2598,7 +2791,7 @@ diff --git a/chrome/browser/ui/android/toolbar/java/src/org/chromium/chrome/brow
  /** Layout for the browser controls (omnibox, menu, tab strip, etc..). */
  public class ToolbarControlContainer extends OptimizedFrameLayout
          implements ControlContainer, DesktopWindowStateProvider.AppHeaderObserver {
-@@ -147,6 +151,11 @@ public class ToolbarControlContainer extends OptimizedFrameLayout
+@@ -143,6 +147,11 @@ public class ToolbarControlContainer extends OptimizedFrameLayout
                  if (view != null)
                      ((MarginLayoutParams)view.getLayoutParams()).topMargin = tab_strip_height;
              }

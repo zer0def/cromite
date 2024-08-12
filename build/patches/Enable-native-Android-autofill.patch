@@ -354,7 +354,7 @@ diff --git a/chrome/browser/autofill/android/java/src/org/chromium/chrome/browse
       */
 -    @CalledByNative
      public static int getAndroidAutofillFrameworkAvailability(PrefService prefs) {
-+        if ((true)) return true;
++        if ((true)) return AndroidAutofillAvailabilityStatus.AVAILABLE;
          if (sAndroidAutofillFrameworkAvailabilityForTesting != null) {
              return sAndroidAutofillFrameworkAvailabilityForTesting;
          }

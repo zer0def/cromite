@@ -31,17 +31,13 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../public/browser/content_browser_client.cc  |   7 +-
  .../public/browser/navigation_controller.cc   |   1 -
  .../Disable-conversion-measurement-api.inc    |   1 +
- .../Disable-conversion-measurement-api.inc    |   1 +
- .../Disable-conversion-measurement-api.inc    |   1 +
- .../Disable-conversion-measurement-api.inc    |   9 +
+ .../Disable-conversion-measurement-api.inc    |   8 +
  .../attribution/request_headers_internal.cc   |   1 +
  .../network/public/cpp/attribution_utils.cc   |   2 +
  third_party/blink/renderer/core/page/page.cc  |   2 +-
- .../platform/runtime_enabled_features.json5   |   4 +-
+ .../platform/runtime_enabled_features.json5   |  10 +-
  ui/events/android/motion_event_android.cc     |   6 +-
- 28 files changed, 74 insertions(+), 378 deletions(-)
- create mode 100644 cromite_flags/content/common/features_cc/Disable-conversion-measurement-api.inc
- create mode 100644 cromite_flags/content/public/common/content_features_cc/Disable-conversion-measurement-api.inc
+ 26 files changed, 74 insertions(+), 381 deletions(-)
  create mode 100644 cromite_flags/services/network/public/cpp/features_cc/Disable-conversion-measurement-api.inc
  create mode 100644 cromite_flags/third_party/blink/common/features_cc/Disable-conversion-measurement-api.inc
 
@@ -252,8 +248,8 @@ diff --git a/content/browser/attribution_reporting/attribution_report_network_se
      scoped_refptr<net::HttpResponseHeaders> headers) {
 +  if ((true)) {
 +    std::move(sent_callback)
-+        .Run(std::move(report),
-+           SendResult(SendResult::Status::kSent, headers ? headers->response_code() : 200));
++        .Run(report,
++             SendResult::Sent(SendResult::Sent::Result::kSent, 200));
 +    return;
 +  }
    network::SimpleURLLoader* loader = it->get();
@@ -824,18 +820,6 @@ diff --git a/content/public/browser/navigation_controller.cc b/content/public/br
        is_pdf(input.is_pdf),
        has_rel_opener(input.has_rel_opener) {
  #if DCHECK_IS_ON()
-diff --git a/cromite_flags/content/common/features_cc/Disable-conversion-measurement-api.inc b/cromite_flags/content/common/features_cc/Disable-conversion-measurement-api.inc
-new file mode 100644
---- /dev/null
-+++ b/cromite_flags/content/common/features_cc/Disable-conversion-measurement-api.inc
-@@ -0,0 +1 @@
-+SET_CROMITE_FEATURE_DISABLED(kAttributionReportingCrossAppWebOverride);
-diff --git a/cromite_flags/content/public/common/content_features_cc/Disable-conversion-measurement-api.inc b/cromite_flags/content/public/common/content_features_cc/Disable-conversion-measurement-api.inc
-new file mode 100644
---- /dev/null
-+++ b/cromite_flags/content/public/common/content_features_cc/Disable-conversion-measurement-api.inc
-@@ -0,0 +1 @@
-+SET_CROMITE_FEATURE_DISABLED(kPrivacySandboxAdsAPIsOverride);
 diff --git a/cromite_flags/services/network/public/cpp/features_cc/Disable-conversion-measurement-api.inc b/cromite_flags/services/network/public/cpp/features_cc/Disable-conversion-measurement-api.inc
 new file mode 100644
 --- /dev/null
@@ -846,7 +830,7 @@ diff --git a/cromite_flags/third_party/blink/common/features_cc/Disable-conversi
 new file mode 100644
 --- /dev/null
 +++ b/cromite_flags/third_party/blink/common/features_cc/Disable-conversion-measurement-api.inc
-@@ -0,0 +1,9 @@
+@@ -0,0 +1,8 @@
 +SET_CROMITE_FEATURE_DISABLED(kAdAuctionReportingWithMacroApi);
 +SET_CROMITE_FEATURE_DISABLED(kAdAuctionSignals);
 +SET_CROMITE_FEATURE_DISABLED(kBrowsingTopics);
@@ -854,7 +838,6 @@ new file mode 100644
 +SET_CROMITE_FEATURE_DISABLED(kBrowsingTopicsParameters);
 +SET_CROMITE_FEATURE_DISABLED(kFledgeBiddingAndAuctionServer);
 +SET_CROMITE_FEATURE_DISABLED(kInterestGroupStorage);
-+SET_CROMITE_FEATURE_DISABLED(kPrivacySandboxAdsAPIs);
 +SET_CROMITE_FEATURE_DISABLED(kPrivateAggregationApi);
 diff --git a/services/network/attribution/request_headers_internal.cc b/services/network/attribution/request_headers_internal.cc
 --- a/services/network/attribution/request_headers_internal.cc
@@ -901,6 +884,33 @@ diff --git a/third_party/blink/renderer/core/page/page.cc b/third_party/blink/re
 diff --git a/third_party/blink/renderer/platform/runtime_enabled_features.json5 b/third_party/blink/renderer/platform/runtime_enabled_features.json5
 --- a/third_party/blink/renderer/platform/runtime_enabled_features.json5
 +++ b/third_party/blink/renderer/platform/runtime_enabled_features.json5
+@@ -279,7 +279,7 @@
+     {
+       // Interest Group JS API/runtimeflag.
+       name: "AdInterestGroupAPI",
+-      status: "stable",
++      status: "experimental",
+       origin_trial_feature_name: "AdInterestGroupAPI",
+       implied_by: ["Fledge", "Parakeet"],
+       public: true,
+@@ -368,15 +368,15 @@
+     },
+     {
+       name: "AttributionReporting",
+-      status: "stable",
++      status: "experimental",
+       base_feature: "none",
+       public: true,
+     },
+     {
+       name: "AttributionReportingCrossAppWeb",
++      status: "experimental",
+       base_feature: "none",
+       public: true,
+-      status: "stable",
+     },
+     {
+       // This only exists so we can use RuntimeEnabled in the IDL file
 @@ -4097,15 +4097,15 @@
      },
      {

@@ -18,7 +18,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  chrome/android/java/res/values/values.xml     |   3 +
  .../java/res/xml/privacy_preferences.xml      |   4 +
  .../privacy/settings/PrivacySettings.java     |   1 +
- .../chrome_autocomplete_provider_client.cc    |   2 +
+ .../chrome_autocomplete_provider_client.cc    |   1 +
  chrome/browser/browser_resources.grd          |   3 +
  .../extensions/api/proxy/proxy_api_helpers.cc |   2 +-
  chrome/browser/net/proxy_service_factory.cc   |  24 +-
@@ -30,7 +30,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  chrome/browser/resources/proxy_config.js      | 278 +++++++++++++
  chrome/browser/ui/BUILD.gn                    |   2 +
  .../webui/chrome_web_ui_controller_factory.cc |   3 +
- chrome/browser/ui/webui/proxy_config_ui.cc    | 392 ++++++++++++++++++
+ chrome/browser/ui/webui/proxy_config_ui.cc    | 389 ++++++++++++++++++
  chrome/browser/ui/webui/proxy_config_ui.h     |  31 ++
  chrome/common/webui_url_constants.cc          |   2 +
  chrome/common/webui_url_constants.h           |   2 +
@@ -40,7 +40,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../proxy_config/proxy_policy_handler.cc      |   2 +-
  net/proxy_resolution/proxy_config.cc          |  51 ++-
  net/proxy_resolution/proxy_config.h           |   3 +
- 25 files changed, 977 insertions(+), 17 deletions(-)
+ 25 files changed, 973 insertions(+), 17 deletions(-)
  create mode 100644 chrome/browser/resources/proxy_config.css
  create mode 100644 chrome/browser/resources/proxy_config.html
  create mode 100644 chrome/browser/resources/proxy_config.js
@@ -88,12 +88,11 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/privacy/setting
 diff --git a/chrome/browser/autocomplete/chrome_autocomplete_provider_client.cc b/chrome/browser/autocomplete/chrome_autocomplete_provider_client.cc
 --- a/chrome/browser/autocomplete/chrome_autocomplete_provider_client.cc
 +++ b/chrome/browser/autocomplete/chrome_autocomplete_provider_client.cc
-@@ -319,6 +319,8 @@ ChromeAutocompleteProviderClient::GetBuiltinsToProvideAsUserTypes() {
+@@ -319,6 +319,7 @@ ChromeAutocompleteProviderClient::GetBuiltinsToProvideAsUserTypes() {
    builtins_to_provide.push_back(chrome::kChromeUISettingsURL16);
  #endif
    builtins_to_provide.push_back(chrome::kChromeUIVersionURL16);
-+  builtins_to_provide.push_back(
-+      base::ASCIIToUTF16(chrome::kChromeUIProxyConfigURL));
++  builtins_to_provide.push_back(chrome::kChromeUIProxyConfigURL16);
    return builtins_to_provide;
  }
  
@@ -694,7 +693,7 @@ diff --git a/chrome/browser/ui/webui/proxy_config_ui.cc b/chrome/browser/ui/webu
 new file mode 100644
 --- /dev/null
 +++ b/chrome/browser/ui/webui/proxy_config_ui.cc
-@@ -0,0 +1,392 @@
+@@ -0,0 +1,389 @@
 +/*
 +    This file is part of Bromite.
 +
@@ -756,7 +755,6 @@ new file mode 100644
 +// this class's public methods are expected to run on the UI thread.
 +class ProxyConfigMessageHandler
 +    : public WebUIMessageHandler,
-+      public base::SupportsWeakPtr<ProxyConfigMessageHandler>,
 +      public net::ProxyConfigService::Observer {
 + public:
 +  ProxyConfigMessageHandler(const ProxyConfigMessageHandler&) = delete;
@@ -794,12 +792,10 @@ new file mode 100644
 +
 +  void apply(const net::ProxyConfig& config);
 +
-+  base::WeakPtrFactory<ProxyConfigMessageHandler> weak_ptr_factory_;
++  base::WeakPtrFactory<ProxyConfigMessageHandler> weak_ptr_factory_{this};
 +};
 +
-+ProxyConfigMessageHandler::ProxyConfigMessageHandler(Profile *profile)
-+    :
-+      weak_ptr_factory_(this) {
++ProxyConfigMessageHandler::ProxyConfigMessageHandler(Profile *profile) {
 +
 +  // used to set new configuration preferences
 +  pref_service_ = g_browser_process->local_state();
@@ -1149,7 +1145,7 @@ diff --git a/chrome/common/webui_url_constants.h b/chrome/common/webui_url_const
  inline constexpr char kChromeUINetInternalsHost[] = "net-internals";
  inline constexpr char kChromeUINetInternalsURL[] = "chrome://net-internals/";
  inline constexpr char kChromeUINewTabHost[] = "newtab";
-+inline constexpr char kChromeUIProxyConfigURL[] = "chrome://proxy/";
++inline constexpr char16_t kChromeUIProxyConfigURL16[] = u"chrome://proxy/";
 +inline constexpr char kChromeUIProxyConfigHost[] = "proxy";
  inline constexpr char kChromeUINewTabPageHost[] = "new-tab-page";
  inline constexpr char kChromeUINewTabPageThirdPartyHost[] =

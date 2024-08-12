@@ -36,7 +36,7 @@ Enabled by default
  .../platform/graphics/bitmap_image_metrics.h  |   4 +-
  .../renderer/platform/image-decoders/BUILD.gn |   9 +
  .../platform/image-decoders/image_decoder.cc  |  23 +
- .../image-decoders/jxl/jxl_image_decoder.cc   | 685 ++++++++++++++++++
+ .../image-decoders/jxl/jxl_image_decoder.cc   | 686 ++++++++++++++++++
  .../image-decoders/jxl/jxl_image_decoder.h    | 123 ++++
  .../jxl/jxl_image_decoder_test.cc             | 626 ++++++++++++++++
  .../blink/tools/commit_stats/git-dirs.txt     |   1 +
@@ -58,7 +58,7 @@ Enabled by default
  .../libjxl/gen_headers/jxl/jxl_export.h       |  11 +
  tools/metrics/histograms/enums.xml            |   1 +
  .../histograms/metadata/blink/enums.xml       |   2 +-
- 53 files changed, 1997 insertions(+), 17 deletions(-)
+ 53 files changed, 1998 insertions(+), 17 deletions(-)
  create mode 100644 build/linux/unbundle/libjxl.gn
  create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Add-support-to-jxl.inc
  create mode 100644 cromite_flags/third_party/blink/common/features_cc/Add-support-to-jxl.inc
@@ -758,7 +758,7 @@ diff --git a/third_party/blink/renderer/platform/image-decoders/jxl/jxl_image_de
 new file mode 100644
 --- /dev/null
 +++ b/third_party/blink/renderer/platform/image-decoders/jxl/jxl_image_decoder.cc
-@@ -0,0 +1,685 @@
+@@ -0,0 +1,686 @@
 +// Copyright 2021 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
@@ -785,9 +785,10 @@ new file mode 100644
 +                                         const skcms_TransferFunction& tf) {
 +  // Override the transfer function with a known parametric curve.
 +  profile.has_trc = true;
++  auto list = base::span(profile.trc);
 +  for (int c = 0; c < 3; c++) {
-+    profile.trc[c].table_entries = 0;
-+    profile.trc[c].parametric = tf;
++    list[c].table_entries = 0;
++    list[c].parametric = tf;
 +  }
 +  return profile;
 +}
@@ -1550,7 +1551,7 @@ new file mode 100644
 +  bool have_color_info_ = false;
 +
 +  // Preserved for JXL pixel callback. Not owned.
-+  ColorProfileTransform* xform_;
++  raw_ptr<ColorProfileTransform> xform_;
 +
 +  // Fields for animation support.
 +

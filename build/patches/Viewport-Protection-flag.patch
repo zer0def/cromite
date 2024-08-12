@@ -518,7 +518,7 @@ diff --git a/third_party/blink/renderer/core/frame/local_frame.cc b/third_party/
 +  if (with_zoom_factor)
 +    ratio *= LayoutZoomFactor();
 +  else
-+    ratio = page_zoom_factor_;
++    ratio = layout_zoom_factor_;
    return ratio;
  }
  

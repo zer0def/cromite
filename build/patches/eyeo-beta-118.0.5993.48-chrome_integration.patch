@@ -110,7 +110,7 @@ diff --git a/chrome/app/chrome_main_delegate.cc b/chrome/app/chrome_main_delegat
  #include "chrome/browser/buildflags.h"
  #include "chrome/browser/chrome_content_browser_client.h"
  #include "chrome/browser/chrome_resource_bundle_helper.h"
-@@ -1928,7 +1933,7 @@ content::ContentClient* ChromeMainDelegate::CreateContentClient() {
+@@ -1927,7 +1932,7 @@ content::ContentClient* ChromeMainDelegate::CreateContentClient() {
  content::ContentBrowserClient*
  ChromeMainDelegate::CreateContentBrowserClient() {
    chrome_content_browser_client_ =

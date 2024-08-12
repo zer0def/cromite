@@ -993,10 +993,10 @@ new file mode 100644
 diff --git a/components/flags_ui/flags_state.cc b/components/flags_ui/flags_state.cc
 --- a/components/flags_ui/flags_state.cc
 +++ b/components/flags_ui/flags_state.cc
-@@ -361,6 +361,21 @@ void FlagsState::GetSwitchesAndFeaturesFromFlags(
+@@ -360,6 +360,21 @@ void FlagsState::GetSwitchesAndFeaturesFromFlags(
+ 
    for (const std::string& entry_name : enabled_entries) {
      const auto& entry_it = name_to_switch_map.find(entry_name);
-     CHECK(entry_it != name_to_switch_map.end(), base::NotFatalUntil::M130);
 +    if (entry_it == name_to_switch_map.end()) {
 +      // check if is a cromite feature
 +      std::string::size_type pos = entry_name.find('@');
@@ -1012,9 +1012,9 @@ diff --git a/components/flags_ui/flags_state.cc b/components/flags_ui/flags_stat
 +      }
 +      NOTREACHED_NORETURN();
 +    }
+     CHECK(entry_it != name_to_switch_map.end(), base::NotFatalUntil::M130);
  
      const SwitchEntry& entry = entry_it->second;
-     if (!entry.switch_name.empty())
 @@ -677,6 +692,27 @@ void FlagsState::GetFlagFeatureEntries(
        data.Set("links", std::move(links));
      }

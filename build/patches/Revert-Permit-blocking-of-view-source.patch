@@ -16,7 +16,7 @@ diff --git a/components/policy/content/policy_blocklist_navigation_throttle.cc b
  }
  
  bool PolicyBlocklistNavigationThrottle::IsBlockedViewSourceNavigation() {
-+  if ((true)) return false
++  if ((true)) return false;
    content::NavigationEntry* nav_entry =
        navigation_handle()->GetNavigationEntry();
    if (!nav_entry || !nav_entry->IsViewSourceMode()) {

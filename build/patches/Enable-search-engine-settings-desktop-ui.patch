@@ -44,8 +44,8 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../settings_localized_strings_provider.cc    |   8 +
  ...ings_localized_strings_provider_android.cc | 198 +++++++++++++
  ...tings_localized_strings_provider_android.h |  19 ++
- .../ui/webui/settings/settings_ui_android.cc  | 134 +++++++++
- .../ui/webui/settings/settings_ui_android.h   | 119 ++++++++
+ .../ui/webui/settings/settings_ui_android.cc  | 126 +++++++++
+ .../ui/webui/settings/settings_ui_android.h   | 103 +++++++
  chrome/chrome_paks.gni                        |  11 +
  .../browser_ui/settings/SettingsLauncher.java |   2 +
  .../search_engine_desktop_ui.grdp             |   6 +
@@ -56,8 +56,9 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  content/browser/webui/web_ui_impl.cc          |  14 +-
  content/browser/webui/web_ui_impl.h           |   3 +
  content/public/browser/web_ui.h               |   1 +
+ third_party/polymer/v3_0/BUILD.gn             |   6 +
  ui/base/template_expressions.cc               |  21 +-
- ui/webui/BUILD.gn                             |   8 +
+ ui/webui/BUILD.gn                             |   7 +
  ui/webui/resources/BUILD.gn                   |  10 +
  .../customize_color_scheme_mode/BUILD.gn      |   2 +-
  .../cr_components/help_bubble/BUILD.gn        |   2 +-
@@ -69,7 +70,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  ui/webui/resources/include_polymer.gni        |   2 +-
  ui/webui/resources/js/BUILD.gn                |   2 +-
  ui/webui/resources/js/load_time_data.ts       |  17 +-
- 62 files changed, 1105 insertions(+), 61 deletions(-)
+ 63 files changed, 1086 insertions(+), 61 deletions(-)
  create mode 100644 chrome/app/settings_strings_android.grdp
  create mode 100644 chrome/browser/search_engines/android/java/res/layout/search_engine_layout.xml
  create mode 100644 chrome/browser/ui/webui/settings/settings_localized_strings_provider_android.cc
@@ -1574,7 +1575,7 @@ diff --git a/chrome/browser/ui/webui/settings/settings_ui_android.cc b/chrome/br
 new file mode 100644
 --- /dev/null
 +++ b/chrome/browser/ui/webui/settings/settings_ui_android.cc
-@@ -0,0 +1,134 @@
+@@ -0,0 +1,126 @@
 +// Copyright 2015 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
@@ -1620,7 +1621,6 @@ new file mode 100644
 +#include "chrome/browser/ui/webui/webui_util.h"
 +#include "chrome/browser/ui/webui/theme_handler.h"
 +#include "chrome/browser/ui/webui/cr_components/customize_color_scheme_mode/customize_color_scheme_mode_handler.h"
-+#include "chrome/browser/ui/webui/customize_themes/chrome_customize_themes_handler.h"
 +#include "chrome/browser/ui/webui/settings/settings_localized_strings_provider_android.h"
 +
 +#if !BUILDFLAG(OPTIMIZE_WEBUI)
@@ -1678,13 +1678,6 @@ new file mode 100644
 +  web_ui()->AddMessageHandler(std::move(handler));
 +}
 +
-+void SettingsUI::CreateCustomizeThemesHandler(
-+    mojo::PendingRemote<customize_themes::mojom::CustomizeThemesClient>
-+        pending_client,
-+    mojo::PendingReceiver<customize_themes::mojom::CustomizeThemesHandler>
-+        pending_handler) {
-+}
-+
 +void SettingsUI::CreateThemeColorPickerHandler(
 +    mojo::PendingReceiver<theme_color_picker::mojom::ThemeColorPickerHandler>
 +        handler,
@@ -1713,7 +1706,7 @@ diff --git a/chrome/browser/ui/webui/settings/settings_ui_android.h b/chrome/bro
 new file mode 100644
 --- /dev/null
 +++ b/chrome/browser/ui/webui/settings/settings_ui_android.h
-@@ -0,0 +1,119 @@
+@@ -0,0 +1,103 @@
 +#ifndef CHROME_BROWSER_UI_WEBUI_SETTINGS_SETTINGS_UI_ANDROID_H_
 +#define CHROME_BROWSER_UI_WEBUI_SETTINGS_SETTINGS_UI_ANDROID_H_
 +
@@ -1730,7 +1723,6 @@ new file mode 100644
 +#include "ui/webui/resources/cr_components/help_bubble/help_bubble.mojom.h"
 +
 +#if !BUILDFLAG(IS_CHROMEOS_ASH)
-+#include "ui/webui/resources/cr_components/customize_themes/customize_themes.mojom.h"
 +#include "ui/webui/resources/cr_components/theme_color_picker/theme_color_picker.mojom.h"
 +#endif  // !BUILDFLAG(IS_CHROMEOS_ASH)
 +
@@ -1759,7 +1751,6 @@ new file mode 100644
 +    // chrome://settings/manageProfile which only exists on !OS_CHROMEOS
 +    // requires mojo bindings.
 +    ,
-+      public customize_themes::mojom::CustomizeThemesHandlerFactory,
 +      public theme_color_picker::mojom::ThemeColorPickerHandlerFactory
 +#endif  // BUILDFLAG(IS_CHROMEOS_ASH)
 +{
@@ -1774,13 +1765,6 @@ new file mode 100644
 +  ~SettingsUI() override;
 +
 +#if !BUILDFLAG(IS_CHROMEOS_ASH)
-+  // Instantiates the implementor of the
-+  // customize_themes::mojom::CustomizeThemesHandlerFactory mojo interface
-+  // passing the pending receiver that will be internally bound.
-+  void BindInterface(mojo::PendingReceiver<
-+                     customize_themes::mojom::CustomizeThemesHandlerFactory>
-+                         pending_receiver);
-+
 +  // Instantiates the implementor of the
 +  // theme_color_picker::mojom::ThemeColorPickerHandlerFactory mojo interface
 +  // passing the pending receiver that will be internally bound.
@@ -1805,13 +1789,6 @@ new file mode 100644
 +      std::unique_ptr<content::WebUIMessageHandler> handler);
 +
 +#if !BUILDFLAG(IS_CHROMEOS_ASH)
-+  // customize_themes::mojom::CustomizeThemesHandlerFactory:
-+  void CreateCustomizeThemesHandler(
-+      mojo::PendingRemote<customize_themes::mojom::CustomizeThemesClient>
-+          pending_client,
-+      mojo::PendingReceiver<customize_themes::mojom::CustomizeThemesHandler>
-+          pending_handler) override;
-+
 +  // theme_color_picker::mojom::ThemeColorPickerHandlerFactory:
 +  void CreateThemeColorPickerHandler(
 +      mojo::PendingReceiver<theme_color_picker::mojom::ThemeColorPickerHandler>
@@ -2023,6 +2000,22 @@ diff --git a/content/public/browser/web_ui.h b/content/public/browser/web_ui.h
  
    // Used by WebUIMessageHandlers. If the given message is already registered,
    // the call has no effect.
+diff --git a/third_party/polymer/v3_0/BUILD.gn b/third_party/polymer/v3_0/BUILD.gn
+--- a/third_party/polymer/v3_0/BUILD.gn
++++ b/third_party/polymer/v3_0/BUILD.gn
+@@ -36,6 +36,12 @@ js_files = [
+   "paper-spinner/paper-spinner-styles.js",
+ ]
+ 
++if (is_android) {
++  js_files += [
++    "iron-collapse/iron-collapse.js",
++  ]
++}
++
+ # Also needed on LaCros for Print Preview. Remove once CrOS Print Preview
+ # launches.
+ if (is_chromeos) {
 diff --git a/ui/base/template_expressions.cc b/ui/base/template_expressions.cc
 --- a/ui/base/template_expressions.cc
 +++ b/ui/base/template_expressions.cc
@@ -2066,14 +2059,13 @@ diff --git a/ui/base/template_expressions.cc b/ui/base/template_expressions.cc
 diff --git a/ui/webui/BUILD.gn b/ui/webui/BUILD.gn
 --- a/ui/webui/BUILD.gn
 +++ b/ui/webui/BUILD.gn
-@@ -28,6 +28,14 @@ static_library("webui") {
+@@ -28,6 +28,13 @@ static_library("webui") {
      "//ui/webui/resources/js/metrics_reporter:mojo_bindings",
    ]
  
 +  if (is_android) {
 +    public_deps += [
 +      "//ui/webui/resources/cr_components/customize_color_scheme_mode:mojom",
-+      "//ui/webui/resources/cr_components/customize_themes:mojom",
 +      "//ui/webui/resources/cr_components/theme_color_picker:mojom",
 +    ]
 +  }

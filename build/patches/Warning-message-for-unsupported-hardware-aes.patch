@@ -10,17 +10,17 @@ attacks, so it is better to warn the user of the presence of an
 unsupported device.
 you can remove the message by going to chrome://flags/#no-hw-aes-warning
 ---
- base/base_switches.cc                                  |  2 ++
- base/base_switches.h                                   |  1 +
- chrome/BUILD.gn                                        |  3 +++
- chrome/app/chrome_main_delegate.cc                     | 10 ++++++++++
- chrome/app/generated_resources.grd                     |  4 ++++
- chrome/browser/ui/startup/bad_flags_prompt.cc          |  9 +++++++++
- .../browser/renderer_host/render_process_host_impl.cc  |  1 +
- .../Warning-message-for-unsupported-hardware-aes.inc   |  9 +++++++++
- .../Warning-message-for-unsupported-hardware-aes.inc   |  4 ++++
- .../Warning-message-for-unsupported-hardware-aes.inc   |  1 +
- 10 files changed, 44 insertions(+)
+ base/base_switches.cc                                    | 2 ++
+ base/base_switches.h                                     | 1 +
+ chrome/BUILD.gn                                          | 3 +++
+ chrome/app/chrome_main_delegate.cc                       | 9 +++++++++
+ chrome/app/generated_resources.grd                       | 4 ++++
+ chrome/browser/ui/startup/bad_flags_prompt.cc            | 9 +++++++++
+ .../browser/renderer_host/render_process_host_impl.cc    | 1 +
+ .../Warning-message-for-unsupported-hardware-aes.inc     | 9 +++++++++
+ .../Warning-message-for-unsupported-hardware-aes.inc     | 4 ++++
+ .../Warning-message-for-unsupported-hardware-aes.inc     | 1 +
+ 10 files changed, 43 insertions(+)
  create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Warning-message-for-unsupported-hardware-aes.inc
  create mode 100644 cromite_flags/content/public/common/content_features_cc/Warning-message-for-unsupported-hardware-aes.inc
  create mode 100644 cromite_flags/content/public/common/content_features_h/Warning-message-for-unsupported-hardware-aes.inc
@@ -81,12 +81,11 @@ diff --git a/chrome/app/chrome_main_delegate.cc b/chrome/app/chrome_main_delegat
  
  #if BUILDFLAG(IS_WIN)
  #include <malloc.h>
-@@ -1290,6 +1293,13 @@ std::optional<int> ChromeMainDelegate::BasicStartupComplete() {
+@@ -1290,6 +1293,12 @@ std::optional<int> ChromeMainDelegate::BasicStartupComplete() {
      return chrome::RESULT_CODE_INVALID_SANDBOX_STATE;
  #endif
  
 +if (!command_line.HasSwitch(switches::kProcessType)) {
-+  crypto::EnsureOpenSSLInit();
 +  if (EVP_has_aes_hardware() == 0) {
 +    base::CommandLine::ForCurrentProcess()->AppendSwitch(switches::kNoAESHardware);
 +  }

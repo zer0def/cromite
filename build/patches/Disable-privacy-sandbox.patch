@@ -25,10 +25,12 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../tracking_protection_prefs.cc              |  4 ++--
  .../identity_manager/account_capabilities.cc  |  2 +-
  .../features_cc/Disable-privacy-sandbox.inc   |  1 +
+ .../Disable-privacy-sandbox.inc               |  1 +
  .../features_cc/Disable-privacy-sandbox.inc   |  4 ++++
  third_party/blink/common/features.cc          |  1 +
- 17 files changed, 40 insertions(+), 28 deletions(-)
+ 18 files changed, 41 insertions(+), 28 deletions(-)
  create mode 100644 cromite_flags/content/common/features_cc/Disable-privacy-sandbox.inc
+ create mode 100644 cromite_flags/content/public/common/content_features_cc/Disable-privacy-sandbox.inc
  create mode 100644 cromite_flags/third_party/blink/common/features_cc/Disable-privacy-sandbox.inc
 
 diff --git a/chrome/browser/chrome_content_browser_client.cc b/chrome/browser/chrome_content_browser_client.cc
@@ -305,6 +307,12 @@ new file mode 100644
 +++ b/cromite_flags/content/common/features_cc/Disable-privacy-sandbox.inc
 @@ -0,0 +1 @@
 +SET_CROMITE_FEATURE_DISABLED(kPrivacySandboxAdsAPIsM1Override);
+diff --git a/cromite_flags/content/public/common/content_features_cc/Disable-privacy-sandbox.inc b/cromite_flags/content/public/common/content_features_cc/Disable-privacy-sandbox.inc
+new file mode 100644
+--- /dev/null
++++ b/cromite_flags/content/public/common/content_features_cc/Disable-privacy-sandbox.inc
+@@ -0,0 +1 @@
++SET_CROMITE_FEATURE_DISABLED(kPrivacySandboxAdsAPIsOverride);
 diff --git a/cromite_flags/third_party/blink/common/features_cc/Disable-privacy-sandbox.inc b/cromite_flags/third_party/blink/common/features_cc/Disable-privacy-sandbox.inc
 new file mode 100644
 --- /dev/null

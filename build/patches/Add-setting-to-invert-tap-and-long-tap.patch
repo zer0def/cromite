@@ -13,13 +13,13 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../ChromeAccessibilitySettingsDelegate.java  | 18 ++++++++++
  .../contextmenu/ChromeContextMenuItem.java    |  5 ++-
  .../ChromeContextMenuPopulator.java           |  5 +++
- .../tab/TabContextMenuItemDelegate.java       |  9 +++++
+ .../tab/TabContextMenuItemDelegate.java       |  8 +++++
  .../flags/android/chrome_feature_list.cc      |  1 +
  .../browser/flags/ChromeFeatureList.java      |  5 +++
  .../strings/android_chrome_strings.grd        |  9 +++++
  .../res/xml/accessibility_preferences.xml     |  5 +++
  .../AccessibilitySettingsDelegate.java        |  2 ++
- .../contextmenu/ContextMenuItemDelegate.java  |  2 ++
+ .../contextmenu/ContextMenuItemDelegate.java  |  3 ++
  ...Add-setting-to-invert-tap-and-long-tap.inc |  8 +++++
  ...Add-setting-to-invert-tap-and-long-tap.inc |  3 ++
  ...Add-setting-to-invert-tap-and-long-tap.inc |  1 +
@@ -164,7 +164,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/contextmenu/Chr
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tab/TabContextMenuItemDelegate.java b/chrome/android/java/src/org/chromium/chrome/browser/tab/TabContextMenuItemDelegate.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/tab/TabContextMenuItemDelegate.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/tab/TabContextMenuItemDelegate.java
-@@ -328,11 +328,20 @@ public class TabContextMenuItemDelegate implements ContextMenuItemDelegate {
+@@ -328,6 +328,14 @@ public class TabContextMenuItemDelegate implements ContextMenuItemDelegate {
          mTab.loadUrl(loadUrlParams);
      }
  
@@ -179,12 +179,6 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tab/TabContextM
      /**
       * Called when the {@code url} is of an image and should be opened in a new page.
       *
-      * @param url The image URL to open.
-      */
-+    @Override
-     public void onOpenImageInNewTab(GURL url, Referrer referrer) {
-         LoadUrlParams loadUrlParams = new LoadUrlParams(url.getSpec());
-         loadUrlParams.setReferrer(referrer);
 diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browser/flags/android/chrome_feature_list.cc
 --- a/chrome/browser/flags/android/chrome_feature_list.cc
 +++ b/chrome/browser/flags/android/chrome_feature_list.cc
@@ -281,7 +275,15 @@ diff --git a/components/browser_ui/accessibility/android/java/src/org/chromium/c
 diff --git a/components/embedder_support/android/java/src/org/chromium/components/embedder_support/contextmenu/ContextMenuItemDelegate.java b/components/embedder_support/android/java/src/org/chromium/components/embedder_support/contextmenu/ContextMenuItemDelegate.java
 --- a/components/embedder_support/android/java/src/org/chromium/components/embedder_support/contextmenu/ContextMenuItemDelegate.java
 +++ b/components/embedder_support/android/java/src/org/chromium/components/embedder_support/contextmenu/ContextMenuItemDelegate.java
-@@ -148,6 +148,8 @@ public interface ContextMenuItemDelegate {
+@@ -9,6 +9,7 @@ import android.net.Uri;
+ import androidx.annotation.IntDef;
+ 
+ import org.chromium.content_public.browser.WebContents;
++import org.chromium.content_public.common.Referrer;
+ import org.chromium.url.GURL;
+ 
+ import java.lang.annotation.Retention;
+@@ -148,6 +149,8 @@ public interface ContextMenuItemDelegate {
       */
      GURL getPageUrl();
  

@@ -11,6 +11,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../optimization_guide/chrome_hints_manager.cc    |  1 +
  .../model_validator_keyed_service.cc              |  6 +++++-
  .../optimization_guide_keyed_service.cc           |  1 -
+ .../predictors/autocomplete_action_predictor.cc   |  2 ++
  .../predictors/loading_predictor_config.cc        |  4 ++--
  chrome/browser/predictors/predictors_features.cc  |  3 +--
  chrome/browser/ui/tab_helpers.cc                  |  1 -
@@ -27,7 +28,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  components/optimization_guide/features.gni        |  3 +--
  .../core/page_content_annotations_features.cc     |  5 +++++
  components/search/ntp_features.cc                 |  3 +++
- .../Disable-all-predictors-code.inc               |  4 ++++
+ .../Disable-all-predictors-code.inc               |  3 +++
  .../Disable-all-predictors-code.inc               |  1 +
  .../features_cc/Disable-all-predictors-code.inc   |  4 ++++
  .../features_cc/Disable-all-predictors-code.inc   |  1 +
@@ -35,7 +36,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  services/webnn/features.gni                       |  2 +-
  .../document_speculation_rules.cc                 |  1 +
  .../platform/runtime_enabled_features.json5       |  2 +-
- 30 files changed, 67 insertions(+), 35 deletions(-)
+ 31 files changed, 68 insertions(+), 35 deletions(-)
  create mode 100644 cromite_flags/chrome/browser/browser_features_cc/Disable-all-predictors-code.inc
  create mode 100644 cromite_flags/chrome/common/chrome_features_cc/Disable-all-predictors-code.inc
  create mode 100644 cromite_flags/components/permissions/features_cc/Disable-all-predictors-code.inc
@@ -165,6 +166,18 @@ diff --git a/chrome/browser/optimization_guide/optimization_guide_keyed_service.
  }
  
  optimization_guide::OptimizationGuideDecision
+diff --git a/chrome/browser/predictors/autocomplete_action_predictor.cc b/chrome/browser/predictors/autocomplete_action_predictor.cc
+--- a/chrome/browser/predictors/autocomplete_action_predictor.cc
++++ b/chrome/browser/predictors/autocomplete_action_predictor.cc
+@@ -209,6 +209,8 @@ void AutocompleteActionPredictor::StartPrerendering(
+ 
+   SetIsNavigationInDomainCallback(preloading_data);
+ 
++  if ((true)) return; // was kOmniboxTriggerForPrerender2
++
+   // Create new PreloadingAttempt and pass all the values corresponding to this
+   // prerendering attempt for Prerender.
+   content::PreloadingAttempt* preloading_attempt =
 diff --git a/chrome/browser/predictors/loading_predictor_config.cc b/chrome/browser/predictors/loading_predictor_config.cc
 --- a/chrome/browser/predictors/loading_predictor_config.cc
 +++ b/chrome/browser/predictors/loading_predictor_config.cc
@@ -479,8 +492,7 @@ diff --git a/cromite_flags/chrome/browser/browser_features_cc/Disable-all-predic
 new file mode 100644
 --- /dev/null
 +++ b/cromite_flags/chrome/browser/browser_features_cc/Disable-all-predictors-code.inc
-@@ -0,0 +1,4 @@
-+SET_CROMITE_FEATURE_DISABLED(kOmniboxTriggerForPrerender2);
+@@ -0,0 +1,3 @@
 +SET_CROMITE_FEATURE_DISABLED(kBookmarkTriggerForPrerender2);
 +SET_CROMITE_FEATURE_DISABLED(kNewTabPageTriggerForPrerender2);
 +SET_CROMITE_FEATURE_DISABLED(kSupportSearchSuggestionForPrerender2);

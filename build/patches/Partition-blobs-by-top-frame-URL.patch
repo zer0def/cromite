@@ -10,9 +10,9 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 ---
  storage/browser/blob/blob_url_store_impl.cc   | 28 +++++++++++++++++++
  storage/browser/blob/blob_url_store_impl.h    |  9 ++++++
- .../public/mojom/blob/blob_url_store.mojom    | 10 +++++--
+ .../public/mojom/blob/blob_url_store.mojom    |  8 ++++--
  .../core/fileapi/public_url_manager.cc        | 17 +++++++++++
- 4 files changed, 62 insertions(+), 2 deletions(-)
+ 4 files changed, 60 insertions(+), 2 deletions(-)
 
 diff --git a/storage/browser/blob/blob_url_store_impl.cc b/storage/browser/blob/blob_url_store_impl.cc
 --- a/storage/browser/blob/blob_url_store_impl.cc
@@ -122,16 +122,14 @@ diff --git a/third_party/blink/public/mojom/blob/blob_url_store.mojom b/third_pa
      // TODO(https://crbug.com/1224926): Remove these once experiment is over.
      mojo_base.mojom.UnguessableToken? unsafe_agent_cluster_id,
      network.mojom.SchemefulSite? unsafe_top_level_site);
-@@ -51,7 +53,11 @@ interface BlobURLStore {
+@@ -51,7 +53,9 @@ interface BlobURLStore {
    // refer to, even after the URL is revoked.
    // As long as the token is alive, the resolved blob will also be kept alive.
    ResolveForNavigation(url.mojom.Url url,
 -                       pending_receiver<BlobURLToken> token) => (
 +                       pending_receiver<BlobURLToken> token,
 +                       mojo_base.mojom.UnguessableToken unsafe_agent_cluster_id,
-+                       network.mojom.SchemefulSite? unsafe_top_level_site,
-+          mojo_base.mojom.UnguessableToken unsafe_agent_cluster_id,
-+          network.mojom.SchemefulSite? unsafe_top_level_site) => (
++                       network.mojom.SchemefulSite? unsafe_top_level_site) => (
      // TODO(https://crbug.com/1224926): Remove this once experiment is over.
      mojo_base.mojom.UnguessableToken? unsafe_agent_cluster_id);
  };

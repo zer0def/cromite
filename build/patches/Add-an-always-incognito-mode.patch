@@ -47,7 +47,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../tabmodel/TabModelSelectorImpl.java        |   3 +
  .../browser/tabmodel/TabPersistentStore.java  |   9 +
  .../browser/toolbar/ToolbarManager.java       |   3 +-
- .../webapps/WebappIntentDataProvider.java     |  14 ++
+ .../webapps/WebappIntentDataProvider.java     |  15 ++
  .../browser/android/historical_tab_saver.cc   |  24 ++-
  .../chrome_autocomplete_provider_client.cc    |   9 +
  .../chrome_autocomplete_provider_client.h     |   1 +
@@ -85,7 +85,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../add-an-always-incognito-mode.inc          |   3 +
  .../add-an-always-incognito-mode.inc          |   1 +
  net/base/file_stream_context.cc               |   2 +-
- 66 files changed, 780 insertions(+), 102 deletions(-)
+ 66 files changed, 781 insertions(+), 102 deletions(-)
  create mode 100644 chrome/android/java/res/xml/incognito_preferences.xml
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/AlwaysIncognitoLinkInterceptor.java
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/IncognitoSettings.java
@@ -493,7 +493,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/customtabs/Cust
  
 +    @Override
 +    public @CustomTabProfileType int getCustomTabMode() {
-+        return AlwaysIncognitoLinkInterceptor.isAlwaysIncognito();
++        return AlwaysIncognitoLinkInterceptor.isAlwaysIncognito()
 +                ? CustomTabProfileType.INCOGNITO
 +                : CustomTabProfileType.REGULAR;
 +    }
@@ -1136,17 +1136,16 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/toolbar/Toolbar
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/webapps/WebappIntentDataProvider.java b/chrome/android/java/src/org/chromium/chrome/browser/webapps/WebappIntentDataProvider.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/webapps/WebappIntentDataProvider.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/webapps/WebappIntentDataProvider.java
-@@ -33,6 +33,9 @@ import org.chromium.components.browser_ui.widget.TintedDrawable;
+@@ -33,6 +33,8 @@ import org.chromium.components.browser_ui.widget.TintedDrawable;
  import org.chromium.device.mojom.ScreenOrientationLockType;
  import org.chromium.ui.util.ColorUtils;
  
-+import org.chromium.base.ContextUtils;
 +import org.chromium.chrome.browser.AlwaysIncognitoLinkInterceptor;
 +
  /** Stores info about a web app. */
  public class WebappIntentDataProvider extends BrowserServicesIntentDataProvider {
      private final Drawable mCloseButtonIcon;
-@@ -45,6 +48,8 @@ public class WebappIntentDataProvider extends BrowserServicesIntentDataProvider
+@@ -45,6 +47,8 @@ public class WebappIntentDataProvider extends BrowserServicesIntentDataProvider
      private final ColorProviderImpl mColorProvider;
      private final ColorProviderImpl mDarkColorProvider;
  
@@ -1155,7 +1154,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/webapps/WebappI
      /** Returns the toolbar color to use if a custom color is not specified by the webapp. */
      public static int getDefaultToolbarColor() {
          return Color.WHITE;
-@@ -80,6 +85,10 @@ public class WebappIntentDataProvider extends BrowserServicesIntentDataProvider
+@@ -80,6 +84,10 @@ public class WebappIntentDataProvider extends BrowserServicesIntentDataProvider
          mWebappExtras = webappExtras;
          mWebApkExtras = webApkExtras;
          mActivityType = (webApkExtras != null) ? ActivityType.WEB_APK : ActivityType.WEBAPP;
@@ -1166,13 +1165,15 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/webapps/WebappI
      }
  
      @Override
-@@ -175,6 +184,11 @@ public class WebappIntentDataProvider extends BrowserServicesIntentDataProvider
+@@ -175,6 +183,13 @@ public class WebappIntentDataProvider extends BrowserServicesIntentDataProvider
          return mWebApkExtras;
      }
  
 +    @Override
-+    public boolean isIncognito() {
-+        return mIsIncognito;
++    public @CustomTabProfileType int getCustomTabMode() {
++        return mIsIncognito
++                ? CustomTabProfileType.INCOGNITO
++                : CustomTabProfileType.REGULAR;
 +    }
 +
      @Override
@@ -1849,7 +1850,7 @@ diff --git a/chrome/browser/ui/android/native_page/java/src/org/chromium/chrome/
      }
  
      /**
-@@ -195,9 +199,10 @@ public interface NativePage {
+@@ -195,7 +199,8 @@ public interface NativePage {
       * @return Type of the native page defined in {@link NativePageType}.
       */
      private static @NativePageType int nativePageType(
@@ -1857,11 +1858,17 @@ diff --git a/chrome/browser/ui/android/native_page/java/src/org/chromium/chrome/
 +            GURL url, NativePage candidatePage, boolean isIncognito, boolean hasPdfDownload,
 +            boolean isAlwaysIncognito) {
          if (hasPdfDownload) {
--            // For navigation with associated pdf download (e.g. open a pdf link), pdf page should
-+            // For navigation with associated pdf download (e.g. open a pdf link, isAlwaysIncognito), pdf page should
+             // For navigation with associated pdf download (e.g. open a pdf link), pdf page should
              // be created.
-             // Unlike other native pages, each pdf page could be different. We need to compare
-             // the entire url instead of the host to determine if the pdf candidate page could
+@@ -213,7 +218,7 @@ public interface NativePage {
+             // created after the pdf document is re-downloaded in other parts of the code.
+             return NativePageType.NONE;
+         } else {
+-            return chromePageType(url, candidatePage, isIncognito);
++            return chromePageType(url, candidatePage, isIncognito, isAlwaysIncognito);
+         }
+     }
+ 
 @@ -225,7 +230,7 @@ public interface NativePage {
       *     which do not have chrome or chrome-native scheme.
       */
