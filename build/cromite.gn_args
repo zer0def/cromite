@@ -96,6 +96,10 @@ enable_log_error_not_reached = true
 # Allows building without //third_party/unrar included, for license reasons
 safe_browsing_use_unrar = false
 
+# Keep disabled Google Request Header Integrity
+# see https://chromium-review.googlesource.com/c/chromium/src/+/5778493
+enable_request_header_integrity = false
+
 declare_args() {
   _is_debug_build = ""
   build_webview = false
