@@ -197,7 +197,6 @@ Disable-BackForwardCache.patch
 Evict-the-entire-FrameTree-like-desktop.patch
 Disable-visited-pseudo-class.patch
 Add-setting-to-clear-data-on-exit.patch
-WIN-Disable-sharing-hub.patch
 Improve-the-browser-sandbox.patch
 Disable-csp-reports.patch
 Fonts-fingerprinting-mitigation.patch
@@ -218,7 +217,6 @@ Add-a-flag-to-disable-GamePad-API.patch
 Disable-WebGPU.patch
 Disable-GetInstalledRelatedApps-API.patch
 Disable-GSA-by-default.patch
-Disable-PrivateStateTokens-API.patch
 Disallowing-MIDI-permission-by-default.patch
 Disable-Compression-Dictionary-Transport.patch
 Disallow-Android-App-Scheme-as-referrer.patch
