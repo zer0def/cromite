@@ -30,14 +30,16 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  components/search/ntp_features.cc                 |  3 +++
  .../Disable-all-predictors-code.inc               |  3 +++
  .../Disable-all-predictors-code.inc               |  1 +
+ .../Disable-all-predictors-code.inc               |  1 +
  .../features_cc/Disable-all-predictors-code.inc   |  4 ++++
  .../features_cc/Disable-all-predictors-code.inc   |  1 +
  .../features_cc/Disable-all-predictors-code.inc   |  2 ++
  services/webnn/features.gni                       |  2 +-
  .../document_speculation_rules.cc                 |  1 +
  .../platform/runtime_enabled_features.json5       |  2 +-
- 31 files changed, 68 insertions(+), 35 deletions(-)
+ 32 files changed, 69 insertions(+), 35 deletions(-)
  create mode 100644 cromite_flags/chrome/browser/browser_features_cc/Disable-all-predictors-code.inc
+ create mode 100644 cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Disable-all-predictors-code.inc
  create mode 100644 cromite_flags/chrome/common/chrome_features_cc/Disable-all-predictors-code.inc
  create mode 100644 cromite_flags/components/permissions/features_cc/Disable-all-predictors-code.inc
  create mode 100644 cromite_flags/services/network/public/cpp/features_cc/Disable-all-predictors-code.inc
@@ -496,6 +498,12 @@ new file mode 100644
 +SET_CROMITE_FEATURE_DISABLED(kBookmarkTriggerForPrerender2);
 +SET_CROMITE_FEATURE_DISABLED(kNewTabPageTriggerForPrerender2);
 +SET_CROMITE_FEATURE_DISABLED(kSupportSearchSuggestionForPrerender2);
+diff --git a/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Disable-all-predictors-code.inc b/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Disable-all-predictors-code.inc
+new file mode 100644
+--- /dev/null
++++ b/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Disable-all-predictors-code.inc
+@@ -0,0 +1 @@
++SET_CROMITE_FEATURE_DISABLED(kNewTabPageAndroidTriggerForPrerender2);
 diff --git a/cromite_flags/chrome/common/chrome_features_cc/Disable-all-predictors-code.inc b/cromite_flags/chrome/common/chrome_features_cc/Disable-all-predictors-code.inc
 new file mode 100644
 --- /dev/null
