@@ -6,7 +6,9 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 ---
  chrome/android/BUILD.gn                       |  1 -
  .../browser/feed/FeedSurfaceCoordinator.java  |  5 +----
+ .../feedback/ChromeFeedbackCollector.java     |  1 -
  chrome/browser/BUILD.gn                       |  2 --
+ chrome/browser/feedback/android/BUILD.gn      |  2 --
  .../prefs/chrome_pref_service_factory.cc      |  2 +-
  .../profiles/profile_attributes_entry.cc      |  2 +-
  chrome/browser/profiles/profile_impl.cc       |  5 +----
@@ -18,7 +20,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../core/browser/supervised_user_service.cc   |  5 +----
  .../core/browser/supervised_user_utils.cc     |  1 +
  .../supervised_user/core/common/features.cc   |  6 ++++++
- 14 files changed, 18 insertions(+), 46 deletions(-)
+ 16 files changed, 18 insertions(+), 49 deletions(-)
 
 diff --git a/chrome/android/BUILD.gn b/chrome/android/BUILD.gn
 --- a/chrome/android/BUILD.gn
@@ -53,6 +55,17 @@ diff --git a/chrome/android/feed/core/java/src/org/chromium/chrome/browser/feed/
      }
  
      /**
+diff --git a/chrome/android/java/src/org/chromium/chrome/browser/feedback/ChromeFeedbackCollector.java b/chrome/android/java/src/org/chromium/chrome/browser/feedback/ChromeFeedbackCollector.java
+--- a/chrome/android/java/src/org/chromium/chrome/browser/feedback/ChromeFeedbackCollector.java
++++ b/chrome/android/java/src/org/chromium/chrome/browser/feedback/ChromeFeedbackCollector.java
+@@ -85,7 +85,6 @@ public class ChromeFeedbackCollector extends FeedbackCollector<ChromeFeedbackCol
+         // FamilyInfoFeedbackSource relies on IdentityManager which is not available for the
+         // incognito profile.
+         if (!initParams.profile.isOffTheRecord()) {
+-            sources.add(new FamilyInfoFeedbackSource(initParams.profile));
+         }
+ 
+         return sources;
 diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
@@ -65,6 +78,25 @@ diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
        "first_run/android/first_run_prefs.cc",
        "first_run/android/first_run_prefs.h",
        "first_run/android/first_run_utils.cc",
+diff --git a/chrome/browser/feedback/android/BUILD.gn b/chrome/browser/feedback/android/BUILD.gn
+--- a/chrome/browser/feedback/android/BUILD.gn
++++ b/chrome/browser/feedback/android/BUILD.gn
+@@ -7,7 +7,6 @@ import("//third_party/jni_zero/jni_zero.gni")
+ 
+ generate_jni("jni_headers") {
+   sources = [
+-    "java/src/org/chromium/chrome/browser/feedback/FamilyInfoFeedbackSource.java",
+     "java/src/org/chromium/chrome/browser/feedback/ProcessIdFeedbackSource.java",
+     "java/src/org/chromium/chrome/browser/feedback/SystemInfoFeedbackSource.java",
+   ]
+@@ -32,7 +31,6 @@ android_library("java") {
+   sources = [
+     "java/src/org/chromium/chrome/browser/feedback/AsyncFeedbackSourceAdapter.java",
+     "java/src/org/chromium/chrome/browser/feedback/DeviceInfoFeedbackSource.java",
+-    "java/src/org/chromium/chrome/browser/feedback/FamilyInfoFeedbackSource.java",
+     "java/src/org/chromium/chrome/browser/feedback/FeedbackContextFeedbackSource.java",
+     "java/src/org/chromium/chrome/browser/feedback/FragmentHelpAndFeedbackLauncher.java",
+     "java/src/org/chromium/chrome/browser/feedback/HelpAndFeedbackLauncher.java",
 diff --git a/chrome/browser/prefs/chrome_pref_service_factory.cc b/chrome/browser/prefs/chrome_pref_service_factory.cc
 --- a/chrome/browser/prefs/chrome_pref_service_factory.cc
 +++ b/chrome/browser/prefs/chrome_pref_service_factory.cc
