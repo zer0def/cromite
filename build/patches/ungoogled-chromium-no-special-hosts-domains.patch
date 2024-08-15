@@ -239,7 +239,7 @@ diff --git a/chrome/browser/chrome_browser_main.cc b/chrome/browser/chrome_brows
 diff --git a/chrome/browser/chrome_content_browser_client.cc b/chrome/browser/chrome_content_browser_client.cc
 --- a/chrome/browser/chrome_content_browser_client.cc
 +++ b/chrome/browser/chrome_content_browser_client.cc
-@@ -2965,7 +2965,6 @@ void ChromeContentBrowserClient::AppendExtraCommandLineSwitches(
+@@ -2973,7 +2973,6 @@ void ChromeContentBrowserClient::AppendExtraCommandLineSwitches(
        switches::kForcePNaClSubzero,
  #endif
        switches::kForceUIDirection,
@@ -247,7 +247,7 @@ diff --git a/chrome/browser/chrome_content_browser_client.cc b/chrome/browser/ch
        switches::kJavaScriptHarmony,
        switches::kEnableExperimentalWebAssemblyFeatures,
        embedder_support::kOriginTrialDisabledFeatures,
-@@ -5400,9 +5399,6 @@ ChromeContentBrowserClient::CreateThrottlesForNavigation(
+@@ -5415,9 +5414,6 @@ ChromeContentBrowserClient::CreateThrottlesForNavigation(
    }
  #endif
  
@@ -257,7 +257,7 @@ diff --git a/chrome/browser/chrome_content_browser_client.cc b/chrome/browser/ch
  
    MaybeAddThrottle(
        SupervisedUserNavigationThrottle::MaybeCreateThrottleFor(handle),
-@@ -5973,7 +5969,8 @@ GetClientDataHeader(int frame_tree_node_id) {
+@@ -5988,7 +5984,8 @@ GetClientDataHeader(int frame_tree_node_id) {
  }
  #endif
  
@@ -267,7 +267,7 @@ diff --git a/chrome/browser/chrome_content_browser_client.cc b/chrome/browser/ch
  #if BUILDFLAG(IS_ANDROID)
      const std::string& client_data_header,
  #endif
-@@ -6013,7 +6010,7 @@ std::unique_ptr<blink::URLLoaderThrottle> CreateGoogleURLLoaderThrottle(
+@@ -6028,7 +6025,7 @@ std::unique_ptr<blink::URLLoaderThrottle> CreateGoogleURLLoaderThrottle(
        std::move(bound_session_request_throttled_handler),
  #endif
        std::move(dynamic_params));
@@ -276,7 +276,7 @@ diff --git a/chrome/browser/chrome_content_browser_client.cc b/chrome/browser/ch
  
  std::vector<std::unique_ptr<blink::URLLoaderThrottle>>
  ChromeContentBrowserClient::CreateURLLoaderThrottles(
-@@ -6067,15 +6064,6 @@ ChromeContentBrowserClient::CreateURLLoaderThrottles(
+@@ -6082,15 +6079,6 @@ ChromeContentBrowserClient::CreateURLLoaderThrottles(
        GetClientDataHeader(frame_tree_node_id);
  #endif
  
@@ -292,7 +292,7 @@ diff --git a/chrome/browser/chrome_content_browser_client.cc b/chrome/browser/ch
    {
      auto* factory =
          ProtocolHandlerRegistryFactory::GetForBrowserContext(browser_context);
-@@ -6130,20 +6118,6 @@ ChromeContentBrowserClient::CreateURLLoaderThrottlesForKeepAlive(
+@@ -6145,20 +6133,6 @@ ChromeContentBrowserClient::CreateURLLoaderThrottlesForKeepAlive(
    }
  #endif
  

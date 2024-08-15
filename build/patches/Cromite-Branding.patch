@@ -13236,7 +13236,7 @@ diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chro
 diff --git a/chrome/common/url_constants.h b/chrome/common/url_constants.h
 --- a/chrome/common/url_constants.h
 +++ b/chrome/common/url_constants.h
-@@ -132,7 +132,7 @@ inline constexpr char kChromeHelpViaMenuURL[] =
+@@ -136,7 +136,7 @@ inline constexpr char kChromeHelpViaMenuURL[] =
  #endif  // BUILDFLAG(IS_CHROMEOS_ASH)
  
  inline constexpr char kChromeHelpViaWebUIURL[] =
@@ -13245,7 +13245,7 @@ diff --git a/chrome/common/url_constants.h b/chrome/common/url_constants.h
  #if BUILDFLAG(IS_CHROMEOS_ASH)
  inline constexpr char kChromeOsHelpViaWebUIURL[] =
  #if BUILDFLAG(GOOGLE_CHROME_BRANDING)
-@@ -195,7 +195,7 @@ inline constexpr char kChromeUIUntrustedNewTabPageUrl[] =
+@@ -199,7 +199,7 @@ inline constexpr char kChromeUIUntrustedNewTabPageUrl[] =
      "chrome-untrusted://new-tab-page/";
  
  // The URL for the Chromium project used in the About dialog.

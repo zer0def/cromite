@@ -1926,7 +1926,7 @@ diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browse
  #include "chrome/browser/android/webapk/webapk_features.h"
  #include "chrome/browser/browser_features.h"
  #include "chrome/browser/flags/android/chrome_session_state.h"
-@@ -259,6 +260,8 @@ const base::Feature* const kFeaturesExposedToJava[] = {
+@@ -260,6 +261,8 @@ const base::Feature* const kFeaturesExposedToJava[] = {
      &kNavBarColorMatchesTabBackground,
      &kNewTabSearchEngineUrlAndroid,
      &kNewTabPageAndroidTriggerForPrerender2,
@@ -1938,7 +1938,7 @@ diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browse
 diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 --- a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 +++ b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
-@@ -373,6 +373,10 @@ public abstract class ChromeFeatureList {
+@@ -374,6 +374,10 @@ public abstract class ChromeFeatureList {
      public static final String NEW_TAB_PAGE_ANDROID_TRIGGER_FOR_PRERENDER2 =
              "NewTabPageAndroidTriggerForPrerender2";
      public static final String NOTIFICATION_ONE_TAP_UNSUBSCRIBE = "NotificationOneTapUnsubscribe";
@@ -1949,7 +1949,7 @@ diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/f
      public static final String NOTIFICATION_PERMISSION_VARIANT = "NotificationPermissionVariant";
      public static final String NOTIFICATION_PERMISSION_BOTTOM_SHEET =
              "NotificationPermissionBottomSheet";
-@@ -667,6 +671,10 @@ public abstract class ChromeFeatureList {
+@@ -670,6 +674,10 @@ public abstract class ChromeFeatureList {
      public static final CachedFlag sPriceInsights = newCachedFlag(PRICE_INSIGHTS, false);
      public static final CachedFlag sPrivacyGuideAndroid3 =
              newCachedFlag(PRIVACY_GUIDE_ANDROID_3, false);
@@ -1960,7 +1960,7 @@ diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/f
      public static final CachedFlag sPrivacyGuidePreloadAndroid =
              newCachedFlag(PRIVACY_GUIDE_PRELOAD_ANDROID, false);
      public static final CachedFlag sOptimizationGuidePushNotifications =
-@@ -796,6 +804,8 @@ public abstract class ChromeFeatureList {
+@@ -800,6 +808,8 @@ public abstract class ChromeFeatureList {
                      sPrivacyGuideAndroid3,
                      sPrivacyGuidePreloadAndroid,
                      sOptimizationGuidePushNotifications,

@@ -298,7 +298,7 @@ diff --git a/chrome/browser/browsing_data/chrome_browsing_data_remover_constants
 diff --git a/chrome/browser/browsing_data/chrome_browsing_data_remover_delegate.cc b/chrome/browser/browsing_data/chrome_browsing_data_remover_delegate.cc
 --- a/chrome/browser/browsing_data/chrome_browsing_data_remover_delegate.cc
 +++ b/chrome/browser/browsing_data/chrome_browsing_data_remover_delegate.cc
-@@ -454,6 +454,9 @@ void ChromeBrowsingDataRemoverDelegate::RemoveEmbedderData(
+@@ -455,6 +455,9 @@ void ChromeBrowsingDataRemoverDelegate::RemoveEmbedderData(
            CreateTaskCompletionClosure(TracingDataType::kHistory),
            &history_task_tracker_);
      }
@@ -308,7 +308,7 @@ diff --git a/chrome/browser/browsing_data/chrome_browsing_data_remover_delegate.
      if (ClipboardRecentContent::GetInstance())
        ClipboardRecentContent::GetInstance()->SuppressClipboardContent();
  
-@@ -504,7 +507,9 @@ void ChromeBrowsingDataRemoverDelegate::RemoveEmbedderData(
+@@ -505,7 +508,9 @@ void ChromeBrowsingDataRemoverDelegate::RemoveEmbedderData(
            prerender::NoStatePrefetchManager::CLEAR_PRERENDER_CONTENTS |
            prerender::NoStatePrefetchManager::CLEAR_PRERENDER_HISTORY);
      }
@@ -318,7 +318,7 @@ diff --git a/chrome/browser/browsing_data/chrome_browsing_data_remover_delegate.
      // The saved Autofill profiles and credit cards can include the origin from
      // which these profiles and credit cards were learned.  These are a form of
      // history, so clear them as well.
-@@ -525,7 +530,9 @@ void ChromeBrowsingDataRemoverDelegate::RemoveEmbedderData(
+@@ -526,7 +531,9 @@ void ChromeBrowsingDataRemoverDelegate::RemoveEmbedderData(
        if (data_manager)
          data_manager->Refresh();
      }
@@ -328,7 +328,7 @@ diff --git a/chrome/browser/browsing_data/chrome_browsing_data_remover_delegate.
      base::ThreadPool::PostTaskAndReply(
          FROM_HERE, {base::TaskPriority::USER_VISIBLE, base::MayBlock()},
          base::BindOnce(
-@@ -572,6 +579,11 @@ void ChromeBrowsingDataRemoverDelegate::RemoveEmbedderData(
+@@ -573,6 +580,11 @@ void ChromeBrowsingDataRemoverDelegate::RemoveEmbedderData(
      // and SSL host state are scoped to hosts and represent them as std::string.
      // Rename the method to indicate its more general usage.
      if (profile_->GetSSLHostStateDelegate()) {
@@ -340,7 +340,7 @@ diff --git a/chrome/browser/browsing_data/chrome_browsing_data_remover_delegate.
        profile_->GetSSLHostStateDelegate()->Clear(
            filter_builder->MatchesAllOriginsAndDomains()
                ? base::RepeatingCallback<bool(const std::string&)>()
-@@ -600,9 +612,13 @@ void ChromeBrowsingDataRemoverDelegate::RemoveEmbedderData(
+@@ -601,9 +613,13 @@ void ChromeBrowsingDataRemoverDelegate::RemoveEmbedderData(
      }
  
      device_event_log::Clear(delete_begin_, delete_end_);
@@ -354,7 +354,7 @@ diff --git a/chrome/browser/browsing_data/chrome_browsing_data_remover_delegate.
      content::BackgroundTracingManager::GetInstance().DeleteTracesInDateRange(
          delete_begin_, delete_end_);
  
-@@ -1281,6 +1297,8 @@ void ChromeBrowsingDataRemoverDelegate::RemoveEmbedderData(
+@@ -1289,6 +1305,8 @@ void ChromeBrowsingDataRemoverDelegate::RemoveEmbedderData(
  
      if (should_clear_zero_suggest_and_session_token && template_url_service)
        template_url_service->ClearSessionToken();

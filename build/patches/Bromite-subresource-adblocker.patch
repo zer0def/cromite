@@ -1560,7 +1560,7 @@ diff --git a/components/subresource_filter/content/browser/content_subresource_f
  #include "components/subresource_filter/content/browser/ad_tagging_utils.h"
  #include "components/subresource_filter/content/browser/content_subresource_filter_web_contents_helper.h"
  #include "components/subresource_filter/content/browser/profile_interaction_manager.h"
-@@ -109,6 +112,7 @@ ContentSubresourceFilterThrottleManager::
+@@ -110,6 +113,7 @@ ContentSubresourceFilterThrottleManager::
        profile_interaction_manager_(
            std::make_unique<subresource_filter::ProfileInteractionManager>(
                profile_context)),
@@ -1568,7 +1568,7 @@ diff --git a/components/subresource_filter/content/browser/content_subresource_f
        web_contents_helper_(web_contents_helper) {}
  
  ContentSubresourceFilterThrottleManager::
-@@ -667,6 +671,17 @@ ContentSubresourceFilterThrottleManager::
+@@ -668,6 +672,17 @@ ContentSubresourceFilterThrottleManager::
        throttle->NotifyPageActivationWithRuleset(EnsureRulesetHandle(),
                                                  ad_tagging_state);
      }
@@ -1743,7 +1743,7 @@ diff --git a/components/subresource_filter/content/shared/browser/ruleset_servic
  
    // Get the ruleset version associated with the current local_state_.
    IndexedRulesetVersion GetMostRecentlyIndexedVersion() const;
-@@ -219,6 +219,12 @@ class RulesetService {
+@@ -221,6 +221,12 @@ class RulesetService {
        const base::FilePath& indexed_ruleset_base_dir,
        const UnindexedRulesetInfo& unindexed_ruleset_info);
  
@@ -1952,7 +1952,7 @@ diff --git a/components/subresource_filter/core/browser/verified_ruleset_dealer.
  #include "base/not_fatal_until.h"
  #include "base/notreached.h"
  #include "base/task/sequenced_task_runner.h"
-@@ -39,6 +40,9 @@ RulesetFilePtr VerifiedRulesetDealer::OpenAndSetRulesetFile(
+@@ -40,6 +41,9 @@ RulesetFilePtr VerifiedRulesetDealer::OpenAndSetRulesetFile(
    TRACE_EVENT1(TRACE_DISABLED_BY_DEFAULT("loading"),
                 "VerifiedRulesetDealer::OpenAndSetRulesetFile", "file_valid",
                 file->IsValid());
@@ -1970,10 +1970,10 @@ diff --git a/components/subresource_filter/core/common/indexed_ruleset.cc b/comp
  #include "base/check.h"
  #include "base/hash/hash.h"
 +#include "base/logging.h"
- #include "base/metrics/histogram_macros.h"
+ #include "base/metrics/histogram_functions.h"
  #include "base/not_fatal_until.h"
- #include "base/trace_event/trace_event.h"
-@@ -37,7 +38,9 @@ VerifyStatus GetVerifyStatus(base::span<const uint8_t> buffer,
+ #include "base/strings/strcat.h"
+@@ -38,7 +39,9 @@ VerifyStatus GetVerifyStatus(base::span<const uint8_t> buffer,
    // least once.  The verifier detects a subset of the errors detected by the
    // checksum, and is unneeded once expected_checksum is consistently nonzero.
    flatbuffers::Verifier verifier(buffer.data(), buffer.size());

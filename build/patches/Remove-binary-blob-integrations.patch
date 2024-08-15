@@ -1284,7 +1284,7 @@ diff --git a/chrome/browser/webauthn/android/java/src/org/chromium/chrome/browse
 diff --git a/chrome/browser/webauthn/authenticator_request_dialog_model.cc b/chrome/browser/webauthn/authenticator_request_dialog_model.cc
 --- a/chrome/browser/webauthn/authenticator_request_dialog_model.cc
 +++ b/chrome/browser/webauthn/authenticator_request_dialog_model.cc
-@@ -2215,10 +2215,6 @@ void AuthenticatorRequestDialogController::PopulateMechanisms() {
+@@ -2227,10 +2227,6 @@ void AuthenticatorRequestDialogController::PopulateMechanisms() {
    if (model_->cable_ui_type) {
      switch (*model_->cable_ui_type) {
        case AuthenticatorRequestDialogModel::CableUIType::CABLE_V2_2ND_FACTOR:
@@ -3148,10 +3148,10 @@ diff --git a/components/signin/public/android/BUILD.gn b/components/signin/publi
    deps = [
 -    "$google_play_services_package:google_play_services_auth_base_java",
 -    "$google_play_services_package:google_play_services_base_java",
+     "//base:base_cached_flags_java",
      "//base:base_java",
      "//build/android:build_java",
-     "//components/externalauth/android:java",
-@@ -189,7 +187,6 @@ robolectric_library("junit") {
+@@ -190,7 +188,6 @@ robolectric_library("junit") {
    deps = [
      ":java",
      ":signin_java_test_support",

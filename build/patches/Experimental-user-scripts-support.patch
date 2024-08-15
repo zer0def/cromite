@@ -569,7 +569,7 @@ diff --git a/chrome/renderer/BUILD.gn b/chrome/renderer/BUILD.gn
 diff --git a/chrome/renderer/chrome_content_renderer_client.cc b/chrome/renderer/chrome_content_renderer_client.cc
 --- a/chrome/renderer/chrome_content_renderer_client.cc
 +++ b/chrome/renderer/chrome_content_renderer_client.cc
-@@ -255,6 +255,11 @@
+@@ -256,6 +256,11 @@
  #include "chrome/renderer/media/chrome_key_systems.h"
  #endif
  
@@ -581,7 +581,7 @@ diff --git a/chrome/renderer/chrome_content_renderer_client.cc b/chrome/renderer
  using autofill::AutofillAgent;
  using autofill::PasswordAutofillAgent;
  using autofill::PasswordGenerationAgent;
-@@ -450,6 +455,14 @@ void ChromeContentRendererClient::RenderThreadStarted() {
+@@ -451,6 +456,14 @@ void ChromeContentRendererClient::RenderThreadStarted() {
        WebString::FromASCII(extensions::kExtensionScheme));
  #endif
  
@@ -596,7 +596,7 @@ diff --git a/chrome/renderer/chrome_content_renderer_client.cc b/chrome/renderer
  #if BUILDFLAG(ENABLE_SPELLCHECK)
    if (!spellcheck_)
      InitSpellCheck();
-@@ -613,6 +626,15 @@ void ChromeContentRendererClient::RenderFrameCreated(
+@@ -614,6 +627,15 @@ void ChromeContentRendererClient::RenderFrameCreated(
        render_frame, registry);
  #endif
  
@@ -612,7 +612,7 @@ diff --git a/chrome/renderer/chrome_content_renderer_client.cc b/chrome/renderer
  #if BUILDFLAG(ENABLE_PPAPI)
    new PepperHelper(render_frame);
  #endif
-@@ -1640,6 +1662,17 @@ void ChromeContentRendererClient::RunScriptsAtDocumentStart(
+@@ -1661,6 +1683,17 @@ void ChromeContentRendererClient::RunScriptsAtDocumentStart(
        render_frame);
    // |render_frame| might be dead by now.
  #endif
@@ -630,7 +630,7 @@ diff --git a/chrome/renderer/chrome_content_renderer_client.cc b/chrome/renderer
  }
  
  void ChromeContentRendererClient::RunScriptsAtDocumentEnd(
-@@ -1649,6 +1682,17 @@ void ChromeContentRendererClient::RunScriptsAtDocumentEnd(
+@@ -1670,6 +1703,17 @@ void ChromeContentRendererClient::RunScriptsAtDocumentEnd(
        render_frame);
    // |render_frame| might be dead by now.
  #endif
@@ -648,7 +648,7 @@ diff --git a/chrome/renderer/chrome_content_renderer_client.cc b/chrome/renderer
  }
  
  void ChromeContentRendererClient::RunScriptsAtDocumentIdle(
-@@ -1658,6 +1702,17 @@ void ChromeContentRendererClient::RunScriptsAtDocumentIdle(
+@@ -1679,6 +1723,17 @@ void ChromeContentRendererClient::RunScriptsAtDocumentIdle(
        render_frame);
    // |render_frame| might be dead by now.
  #endif

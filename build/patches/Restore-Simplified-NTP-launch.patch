@@ -699,11 +699,11 @@ diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browse
 +    &kSimplifiedNTP,
      &kLensOnQuickActionSearchWidget,
      &kLogoPolish,
-     &kMagicStackAndroid,
+     &kLogoPolishAnimationKillSwitch,
 diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 --- a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 +++ b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
-@@ -359,6 +359,7 @@ public abstract class ChromeFeatureList {
+@@ -360,6 +360,7 @@ public abstract class ChromeFeatureList {
      public static final String MAYLAUNCHURL_USES_SEPARATE_STORAGE_PARTITION =
              "MayLaunchUrlUsesSeparateStoragePartition";
      public static final String MESSAGES_FOR_ANDROID_ADS_BLOCKED = "MessagesForAndroidAdsBlocked";
@@ -711,16 +711,16 @@ diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/f
      public static final String SEARCH_READY_OMNIBOX = "SearchReadyOmnibox";
      public static final String MOST_VISITED_TILES_SELECT_EXISTING_TAB =
              "MostVisitedTilesSelectExistingTab";
-@@ -647,7 +648,7 @@ public abstract class ChromeFeatureList {
-     public static final CachedFlag sIncognitoReauthenticationForAndroid =
-             newCachedFlag(INCOGNITO_REAUTHENTICATION_FOR_ANDROID, true);
+@@ -650,7 +651,7 @@ public abstract class ChromeFeatureList {
      public static final CachedFlag sLogoPolish = newCachedFlag(LOGO_POLISH, true);
+     public static final CachedFlag sLogoPolishAnimationKillSwitch =
+             newCachedFlag(LOGO_POLISH_ANIMATION_KILL_SWITCH, true);
 -    public static final CachedFlag sMagicStackAndroid = newCachedFlag(MAGIC_STACK_ANDROID, true);
 +    public static final CachedFlag sMagicStackAndroid = newCachedFlag(MAGIC_STACK_ANDROID, false);
      public static final CachedFlag sMostVisitedTilesSelectExistingTab =
              newCachedFlag(MOST_VISITED_TILES_SELECT_EXISTING_TAB, false);
      public static final CachedFlag sMultiInstanceApplicationStatusCleanup =
-@@ -681,7 +682,7 @@ public abstract class ChromeFeatureList {
+@@ -684,7 +685,7 @@ public abstract class ChromeFeatureList {
              newCachedFlag(SMALLER_TAB_STRIP_TITLE_LIMIT, true);
      public static final CachedFlag sStartSurfaceReturnTime =
              newCachedFlag(START_SURFACE_RETURN_TIME, true);

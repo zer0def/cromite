@@ -18,14 +18,14 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../settings/PasswordSettings.java            | 82 ++++++++++++++++++-
  .../chrome/browser/settings/MainSettings.java |  3 +-
  .../chromium/chrome/browser/tab/TabImpl.java  | 43 ++++++++--
- chrome/browser/about_flags.cc                 | 22 -----
+ chrome/browser/about_flags.cc                 | 31 -------
  chrome/browser/android/tab_android.cc         |  3 +-
  chrome/browser/autofill/android/BUILD.gn      |  2 +-
  .../autofill/AutofillClientProviderUtils.java |  2 +-
  chrome/browser/flag_descriptions.cc           |  6 --
  chrome/browser/flag_descriptions.h            |  3 -
  .../strings/android_chrome_strings.grd        |  6 ++
- .../ui/autofill/autofill_client_provider.cc   | 68 +--------------
+ .../ui/autofill/autofill_client_provider.cc   | 78 +-----------------
  .../ui/autofill/autofill_client_provider.h    |  6 --
  chrome/browser/ui/tab_helpers.cc              |  4 +-
  components/android_autofill/browser/BUILD.gn  |  1 +
@@ -44,10 +44,10 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../core/browser/browser_autofill_manager.cc  |  2 +
  .../core/browser/browser_autofill_manager.h   |  2 +
  .../autofill/core/common/autofill_features.cc |  2 +-
- .../autofill/core/common/autofill_features.h  |  4 -
+ .../autofill/core/common/autofill_features.h  | 22 -----
  .../autofill/core/common/autofill_prefs.cc    |  4 +-
  .../autofill/core/common/autofill_prefs.h     |  5 ++
- 32 files changed, 268 insertions(+), 130 deletions(-)
+ 32 files changed, 268 insertions(+), 167 deletions(-)
  create mode 100644 components/android_autofill/browser/java/src/org/chromium/components/autofill/BrowserSelectionActionMenuDelegate.java
 
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/password_manager/settings/PasswordSettings.java b/chrome/android/java/src/org/chromium/chrome/browser/password_manager/settings/PasswordSettings.java
@@ -284,27 +284,36 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tab/TabImpl.jav
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -3918,19 +3918,6 @@ const FeatureEntry::FeatureVariation kAutofillGranularFillingAvailableVariations
+@@ -3918,28 +3918,6 @@ const FeatureEntry::FeatureVariation kAutofillGranularFillingAvailableVariations
            kAutofillGranularFillingAvailableVariationWithExpandControlVisibleOnSelectionOnly),
        nullptr}};
  
 -#if BUILDFLAG(IS_ANDROID)
 -inline constexpr flags_ui::FeatureEntry::FeatureParam
--    kAutofillVirtualViewStructureAndroidSkipsCompatibilityCheckParam = {
+-    kAutofillVirtualViewStructureAndroidSkipCompatibilityCheck = {
 -        autofill::features::
 -            kAutofillVirtualViewStructureAndroidSkipsCompatibilityCheck.name,
--        "true"};
+-        "skip_all_checks"};
+-inline constexpr flags_ui::FeatureEntry::FeatureParam
+-    kAutofillVirtualViewStructureAndroidOnlySkipAwgCheck = {
+-        autofill::features::
+-            kAutofillVirtualViewStructureAndroidSkipsCompatibilityCheck.name,
+-        "only_skip_awg_check"};
+-
 -inline constexpr flags_ui::FeatureEntry::FeatureVariation
 -    kAutofillVirtualViewStructureVariation[] = {
--        {"Enabled without compatibility check",
--         &kAutofillVirtualViewStructureAndroidSkipsCompatibilityCheckParam, 1,
--         nullptr}};
+-        {" without any compatibility check",
+-         &kAutofillVirtualViewStructureAndroidSkipCompatibilityCheck, 1,
+-         nullptr},
+-        {" without AwG restriction",
+-         &kAutofillVirtualViewStructureAndroidOnlySkipAwgCheck, 1, nullptr}};
+-
 -#endif  // BUILDFLAG(IS_ANDROID)
 -
  const FeatureEntry::FeatureParam kDefaultBrowserPromptRefreshAggressive[] = {
      {"max_prompt_count", "-1"},
      {"reprompt_duration", "7d"},
-@@ -6135,15 +6122,6 @@ const FeatureEntry kFeatureEntries[] = {
+@@ -6144,15 +6122,6 @@ const FeatureEntry kFeatureEntries[] = {
  #endif  // BUILDFLAG(IS_CHROMEOS_ASH)
  
  #if BUILDFLAG(IS_ANDROID)
@@ -415,7 +424,7 @@ diff --git a/chrome/browser/ui/autofill/autofill_client_provider.cc b/chrome/bro
  #include "chrome/browser/keyboard_accessory/android/manual_filling_controller_impl.h"
  #include "components/android_autofill/browser/android_autofill_client.h"
  #endif  // BUILDFLAG(IS_ANDROID)
-@@ -22,66 +20,12 @@
+@@ -22,76 +20,12 @@
  namespace autofill {
  namespace {
  
@@ -461,9 +470,19 @@ diff --git a/chrome/browser/ui/autofill/autofill_client_provider.cc b/chrome/bro
 -    case AndroidAutofillAvailabilityStatus::kAndroidAutofillManagerNotAvailable:
 -    case AndroidAutofillAvailabilityStatus::kAndroidAutofillNotSupported:
 -    case AndroidAutofillAvailabilityStatus::kUnknownAndroidAutofillService:
+-      return features::
+-                 kAutofillVirtualViewStructureAndroidSkipsCompatibilityCheck
+-                     .Get() ==
+-             features::VirtualViewStructureSkipChecks::kSkipAllChecks;
 -    case AndroidAutofillAvailabilityStatus::kAndroidAutofillServiceIsGoogle:
 -      return features::
--          kAutofillVirtualViewStructureAndroidSkipsCompatibilityCheck.Get();
+-                     kAutofillVirtualViewStructureAndroidSkipsCompatibilityCheck
+-                         .Get() ==
+-                 features::VirtualViewStructureSkipChecks::kSkipAllChecks ||
+-             features::
+-                     kAutofillVirtualViewStructureAndroidSkipsCompatibilityCheck
+-                         .Get() ==
+-                 features::VirtualViewStructureSkipChecks::kOnlySkipAwGCheck;
 -  }
 -#else
 -  return false;
@@ -484,7 +503,7 @@ diff --git a/chrome/browser/ui/autofill/autofill_client_provider.cc b/chrome/bro
  #endif  // BUILDFLAG(IS_ANDROID)
  }
  
-@@ -89,15 +33,7 @@ AutofillClientProvider::~AutofillClientProvider() = default;
+@@ -99,15 +33,7 @@ AutofillClientProvider::~AutofillClientProvider() = default;
  
  void AutofillClientProvider::CreateClientForWebContents(
      content::WebContents* web_contents) {
@@ -868,7 +887,7 @@ diff --git a/components/autofill/core/browser/autofill_manager.h b/components/au
 diff --git a/components/autofill/core/browser/browser_autofill_manager.cc b/components/autofill/core/browser/browser_autofill_manager.cc
 --- a/components/autofill/core/browser/browser_autofill_manager.cc
 +++ b/components/autofill/core/browser/browser_autofill_manager.cc
-@@ -696,6 +696,8 @@ BrowserAutofillManager::~BrowserAutofillManager() {
+@@ -697,6 +697,8 @@ BrowserAutofillManager::~BrowserAutofillManager() {
    // (due to a navigation).
  }
  
@@ -904,14 +923,32 @@ diff --git a/components/autofill/core/common/autofill_features.cc b/components/a
 diff --git a/components/autofill/core/common/autofill_features.h b/components/autofill/core/common/autofill_features.h
 --- a/components/autofill/core/common/autofill_features.h
 +++ b/components/autofill/core/common/autofill_features.h
-@@ -285,10 +285,6 @@ BASE_DECLARE_FEATURE(kAutofillEnableSecurityTouchEventFilteringAndroid);
- 
+@@ -284,28 +284,6 @@ COMPONENT_EXPORT(AUTOFILL)
+ BASE_DECLARE_FEATURE(kAutofillEnableSecurityTouchEventFilteringAndroid);
  COMPONENT_EXPORT(AUTOFILL)
  BASE_DECLARE_FEATURE(kAutofillVirtualViewStructureAndroid);
--inline constexpr base::FeatureParam<bool>
+-
+-// Used as param for `kAutofillVirtualViewStructureAndroid` to allow
+-// skipping certain checks when testing manually.
+-enum class VirtualViewStructureSkipChecks {
+-  kDontSkip = 0,
+-  kSkipAllChecks = 1,
+-  kOnlySkipAwGCheck = 2,
+-};
+-
+-inline constexpr base::FeatureParam<VirtualViewStructureSkipChecks>::Option
+-    kVirtualViewStructureSkipChecksOption[] = {
+-        {VirtualViewStructureSkipChecks::kDontSkip, "dont_skip"},
+-        {VirtualViewStructureSkipChecks::kSkipAllChecks, "skip_all_checks"},
+-        {VirtualViewStructureSkipChecks::kOnlySkipAwGCheck,
+-         "only_skip_awg_check"},
+-};
+-inline constexpr base::FeatureParam<VirtualViewStructureSkipChecks>
 -    kAutofillVirtualViewStructureAndroidSkipsCompatibilityCheck{
 -        &kAutofillVirtualViewStructureAndroid, "skip_compatibility_check",
--        false};
+-        VirtualViewStructureSkipChecks::kDontSkip,
+-        &kVirtualViewStructureSkipChecksOption};
+-
  #endif  // BUILDFLAG(IS_ANDROID)
  
  #if BUILDFLAG(IS_APPLE)

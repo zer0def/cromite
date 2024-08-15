@@ -182,7 +182,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tab/TabContextM
 diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browser/flags/android/chrome_feature_list.cc
 --- a/chrome/browser/flags/android/chrome_feature_list.cc
 +++ b/chrome/browser/flags/android/chrome_feature_list.cc
-@@ -303,6 +303,7 @@ const base::Feature* const kFeaturesExposedToJava[] = {
+@@ -304,6 +304,7 @@ const base::Feature* const kFeaturesExposedToJava[] = {
      &kTabGroupCreationDialogAndroid,
      &kTabGroupParityAndroid,
      &kTabletTabSwitcherLongPressMenu,
@@ -193,7 +193,7 @@ diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browse
 diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 --- a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 +++ b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
-@@ -378,6 +378,8 @@ public abstract class ChromeFeatureList {
+@@ -379,6 +379,8 @@ public abstract class ChromeFeatureList {
              "DisableToolbarSwipeUp";
      public static final String MOVE_TOP_TOOLBAR_TO_BOTTOM =
              "MoveTopToolbarToBottom";
@@ -202,7 +202,7 @@ diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/f
      public static final String NOTIFICATION_PERMISSION_VARIANT = "NotificationPermissionVariant";
      public static final String NOTIFICATION_PERMISSION_BOTTOM_SHEET =
              "NotificationPermissionBottomSheet";
-@@ -676,6 +678,8 @@ public abstract class ChromeFeatureList {
+@@ -679,6 +681,8 @@ public abstract class ChromeFeatureList {
              newCachedFlag(DISABLE_TOOLBAR_SWIPE_UP, false);
      public static final CachedFlag sMoveTopToolbarToBottom =
              newCachedFlag(MOVE_TOP_TOOLBAR_TO_BOTTOM, false);
@@ -211,7 +211,7 @@ diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/f
      public static final CachedFlag sPrivacyGuidePreloadAndroid =
              newCachedFlag(PRIVACY_GUIDE_PRELOAD_ANDROID, false);
      public static final CachedFlag sOptimizationGuidePushNotifications =
-@@ -836,6 +840,7 @@ public abstract class ChromeFeatureList {
+@@ -840,6 +844,7 @@ public abstract class ChromeFeatureList {
                      sTabWindowManagerIndexReassignmentActivityNotInAppTasks,
                      sTabWindowManagerReportIndicesMismatch,
                      sUseChimeAndroidSdk,

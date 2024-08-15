@@ -298,7 +298,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActiv
  import org.chromium.chrome.browser.dependency_injection.ChromeActivityComponent;
  import org.chromium.chrome.browser.dependency_injection.ModuleFactoryOverrides;
  import org.chromium.chrome.browser.device.DeviceClassManager;
-@@ -2001,6 +2002,9 @@ public abstract class ChromeActivity<C extends ChromeActivityComponent>
+@@ -2006,6 +2007,9 @@ public abstract class ChromeActivity<C extends ChromeActivityComponent>
              throw new IllegalStateException(
                      "Attempting to access TabCreator before initialization");
          }
@@ -2105,7 +2105,7 @@ diff --git a/components/content_settings/core/browser/host_content_settings_map.
 diff --git a/components/omnibox/browser/autocomplete_provider_client.cc b/components/omnibox/browser/autocomplete_provider_client.cc
 --- a/components/omnibox/browser/autocomplete_provider_client.cc
 +++ b/components/omnibox/browser/autocomplete_provider_client.cc
-@@ -42,3 +42,7 @@ base::WeakPtr<AutocompleteProviderClient>
+@@ -46,3 +46,7 @@ base::WeakPtr<AutocompleteProviderClient>
  AutocompleteProviderClient::GetWeakPtr() {
    return nullptr;
  }

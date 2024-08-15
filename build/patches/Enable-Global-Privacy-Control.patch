@@ -587,7 +587,7 @@ diff --git a/content/browser/loader/browser_initiated_resource_request.cc b/cont
 diff --git a/content/renderer/render_frame_impl.cc b/content/renderer/render_frame_impl.cc
 --- a/content/renderer/render_frame_impl.cc
 +++ b/content/renderer/render_frame_impl.cc
-@@ -4473,6 +4473,10 @@ void RenderFrameImpl::WillSendRequestInternal(
+@@ -4477,6 +4477,10 @@ void RenderFrameImpl::WillSendRequestInternal(
      request.SetHttpHeaderField(
          blink::WebString::FromUTF8(blink::kDoNotTrackHeader), "1");
    }

@@ -111,7 +111,7 @@ diff --git a/chrome/browser/chrome_content_browser_client.cc b/chrome/browser/ch
  #include "chrome/browser/media/audio_service_util.h"
  #include "chrome/browser/media/prefs/capture_device_ranking.h"
  #include "chrome/browser/media/router/media_router_feature.h"
-@@ -5304,16 +5303,6 @@ ChromeContentBrowserClient::CreateThrottlesForNavigation(
+@@ -5319,16 +5318,6 @@ ChromeContentBrowserClient::CreateThrottlesForNavigation(
      content::NavigationHandle* handle) {
    std::vector<std::unique_ptr<content::NavigationThrottle>> throttles;
  
@@ -128,7 +128,7 @@ diff --git a/chrome/browser/chrome_content_browser_client.cc b/chrome/browser/ch
  #if BUILDFLAG(IS_ANDROID)
    // TODO(davidben): This is insufficient to integrate with prerender properly.
    // https://crbug.com/370595
-@@ -5421,10 +5410,6 @@ ChromeContentBrowserClient::CreateThrottlesForNavigation(
+@@ -5436,10 +5425,6 @@ ChromeContentBrowserClient::CreateThrottlesForNavigation(
      }
    }
  

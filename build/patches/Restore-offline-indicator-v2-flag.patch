@@ -117,7 +117,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tabbed_mode/Tab
 diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browser/flags/android/chrome_feature_list.cc
 --- a/chrome/browser/flags/android/chrome_feature_list.cc
 +++ b/chrome/browser/flags/android/chrome_feature_list.cc
-@@ -261,6 +261,7 @@ const base::Feature* const kFeaturesExposedToJava[] = {
+@@ -262,6 +262,7 @@ const base::Feature* const kFeaturesExposedToJava[] = {
      &kNewTabPageAndroidTriggerForPrerender2,
      &kNotificationPermissionVariant,
      &kNotificationPermissionBottomSheet,
@@ -128,7 +128,7 @@ diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browse
 diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 --- a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 +++ b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
-@@ -376,6 +376,7 @@ public abstract class ChromeFeatureList {
+@@ -377,6 +377,7 @@ public abstract class ChromeFeatureList {
      public static final String NOTIFICATION_PERMISSION_VARIANT = "NotificationPermissionVariant";
      public static final String NOTIFICATION_PERMISSION_BOTTOM_SHEET =
              "NotificationPermissionBottomSheet";

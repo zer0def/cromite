@@ -553,7 +553,7 @@ diff --git a/chrome/browser/ui/messages/android/java/src/org/chromium/chrome/bro
 diff --git a/content/browser/web_contents/web_contents_android.cc b/content/browser/web_contents/web_contents_android.cc
 --- a/content/browser/web_contents/web_contents_android.cc
 +++ b/content/browser/web_contents/web_contents_android.cc
-@@ -882,6 +882,22 @@ void WebContentsAndroid::SetFocus(JNIEnv* env, jboolean focused) {
+@@ -883,6 +883,22 @@ void WebContentsAndroid::SetFocus(JNIEnv* env, jboolean focused) {
    view->SetFocus(focused);
  }
  
@@ -590,7 +590,7 @@ diff --git a/content/browser/web_contents/web_contents_android.h b/content/brows
 diff --git a/content/browser/web_contents/web_contents_impl.cc b/content/browser/web_contents/web_contents_impl.cc
 --- a/content/browser/web_contents/web_contents_impl.cc
 +++ b/content/browser/web_contents/web_contents_impl.cc
-@@ -3523,8 +3523,10 @@ void WebContentsImpl::Stop() {
+@@ -3539,8 +3539,10 @@ void WebContentsImpl::Stop() {
  void WebContentsImpl::SetPageFrozen(bool frozen) {
    TRACE_EVENT1("content", "WebContentsImpl::SetPageFrozen", "frozen", frozen);
  

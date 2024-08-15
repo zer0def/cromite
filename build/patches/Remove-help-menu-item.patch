@@ -66,7 +66,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/KeyboardShortcu
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActivity.java b/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActivity.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActivity.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActivity.java
-@@ -2528,15 +2528,6 @@ public abstract class ChromeActivity<C extends ChromeActivityComponent>
+@@ -2533,15 +2533,6 @@ public abstract class ChromeActivity<C extends ChromeActivityComponent>
  
          final Tab currentTab = getActivityTab();
  

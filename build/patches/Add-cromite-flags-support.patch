@@ -583,7 +583,7 @@ diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
  namespace about_flags {
  
  namespace {
-@@ -4153,6 +4157,10 @@ const FeatureEntry::FeatureVariation
+@@ -4162,6 +4166,10 @@ const FeatureEntry::FeatureVariation
           nullptr}};
  #endif  // BUILDFLAG(ENABLE_EXTENSIONS)
  
@@ -594,7 +594,7 @@ diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
  // RECORDING USER METRICS FOR FLAGS:
  // -----------------------------------------------------------------------------
  // The first line of the entry is the internal name.
-@@ -4179,6 +4187,9 @@ const FeatureEntry::FeatureVariation
+@@ -4188,6 +4196,9 @@ const FeatureEntry::FeatureVariation
  const FeatureEntry kFeatureEntries[] = {
  // Include generated flags for flag unexpiry; see //docs/flag_expiry.md and
  // //tools/flags/generate_unexpire_flags.py.
@@ -655,7 +655,7 @@ diff --git a/chrome/browser/flags/BUILD.gn b/chrome/browser/flags/BUILD.gn
 diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browser/flags/android/chrome_feature_list.cc
 --- a/chrome/browser/flags/android/chrome_feature_list.cc
 +++ b/chrome/browser/flags/android/chrome_feature_list.cc
-@@ -1047,5 +1047,6 @@ BASE_FEATURE(kWebApkAllowIconUpdate,
+@@ -1052,5 +1052,6 @@ BASE_FEATURE(kWebApkAllowIconUpdate,
               "WebApkAllowIconUpdate",
               base::FEATURE_DISABLED_BY_DEFAULT);
  
@@ -665,7 +665,7 @@ diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browse
 diff --git a/chrome/browser/flags/android/chrome_feature_list.h b/chrome/browser/flags/android/chrome_feature_list.h
 --- a/chrome/browser/flags/android/chrome_feature_list.h
 +++ b/chrome/browser/flags/android/chrome_feature_list.h
-@@ -203,6 +203,7 @@ constexpr base::FeatureParam<std::string> kQuickDeleteAndroidSurveyTriggerId(
+@@ -204,6 +204,7 @@ constexpr base::FeatureParam<std::string> kQuickDeleteAndroidSurveyTriggerId(
      "trigger_id",
      /*default_value=*/"");
  
@@ -687,7 +687,7 @@ diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/f
  import java.util.List;
  import java.util.Map;
  
-@@ -718,7 +722,7 @@ public abstract class ChromeFeatureList {
+@@ -721,7 +725,7 @@ public abstract class ChromeFeatureList {
      public static final CachedFlag sWebApkMinShellApkVersion =
              newCachedFlag(WEB_APK_MIN_SHELL_APK_VERSION, true);
  
@@ -696,7 +696,7 @@ diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/f
              List.of(
                      sAccountReauthenticationRecentTimeWindow,
                      sAndroidAppIntegration,
-@@ -813,6 +817,13 @@ public abstract class ChromeFeatureList {
+@@ -817,6 +821,13 @@ public abstract class ChromeFeatureList {
                      sVerticalAutomotiveBackButtonToolbar,
                      sWebApkMinShellApkVersion);
  
@@ -1411,7 +1411,7 @@ diff --git a/components/version_ui/version_handler_helper.cc b/components/versio
 diff --git a/content/common/features.cc b/content/common/features.cc
 --- a/content/common/features.cc
 +++ b/content/common/features.cc
-@@ -616,4 +616,5 @@ BASE_FEATURE(kScrollBubblingFix,
+@@ -607,4 +607,5 @@ BASE_FEATURE(kScrollBubblingFix,
  
  // Please keep features in alphabetical order.
  
@@ -1420,7 +1420,7 @@ diff --git a/content/common/features.cc b/content/common/features.cc
 diff --git a/content/public/common/content_features.cc b/content/public/common/content_features.cc
 --- a/content/public/common/content_features.cc
 +++ b/content/public/common/content_features.cc
-@@ -1325,4 +1325,5 @@ bool IsVideoCaptureServiceEnabledForBrowserProcess() {
+@@ -1334,4 +1334,5 @@ bool IsVideoCaptureServiceEnabledForBrowserProcess() {
           VideoCaptureServiceConfiguration::kEnabledForBrowserProcess;
  }
  
@@ -1429,7 +1429,7 @@ diff --git a/content/public/common/content_features.cc b/content/public/common/c
 diff --git a/content/public/common/content_features.h b/content/public/common/content_features.h
 --- a/content/public/common/content_features.h
 +++ b/content/public/common/content_features.h
-@@ -291,6 +291,7 @@ CONTENT_EXPORT BASE_DECLARE_FEATURE(kWebRtcPipeWireCapturer);
+@@ -292,6 +292,7 @@ CONTENT_EXPORT BASE_DECLARE_FEATURE(kWebRtcPipeWireCapturer);
  CONTENT_EXPORT bool IsVideoCaptureServiceEnabledForOutOfProcess();
  CONTENT_EXPORT bool IsVideoCaptureServiceEnabledForBrowserProcess();
  
