@@ -4,9 +4,9 @@ Subject: Enable Android Dynamic Performance Framework
 
 License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
- chrome/version.gni                | 2 +-
+ chrome/version.gni                | 4 ++--
  components/viz/common/features.cc | 2 ++
- 2 files changed, 3 insertions(+), 1 deletion(-)
+ 2 files changed, 4 insertions(+), 2 deletions(-)
 
 diff --git a/chrome/version.gni b/chrome/version.gni
 --- a/chrome/version.gni
@@ -20,6 +20,15 @@ diff --git a/chrome/version.gni b/chrome/version.gni
        _version_dictionary_template += "trichrome_64_32_high_version_code = \"@TRICHROME_64_32_HIGH_VERSION_CODE@\" "
        _version_dictionary_template += "trichrome_auto_64_32_high_version_code = \"@TRICHROME_AUTO_64_32_HIGH_VERSION_CODE@\" "
      }
+@@ -190,7 +190,7 @@ if (is_mac) {
+   chrome_version_name = chrome_version_full
+ 
+   # There is a different version code only for arm64.
+-  if (is_high_end_android && target_cpu != "arm64") {
++  if (is_high_end_android && target_cpu == "x64") {
+     trichrome_64_32_high_beta_version_code = trichrome_64_32_beta_version_code
+     trichrome_64_32_high_version_code = trichrome_64_32_version_code
+     trichrome_auto_64_32_high_version_code = trichrome_auto_64_32_version_code
 diff --git a/components/viz/common/features.cc b/components/viz/common/features.cc
 --- a/components/viz/common/features.cc
 +++ b/components/viz/common/features.cc
