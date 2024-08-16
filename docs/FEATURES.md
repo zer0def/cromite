@@ -1,263 +1,242 @@
 # Features
 
-#### From Bromite
-* customizable adblock filters via user-provided URL (see https://www.bromite.org/custom-filters) (deprecated, replaced by adblock plus)
-* automatically updated adblock filters
-* remove click-tracking and AMP from search results
-* DNS-over-HTTPS support with any valid IETF DoH endpoint
-* always-incognito mode
-* disable all field trials permanently
-* disable smart search by default, allow web search from incognito mode
-* always-visible cookies, javascript and ads site settings from address bar popup
-* remove Play integration binary blobs
-* ~use [CFI](https://en.wikipedia.org/wiki/Control-flow_integrity) on all architectures except x86 and Windows~ dropped from v117 see https://github.com/uazo/cromite/discussions/292
-* enable trivial auto var init
-* disable media router and remoting by default
-* disable dynamic module loading
-* show warnings for TLSv1.0/TLSv1.1 pages
-* enable site-per-process isolation for all devices with memory > 1GB
-* [proxy configuration page](https://github.com/bromite/bromite/wiki/ProxyConfiguration) with PAC and custom proxy lists support
-* settings to disable custom intents and clear session on exit
-* flags to toggle anti-fingerprinting mitigations for canvas, audio, client rects, webGL and sensor APIs (see full list below for all the new flags)
-* use frozen User-Agent to conceal real model and browser version
-* privacy enhancement patches from [Iridium](https://iridiumbrowser.de/), [Inox patchset](https://github.com/gcarq/inox-patchset), [Brave](https://brave.com/) and [ungoogled-chromium](https://github.com/Eloston/ungoogled-chromium) projects
-* security enhancement patches from [GrapheneOS](https://github.com/GrapheneOS) project
-* reduced referer granularity
-* block gateway attacks via websockets (partial fix, see [this upstream issue](https://bugs.chromium.org/p/chromium/issues/detail?id=590714))
-* use 64-bit ABI for webview processes
-* make all favicon requests on-demand ([supercookie](https://supercookie.me/) mitigation)
-* enable all network isolation features (`PartitionConnectionsByNetworkIsolationKey`, `PartitionHttpServerPropertiesByNetworkIsolationKey`, `SplitHostCacheByNetworkIsolationKey`, `AppendFrameOriginToNetworkIsolationKey`, `SplitCacheByNetworkIsolationKey`, `UseRegistrableDomainInNetworkIsolationKey`, `PartitionSSLSessionsByNetworkIsolationKey`, `PartitionExpectCTStateByNetworkIsolationKey`, `PartitionDomainReliabilityByNetworkIsolationKey`)
-* ignore enterprise policies that disallow secure DNS
-* ask permission to play protected media
-* disable the DIAL repeating discovery
-* disable RTCGetCurrentBrowsingContextMedia by default
-* disable FLoC and privacy sandbox by default
-* disable feeds
-* disable reporting of certificate errors
-* use pre-defined phone model for client hints and Javascript
-* allow forcing external links to open in incognito
-* disable AGSA by default
-* flag to enable Certificate Transparency
-* allow adding search engines from incognito mode
-* disable predictors
-* disable supervised users
-* disable safety check
-* disable capability to block `view-source:` URLs
-* disable `SegmentationPlatformFeature`, `OptimizationHints`, client hint headers
-* disable `AsyncDNS` by default
-* customize history expiration threshold
-* disable idle detection
-* HTTPS-only mode enabled by default
-* disable TLS resumption by default
-* strict site isolation and strict origin isolation
-* partition blobs by top frame URL
+#### Anti fingerprinting
+- Disable Battery API by default (https://www.w3.org/TR/battery-status/#security-and-privacy-considerations)
+- Disable Client hints API (https://wicg.github.io/client-hints-infrastructure/#privacy)
+- Disable ComputePressure API by default (https://www.w3.org/TR/compute-pressure/#security-and-privacy-considerations)
+- Disable variations and field trials (activation, fetch and report to the sites)
+- Disable Compression Dictionary Transport (https://github.com/WICG/compression-dictionary-transport?tab=readme-ov-file#fingerprinting)
+- Disable Beacon API (https://w3c.github.io/beacon/#privacy-and-security) and FetchLater API (https://chromestatus.com/feature/4654499737632768)
+- Disable CSS blink-feature() support
+- Disable DRM media
+- Disable FedCm (https://w3c-fedid.github.io/FedCM/#privacy)
+- Disable GetInstalledRelatedApps API (https://wicg.github.io/get-installed-related-apps/EXPLAINER.html)
+- Disable Idle Detection (https://wicg.github.io/idle-detection/#security-and-privacy)
+- Disable prefers-reduced-transparency media query (https://groups.google.com/a/mozilla.org/g/dev-platform/c/l410J8odZjA)
+- Disable remote altsvc for h3 connections on non-443 port
+- Disable SpeechSynthesis API
+- Disable support for pointer device id (https://groups.google.com/a/chromium.org/g/blink-dev/c/3eU-AHH8x4k)
+- Disable TLS resumption (https://arxiv.org/abs/1810.07304)
+- Disable UA full version and getHighEntropyValues() API
+- Disable visited pseudo class
+- Disable WebGPU
+- Disable GamePad API by default (https://www.w3.org/TR/gamepad/#fingerprinting-mitigation)
+Also disable gamepadconnected and gamepaddisconnected, see https://jshelter.org/gp/
+- Disable WebGL by default
+- Disable WebRTC by default
+- Disable MIDI permission by default
+- Disable the use of non-standard and local fonts
+- Enable Canvas and Rect API fingerprinting mitigations
+- Enable Media API fingerprinting mitigations
+- AudioBuffer and AnalyserNode fingerprinting mitigations (https://fingerprint.com/blog/audio-fingerprinting/)
+- Hardening against incognito mode detection
+- Partition MediaDevice id by default
+- Override navigator.language API
+- Override navigator.connection info
+- Override device memory and cpu
+- Allow specifying a custom timezone, or using a random one
+- Viewport Protection site setting
+- Warning message for unsupported hardware aes
+- Do not expose local IP addresses with webRTC
+- Allows the use of the api DocumentPiP only with the content setting popup allowed (https://wicg.github.io/document-picture-in-picture/#privacy-considerations)
+- Multi-Screen Window Placement API fix (screen.isExtended)
+- (ANDROID) Do not follow night mode for dark mode preference when theme is set to system default
+- (DESKTOP) Enable HighEfficiencyMode by default
+- (DESKTOP) Enable percent based scrolling for mousewheel
+- (DESKTOP) Enable Keyboard Layout API mitigation
+- (WINDOWS) Disable Windows ClearType Text Tuner setting (active in rdp sessions)
+- (WINDOWS) Hide the presence of the webcam if the user has not given permission
 
-#### Cromite-specific features
+#### Tracking navigation
+- Enable network isolation features
+- Enable third-party storage partitioning
+- Partition all cookies by top frame domain (like Firefox Total Cookie Protection)
+- Partition Blink memory cache (http://crbug.com/1127971)
+- Partition blob urls by top frame URL
+- Partition HSTS cache by NAK
+- Disable use of SameSite=None cookies in A/B/A contexts (like Firefox)
+- Private network access content settings
+- Reduce HTTP headers in DoH requests to bare minimum
+- Remove Auth header upon cross origin redirect
+- Remove HTTP referrals in cross origin navigation
+- Remove window name on cross origin navigation
 
-* Built-in Adblock Plus [patch](https://github.com/uazo/cromite/blob/master/build/patches/Eyeo-Adblock-Remove-Privacy-Issues.patch) (issue [84](https://github.com/uazo/bromite-buildtools/issues/84))
-* policy browser patch for the use of enterprise policy [patch](https://github.com/uazo/cromite/blob/master/build/patches/add-browser-policy.patch) (issue [191](https://github.com/uazo/bromite-buildtools/issues/191))
-  - deactivate safe browsing and extended reporting
-  - disabled scroll-to-text-fragment
-  - disabled contextual search
-  - disabled media router
-  - disabled url keyed anonymized data collection
-  - disabled translate
-  - disabled network prediction
-  - disabled sign-in
-  - disabled google search side panel
-  - disabled automatic https upgrades
-* internal firewall to block all unauthorised calls made from the browser [patch](https://github.com/uazo/cromite/blob/master/build/patches/Internal-firewall.patch) (issue [147](https://github.com/uazo/bromite-buildtools/issues/147))
-* show warnings on downloads over HTTP [patch](https://github.com/uazo/cromite/blob/master/build/patches/Show-warnings-on-downloads-over-HTTP.patch)
-* lock profile cookie database [patch](https://github.com/uazo/cromite/blob/master/build/patches/Lock-Profile-Cookie-Database.patch)
-* remove support for device memory and cpu recovery [patch](https://github.com/uazo/cromite/blob/master/build/patches/Remove-support-for-device-memory-and-cpu-recovery.patch)
-* disable speechSynthesis getVoices API [patch](https://github.com/uazo/cromite/blob/master/build/patches/Disable-speechSynthesis-getVoices-API.patch)
-* viewport Protection patch [patch](https://github.com/uazo/cromite/blob/master/build/patches/Viewport-Protection-flag.patch)
-* deprecate Data URL in SVGUseElement [patch](https://github.com/uazo/cromite/blob/master/build/patches/Deprecate-Data-URL-in-SVGUseElement.patch)
-* disallow Android App Scheme as referrer [patch](https://github.com/uazo/cromite/blob/master/build/patches/Disallow-Android-App-Scheme-as-referrer.patch)
-* disable Compression Dictionary Transport [patch](https://github.com/uazo/cromite/blob/master/build/patches/Disable-Compression-Dictionary-Transport.patch)
-* disable PrivateStateTokens API [patch](https://github.com/uazo/cromite/blob/master/build/patches/Disable-PrivateStateTokens-API.patch)
-* disable GSA by default [patch](https://github.com/uazo/cromite/blob/master/build/patches/Disable-GSA-by-default.patch)
-* disable GetInstalledRelatedApps API [patch](https://github.com/uazo/cromite/blob/master/build/patches/Disable-GetInstalledRelatedApps-API.patch)
-* disable FirstPartySets and StorageAccessAPI [patch](https://github.com/uazo/cromite/blob/master/build/patches/Disable-FirstPartySets-and-StorageAccessAPI.patch)
-* disable WebGPU [patch](https://github.com/uazo/cromite/blob/master/build/patches/Disable-WebGPU.patch)
-* disable GamePad API [patch](https://github.com/uazo/cromite/blob/master/build/patches/Add-a-flag-to-disable-GamePad-API.patch)
-* remove external https connection from chrome://discards [patch](https://github.com/uazo/cromite/blob/master/build/patches/Remove-https-connection-from-chrome-discards.patch)
-* links the use of screen.isExtended to WINDOW_MANAGEMENT permission granted by user [patch](https://github.com/uazo/cromite/blob/master/build/patches/Multi-Screen-Window-Placement-API-fix.patch)
-* clear CORS Preflight Cache on clearing data [patch](https://github.com/uazo/cromite/blob/master/build/patches/Clear-CORS-Preflight-Cache-on-clearing-data.patch)
-* remove auth header upon cross origin redirect [patch](https://github.com/uazo/cromite/blob/master/build/patches/Remove-auth-header-upon-cross-origin-redirect.patch)
-* disable SHA1 Server Signature [patch](https://github.com/uazo/cromite/blob/master/build/patches/Disable-SHA1-Server-Signature.patch)
-* remove detection of captive portals [patch](https://github.com/uazo/cromite/blob/master/build/patches/Remove-detection-of-captive-portals.patch)
-* disable devtools remote and custom protocols [patch](https://github.com/uazo/cromite/blob/master/build/patches/Disable-devtools-remote-and-custom-protocols.patch)
-* enable Document Open Inheritance Removal [patch](https://github.com/uazo/cromite/blob/master/build/patches/Enable-Document-Open-Inheritance-Removal.patch)
-* warning message for unsupported hardware aes [patch](https://github.com/uazo/cromite/blob/master/build/patches/Warning-message-for-unsupported-hardware-aes.patch)
-* partition HSTS cache by NAK [patch](https://github.com/uazo/cromite/blob/master/build/patches/Partition-HSTS-cache-by-NAK.patch)
-* disable password leak detector [patch](https://github.com/uazo/cromite/blob/master/build/patches/Disable-privacy-issues-in-password-manager.patch)
-* keyboard protection flag [patch](https://github.com/uazo/cromite/blob/master/build/patches/Keyboard-protection-flag.patch)
-* disable csp reports [patch](https://github.com/uazo/cromite/blob/master/build/patches/Disable-csp-reports.patch)
-* add setting to clear data on exit [patch](https://github.com/uazo/cromite/blob/master/build/patches/Add-setting-to-clear-data-on-exit.patch)
-* disable visited pseudo class [patch](https://github.com/uazo/cromite/blob/master/build/patches/Disable-visited-pseudo-class.patch)
-* disable BackForwardCache [patch](https://github.com/uazo/cromite/blob/master/build/patches/Disable-BackForwardCache.patch)
-* disable FedCm [patch](https://github.com/uazo/cromite/blob/master/build/patches/Disable-FedCm.patch)
-* partitioning all cookies by top frame domain [patch](https://github.com/uazo/cromite/blob/master/build/patches/Partitioning-all-cookies-by-top-frame-domain.patch)
-* fingerprint mitigation for AudioBuffer and AnalyserNode [patch](https://github.com/uazo/cromite/blob/master/build/patches/AudioBuffer-AnalyserNode-fp-mitigations.patch)
+#### Privacy
+- Ignore enterprise policies
+- Disable media router and remoting by default
+- Disable text fragments by default
+- Disable voice recognition integration
+- Disable custom tab intents by default
+- Disable external intent requests by default and Android App Scheme as referrer
+Blocks the possibility of tying online browsing with in-app browsing and viceversa
+- Disable site engagement by default
+Site engagement is a kind of internal chromium log to score the sites the user visits. The score is used internally to automatically grant permissions to sites.
+Disabling it by default allows the user to choose each time how the browser should behave.
+- Disable reporting API by default (https://w3c.github.io/reporting/#privacy)
+- Disable preconnect and prerender features (they activate connections without the explicit consent of the user)
+- Disable browser-integrated AI and segmentation platform features by default (they profile the user)
+- Disable AsyncDNS by default
+- Disable BackForwardCache (as per-document state/data as well as sticky activation might persist after navigation)
+- Disable Ads conversion measurement api and Google Privacy Sandbox
+- Disable requests for single-word Omnibar searches
+- Disable Service and Shared workers on 3P iframe (like firefox)
+- Disable QR code sharing
+- Disable WebView MediaIntegrity Api (https://android-developers.googleblog.com/2023/11/increasing-trust-for-embedded-media.html)
+- Disable signed exchange features (https://developers.google.com/search/docs/appearance/signed-exchange)
+- Disable annotate downloads by url
+- Enable Do-Not-Track by default
+- Enable Global Privacy Control by default
+- Enable cleaning of the CORS Preflight Cache on restart 
+- (ANDROID) Remove SMS integration
+- (ANDROID) Never use HTTP probes for connection detection
+- (ANDROID) Disable auto fetch of offline content when browser go online
+- (ANDROID) Disable the DIAL repeating discovery
+- (ANDROID) Disable smart text selection by default
+- (ANDROID) Disable Accessibility service by default
+- (ANDROID) Disable integration with Android Compose feature
+- (ANDROID) Add option to disable snapshots of pages on disk in all modes, including incognito browsing (default off)
+- (ANDROID) Add option not to reopen tabs between sessions
+- (ANDROID) Add setting to clear data between restarts
+- (ANDROID) Allow user choice to allow camera/microphone/geolocation access only once or until the page is closed or until the device is closed
+- (ANDROID) Close sessions on ip change, changed from automatic reconnection
+- (DESKTOP) Disable the use of remote endpoint and custom protocols for developer tools
 
-##### from [116.0.5845.111](https://github.com/uazo/cromite/issues/205#issuecomment-1690216310)
-* Disable PartnerCustomizations [patch](https://github.com/uazo/cromite/blob/master/build/patches/Disable-PartnerCustomizations.patch) [#202](https://github.com/uazo/cromite/issues/202)
-* Add option to disable snapshots [patch](https://github.com/uazo/cromite/blob/master/build/patches/Add-option-to-disable-snapshots.patch) [#201](https://github.com/uazo/cromite/issues/201)
-* Enable Android Dynamic Performance Framework on renderer [patch](https://github.com/uazo/cromite/blob/master/build/patches/Enable-Android-Dynamic-Performance-Framework.patch)
+#### Google related
+- Disable sending url-keyed data collection to Google
+- Disable Google ContextualSearch
+- Disable Google Translate
+- Disable Google Browser Signin
+- Disable Google Sync
+- Disable report metrics to Google
+- Disable Google DNS address used for IPv6 probes (use RIPE DNS)
+- Disable Google Component Updates
+- Disable send-settings on profile-resetter
+- Disable webRTC log uploader
+- Disable integration with google urls
+- Disable Google feeds support by default
+- Disable Network Time Tracker
+- Ignore any partner-provided and search engine home page
+- Disable Google autofill server by default
+- Disable automatic crash reporting and feeback collector
+- Disable NTP remote suggestions by default
+- Disable privacy issues in password manager (Affiliation service)
+- Disable translations and ranker fetcher
+- Disable AMP by default
+- Disable remote service for geolocation
+- Remove binary blob (google play services) integrations
+- Remove references to fonts.googleapis.com from ReadAnything and Distiller
+- Remove Google Accounts private API
+- (ANDROID) Disable barcode, face and text detection APIs via google play services
+- (ANDROID) Disable GSA by default (googlequicksearchbox, GoogleAppActivity, Lens, Voice Assist)
+- (ANDROID) Disable Google PrivacyGuide and Google SafetyCheck
+- (ANDROID) Remove preload of com.google.android.gms.fonts
+- (ANDROID) Disable use of gms for geolocation
+- (ANDROID) Do not store passwords by default in google play services
+- (DESKTOP) Does not allow the Chrome web store to know the list of installed extensions
 
-##### from [117.0.5938.63](https://github.com/uazo/cromite/issues/293)
-* Added support for blocking in service workers in AdblockPlus #254 [patch](https://github.com/uazo/cromite/blob/master/build/patches/AdblockPlus-add-blocking-in-service-workers.patch)
-* Drop CFI support (see https://github.com/uazo/cromite/discussions/292)
-* Enabled Improved Bookmarks UI by default [patch](https://github.com/uazo/cromite/blob/master/build/patches/Enable-ImprovedBookmarks-by-default.patch)
-* Removed Google private API from accounts.google.com [patch](https://github.com/uazo/cromite/blob/master/build/patches/Remove-GoogleAccountsPrivateApiHost.patch)
+#### Enhancements
+- Proxy configuration page (chrome://proxy) (https://chromium.googlesource.com/chromium/src/+/HEAD/net/docs/proxy.md)
+- Add a Google search engine that forces languages to English, disable from all its searches RLZ and field experiments querystring parameters.
+- Add DuckDuckGo Lite
+- Add support to jxl
+- Add history number of days privacy setting
+- Block gateway attacks via websockets
+- Built-in Adblock
+- Enable blocking of all pop-ups
+- Enable platform aac audio and h264 video due to licence restrictions
+- Enable HEVC by default
+- Enable an internal firewall to block unauthorised calls made from the browser (normally to google servers)
+- Enable jxl
+- Disable parental control by default
+- Crash reports UI
+- Remove detection of captive portals
+- Site settings for autoplay, cookies, javascript, images and adblock
+- Use BoringSSL for RandBytes to overcome the lack of entropy for the internal generator in some android devices
+- User agent customization
+- (ANDROID) Always-incognito mode
+- (ANDROID) Add flag to disable vibration api
+- (ANDROID) Disable the LowEndDeviceMode experiment in devices with 4-6 gb of ram.
+- (ANDROID) Enable share intent
+- (ANDROID) User scripts support
+- (DESKTOP) Enable deactivation of the js debugger statement
+- (DESKTOP) Enable support for ManifestV2
 
-##### from [117.0.5938.140](https://github.com/uazo/cromite/issues/349#issuecomment-1740388786)
-* Partition MediaDeviceId by default [patch](https://github.com/uazo/cromite/blob/master/build/patches/Partition-MediaDeviceId-by-default.patch)
+#### Security
+- Enable StrictOriginIsolation and SitePerProcess by default
+- Boost internal gwp asan checks and opt-in android gwpAsanMode (https://developer.android.com/ndk/guides/gwp-asan)
+- Enable DOH secure mode by default
+- Enable Certificate Transparency by default
+- Enable Document Open Inheritance and CookieURL Removal (https://docs.google.com/document/d/1_89X4cNUab-PZE0iBDTKIftaQZsFbk7SbFmHbqY54os/edit)
+- Disable JIT by default
+- Disable undocumented Manta and Orca services
+- (ANDROID) Disable UserCertificates by default
+Prevents the unauthorised use by the user of proxies or man-in-the-middle attacks and bugs such as https://issues.chromium.org/issues/40089326
+- (ANDROID) Add flag allowing the blocking of all non-https connections (default off)
+- (ANDROID) Browser auto updater
+- (ANDROID) Disable Android AppRestrictions
+- (DESKTOP) Disable Google side panel search companion feature
+- (WINDOWS) Enable file system access blocklist
+- (WINDOWS) Improve the browser sandbox by enabling network service sandbox and CIG in windows
+- (WINDOWS) Disable dynamic code using ACG by default
 
-##### from [118.0.5993.118](https://github.com/uazo/cromite/issues/458#issuecomment-1780511486)
-* Add support for jpeg xl [patch](https://github.com/uazo/cromite/blob/master/build/patches/Add-support-to-jxl.patch) https://github.com/uazo/cromite/issues/351
-* Disable prefers-reduced-transparency media query [patch](https://github.com/uazo/cromite/blob/master/build/patches/Disable-prefers-reduced-transparency-media-query.patch) https://github.com/uazo/cromite/issues/437
-* Show full urls for bookmark [patch](https://github.com/uazo/cromite/blob/master/build/patches/Show-full-urls-for-bookmark.patch) https://github.com/uazo/cromite/issues/434
+#### UI
+- Disable all promo dialogs
+- Disable omission of URL elements
+- EV Certified appear as normal certificates (do not give users a false sense of extra security which is not there)
+- (ANDROID) Allows the selection of all bookmarks
+- (ANDROID) Allow playing audio in background by default
+- (ANDROID) Add Alt+D hotkey to focus address bar
+- (ANDROID) Add bookmark import/export actions
+- (ANDROID) Add exit menu item
+- (ANDROID) Add flags to disable omnibox search for browsing history
+- (ANDROID) Add flag to control video playback resume feature: video playback whenever switching between tabs is not blocked
+- (ANDROID) Add menu item to bookmark all tabs
+- (ANDROID) Add menu item to view source
+- (ANDROID) Add option to use home page as new tab page
+- (ANDROID) Add setting to invert tap and long tap for accessibility reasons
+- (ANDROID) Always open browser controls in new tab
+- (ANDROID) Adds options related to the handling of pop-up selections: Opens tabs in foreground,  Move web search to the top of items, Web search in tab group and Enable smart text selection
+- (ANDROID) Disable add to home screen prompt
+- (ANDROID) Disable Paint Preview by default
+- (ANDROID) Do not ignore download location prompt setting
+- (ANDROID) Enable darken websites checkbox in themes (fingerprinting risk, activate with caution)
+- (ANDROID) Enable improved bookmarks ui by default
+- (ANDROID) Enable native Android autofill
+- (ANDROID) Enable search engine settings desktop ui
+- (ANDROID) Increase number of autocomplete matches to 10
+- (ANDROID) Keep empty tabs between sessions
+- (ANDROID) Disable screenshots in Incognito mode
+- (ANDROID) Move navigation bar to bottom
+- (ANDROID) Never fetch popular sites
+- (ANDROID) Re-introduce modal dialog flag to close all tabs
+- (ANDROID) Remove help menu item
+- (ANDROID) Readded disable-pull-to-refresh-effect
+- (ANDROID) Show New Tab Page at startup
+- (ANDROID) Use list mode for tab switcher
+- (DESKTOP) Enable menu on reload button
 
-##### from [119.0.6045.106](https://github.com/uazo/cromite/issues/484#issuecomment-1788744844)
-* Always clear js and wasm code cache at startup
-* Block Intents While Locked [patch](https://github.com/uazo/cromite/blob/master/build/patches/Block-Intents-While-Locked.patch)
-* Keep Manta Service Disabled [patch](https://github.com/uazo/cromite/blob/master/build/patches/Keep-Manta-Service-Disabled.patch)
-* (Only windows) Hide the presence of the webcam if the user has not given permission #480
+#### Disabled chromium feature
+- SafeBrowsing and SafeBrowsing Extended Reporting
+- (ANDROID) Commerce Hint and PriceTracking
+- (ANDROID) Shopping List integration
+- (ANDROID) DiscountInfo Api
 
-##### from [119.0.6045.124](https://github.com/uazo/cromite/issues/484#issuecomment-17887448441)
-* Disable Service and Shared workers on 3P iframe by default [patch](https://github.com/uazo/cromite/commit/8f293b2c9927f1185bbf95e11a280898fe9baa9a)
+#### Deprecated (they will be removed)
+- Add flag for save-data-header (fingerprinting risk, activate with caution)
+- Add flag to configure maximum connections per host
+- Block Intents While Locked (active by default in chromium)
+- Block 'qjz9zk' or 'trk:' requests (unused)
+- Deprecate Data URL in SVGUseElement (enabled by default in chromium)
+- Disable lock icon in address bar by default (enabled by default in chromium)
+- Disable offline pages in CCT
+- Enable Android Dynamic Performance Framework (enabled by default in chromium)
+- Enable prefetch-privacy-changes by default (as they are disabled by default)
+- Evict the entire FrameTree like desktop (enabled by default in chromium)
+- Exit on failure of inclusion
+- (ANDROID) Add option to force tablet UI
+- (ANDROID) Allows you to keep the toolbar open at all times (disabled by default - fingerprinting risk, activate with caution)
+- (WINDOWS) Lock Profile Cookie Database (enabled by default in chromium)
 
-
-
-##### from [119.0.6045.160](https://github.com/uazo/cromite/issues/526#issuecomment-1814305477)
-* Always allow inspect fallback [patch](https://github.com/uazo/cromite/blob/master/build/patches/Always-allow-inspect-fallback.patch)
-
-##### from [120.0.6099.63](https://github.com/uazo/cromite/issues/587#issuecomment-1844897172)
-* Improve the browser sandbox by using the new flags on android [patch](https://github.com/uazo/cromite/blob/master/build/patches/Improve-the-browser-sandbox.patch)
-
-##### from [120.0.6099.199](https://github.com/uazo/cromite/issues/657#issuecomment-1877090218)
-* Chrome web store protection [patch](https://github.com/uazo/cromite/blob/master/build/patches/Chrome-web-store-protection.patch)
-* Enable search engine settings desktop ui in android [patch](https://github.com/uazo/cromite/blob/master/build/patches/Enable-search-engine-settings-desktop-ui.patch)
-
-##### from [120.0.6099.216](https://github.com/uazo/cromite/issues/684#issuecomment-1885129850)
-* Customize selection popup [patch](https://github.com/uazo/cromite/blob/master/build/patches/Customize-selection-popup.patch)
-* Disable Android AppRestrictions [patch](https://github.com/uazo/cromite/blob/master/build/patches/Disable-Android-AppRestrictions.patch)
-* Add new option in the developer tools settings for deactivating the debugger javascript statement [patch](https://github.com/uazo/cromite/blob/master/build/patches/Enables-deactivation-of-the-js-debugger-statement.patch)
-
-##### from [120.0.6099.217](https://github.com/uazo/cromite/issues/695#issuecomment-1892032626)
-* Enable Gwp Asan in Android [patch](https://github.com/uazo/cromite/blob/master/build/patches/Enable-gwp-asan-on-Android.patch)
-
-##### from [120.0.6099.230](https://github.com/uazo/cromite/issues/720#issuecomment-1898490097)
-* Disable minikin engine
-
-##### from [121.0.6167.101](https://github.com/uazo/cromite/issues/743#issuecomment-1909799070)
-* Disable Read Aloud by default [patch](https://github.com/uazo/cromite/blob/master/build/patches/Disable-Read-Aloud-by-default.patch)
-* Disable Discount Info Api 
-
-##### from [121.0.6167.164](https://github.com/uazo/cromite/issues/784#issuecomment-1933505763)
-* Ability to block all popups per site [patch](https://github.com/uazo/cromite/blob/master/build/patches/Change-popup-site-setting.patch)
-
-##### from [122.0.6261.70](https://github.com/uazo/cromite/issues/825#issuecomment-1969089406)
-* Expose in settings and activate by default NewTabPage in startup [patch](https://github.com/uazo/cromite/blob/master/build/patches/Show-NTP-at-startup.patch)
-* Enable percent based scrolling on Windows [patch](https://github.com/uazo/cromite/blob/master/build/patches/Enable-percent-based-scrolling-on-Windows.patch)
-* Disable Compose by default [patch](https://github.com/uazo/cromite/blob/master/build/patches/Disable-Compose-feature.patch)
-* Offline autofetch by default [patch](https://github.com/uazo/cromite/blob/master/build/patches/Disable-offline-autofetch-flag.patch)
-
-#### Windows Cromite-specific features
-
-* enable Network Service Sandbox by default
-* disable sharing hub
-* disable search for image
-* simpler logging to file
-* disable TabHoverCard images
-* enable File System Access blocklist
-* enable HighEfficiencyMode by default
-* disable annotates on downloads
-* enabled pdf plugin by default
-
-## Features not related to privacy
-
-#### From Bromite
-* browser automatic updates, enabled by default
-* native Android autofill support
-* import/export bookmarks
-* bookmark all tabs from tabs regroup menu
-* allow playing videos in background tabs and disable pause on switching tabs
-* ~all codecs included (proprietary, open H.264 etc.)~ dropped from [121.0.6167.143](https://github.com/uazo/cromite/issues/764#issuecomment-1921713006) see https://github.com/uazo/cromite/issues/710
-* [AV1 codec support](https://github.com/bromite/bromite/wiki/AV1-support)
-* [dav1d](https://code.videolan.org/videolan/dav1d) decoder enabled by default
-* built with official speed optimizations
-* increase number of autocomplete matches from 5 to 10
-* allow changing default download storage location
-* do not ignore save prompt for users without SD cards
-* disable articles and increase number of icons on new tab page
-* adding an URL as bookmark will clear its blocked status for the NTP tiles
-* history support in incognito mode
-* view source of pages
-* sticky desktop mode setting
-* mobile/desktop user agent customization
-* accessibility preference to force tablet UI
-* use Alt+D to focus address bar
-* allow sharing to Bromite
-* UI for crash information collection
-* allow OpenSearch search engine detection in incognito
-* allow OpenSearch search engine detection with paths
-* keyboard dictionary hints in address bar
-* always allow `view-source:` URLs
-* allow moving navigation bar to bottom
-* add option to use home page as NTP
-
-#### Cromite-specific features
-
-* add setting in android to invert tap and long tap [patch](https://github.com/uazo/cromite/blob/master/build/patches/Add-setting-to-invert-tap-and-long-tap.patch)
-
-You can inspect all functionality/privacy changes by reading the [patches](https://github.com/uazo/cromite/tree/master/build/patches)
-
-### Flags
-
-Flags which have been retired from upstream Chromium but are still available in Cromite.
-
-* `#pull-to-refresh`
-* `#enable-search-ready-omnibox`
-* `#darken-websites-checkbox-in-themes-setting`
-* `#simplified-ntp`, enabled by default
-* `#enable-text-fragment-anchor`, disabled by default
-* `#num-raster-threads`
-* `#enable-image-reader`, enabled by default
-* `#enable-tab-groups` and `#enable-tab-groups-ui-improvements`
-* `#offline-indicator-v2`
-* `#enable-jxl`
-
-New flags:
-
-* `#fingerprinting-canvas-image-data-noise`, `#fingerprinting-client-rects-noise` and `#fingerprinting-canvas-measuretext-noise`, enabled by default
-* `#incognito-screenshot`, disabled by default
-* `#max-connections-per-host`
-* `#resume-background-video`
-* `#ipv6-probing`
-* `#enable-device-motion` and `#enable-device-orientation`
-* `#show-legacy-tls-warnings`
-* `#save-data-header`, disabled by default
-* `#export-bookmarks-use-saf`, disabled by default
-* `#allow-user-certificates`, disabled by default
-* `#cleartext-permitted`, enabled by default, can be used to disable all cleartext-HTTP traffic
-* `#omnibox-autocomplete-filtering`, can be used to restrict omnibox autocomplete results
-* `#disable-external-intent-requests`, can be used to disable opening any external app for any URL
-* `#enable-userscripts-log`, see https://github.com/bromite/bromite/wiki/UserScripts#flags
-* `#certificate-transparency-enabled`, enabled by default; see https://chromium.googlesource.com/chromium/src/+/master/net/docs/certificate-transparency.md
-* `#move-top-toolbar-to-bottom`, disabled by default
-* `#site-engagement`, enabled by default, can be used to disable the automatically-generated icons for most visited sites on the NTP
-
-With `chrome://flags/cromite` you can see the list of available flags
-
-### Site settings
-
-* webGL, disabled by default
-* images, enabled by default
-* Javascript JIT, disabled by default
-* timezone customization override
-* autoplay, disabled by default
-* webRTC, disabled by default
-* viewport protection, enabled by default
+#### Experimental
+- Ask to restart on connection change
+- Dictionary suggestions for the Omnibox
