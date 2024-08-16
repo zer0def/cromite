@@ -3,6 +3,8 @@ Date: Mon, 13 Nov 2023 14:26:00 +0000
 Subject: Always allow inspect fallback
 
 Always enable 'inspect fallback' in 'chrome://inspect/#devices'
+
+License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
  chrome/browser/resources/inspect/inspect.js | 3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)

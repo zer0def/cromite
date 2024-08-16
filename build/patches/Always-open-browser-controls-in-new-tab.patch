@@ -1,7 +1,8 @@
-From: Your Name <you@example.com>
+From: uazo <uazo@users.noreply.github.com>
 Date: Wed, 28 Dec 2022 07:19:58 +0000
 Subject: Always open browser controls in new tab
 
+License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
  .../chrome/browser/tab/TabContextMenuItemDelegate.java        | 4 ++++
  1 file changed, 4 insertions(+)
