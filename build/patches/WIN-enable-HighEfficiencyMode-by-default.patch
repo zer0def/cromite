@@ -10,7 +10,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 diff --git a/components/performance_manager/user_tuning/prefs.cc b/components/performance_manager/user_tuning/prefs.cc
 --- a/components/performance_manager/user_tuning/prefs.cc
 +++ b/components/performance_manager/user_tuning/prefs.cc
-@@ -23,18 +23,18 @@
+@@ -22,18 +22,18 @@
  namespace performance_manager::user_tuning::prefs {
  
  void RegisterLocalStatePrefs(PrefRegistrySimple* registry) {
@@ -31,5 +31,5 @@ diff --git a/components/performance_manager/user_tuning/prefs.cc b/components/pe
 +      static_cast<int>(BatterySaverModeState::kDisabled));
    registry->RegisterTimePref(kLastBatteryUseTimestamp, base::Time());
    registry->RegisterBooleanPref(kDiscardRingTreatmentEnabled, true);
- }
+   registry->RegisterBooleanPref(kPerformanceInterventionNotificationEnabled,
 --

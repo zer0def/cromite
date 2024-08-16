@@ -9,14 +9,13 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../java/res/xml/privacy_preferences.xml      |  5 +++
  .../chrome/browser/app/ChromeActivity.java    |  3 +-
  .../privacy/settings/PrivacySettings.java     | 43 ++++++++++++++++++-
- .../browser/tab_ui/TabContentManager.java     |  6 ++-
  .../strings/android_chrome_strings.grd        |  8 ++++
- 7 files changed, 73 insertions(+), 7 deletions(-)
+ 6 files changed, 69 insertions(+), 5 deletions(-)
 
 diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabGridViewBinder.java b/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabGridViewBinder.java
 --- a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabGridViewBinder.java
 +++ b/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabGridViewBinder.java
-@@ -350,9 +350,12 @@ class TabGridViewBinder {
+@@ -333,9 +333,12 @@ class TabGridViewBinder {
                          // Adjust bitmap to thumbnail.
                          TabUtils.setBitmapAndUpdateImageMatrix(thumbnail, result, thumbnailSize);
                      } else if (isMostRecentRequest) {
@@ -32,7 +31,7 @@ diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser
                      }
                  };
          if (sThumbnailFetcherForTesting != null) {
-@@ -391,6 +394,7 @@ class TabGridViewBinder {
+@@ -374,6 +377,7 @@ class TabGridViewBinder {
              ViewLookupCachingFrameLayout rootView,
              PropertyModel model,
              TabListFaviconProvider.TabFavicon favicon) {
@@ -43,7 +42,7 @@ diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser
 diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabProperties.java b/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabProperties.java
 --- a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabProperties.java
 +++ b/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabProperties.java
-@@ -74,6 +74,9 @@ public class TabProperties {
+@@ -77,6 +77,9 @@ public class TabProperties {
      public static final WritableBooleanPropertyKey FAVICON_FETCHED =
              new WritableBooleanPropertyKey();
  
@@ -87,7 +86,7 @@ diff --git a/chrome/android/java/res/xml/privacy_preferences.xml b/chrome/androi
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActivity.java b/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActivity.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActivity.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActivity.java
-@@ -144,6 +144,7 @@ import org.chromium.chrome.browser.preferences.ChromePreferenceKeys;
+@@ -142,6 +142,7 @@ import org.chromium.chrome.browser.preferences.ChromePreferenceKeys;
  import org.chromium.chrome.browser.preferences.ChromeSharedPreferences;
  import org.chromium.chrome.browser.preferences.Pref;
  import org.chromium.chrome.browser.printing.TabPrinter;
@@ -95,15 +94,15 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActiv
  import org.chromium.chrome.browser.profiles.Profile;
  import org.chromium.chrome.browser.profiles.ProfileProvider;
  import org.chromium.chrome.browser.readaloud.ReadAloudController;
-@@ -721,7 +722,7 @@ public abstract class ChromeActivity<C extends ChromeActivityComponent>
+@@ -718,7 +719,7 @@ public abstract class ChromeActivity<C extends ChromeActivityComponent>
                      new TabContentManager(
                              this,
                              mBrowserControlsManagerSupplier.get(),
 -                            !SysUtils.isLowEndDevice(),
 +                            !ContextUtils.getAppSharedPreferences().getBoolean(PrivacySettings.PREF_TABGRID_USE_ICONS, false),
-                             tabModelSelector != null ? tabModelSelector::getTabById : null));
+                             tabModelSelector != null ? tabModelSelector::getTabById : null,
+                             TabWindowManagerSingleton.getInstance()));
  
-             getBrowserControlsManager()
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/PrivacySettings.java b/chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/PrivacySettings.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/PrivacySettings.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/PrivacySettings.java
@@ -190,26 +189,10 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/privacy/setting
          Preference refererPolicyPref = findPreference(PREF_REFERER_POLICY);
          refererPolicyPref.setSummary(
                  RefererSettingsFragment.getRefererSummaryString(getContext()));
-diff --git a/chrome/browser/tab_ui/android/java/src/org/chromium/chrome/browser/tab_ui/TabContentManager.java b/chrome/browser/tab_ui/android/java/src/org/chromium/chrome/browser/tab_ui/TabContentManager.java
---- a/chrome/browser/tab_ui/android/java/src/org/chromium/chrome/browser/tab_ui/TabContentManager.java
-+++ b/chrome/browser/tab_ui/android/java/src/org/chromium/chrome/browser/tab_ui/TabContentManager.java
-@@ -328,8 +328,10 @@ public class TabContentManager {
-             @NonNull Callback<Bitmap> callback,
-             boolean forceUpdate,
-             boolean writeBack) {
--        if (!mSnapshotsEnabled) return;
--
-+        if (!mSnapshotsEnabled) {
-+            callback.onResult(null);
-+            return;
-+        }
-         // TODO(crbug.com/40267864): Remove forceUpdate and writeBack params once the following
-         // features
-         // launch:
 diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chrome/browser/ui/android/strings/android_chrome_strings.grd
 --- a/chrome/browser/ui/android/strings/android_chrome_strings.grd
 +++ b/chrome/browser/ui/android/strings/android_chrome_strings.grd
-@@ -5659,6 +5659,14 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>delete the Chrome d
+@@ -5909,6 +5909,14 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>delete the Chrome d
          Your <ph name="FQDN">%1$s<ex>www.amazon.com</ex></ph> timer ran out. It'll start again tomorrow.
        </message>
  

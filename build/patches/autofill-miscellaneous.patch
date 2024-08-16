@@ -22,7 +22,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 diff --git a/chrome/browser/prefs/browser_prefs.cc b/chrome/browser/prefs/browser_prefs.cc
 --- a/chrome/browser/prefs/browser_prefs.cc
 +++ b/chrome/browser/prefs/browser_prefs.cc
-@@ -1495,7 +1495,7 @@ void RegisterProfilePrefsForMigration(
+@@ -1206,7 +1206,7 @@ void RegisterProfilePrefsForMigration(
  #endif
  
    // Deprecated 12/2023.
@@ -34,7 +34,7 @@ diff --git a/chrome/browser/prefs/browser_prefs.cc b/chrome/browser/prefs/browse
 diff --git a/chrome/browser/ui/autofill/chrome_autofill_client.cc b/chrome/browser/ui/autofill/chrome_autofill_client.cc
 --- a/chrome/browser/ui/autofill/chrome_autofill_client.cc
 +++ b/chrome/browser/ui/autofill/chrome_autofill_client.cc
-@@ -219,12 +219,7 @@ ChromeAutofillClient::GetURLLoaderFactory() {
+@@ -211,12 +211,7 @@ ChromeAutofillClient::GetURLLoaderFactory() {
  }
  
  AutofillCrowdsourcingManager* ChromeAutofillClient::GetCrowdsourcingManager() {
@@ -159,7 +159,7 @@ diff --git a/components/autofill/core/browser/crowdsourcing/autofill_crowdsourci
 diff --git a/components/autofill/core/common/autofill_features.cc b/components/autofill/core/common/autofill_features.cc
 --- a/components/autofill/core/common/autofill_features.cc
 +++ b/components/autofill/core/common/autofill_features.cc
-@@ -884,6 +884,8 @@ BASE_FEATURE(kAutofillUploadThrottling,
+@@ -939,6 +939,8 @@ BASE_FEATURE(kAutofillUploadThrottling,
               "AutofillUploadThrottling",
               base::FEATURE_ENABLED_BY_DEFAULT);
  
@@ -171,7 +171,7 @@ diff --git a/components/autofill/core/common/autofill_features.cc b/components/a
 diff --git a/components/autofill/core/common/autofill_prefs.cc b/components/autofill/core/common/autofill_prefs.cc
 --- a/components/autofill/core/common/autofill_prefs.cc
 +++ b/components/autofill/core/common/autofill_prefs.cc
-@@ -39,7 +39,7 @@ int GetSyncTransportOptInBitFieldForAccount(const PrefService* prefs,
+@@ -40,7 +40,7 @@ int GetSyncTransportOptInBitFieldForAccount(const PrefService* prefs,
  void RegisterProfilePrefs(user_prefs::PrefRegistrySyncable* registry) {
    // Synced prefs. Used for cross-device choices, e.g., credit card Autofill.
    registry->RegisterBooleanPref(
@@ -180,7 +180,7 @@ diff --git a/components/autofill/core/common/autofill_prefs.cc b/components/auto
        user_prefs::PrefRegistrySyncable::SYNCABLE_PREF);
    registry->RegisterIntegerPref(
        prefs::kAutofillLastVersionDeduped, 0,
-@@ -48,10 +48,10 @@ void RegisterProfilePrefs(user_prefs::PrefRegistrySyncable* registry) {
+@@ -49,10 +49,10 @@ void RegisterProfilePrefs(user_prefs::PrefRegistrySyncable* registry) {
        prefs::kAutofillHasSeenIban, false,
        user_prefs::PrefRegistrySyncable::SYNCABLE_PREF);
    registry->RegisterBooleanPref(
@@ -193,7 +193,7 @@ diff --git a/components/autofill/core/common/autofill_prefs.cc b/components/auto
        user_prefs::PrefRegistrySyncable::SYNCABLE_PREF);
    registry->RegisterBooleanPref(
        kAutofillPaymentCardBenefits, true,
-@@ -97,9 +97,9 @@ void RegisterProfilePrefs(user_prefs::PrefRegistrySyncable* registry) {
+@@ -98,9 +98,9 @@ void RegisterProfilePrefs(user_prefs::PrefRegistrySyncable* registry) {
  #endif
  
    // Deprecated prefs registered for migration.

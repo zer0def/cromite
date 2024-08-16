@@ -61,7 +61,7 @@ new file mode 100644
 diff --git a/storage/browser/blob/blob_memory_controller.cc b/storage/browser/blob/blob_memory_controller.cc
 --- a/storage/browser/blob/blob_memory_controller.cc
 +++ b/storage/browser/blob/blob_memory_controller.cc
-@@ -50,6 +50,15 @@ using MemoryAllocation = BlobMemoryController::MemoryAllocation;
+@@ -55,6 +55,15 @@ using MemoryAllocation = BlobMemoryController::MemoryAllocation;
  using QuotaAllocationTask = BlobMemoryController::QuotaAllocationTask;
  using DiskSpaceFuncPtr = BlobMemoryController::DiskSpaceFuncPtr;
  
@@ -77,7 +77,7 @@ diff --git a/storage/browser/blob/blob_memory_controller.cc b/storage/browser/bl
  File::Error CreateBlobDirectory(const FilePath& blob_storage_dir) {
    File::Error error = File::FILE_OK;
    base::CreateDirectoryAndGetError(blob_storage_dir, &error);
-@@ -79,23 +88,16 @@ BlobStorageLimits CalculateBlobStorageLimitsImpl(
+@@ -84,23 +93,16 @@ BlobStorageLimits CalculateBlobStorageLimitsImpl(
    int64_t disk_size = 0ull;
    uint64_t memory_size = optional_memory_size_for_testing
                               ? optional_memory_size_for_testing.value()

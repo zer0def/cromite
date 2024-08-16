@@ -98,7 +98,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/LaunchIntentDis
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/customtabs/CustomTabsConnection.java b/chrome/android/java/src/org/chromium/chrome/browser/customtabs/CustomTabsConnection.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/customtabs/CustomTabsConnection.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/customtabs/CustomTabsConnection.java
-@@ -867,6 +867,7 @@ public class CustomTabsConnection {
+@@ -912,6 +912,7 @@ public class CustomTabsConnection {
          PostTask.postTask(
                  TaskTraits.UI_DEFAULT,
                  () -> {
@@ -119,7 +119,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/customtabs/Inco
  /**
   * A model class that parses the incoming intent for incognito and ephemeral Custom Tabs specific
   * customization data.
-@@ -130,6 +133,9 @@ public class IncognitoCustomTabIntentDataProvider extends BrowserServicesIntentD
+@@ -131,6 +134,9 @@ public class IncognitoCustomTabIntentDataProvider extends BrowserServicesIntentD
      }
  
      private static boolean isIntentFromThirdPartyAllowed() {
@@ -203,7 +203,7 @@ diff --git a/chrome/browser/tab/java/src/org/chromium/chrome/browser/tab/TabAsso
 diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chrome/browser/ui/android/strings/android_chrome_strings.grd
 --- a/chrome/browser/ui/android/strings/android_chrome_strings.grd
 +++ b/chrome/browser/ui/android/strings/android_chrome_strings.grd
-@@ -5449,6 +5449,20 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>delete the Chrome d
+@@ -5699,6 +5699,20 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>delete the Chrome d
        <message name="IDS_NEAR_OOM_INTERVENTION_DECLINE" desc="The text of the button letting the user decline the browser's intervention, so that the page can resume what it was doing.">
           Resume
        </message>

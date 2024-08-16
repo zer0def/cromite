@@ -4,9 +4,9 @@ Subject: WIN Disable updater
 
 ---
  chrome/browser/active_use_util.h              |  2 +-
- chrome/browser/updater/BUILD.gn               |  9 -----
+ chrome/browser/updater/BUILD.gn               | 16 ---------
  .../browser/updater/browser_updater_client.cc | 33 +------------------
- 3 files changed, 2 insertions(+), 42 deletions(-)
+ 3 files changed, 2 insertions(+), 49 deletions(-)
 
 diff --git a/chrome/browser/active_use_util.h b/chrome/browser/active_use_util.h
 --- a/chrome/browser/active_use_util.h
@@ -22,22 +22,29 @@ diff --git a/chrome/browser/active_use_util.h b/chrome/browser/active_use_util.h
 diff --git a/chrome/browser/updater/BUILD.gn b/chrome/browser/updater/BUILD.gn
 --- a/chrome/browser/updater/BUILD.gn
 +++ b/chrome/browser/updater/BUILD.gn
-@@ -22,15 +22,6 @@ source_set("browser_updater_client") {
-     "//components/version_info",
-   ]
+@@ -23,22 +23,6 @@ if (is_win || is_mac) {
+       "//components/version_info",
+     ]
  
--  if (is_win) {
--    sources += [ "browser_updater_client_win.cc" ]
+-    if (is_win) {
+-      sources += [ "browser_updater_client_win.cc" ]
 -
--    deps += [
--      "//chrome/browser/google",
--      "//chrome/install_static:install_static_util",
--    ]
--  }
+-      if (enable_updater) {
+-        sources += [ "browser_updater_client_util_win.cc" ]
+-      } else {
+-        sources += [ "browser_updater_client_util_no_updater.cc" ]
+-      }
 -
-   if (is_mac) {
-     sources += [
-       "browser_updater_client_mac.mm",
+-      deps += [
+-        "//chrome/browser/google",
+-        "//chrome/install_static:install_static_util",
+-        "//chrome/installer/util:with_no_strings",
+-      ]
+-    }
+-
+     if (is_mac) {
+       sources += [
+         "browser_updater_client_mac.mm",
 diff --git a/chrome/browser/updater/browser_updater_client.cc b/chrome/browser/updater/browser_updater_client.cc
 --- a/chrome/browser/updater/browser_updater_client.cc
 +++ b/chrome/browser/updater/browser_updater_client.cc

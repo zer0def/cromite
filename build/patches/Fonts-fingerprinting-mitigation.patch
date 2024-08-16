@@ -23,10 +23,10 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  third_party/blink/public/common/features.h    |   3 +
  third_party/blink/renderer/platform/BUILD.gn  |   1 +
  .../renderer/platform/fonts/font_cache.h      |   2 +-
- .../fonts/skia/bromite_allowed_fonts.h        | 270 ++++++++++++++++++
+ .../fonts/skia/bromite_allowed_fonts.h        | 271 ++++++++++++++++++
  .../platform/fonts/skia/font_cache_skia.cc    |  44 ++-
  .../platform/fonts/win/font_cache_skia_win.cc |   7 +-
- 11 files changed, 356 insertions(+), 9 deletions(-)
+ 11 files changed, 357 insertions(+), 9 deletions(-)
  create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Fonts-fingerprinting-mitigation.inc
  create mode 100644 cromite_flags/content/common/features_cc/Fonts-fingerprinting-mitigation.inc
  create mode 100644 cromite_flags/third_party/blink/common/features_cc/Fonts-fingerprinting-mitigation.inc
@@ -65,7 +65,7 @@ new file mode 100644
 diff --git a/skia/ext/skia_utils_win.cc b/skia/ext/skia_utils_win.cc
 --- a/skia/ext/skia_utils_win.cc
 +++ b/skia/ext/skia_utils_win.cc
-@@ -365,6 +365,26 @@ void CreateBitmapHeaderForXRGB888(int width,
+@@ -370,6 +370,26 @@ void CreateBitmapHeaderForXRGB888(int width,
    CreateBitmapHeaderWithColorDepth(width, height, 32, hdr);
  }
  
@@ -115,7 +115,7 @@ diff --git a/skia/ext/skia_utils_win.h b/skia/ext/skia_utils_win.h
 diff --git a/third_party/blink/public/common/features.h b/third_party/blink/public/common/features.h
 --- a/third_party/blink/public/common/features.h
 +++ b/third_party/blink/public/common/features.h
-@@ -292,6 +292,9 @@ BLINK_COMMON_EXPORT extern const base::FeatureParam<int>
+@@ -293,6 +293,9 @@ BLINK_COMMON_EXPORT extern const base::FeatureParam<int>
      kMaxDiskDataAllocatorCapacityMB;
  BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE(kLessAggressiveParkableString);
  
@@ -128,7 +128,7 @@ diff --git a/third_party/blink/public/common/features.h b/third_party/blink/publ
 diff --git a/third_party/blink/renderer/platform/BUILD.gn b/third_party/blink/renderer/platform/BUILD.gn
 --- a/third_party/blink/renderer/platform/BUILD.gn
 +++ b/third_party/blink/renderer/platform/BUILD.gn
-@@ -784,6 +784,7 @@ component("platform") {
+@@ -786,6 +786,7 @@ component("platform") {
      "fonts/simple_font_data.cc",
      "fonts/simple_font_data.h",
      "fonts/skia/font_cache_skia.cc",
@@ -139,7 +139,7 @@ diff --git a/third_party/blink/renderer/platform/BUILD.gn b/third_party/blink/re
 diff --git a/third_party/blink/renderer/platform/fonts/font_cache.h b/third_party/blink/renderer/platform/fonts/font_cache.h
 --- a/third_party/blink/renderer/platform/fonts/font_cache.h
 +++ b/third_party/blink/renderer/platform/fonts/font_cache.h
-@@ -310,7 +310,7 @@ class PLATFORM_EXPORT FontCache final {
+@@ -312,7 +312,7 @@ class PLATFORM_EXPORT FontCache final {
  
    sk_sp<SkTypeface> CreateTypeface(const FontDescription&,
                                     const FontFaceCreationParams&,
@@ -152,7 +152,7 @@ diff --git a/third_party/blink/renderer/platform/fonts/skia/bromite_allowed_font
 new file mode 100644
 --- /dev/null
 +++ b/third_party/blink/renderer/platform/fonts/skia/bromite_allowed_fonts.h
-@@ -0,0 +1,270 @@
+@@ -0,0 +1,271 @@
 +/*
 +    This file is part of Bromite.
 +
@@ -345,7 +345,8 @@ new file mode 100644
 +#endif
 +
 +template<int N>
-+bool IsInList(const std::u16string& font_name, const char16_t*(&list)[N]) {
++bool IsInList(const std::u16string& font_name, const char16_t*(&input)[N]) {
++  auto list = base::span(input);
 +  for(int t = 0; t < N; ++t)
 +    if (base::EqualsCaseInsensitiveASCII(font_name, list[t]))
 +      return true;
@@ -527,7 +528,7 @@ diff --git a/third_party/blink/renderer/platform/fonts/skia/font_cache_skia.cc b
 diff --git a/third_party/blink/renderer/platform/fonts/win/font_cache_skia_win.cc b/third_party/blink/renderer/platform/fonts/win/font_cache_skia_win.cc
 --- a/third_party/blink/renderer/platform/fonts/win/font_cache_skia_win.cc
 +++ b/third_party/blink/renderer/platform/fonts/win/font_cache_skia_win.cc
-@@ -427,6 +427,7 @@ const FontPlatformData* FontCache::CreateFontPlatformData(
+@@ -430,6 +430,7 @@ const FontPlatformData* FontCache::CreateFontPlatformData(
    sk_sp<SkTypeface> typeface;
  
    std::string name;
@@ -535,7 +536,7 @@ diff --git a/third_party/blink/renderer/platform/fonts/win/font_cache_skia_win.c
  
    if (alternate_font_name == AlternateFontName::kLocalUniqueFace &&
        RuntimeEnabledFeatures::FontSrcLocalMatchingEnabled()) {
-@@ -438,7 +439,7 @@ const FontPlatformData* FontCache::CreateFontPlatformData(
+@@ -441,7 +442,7 @@ const FontPlatformData* FontCache::CreateFontPlatformData(
        return nullptr;
  
    } else {
@@ -544,7 +545,7 @@ diff --git a/third_party/blink/renderer/platform/fonts/win/font_cache_skia_win.c
  
      // For a family match, Windows will always give us a valid pointer here,
      // even if the face name is non-existent. We have to double-check and see if
-@@ -472,7 +473,7 @@ const FontPlatformData* FontCache::CreateFontPlatformData(
+@@ -475,7 +476,7 @@ const FontPlatformData* FontCache::CreateFontPlatformData(
          FontDescription adjusted_font_description = font_description;
          adjusted_font_description.SetWeight(variant_weight);
          typeface =
@@ -553,7 +554,7 @@ diff --git a/third_party/blink/renderer/platform/fonts/win/font_cache_skia_win.c
          if (!typeface ||
              !TypefacesMatchesFamily(typeface.get(), adjusted_name)) {
            return nullptr;
-@@ -484,7 +485,7 @@ const FontPlatformData* FontCache::CreateFontPlatformData(
+@@ -487,7 +488,7 @@ const FontPlatformData* FontCache::CreateFontPlatformData(
          FontDescription adjusted_font_description = font_description;
          adjusted_font_description.SetStretch(variant_stretch);
          typeface =

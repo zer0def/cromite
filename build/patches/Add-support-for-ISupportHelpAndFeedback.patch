@@ -20,7 +20,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/settings/Settin
  import org.chromium.components.browser_ui.site_settings.BaseSiteSettingsFragment;
  import org.chromium.components.browser_ui.site_settings.SiteSettingsCategory;
  import org.chromium.components.browser_ui.util.TraceEventVectorDrawableCompat;
-@@ -517,8 +518,12 @@ public class SettingsActivity extends ChromeBaseAppCompatActivity
+@@ -515,8 +516,12 @@ public class SettingsActivity extends ChromeBaseAppCompatActivity
              finish();
              return true;
          } else if (item.getItemId() == R.id.menu_id_general_help) {

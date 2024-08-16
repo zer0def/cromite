@@ -155,7 +155,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/privacy/setting
 diff --git a/chrome/browser/extensions/api/settings_private/prefs_util.cc b/chrome/browser/extensions/api/settings_private/prefs_util.cc
 --- a/chrome/browser/extensions/api/settings_private/prefs_util.cc
 +++ b/chrome/browser/extensions/api/settings_private/prefs_util.cc
-@@ -37,6 +37,7 @@
+@@ -40,6 +40,7 @@
  #include "components/content_settings/core/common/pref_names.h"
  #include "components/dom_distiller/core/pref_names.h"
  #include "components/drive/drive_pref_names.h"
@@ -163,7 +163,7 @@ diff --git a/chrome/browser/extensions/api/settings_private/prefs_util.cc b/chro
  #include "components/embedder_support/pref_names.h"
  #include "components/language/core/browser/pref_names.h"
  #include "components/live_caption/pref_names.h"
-@@ -210,6 +211,9 @@ const PrefsUtil::TypedPrefMap& PrefsUtil::GetAllowlistedKeys() {
+@@ -213,6 +214,9 @@ const PrefsUtil::TypedPrefMap& PrefsUtil::GetAllowlistedKeys() {
    (*s_allowlist)[::prefs::kShowForwardButton] =
        settings_api::PrefType::kBoolean;
  
@@ -172,7 +172,7 @@ diff --git a/chrome/browser/extensions/api/settings_private/prefs_util.cc b/chro
 +
    // Appearance settings.
    (*s_allowlist)[::prefs::kCurrentThemeID] = settings_api::PrefType::kString;
-   (*s_allowlist)[::prefs::kPolicyThemeColor] = settings_api::PrefType::kNumber;
+   (*s_allowlist)[::prefs::kPinnedActions] = settings_api::PrefType::kList;
 diff --git a/chrome/browser/history/history_service_factory.cc b/chrome/browser/history/history_service_factory.cc
 --- a/chrome/browser/history/history_service_factory.cc
 +++ b/chrome/browser/history/history_service_factory.cc
@@ -188,7 +188,7 @@ diff --git a/chrome/browser/history/history_service_factory.cc b/chrome/browser/
 diff --git a/chrome/browser/profiles/profile_impl.cc b/chrome/browser/profiles/profile_impl.cc
 --- a/chrome/browser/profiles/profile_impl.cc
 +++ b/chrome/browser/profiles/profile_impl.cc
-@@ -375,6 +375,7 @@ std::unique_ptr<Profile> Profile::CreateProfile(const base::FilePath& path,
+@@ -376,6 +376,7 @@ std::unique_ptr<Profile> Profile::CreateProfile(const base::FilePath& path,
  void ProfileImpl::RegisterProfilePrefs(
      user_prefs::PrefRegistrySyncable* registry) {
    registry->RegisterBooleanPref(prefs::kSavingBrowserHistoryDisabled, false);
@@ -245,7 +245,7 @@ diff --git a/chrome/browser/resources/settings/privacy_page/privacy_page.ts b/ch
 diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chrome/browser/ui/android/strings/android_chrome_strings.grd
 --- a/chrome/browser/ui/android/strings/android_chrome_strings.grd
 +++ b/chrome/browser/ui/android/strings/android_chrome_strings.grd
-@@ -1282,6 +1282,18 @@ Your Google account may have other forms of browsing history like searches and a
+@@ -1290,6 +1290,18 @@ Your Google account may have other forms of browsing history like searches and a
        <message name="IDS_CLEAR_HISTORY_TITLE" desc="Title for Clear History in Clear Browsing Data dialog">
          Browsing history
        </message>
@@ -267,7 +267,7 @@ diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chro
 diff --git a/chrome/browser/ui/webui/settings/settings_localized_strings_provider.cc b/chrome/browser/ui/webui/settings/settings_localized_strings_provider.cc
 --- a/chrome/browser/ui/webui/settings/settings_localized_strings_provider.cc
 +++ b/chrome/browser/ui/webui/settings/settings_localized_strings_provider.cc
-@@ -1814,6 +1814,11 @@ void AddPrivacyStrings(content::WebUIDataSource* html_source,
+@@ -1831,6 +1831,11 @@ void AddPrivacyStrings(content::WebUIDataSource* html_source,
        {"safeBrowsingStandardDesc", IDS_SETTINGS_SAFEBROWSING_STANDARD_DESC},
        {"safeBrowsingStandardDescUpdated",
         IDS_SETTINGS_SAFEBROWSING_STANDARD_DESC_UPDATED},
@@ -464,7 +464,7 @@ diff --git a/components/history/core/browser/history_backend.cc b/components/his
  
  // The maximum number of days for which domain visit metrics are computed
  // each time HistoryBackend::GetDomainDiversity() is called.
-@@ -1311,6 +1311,19 @@ void HistoryBackend::InitImpl(
+@@ -1312,6 +1312,19 @@ void HistoryBackend::InitImpl(
    expirer_.StartExpiringOldStuff(base::Days(kExpireDaysThreshold));
  }
  
@@ -574,7 +574,7 @@ diff --git a/components/history/core/browser/history_service.h b/components/hist
    // Triggers the backend to load if it hasn't already, and then returns whether
    // it's finished loading.
    // Note: Virtual needed for mocking.
-@@ -1217,6 +1221,10 @@ class HistoryService : public KeyedService,
+@@ -1215,6 +1219,10 @@ class HistoryService : public KeyedService,
    raw_ptr<syncer::LocalDeviceInfoProvider> local_device_info_provider_ =
        nullptr;
  

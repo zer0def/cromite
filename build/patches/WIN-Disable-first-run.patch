@@ -15,7 +15,7 @@ diff --git a/chrome/browser/ui/startup/first_run_service.cc b/chrome/browser/ui/
  void FirstRunService::RegisterLocalStatePrefs(PrefRegistrySimple* registry) {
 -  registry->RegisterBooleanPref(prefs::kFirstRunFinished, false);
 +  registry->RegisterBooleanPref(prefs::kFirstRunFinished, true);
-   registry->RegisterStringPref(prefs::kFirstRunStudyGroup, "");
  }
  
+ FirstRunService::FirstRunService(Profile& profile,
 --
