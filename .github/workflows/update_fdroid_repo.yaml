@@ -27,9 +27,10 @@ jobs:
             touch /etc/apt/apt.conf.d/proxy.conf
             echo "Acquire::http::Proxy \"$https_proxy\";" >/etc/apt/apt.conf.d/proxy.conf
 
+            . fdroidserver-env/bin/activate
             apt update
 
-            DEBIAN_FRONTEND=noninteractive apt update && apt install -y wget
+            DEBIAN_FRONTEND=noninteractive apt update && apt install -y wget unzip
             wget https://github.com/rclone/rclone/releases/download/v1.64.0/rclone-v1.64.0-linux-amd64.zip
             unzip rclone-v1.64.0-linux-amd64.zip
             export rclone=rclone-v1.64.0-linux-amd64/rclone
