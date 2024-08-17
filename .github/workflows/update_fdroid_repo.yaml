@@ -27,6 +27,7 @@ jobs:
             touch /etc/apt/apt.conf.d/proxy.conf
             echo "Acquire::http::Proxy \"$https_proxy\";" >/etc/apt/apt.conf.d/proxy.conf
 
+            cd /
             . fdroidserver-env/bin/activate
             apt update
 
