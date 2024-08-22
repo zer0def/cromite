@@ -95,7 +95,7 @@ diff --git a/DEPS b/DEPS
    'highway_revision': '8295336dd70f1201d42c22ab5b0861de38cf8fbf',
    # Three lines of non-changing comments so that
    # the commit queue can handle CLs rolling ffmpeg
-@@ -1632,6 +1636,9 @@ deps = {
+@@ -1633,6 +1637,9 @@ deps = {
    'src/third_party/dawn':
      Var('dawn_git') + '/dawn.git' + '@' +  Var('dawn_revision'),
  
