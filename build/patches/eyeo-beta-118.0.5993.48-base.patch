@@ -456,7 +456,7 @@ diff --git a/DEPS b/DEPS
    # If you change this, also update the libc++ revision in
    # //buildtools/deps_revisions.gni.
    'libcxx_revision':       '6bb75caa139ee1e686d2205910454cf6ea212e58',
-@@ -1295,6 +1306,10 @@ deps = {
+@@ -1296,6 +1307,10 @@ deps = {
      'condition': 'checkout_android and checkout_src_internal',
    },
  
@@ -467,7 +467,7 @@ diff --git a/DEPS b/DEPS
    'src/docs/website': {
      'url': Var('chromium_git') + '/website.git' + '@' + '82c1d3e5b812b35df1cb6a031f59616dc594d4f7',
    },
-@@ -1419,6 +1434,13 @@ deps = {
+@@ -1420,6 +1435,13 @@ deps = {
        'dep_type': 'cipd',
    },
  
