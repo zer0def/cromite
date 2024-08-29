@@ -8,12 +8,12 @@ need: Add-cromite-flags-support.patch
 License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
  .../tab_management/TabUiFeatureUtilities.java |  4 +--
- .../java/res/xml/privacy_preferences.xml      |  7 ++++
+ .../java/res/xml/privacy_preferences.xml      |  6 ++++
  .../flags/cromite/sTabSwitcherListMode.java   | 33 +++++++++++++++++++
  .../Use-list-mode-for-tab-switcher.grdp       |  9 +++++
  .../browser/toolbar/top/ToolbarPhone.java     | 16 +++++----
  .../tab-switcher-list-mode.inc                |  3 ++
- 6 files changed, 64 insertions(+), 8 deletions(-)
+ 6 files changed, 63 insertions(+), 8 deletions(-)
  create mode 100644 chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/cromite/sTabSwitcherListMode.java
  create mode 100644 chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Use-list-mode-for-tab-switcher.grdp
  create mode 100644 cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/tab-switcher-list-mode.inc
@@ -42,17 +42,16 @@ diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser
 diff --git a/chrome/android/java/res/xml/privacy_preferences.xml b/chrome/android/java/res/xml/privacy_preferences.xml
 --- a/chrome/android/java/res/xml/privacy_preferences.xml
 +++ b/chrome/android/java/res/xml/privacy_preferences.xml
-@@ -90,6 +90,13 @@ found in the LICENSE file.
-         android:summary="@string/settings_incognito_tab_lock_summary_android_setting_off"
-         android:persistent="false" />
- 
+@@ -95,6 +95,12 @@ found in the LICENSE file.
+         android:summary="@string/allow_external_intent_requests_summary"
+         app:featureName="AllowExternalIntentRequests"
+         app:needRestart="false" />
 +    <org.chromium.components.browser_ui.settings.ChromeSwitchPreference
 +        android:key="use_tab_switcher_list_mode"
 +        android:title="@string/tab_switcher_list_mode_title"
 +        android:summary="@string/tab_switcher_list_mode_summary"
 +        app:featureName="TabSwitcherListMode"
 +        app:needRestart="true" />
-+
      <PreferenceCategory
          android:key="security_section"
          android:title="@string/security_section_title" />
