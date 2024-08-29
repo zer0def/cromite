@@ -20,6 +20,7 @@ but since the goal is a reboot, this should not be the case.
 
 License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
+ .../java/res/xml/homepage_preferences.xml     |   6 +
  .../ConnectivityDetector.java                 |   1 -
  .../indicator/OfflineDetector.java            | 111 +++++++++++++++++-
  .../OfflineIndicatorControllerV2.java         |  15 ++-
@@ -30,7 +31,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../browser/tabmodel/TabModelUtils.java       |  18 +++
  .../browser/tabmodel/TabWindowManager.java    |   2 +
  .../tabmodel/TabWindowManagerImpl.java        |  10 ++
- .../Ask-for-restart-on-connection-change.grdp |   9 ++
+ .../Ask-for-restart-on-connection-change.grdp |  15 +++
  .../android/java/res/layout/snackbar.xml      |  10 ++
  .../ui/messages/snackbar/Snackbar.java        |  16 +++
  .../ui/messages/snackbar/SnackbarManager.java |   6 +
@@ -48,13 +49,29 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../blink/renderer/core/frame/local_frame.cc  |   2 +
  .../main_thread/frame_scheduler_impl.cc       |   2 +
  .../main_thread/page_scheduler_impl.cc        |   9 +-
- 28 files changed, 310 insertions(+), 10 deletions(-)
+ 29 files changed, 322 insertions(+), 10 deletions(-)
  create mode 100644 chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/cromite/sAskForRestartOnConnectionChange.java
  create mode 100644 chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Ask-for-restart-on-connection-change.grdp
  create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Ask-for-restart-on-connection-change.inc
  create mode 100644 cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Ask-for-restart-on-connection-change.inc
  create mode 100644 cromite_flags/chrome/browser/flags/android/chrome_feature_list_h/Ask-for-restart-on-connection-change.inc
 
+diff --git a/chrome/android/java/res/xml/homepage_preferences.xml b/chrome/android/java/res/xml/homepage_preferences.xml
+--- a/chrome/android/java/res/xml/homepage_preferences.xml
++++ b/chrome/android/java/res/xml/homepage_preferences.xml
+@@ -25,6 +25,12 @@ found in the LICENSE file.
+         app:featureName="enable-show-ntp-at-startup"
+         app:needRestart="true" />
+ 
++    <org.chromium.components.browser_ui.settings.ChromeSwitchPreference
++        android:title="@string/ask_to_restart_on_connection_change_title"
++        android:summary="@string/ask_to_restart_on_connection_change_summary"
++        app:featureName="ask-for-restart-on-connection-change"
++        app:needRestart="true" />
++
+     <org.chromium.chrome.browser.homepage.settings.RadioButtonGroupHomepagePreference
+         android:key="homepage_radio_group"
+         android:selectable="false"
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/net/connectivitydetector/ConnectivityDetector.java b/chrome/android/java/src/org/chromium/chrome/browser/net/connectivitydetector/ConnectivityDetector.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/net/connectivitydetector/ConnectivityDetector.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/net/connectivitydetector/ConnectivityDetector.java
@@ -417,9 +434,15 @@ diff --git a/chrome/browser/ui/android/strings/cromite_android_chrome_strings_gr
 new file mode 100644
 --- /dev/null
 +++ b/chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Ask-for-restart-on-connection-change.grdp
-@@ -0,0 +1,9 @@
+@@ -0,0 +1,15 @@
 +<?xml version="1.0" encoding="utf-8"?>
 +<grit-part>
++    <message name="IDS_ASK_TO_RESTART_ON_CONNECTION_CHANGE_TITLE" desc="Text for 'Ask to restart on connection change' settings option.">
++        Ask to restart on connection change
++    </message>
++    <message name="IDS_ASK_TO_RESTART_ON_CONNECTION_CHANGE_SUMMARY" desc="Summary text for 'Ask to restart on connection change' settings option.">
++        If the IP of the connection changes, access to the network is blocked and a browser restart is requested
++    </message>
 +    <message name="IDS_ASK_TO_RESTART_ON_CONNECTION_CHANGE_RESTART" desc="">
 +        Connection to internet has changed, execution is paused. Restart Cromite?
 +    </message>
@@ -676,7 +699,7 @@ new file mode 100644
 @@ -0,0 +1,3 @@
 +CROMITE_FEATURE(kAskForRestartOnConnectionChange,
 +                "AskForRestartOnConnectionChange",
-+                base::FEATURE_DISABLED_BY_DEFAULT);
++                base::FEATURE_ENABLED_BY_DEFAULT);
 diff --git a/cromite_flags/chrome/browser/flags/android/chrome_feature_list_h/Ask-for-restart-on-connection-change.inc b/cromite_flags/chrome/browser/flags/android/chrome_feature_list_h/Ask-for-restart-on-connection-change.inc
 new file mode 100644
 --- /dev/null
