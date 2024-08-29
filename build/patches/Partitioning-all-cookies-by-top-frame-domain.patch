@@ -15,8 +15,9 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../privacy_sandbox_settings_delegate.cc      |  1 +
  ...storage_access_grant_permission_context.cc | 12 ++++
  .../experiment/experiment_manager_impl.cc     |  1 +
+ .../strings/android/site_settings.grdp        |  2 +-
  .../core/browser/cookie_settings.cc           |  2 +
- .../core/common/cookie_settings_base.cc       | 66 +------------------
+ .../core/common/cookie_settings_base.cc       | 61 +------------------
  ...ioning-all-cookies-by-top-frame-domain.inc |  3 +
  ...ioning-all-cookies-by-top-frame-domain.inc |  1 +
  ...ioning-all-cookies-by-top-frame-domain.inc |  1 +
@@ -34,7 +35,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../modules/cookie_store/cookie_store.cc      |  3 +
  .../cookie_store_delete_options.idl           |  2 +-
  ui/webui/webui_allowlist.cc                   |  1 +
- 25 files changed, 79 insertions(+), 90 deletions(-)
+ 26 files changed, 80 insertions(+), 86 deletions(-)
  create mode 100644 cromite_flags/components/content_settings/core/common/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
  create mode 100644 cromite_flags/components/permissions/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
  create mode 100644 cromite_flags/content/public/common/content_features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
@@ -136,6 +137,18 @@ diff --git a/chrome/browser/tpcd/experiment/experiment_manager_impl.cc b/chrome/
    if (kForceEligibleForTesting.Get()) {
      return true;
    }
+diff --git a/components/browser_ui/strings/android/site_settings.grdp b/components/browser_ui/strings/android/site_settings.grdp
+--- a/components/browser_ui/strings/android/site_settings.grdp
++++ b/components/browser_ui/strings/android/site_settings.grdp
+@@ -542,7 +542,7 @@
+     Allow third-party cookies
+   </message>
+   <message name="IDS_WEBSITE_SETTINGS_THIRD_PARTY_COOKIES_PAGE_ALLOW_RADIO_SUB_LABEL" desc="This string appears as a sub label beneath the 'Allow all cookies' label. It summarizes the result of choosing this option.">
+-    Sites will work normally
++    Partitions all cookies by top frame url
+   </message>
+   <message name="IDS_WEBSITE_SETTINGS_THIRD_PARTY_COOKIES_PAGE_BLOCK_INCOGNITO_RADIO_LABEL" desc="2 of 3 options the user has to configure cookies. See the cookies page for context: chrome://settings/cookies. For more about Incognito mode, see https://support.google.com/chrome?p=incognito.">
+     Block third-party cookies in Incognito mode
 diff --git a/components/content_settings/core/browser/cookie_settings.cc b/components/content_settings/core/browser/cookie_settings.cc
 --- a/components/content_settings/core/browser/cookie_settings.cc
 +++ b/components/content_settings/core/browser/cookie_settings.cc
@@ -175,15 +188,10 @@ diff --git a/components/content_settings/core/common/cookie_settings_base.cc b/c
  constexpr StorageAccessResult GetStorageAccessResult(
      ThirdPartyCookieAllowMechanism mechanism) {
    using AllowMechanism = ThirdPartyCookieAllowMechanism;
-@@ -546,70 +536,16 @@ CookieSettingsBase::DecideAccess(
-     return AllowAllCookies{ThirdPartyCookieAllowMechanism::kNone};
+@@ -551,65 +541,16 @@ CookieSettingsBase::DecideAccess(
+         ThirdPartyCookieAllowMechanism::kAllowByGlobalSetting};
    }
  
--  if (!global_setting_or_embedder_blocks_third_party_cookies) {
--    return AllowAllCookies{
--        ThirdPartyCookieAllowMechanism::kAllowByGlobalSetting};
--  }
--
 -  if (IsThirdPartyCookiesAllowedScheme(first_party_url.scheme())) {
 -    return AllowAllCookies{ThirdPartyCookieAllowMechanism::kAllowByScheme};
 -  }
@@ -246,7 +254,7 @@ diff --git a/components/content_settings/core/common/cookie_settings_base.cc b/c
    return AllowPartitionedCookies{};
  }
  
-@@ -641,7 +577,7 @@ CookieSettingsBase::GetCookieSettingInternal(
+@@ -641,7 +582,7 @@ CookieSettingsBase::GetCookieSettingInternal(
      }
      return CookieSettingWithMetadata{/*cookie_setting=*/CONTENT_SETTING_ALLOW,
                                       /*allow_partitioned_cookies=*/true,
