@@ -40,6 +40,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../settings/settings_menu/settings_menu.html |  14 ++-
  .../strings/android_chrome_strings.grd        |   2 +-
  chrome/common/url_constants.h                 |   4 +-
+ .../install_static/chromium_install_modes.cc  |   2 +-
  .../strings/android/browser_ui_strings.grd    |   2 +-
  .../drawable-hdpi/fre_product_logo.png        | Bin 3912 -> 22295 bytes
  .../drawable-mdpi/fre_product_logo.png        | Bin 2490 -> 12171 bytes
@@ -51,11 +52,12 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../chromium/product_logo_white.png           | Bin 1417 -> 3040 bytes
  .../chromium/product_logo.png                 | Bin 2714 -> 7923 bytes
  .../chromium/product_logo_white.png           | Bin 2512 -> 6790 bytes
+ .../version_info_with_user_agent.cc           |   2 +-
  .../version_ui/resources/about_version.ts     |   2 +-
  .../resources/about_version_mobile.css        |   9 ++
  content/child/runtime_features.cc             |  23 +++--
  tools/grit/grit/grd_reader.py                 |  35 +++++++
- 51 files changed, 182 insertions(+), 112 deletions(-)
+ 53 files changed, 184 insertions(+), 114 deletions(-)
 
 diff --git a/build/BUILD.gn b/build/BUILD.gn
 --- a/build/BUILD.gn
@@ -13254,6 +13256,18 @@ diff --git a/chrome/common/url_constants.h b/chrome/common/url_constants.h
  
  #if BUILDFLAG(GOOGLE_CHROME_BRANDING)
  // The URL for the "Clear browsing data in Chrome" help center article.
+diff --git a/chrome/install_static/chromium_install_modes.cc b/chrome/install_static/chromium_install_modes.cc
+--- a/chrome/install_static/chromium_install_modes.cc
++++ b/chrome/install_static/chromium_install_modes.cc
+@@ -16,7 +16,7 @@ namespace install_static {
+ 
+ const wchar_t kCompanyPathName[] = L"";
+ 
+-const wchar_t kProductPathName[] = L"Chromium";
++const wchar_t kProductPathName[] = L"Cromite";
+ 
+ const size_t kProductPathNameLength = _countof(kProductPathName) - 1;
+ 
 diff --git a/components/browser_ui/strings/android/browser_ui_strings.grd b/components/browser_ui/strings/android/browser_ui_strings.grd
 --- a/components/browser_ui/strings/android/browser_ui_strings.grd
 +++ b/components/browser_ui/strings/android/browser_ui_strings.grd
@@ -18863,6 +18877,18 @@ z%lwlC#@8v20MrdyXS4Cd9v0(a*!707Mi)DWKCPo$-?g#BRX!@}3RwzBwgOM1&^{Rc
 z3=3bI32q;3&^A^#@RQ;k{^t41Rq+f34W3u|*@1288y{>q;|6&;qJI})ZE0^oH1|#U
 EKU(of)Bpeg
 
+diff --git a/components/version_info/version_info_with_user_agent.cc b/components/version_info/version_info_with_user_agent.cc
+--- a/components/version_info/version_info_with_user_agent.cc
++++ b/components/version_info/version_info_with_user_agent.cc
+@@ -12,7 +12,7 @@ namespace version_info {
+ std::string GetProductNameAndVersionForReducedUserAgent(
+     const std::string& build_version) {
+   return base::StrCat(
+-      {"Chrome/", GetMajorVersionNumber(), ".0.", build_version, ".0"});
++      {"Cromite/", GetMajorVersionNumber(), ".0.", build_version, ".0"});
+ }
+ 
+ }  // namespace version_info
 diff --git a/components/version_ui/resources/about_version.ts b/components/version_ui/resources/about_version.ts
 --- a/components/version_ui/resources/about_version.ts
 +++ b/components/version_ui/resources/about_version.ts
