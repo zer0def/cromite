@@ -234,7 +234,7 @@ diff --git a/services/network/private_network_access_checker.cc b/services/netwo
           (target_address_space == mojom::IPAddressSpace::kLocal ||
            target_address_space == mojom::IPAddressSpace::kPrivate);
 +  std::string host = url.host();
-+  if (IsReservedIPAddress(host) ||
++  if (IsReservedIPAddress(host) || host == "0.0.0.0" ||
 +      host == "[::1]" || net::HostStringIsLocalhost(host)) {
 +    need_permission = true;
 +  }
