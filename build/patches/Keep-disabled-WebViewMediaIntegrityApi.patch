@@ -9,17 +9,16 @@ https://android-developers.googleblog.com/2023/11/increasing-trust-for-embedded-
 need: Add-cromite-flags-support.patch
 License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
- android_webview/common/aw_features.cc | 2 ++
- 1 file changed, 2 insertions(+)
+ android_webview/common/aw_features.cc | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/android_webview/common/aw_features.cc b/android_webview/common/aw_features.cc
 --- a/android_webview/common/aw_features.cc
 +++ b/android_webview/common/aw_features.cc
-@@ -256,5 +256,7 @@ BASE_FEATURE(kCreateSpareRendererOnBrowserContextCreation,
+@@ -256,5 +256,6 @@ BASE_FEATURE(kCreateSpareRendererOnBrowserContextCreation,
               "CreateSpareRendererOnBrowserContextCreation",
               base::FEATURE_DISABLED_BY_DEFAULT);
  
-+SET_CROMITE_FEATURE_DISABLED(kWebViewMediaIntegrityApi);
 +SET_CROMITE_FEATURE_DISABLED(kWebViewMediaIntegrityApiBlinkExtension);
  }  // namespace features
  }  // namespace android_webview

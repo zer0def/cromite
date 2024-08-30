@@ -8,6 +8,7 @@ The feature can be activated from the accessibility settings.
 Need: bromite-build-utils.patch
 License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
+ .../AwContextMenuItemDelegate.java            |  4 +++
  chrome/android/java/res/values/ids.xml        |  1 +
  .../settings/AccessibilitySettings.java       | 12 +++++++
  .../ChromeAccessibilitySettingsDelegate.java  | 18 ++++++++++
@@ -29,11 +30,32 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../renderer/core/html/html_image_element.h   |  2 ++
  .../core/page/context_menu_controller.cc      | 33 ++++++++++++-----
  .../core/page/context_menu_controller.h       |  5 +--
- 21 files changed, 166 insertions(+), 20 deletions(-)
+ 22 files changed, 170 insertions(+), 20 deletions(-)
  create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Add-setting-to-invert-tap-and-long-tap.inc
  create mode 100644 cromite_flags/third_party/blink/common/features_cc/Add-setting-to-invert-tap-and-long-tap.inc
  create mode 100644 cromite_flags/third_party/blink/common/features_h/Add-setting-to-invert-tap-and-long-tap.inc
 
+diff --git a/android_webview/java/src/org/chromium/android_webview/contextmenu/AwContextMenuItemDelegate.java b/android_webview/java/src/org/chromium/android_webview/contextmenu/AwContextMenuItemDelegate.java
+--- a/android_webview/java/src/org/chromium/android_webview/contextmenu/AwContextMenuItemDelegate.java
++++ b/android_webview/java/src/org/chromium/android_webview/contextmenu/AwContextMenuItemDelegate.java
+@@ -11,6 +11,7 @@ import android.net.Uri;
+ import org.chromium.base.IntentUtils;
+ import org.chromium.components.embedder_support.contextmenu.ContextMenuItemDelegate;
+ import org.chromium.components.embedder_support.contextmenu.ContextMenuParams;
++import org.chromium.content_public.common.Referrer;
+ import org.chromium.content_public.browser.WebContents;
+ import org.chromium.ui.base.Clipboard;
+ import org.chromium.url.GURL;
+@@ -54,6 +55,9 @@ public class AwContextMenuItemDelegate implements ContextMenuItemDelegate {
+         IntentUtils.safeStartActivity(mActivity, intent);
+     }
+ 
++    @Override
++    public void onOpenUrl(GURL url, Referrer referrer) { }
++
+     @Override
+     public GURL getPageUrl() {
+         return mWebContents.getVisibleUrl();
 diff --git a/chrome/android/java/res/values/ids.xml b/chrome/android/java/res/values/ids.xml
 --- a/chrome/android/java/res/values/ids.xml
 +++ b/chrome/android/java/res/values/ids.xml
