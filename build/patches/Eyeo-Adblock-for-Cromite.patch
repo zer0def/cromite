@@ -1251,7 +1251,7 @@ new file mode 100644
 +            <div class="list-frame vertical-list">
 +                <template is="dom-repeat" items="{{customFilters}}">
 +                    <div class="list-item">
-+                        <div class="start cr-padded-text">
++                        <div class="start cr-padded-text ad-fixed-width">
 +                            <div data-qa="custom-filters-list-item">
 +                                [[item]]
 +                            </div>
