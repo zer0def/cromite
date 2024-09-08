@@ -107,10 +107,6 @@ declare_args() {
 
 not_needed(["_target_build", "_is_debug_build"])
 
-if (getenv("TARGET_CPU") != "") {
-  target_cpu = getenv("TARGET_CPU")
-}
-
 if (target_os == "android") {
   target_os = "android" # fix traffic annotation auditor
   #enable_kythe_annotations = true
