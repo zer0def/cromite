@@ -4,3 +4,6 @@ is_official_build = true
 
 # the official instructions use symbol_level=2 but I do not need the debug symbols
 symbol_level = 0
+
+# do not make the second build of v8
+include_both_v8_snapshots = false
