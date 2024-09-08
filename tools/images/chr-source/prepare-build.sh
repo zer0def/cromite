@@ -37,7 +37,7 @@ echo >../.gclient "solutions = ["
 echo >>../.gclient "  { \"name\"        : 'src',"
 echo >>../.gclient "    \"url\"         : '$CHR_SOURCE@$VERSION_SHA',"
 echo >>../.gclient "    \"deps_file\"   : 'DEPS',"
-echo >>../.gclient "    \"managed\"     : True,"
+echo >>../.gclient "    \"managed\"     : False,"
 
 # for windows
 # exclude everything but not "microsoft_dxheaders"
