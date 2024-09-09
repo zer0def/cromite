@@ -538,17 +538,17 @@ diff --git a/chrome/browser/ui/prefs/prefs_tab_helper.cc b/chrome/browser/ui/pre
 diff --git a/chrome/browser/ui/webui/settings/settings_localized_strings_provider.cc b/chrome/browser/ui/webui/settings/settings_localized_strings_provider.cc
 --- a/chrome/browser/ui/webui/settings/settings_localized_strings_provider.cc
 +++ b/chrome/browser/ui/webui/settings/settings_localized_strings_provider.cc
-@@ -574,6 +574,10 @@ void AddDownloadsStrings(content::WebUIDataSource* html_source) {
-     {"dayHistory", IDS_SETTINGS_DAY_HISTORY_DESCRIPTION},
-     {"daysHistory", IDS_SETTINGS_DAYS_HISTORY_DESCRIPTION},
-     {"foreverHistory", IDS_SETTINGS_FOREVER_HISTORY_DESCRIPTION},
-+    {"referersPolicyTitle", IDS_REFERERS_POLICY_TITLE},
-+    {"standardRefererPolicy", IDS_STANDARD_REFERER_POLICY_TITLE},
-+    {"noCrossOriginTopFramePolicy", IDS_NO_CROSS_ORIGIN_TOP_FRAME_POLICY_TITLE},
-+    {"disableRefererPolicy", IDS_DISABLE_REFERER_POLICY_TITLE},
+@@ -1854,6 +1854,10 @@ void AddPrivacyStrings(content::WebUIDataSource* html_source,
+       {"dayHistory", IDS_SETTINGS_DAY_HISTORY_DESCRIPTION},
+       {"daysHistory", IDS_SETTINGS_DAYS_HISTORY_DESCRIPTION},
+       {"foreverHistory", IDS_SETTINGS_FOREVER_HISTORY_DESCRIPTION},
++      {"referersPolicyTitle", IDS_REFERERS_POLICY_TITLE},
++      {"standardRefererPolicy", IDS_STANDARD_REFERER_POLICY_TITLE},
++      {"noCrossOriginTopFramePolicy", IDS_NO_CROSS_ORIGIN_TOP_FRAME_POLICY_TITLE},
++      {"disableRefererPolicy", IDS_DISABLE_REFERER_POLICY_TITLE},
  #if BUILDFLAG(GOOGLE_CHROME_BRANDING)
- void AddGetTheMostOutOfChromeStrings(content::WebUIDataSource* html_source) {
-   static constexpr webui::LocalizedString kLocalizedStrings[] = {
+       {"safeBrowsingStandardDescProxy",
+        IDS_SETTINGS_SAFEBROWSING_STANDARD_DESC_PROXY},
 diff --git a/chrome/common/pref_names.h b/chrome/common/pref_names.h
 --- a/chrome/common/pref_names.h
 +++ b/chrome/common/pref_names.h
