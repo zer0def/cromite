@@ -188,7 +188,7 @@ diff --git a/chrome/android/java/res/xml/main_preferences.xml b/chrome/android/j
 diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -160,8 +160,6 @@ static_library("browser") {
+@@ -159,8 +159,6 @@ static_library("browser") {
      "adblock/adblock_content_browser_client.h",
      "adblock/adblock_controller_factory.cc",
      "adblock/adblock_controller_factory.h",
@@ -722,7 +722,7 @@ diff --git a/chrome/browser/adblock/adblock_content_browser_client.h b/chrome/br
 diff --git a/chrome/browser/chrome_content_browser_client.cc b/chrome/browser/chrome_content_browser_client.cc
 --- a/chrome/browser/chrome_content_browser_client.cc
 +++ b/chrome/browser/chrome_content_browser_client.cc
-@@ -6629,7 +6629,9 @@ ChromeContentBrowserClient::
+@@ -6696,7 +6696,9 @@ ChromeContentBrowserClient::
  }
  
  bool ChromeContentBrowserClient::WillInterceptWebSocket(
@@ -733,7 +733,7 @@ diff --git a/chrome/browser/chrome_content_browser_client.cc b/chrome/browser/ch
  #if BUILDFLAG(ENABLE_EXTENSIONS)
    if (!frame) {
      return false;
-@@ -6652,9 +6654,11 @@ bool ChromeContentBrowserClient::WillInterceptWebSocket(
+@@ -6719,9 +6721,11 @@ bool ChromeContentBrowserClient::WillInterceptWebSocket(
  }
  
  void ChromeContentBrowserClient::CreateWebSocket(
@@ -748,7 +748,7 @@ diff --git a/chrome/browser/chrome_content_browser_client.cc b/chrome/browser/ch
 diff --git a/chrome/browser/chrome_content_browser_client.h b/chrome/browser/chrome_content_browser_client.h
 --- a/chrome/browser/chrome_content_browser_client.h
 +++ b/chrome/browser/chrome_content_browser_client.h
-@@ -675,11 +675,15 @@ class ChromeContentBrowserClient : public content::ContentBrowserClient {
+@@ -677,11 +677,15 @@ class ChromeContentBrowserClient : public content::ContentBrowserClient {
    CreateURLLoaderHandlerForServiceWorkerNavigationPreload(
        int frame_tree_node_id,
        const network::ResourceRequest& resource_request) override;
@@ -1008,7 +1008,7 @@ diff --git a/chrome/browser/profiles/chrome_browser_main_extra_parts_profiles.cc
  #include "chrome/browser/adblock/content_security_policy_injector_factory.h"
  #include "chrome/browser/adblock/element_hider_factory.h"
  #include "chrome/browser/adblock/resource_classification_runner_factory.h"
-@@ -873,7 +872,6 @@ void ChromeBrowserMainExtraPartsProfiles::
+@@ -877,7 +876,6 @@ void ChromeBrowserMainExtraPartsProfiles::
    FakeSmartCardDeviceServiceFactory::GetInstance();
  #endif
    adblock::AdblockControllerFactory::GetInstance();
@@ -1050,7 +1050,7 @@ diff --git a/chrome/browser/resources/settings/BUILD.gn b/chrome/browser/resourc
      "appearance_page/appearance_fonts_page.ts",
      "appearance_page/appearance_page.ts",
      "appearance_page/home_url_input.ts",
-@@ -401,6 +402,7 @@ build_webui("build") {
+@@ -402,6 +403,7 @@ build_webui("build") {
    ts_definitions = [
      "//tools/typescript/definitions/autofill_private.d.ts",
      "//tools/typescript/definitions/chrome_event.d.ts",
@@ -1608,7 +1608,7 @@ diff --git a/chrome/browser/resources/settings/page_visibility.ts b/chrome/brows
 diff --git a/chrome/browser/resources/settings/route.ts b/chrome/browser/resources/settings/route.ts
 --- a/chrome/browser/resources/settings/route.ts
 +++ b/chrome/browser/resources/settings/route.ts
-@@ -217,6 +217,10 @@ function createRoutes(): SettingsRoutes {
+@@ -213,6 +213,10 @@ function createRoutes(): SettingsRoutes {
      r.FONTS = r.APPEARANCE.createChild('/fonts');
    }
  
@@ -1659,7 +1659,7 @@ diff --git a/chrome/browser/resources/settings/settings_menu/settings_menu.html 
 diff --git a/chrome/browser/ui/tab_helpers.cc b/chrome/browser/ui/tab_helpers.cc
 --- a/chrome/browser/ui/tab_helpers.cc
 +++ b/chrome/browser/ui/tab_helpers.cc
-@@ -20,6 +20,7 @@
+@@ -21,6 +21,7 @@
  #include "chrome/browser/adblock/element_hider_factory.h"
  #include "chrome/browser/adblock/sitekey_storage_factory.h"
  #include "chrome/browser/adblock/subscription_service_factory.h"
@@ -1667,7 +1667,7 @@ diff --git a/chrome/browser/ui/tab_helpers.cc b/chrome/browser/ui/tab_helpers.cc
  #include "chrome/browser/bookmarks/bookmark_model_factory.h"
  #include "chrome/browser/breadcrumbs/breadcrumb_manager_tab_helper.h"
  #include "chrome/browser/browser_process.h"
-@@ -380,6 +381,8 @@ void TabHelpers::AttachTabHelpers(WebContents* web_contents) {
+@@ -377,6 +378,8 @@ void TabHelpers::AttachTabHelpers(WebContents* web_contents) {
      }
    }
  
@@ -1676,7 +1676,7 @@ diff --git a/chrome/browser/ui/tab_helpers.cc b/chrome/browser/ui/tab_helpers.cc
    AdblockWebContentObserver::CreateForWebContents(
        web_contents,
        adblock::SubscriptionServiceFactory::GetForBrowserContext(
-@@ -388,7 +391,8 @@ void TabHelpers::AttachTabHelpers(WebContents* web_contents) {
+@@ -385,7 +388,8 @@ void TabHelpers::AttachTabHelpers(WebContents* web_contents) {
            web_contents->GetBrowserContext()),
        adblock::SitekeyStorageFactory::GetForBrowserContext(
            web_contents->GetBrowserContext()),
@@ -5515,7 +5515,7 @@ new file mode 100644
 diff --git a/components/resources/BUILD.gn b/components/resources/BUILD.gn
 --- a/components/resources/BUILD.gn
 +++ b/components/resources/BUILD.gn
-@@ -81,7 +81,6 @@ grit("components_resources") {
+@@ -87,7 +87,6 @@ grit("components_resources") {
  
    deps += [
      "//components/resources/adblocking:copy_snippets_lib",
@@ -10518,7 +10518,7 @@ diff --git a/content/browser/websockets/websocket_connector_impl.cc b/content/br
 diff --git a/content/public/browser/content_browser_client.cc b/content/public/browser/content_browser_client.cc
 --- a/content/public/browser/content_browser_client.cc
 +++ b/content/public/browser/content_browser_client.cc
-@@ -1065,7 +1065,7 @@ void ContentBrowserClient::WillCreateURLLoaderFactory(
+@@ -1066,7 +1066,7 @@ void ContentBrowserClient::WillCreateURLLoaderFactory(
    DCHECK(browser_context);
  }
  
@@ -10527,7 +10527,7 @@ diff --git a/content/public/browser/content_browser_client.cc b/content/public/b
    return false;
  }
  
-@@ -1074,9 +1074,11 @@ uint32_t ContentBrowserClient::GetWebSocketOptions(RenderFrameHost* frame) {
+@@ -1075,9 +1075,11 @@ uint32_t ContentBrowserClient::GetWebSocketOptions(RenderFrameHost* frame) {
  }
  
  void ContentBrowserClient::CreateWebSocket(
@@ -10542,7 +10542,7 @@ diff --git a/content/public/browser/content_browser_client.cc b/content/public/b
 diff --git a/content/public/browser/content_browser_client.h b/content/public/browser/content_browser_client.h
 --- a/content/public/browser/content_browser_client.h
 +++ b/content/public/browser/content_browser_client.h
-@@ -1991,7 +1991,7 @@ class CONTENT_EXPORT ContentBrowserClient {
+@@ -1994,7 +1994,7 @@ class CONTENT_EXPORT ContentBrowserClient {
        scoped_refptr<base::SequencedTaskRunner> navigation_response_task_runner);
  
    // Returns true when the embedder wants to intercept a websocket connection.
@@ -10551,7 +10551,7 @@ diff --git a/content/public/browser/content_browser_client.h b/content/public/br
  
    // Returns the WebSocket creation options.
    virtual uint32_t GetWebSocketOptions(RenderFrameHost* frame);
-@@ -2013,9 +2013,11 @@ class CONTENT_EXPORT ContentBrowserClient {
+@@ -2016,9 +2016,11 @@ class CONTENT_EXPORT ContentBrowserClient {
    // Always called on the UI thread and only when the Network Service is
    // enabled.
    virtual void CreateWebSocket(
@@ -10585,7 +10585,7 @@ new file mode 100644
 diff --git a/third_party/blink/renderer/core/css/style_engine.cc b/third_party/blink/renderer/core/css/style_engine.cc
 --- a/third_party/blink/renderer/core/css/style_engine.cc
 +++ b/third_party/blink/renderer/core/css/style_engine.cc
-@@ -640,6 +640,14 @@ void StyleEngine::UpdateActiveStyleSheetsInShadow(
+@@ -630,6 +630,14 @@ void StyleEngine::UpdateActiveStyleSheetsInShadow(
    }
  }
  
@@ -10603,7 +10603,7 @@ diff --git a/third_party/blink/renderer/core/css/style_engine.cc b/third_party/b
 diff --git a/third_party/blink/renderer/core/css/style_engine.h b/third_party/blink/renderer/core/css/style_engine.h
 --- a/third_party/blink/renderer/core/css/style_engine.h
 +++ b/third_party/blink/renderer/core/css/style_engine.h
-@@ -251,6 +251,7 @@ class CORE_EXPORT StyleEngine final : public GarbageCollected<StyleEngine>,
+@@ -253,6 +253,7 @@ class CORE_EXPORT StyleEngine final : public GarbageCollected<StyleEngine>,
        const ComputedStyle* embedder_style) const;
    void ViewportStyleSettingChanged();
  

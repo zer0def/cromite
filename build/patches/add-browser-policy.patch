@@ -177,7 +177,7 @@ diff --git a/chrome/browser/metrics/chrome_feature_list_creator.cc b/chrome/brow
  
  #if BUILDFLAG(IS_CHROMEOS_ASH)
  #include "chrome/browser/ash/policy/core/browser_policy_connector_ash.h"
-@@ -218,6 +220,16 @@ void ChromeFeatureListCreator::CreatePrefService() {
+@@ -215,6 +217,16 @@ void ChromeFeatureListCreator::CreatePrefService() {
    // ManagementService's cache.
    if (local_state_pref_store->ReadPrefs() ==
        JsonPrefStore::PREF_READ_ERROR_NONE) {
@@ -222,7 +222,7 @@ diff --git a/chrome/browser/policy/chrome_browser_policy_connector.cc b/chrome/b
 diff --git a/chrome/browser/policy/configuration_policy_handler_list_factory.cc b/chrome/browser/policy/configuration_policy_handler_list_factory.cc
 --- a/chrome/browser/policy/configuration_policy_handler_list_factory.cc
 +++ b/chrome/browser/policy/configuration_policy_handler_list_factory.cc
-@@ -2279,9 +2279,9 @@ bool AreFuturePoliciesEnabledByDefault() {
+@@ -2298,9 +2298,9 @@ bool AreFuturePoliciesEnabledByDefault() {
    if (base::CommandLine::ForCurrentProcess()->HasSwitch(switches::kTestType)) {
      return true;
    }
@@ -344,7 +344,7 @@ diff --git a/chrome/browser/signin/chrome_signin_client.cc b/chrome/browser/sign
 diff --git a/chrome/browser/signin/dice_response_handler.cc b/chrome/browser/signin/dice_response_handler.cc
 --- a/chrome/browser/signin/dice_response_handler.cc
 +++ b/chrome/browser/signin/dice_response_handler.cc
-@@ -485,8 +485,10 @@ void DiceResponseHandler::ProcessDiceSignoutHeader(
+@@ -513,8 +513,10 @@ void DiceResponseHandler::ProcessDiceSignoutHeader(
    // - If there is a policy restriction on removing the primary account.
    bool invalidate_only_primary_account =
        identity_manager_->HasPrimaryAccount(signin::ConsentLevel::kSync) ||
@@ -574,7 +574,7 @@ diff --git a/components/commerce/core/commerce_feature_list.cc b/components/comm
  }  // namespace
  
  namespace switches {
-@@ -343,6 +293,16 @@ const char kParcelTrackingTestDataParamDelivered[] = "Delivered";
+@@ -354,6 +304,16 @@ const char kParcelTrackingTestDataParamDelivered[] = "Delivered";
  const char kParcelTrackingTestDataParamInProgress[] = "InProgress";
  const char kParcelTrackingTestDataParamOutForDelivery[] = "OutForDelivery";
  
@@ -591,7 +591,7 @@ diff --git a/components/commerce/core/commerce_feature_list.cc b/components/comm
  // Params for Discount Consent V2 in the NTP Cart module.
  const char kNtpChromeCartModuleDiscountConsentNtpVariationParam[] =
      "discount-consent-ntp-variation";
-@@ -480,11 +440,11 @@ bool IsPartnerMerchant(const GURL& url) {
+@@ -496,11 +456,11 @@ bool IsPartnerMerchant(const GURL& url) {
  }
  
  bool IsRuleDiscountPartnerMerchant(const GURL& url) {
@@ -605,7 +605,7 @@ diff --git a/components/commerce/core/commerce_feature_list.cc b/components/comm
  }
  
  bool IsCartDiscountFeatureEnabled() {
-@@ -564,6 +524,7 @@ base::TimeDelta GetDiscountFetchDelay() {
+@@ -580,6 +540,7 @@ base::TimeDelta GetDiscountFetchDelay() {
  }
  
  bool IsNoDiscountMerchant(const GURL& url) {
@@ -616,7 +616,7 @@ diff --git a/components/commerce/core/commerce_feature_list.cc b/components/comm
 diff --git a/components/policy/core/browser/browser_policy_connector.cc b/components/policy/core/browser/browser_policy_connector.cc
 --- a/components/policy/core/browser/browser_policy_connector.cc
 +++ b/components/policy/core/browser/browser_policy_connector.cc
-@@ -141,6 +141,9 @@ void BrowserPolicyConnector::RegisterPrefs(PrefRegistrySimple* registry) {
+@@ -142,6 +142,9 @@ void BrowserPolicyConnector::RegisterPrefs(PrefRegistrySimple* registry) {
        CloudPolicyRefreshScheduler::kDefaultRefreshDelayMs);
    registry->RegisterBooleanPref(
        policy_prefs::kCloudManagementEnrollmentMandatory, false);
@@ -823,7 +823,7 @@ diff --git a/components/policy/core/common/policy_pref_names.h b/components/poli
 diff --git a/components/policy/core/common/policy_service_impl.cc b/components/policy/core/common/policy_service_impl.cc
 --- a/components/policy/core/common/policy_service_impl.cc
 +++ b/components/policy/core/common/policy_service_impl.cc
-@@ -53,6 +53,9 @@ namespace {
+@@ -58,6 +58,9 @@ namespace {
  // Metrics should not be enforced so if this policy is set as mandatory
  // downgrade it to a recommended level policy.
  void DowngradeMetricsReportingToRecommendedPolicy(PolicyMap* policies) {
@@ -958,7 +958,7 @@ diff --git a/components/signin/features.gni b/components/signin/features.gni
 diff --git a/components/signin/internal/identity_manager/gaia_cookie_manager_service.cc b/components/signin/internal/identity_manager/gaia_cookie_manager_service.cc
 --- a/components/signin/internal/identity_manager/gaia_cookie_manager_service.cc
 +++ b/components/signin/internal/identity_manager/gaia_cookie_manager_service.cc
-@@ -469,6 +469,8 @@ void GaiaCookieManagerService::RegisterPrefs(PrefRegistrySimple* registry) {
+@@ -470,6 +470,8 @@ void GaiaCookieManagerService::RegisterPrefs(PrefRegistrySimple* registry) {
  }
  
  void GaiaCookieManagerService::InitCookieListener() {
@@ -967,7 +967,7 @@ diff --git a/components/signin/internal/identity_manager/gaia_cookie_manager_ser
    DCHECK(!cookie_listener_receiver_.is_bound());
  
    network::mojom::CookieManager* cookie_manager =
-@@ -879,6 +881,8 @@ void GaiaCookieManagerService::OnSetAccountsFinished(
+@@ -881,6 +883,8 @@ void GaiaCookieManagerService::OnSetAccountsFinished(
  }
  
  void GaiaCookieManagerService::HandleNextRequest() {

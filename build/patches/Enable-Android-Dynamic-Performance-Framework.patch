@@ -32,7 +32,7 @@ diff --git a/chrome/version.gni b/chrome/version.gni
 diff --git a/components/viz/common/features.cc b/components/viz/common/features.cc
 --- a/components/viz/common/features.cc
 +++ b/components/viz/common/features.cc
-@@ -289,9 +289,11 @@ const base::FeatureParam<base::TimeDelta> kADPFBoostTimeout{
+@@ -307,9 +307,11 @@ const base::FeatureParam<base::TimeDelta> kADPFBoostTimeout{
  
  // If enabled, Chrome includes the Renderer Main thread(s) into the
  // ADPF(Android Dynamic Performance Framework) hint session.

@@ -65,7 +65,7 @@ diff --git a/chrome/app/extensions_strings.grdp b/chrome/app/extensions_strings.
 diff --git a/chrome/browser/extensions/api/developer_private/developer_private_api.cc b/chrome/browser/extensions/api/developer_private/developer_private_api.cc
 --- a/chrome/browser/extensions/api/developer_private/developer_private_api.cc
 +++ b/chrome/browser/extensions/api/developer_private/developer_private_api.cc
-@@ -130,6 +130,12 @@
+@@ -131,6 +131,12 @@
  #include "url/gurl.h"
  #include "url/origin.h"
  
@@ -78,7 +78,7 @@ diff --git a/chrome/browser/extensions/api/developer_private/developer_private_a
  namespace extensions {
  
  namespace developer = api::developer_private;
-@@ -475,10 +481,32 @@ std::unique_ptr<developer::ProfileInfo> DeveloperPrivateAPI::CreateProfileInfo(
+@@ -476,10 +482,32 @@ std::unique_ptr<developer::ProfileInfo> DeveloperPrivateAPI::CreateProfileInfo(
    info->is_mv2_deprecation_notice_dismissed =
        ManifestV2ExperimentManager::Get(profile)
            ->DidUserAcknowledgeNoticeGlobally();
@@ -112,7 +112,7 @@ diff --git a/chrome/browser/extensions/api/developer_private/developer_private_a
  template <>
  void BrowserContextKeyedAPIFactory<
      DeveloperPrivateAPI>::DeclareFactoryDependencies() {
-@@ -916,6 +944,7 @@ ExtensionFunction::ResponseAction DeveloperPrivateAutoUpdateFunction::Run() {
+@@ -917,6 +945,7 @@ ExtensionFunction::ResponseAction DeveloperPrivateAutoUpdateFunction::Run() {
      ExtensionUpdater::CheckParams params;
      params.fetch_priority = DownloadFetchPriority::kForeground;
      params.install_immediately = true;
@@ -120,7 +120,7 @@ diff --git a/chrome/browser/extensions/api/developer_private/developer_private_a
      params.callback =
          base::BindOnce(&DeveloperPrivateAutoUpdateFunction::OnComplete, this);
      updater->CheckNow(std::move(params));
-@@ -1056,7 +1085,7 @@ DeveloperPrivateUpdateProfileConfigurationFunction::Run() {
+@@ -1057,7 +1086,7 @@ DeveloperPrivateUpdateProfileConfigurationFunction::Run() {
  
    const developer::ProfileConfigurationUpdate& update = params->update;
  
@@ -128,7 +128,7 @@ diff --git a/chrome/browser/extensions/api/developer_private/developer_private_a
 +  if (update.in_developer_mode.has_value() && update.in_developer_mode) {
      Profile* profile = Profile::FromBrowserContext(browser_context());
      CHECK(profile);
-     if (supervised_user::AreExtensionsPermissionsEnabled(
+     if (supervised_user::AreExtensionsPermissionsEnabled(profile)) {
 @@ -1071,6 +1100,11 @@ DeveloperPrivateUpdateProfileConfigurationFunction::Run() {
          ->MarkNoticeAsAcknowledgedGlobally();
    }
@@ -165,15 +165,16 @@ diff --git a/chrome/browser/extensions/api/webstore_private/webstore_private_api
  #include "extensions/common/manifest.h"
  #include "extensions/common/manifest_constants.h"
  #include "extensions/common/manifest_handlers/permissions_parser.h"
-@@ -225,12 +226,16 @@ WebstorePrivateApi::Delegate* test_delegate = nullptr;
+@@ -227,6 +228,8 @@ WebstorePrivateApi::Delegate* test_delegate = nullptr;
  // there was previously stored data, or an empty string otherwise. The Set will
  // overwrite any previous login.
  std::string GetWebstoreLogin(Profile* profile) {
 +  if (!base::FeatureList::IsEnabled(extensions_features::kEnableExtensionManagementToChromeStore))
 +    return std::string();
-   if (profile->GetPrefs()->HasPrefPath(kWebstoreLogin))
+   if (profile->GetPrefs()->HasPrefPath(kWebstoreLogin)) {
      return profile->GetPrefs()->GetString(kWebstoreLogin);
-   return std::string();
+   }
+@@ -234,6 +237,8 @@ std::string GetWebstoreLogin(Profile* profile) {
  }
  
  void SetWebstoreLogin(Profile* profile, const std::string& login) {
@@ -182,7 +183,7 @@ diff --git a/chrome/browser/extensions/api/webstore_private/webstore_private_api
    profile->GetPrefs()->SetString(kWebstoreLogin, login);
  }
  
-@@ -240,6 +245,8 @@ void RecordWebstoreExtensionInstallResult(bool success) {
+@@ -243,6 +248,8 @@ void RecordWebstoreExtensionInstallResult(bool success) {
  
  api::webstore_private::ExtensionInstallStatus
  ConvertExtensionInstallStatusForAPI(ExtensionInstallStatus status) {
@@ -191,7 +192,7 @@ diff --git a/chrome/browser/extensions/api/webstore_private/webstore_private_api
    switch (status) {
      case kCanRequest:
        return api::webstore_private::ExtensionInstallStatus::kCanRequest;
-@@ -1168,7 +1175,8 @@ ExtensionFunction::ResponseAction
+@@ -1174,7 +1181,8 @@ ExtensionFunction::ResponseAction
  WebstorePrivateIsInIncognitoModeFunction::Run() {
    Profile* profile = Profile::FromBrowserContext(browser_context());
    return RespondNow(ArgumentList(IsInIncognitoMode::Results::Create(
@@ -201,7 +202,7 @@ diff --git a/chrome/browser/extensions/api/webstore_private/webstore_private_api
  }
  
  WebstorePrivateIsPendingCustodianApprovalFunction::
-@@ -1263,11 +1271,14 @@ WebstorePrivateGetReferrerChainFunction::Run() {
+@@ -1269,11 +1277,14 @@ WebstorePrivateGetReferrerChainFunction::Run() {
    request.mutable_referrer_chain_options()->set_recent_navigations_to_collect(
        recent_navigations_to_collect);
  
@@ -220,7 +221,7 @@ diff --git a/chrome/browser/extensions/api/webstore_private/webstore_private_api
 diff --git a/chrome/browser/extensions/cws_info_service.cc b/chrome/browser/extensions/cws_info_service.cc
 --- a/chrome/browser/extensions/cws_info_service.cc
 +++ b/chrome/browser/extensions/cws_info_service.cc
-@@ -162,6 +162,7 @@ namespace extensions {
+@@ -163,6 +163,7 @@ namespace extensions {
  BASE_FEATURE(kCWSInfoService,
               "CWSInfoService",
               base::FEATURE_ENABLED_BY_DEFAULT);
@@ -250,7 +251,7 @@ diff --git a/chrome/browser/extensions/extension_system_impl.cc b/chrome/browser
 diff --git a/chrome/browser/extensions/updater/chrome_extension_downloader_factory.cc b/chrome/browser/extensions/updater/chrome_extension_downloader_factory.cc
 --- a/chrome/browser/extensions/updater/chrome_extension_downloader_factory.cc
 +++ b/chrome/browser/extensions/updater/chrome_extension_downloader_factory.cc
-@@ -49,7 +49,6 @@ ChromeExtensionDownloaderFactory::CreateForURLLoaderFactory(
+@@ -50,7 +50,6 @@ ChromeExtensionDownloaderFactory::CreateForURLLoaderFactory(
      manifest_query_params += "&testrequest=1";
    }
    downloader->set_manifest_query_params(manifest_query_params);
@@ -465,7 +466,7 @@ diff --git a/chrome/browser/resources/extensions/manager.html b/chrome/browser/r
 diff --git a/chrome/browser/resources/extensions/manager.ts b/chrome/browser/resources/extensions/manager.ts
 --- a/chrome/browser/resources/extensions/manager.ts
 +++ b/chrome/browser/resources/extensions/manager.ts
-@@ -127,6 +127,11 @@ export class ExtensionsManagerElement extends ExtensionsManagerElementBase {
+@@ -120,6 +120,11 @@ export class ExtensionsManagerElement extends ExtensionsManagerElementBase {
          value: () => loadTimeData.getBoolean('MV2DeprecationNoticeDismissed'),
        },
  
@@ -477,7 +478,7 @@ diff --git a/chrome/browser/resources/extensions/manager.ts b/chrome/browser/res
        showActivityLog: {
          type: Boolean,
          value: () => loadTimeData.getBoolean('showActivityLog'),
-@@ -229,6 +234,7 @@ export class ExtensionsManagerElement extends ExtensionsManagerElementBase {
+@@ -210,6 +215,7 @@ export class ExtensionsManagerElement extends ExtensionsManagerElementBase {
    delegate: Service;
    inDevMode: boolean;
    isMv2DeprecationNoticeDismissed: boolean;
@@ -485,7 +486,7 @@ diff --git a/chrome/browser/resources/extensions/manager.ts b/chrome/browser/res
    showActivityLog: boolean;
    enableEnhancedSiteControls: boolean;
    devModeControlledByPolicy: boolean;
-@@ -301,6 +307,7 @@ export class ExtensionsManagerElement extends ExtensionsManagerElementBase {
+@@ -277,6 +283,7 @@ export class ExtensionsManagerElement extends ExtensionsManagerElementBase {
            this.canLoadUnpacked = profileInfo.canLoadUnpacked;
            this.isMv2DeprecationNoticeDismissed =
                profileInfo.isMv2DeprecationNoticeDismissed;
@@ -549,7 +550,7 @@ diff --git a/chrome/browser/resources/extensions/toolbar.ts b/chrome/browser/res
    /** Opens the dialog to load unpacked extensions. */
    loadUnpacked(): Promise<boolean>;
  
-@@ -71,6 +73,13 @@ export class ExtensionsToolbarElement extends ExtensionsToolbarElementBase {
+@@ -67,6 +69,13 @@ export class ExtensionsToolbarElement extends ExtensionsToolbarElementBase {
          reflectToAttribute: true,
        },
  
@@ -563,7 +564,7 @@ diff --git a/chrome/browser/resources/extensions/toolbar.ts b/chrome/browser/res
        devModeControlledByPolicy: Boolean,
        isChildAccount: Boolean,
  
-@@ -87,6 +96,7 @@ export class ExtensionsToolbarElement extends ExtensionsToolbarElementBase {
+@@ -79,6 +88,7 @@ export class ExtensionsToolbarElement extends ExtensionsToolbarElementBase {
  
        expanded_: Boolean,
        showPackDialog_: Boolean,
@@ -571,7 +572,7 @@ diff --git a/chrome/browser/resources/extensions/toolbar.ts b/chrome/browser/res
  
        /**
         * Prevents initiating update while update is in progress.
-@@ -98,6 +108,8 @@ export class ExtensionsToolbarElement extends ExtensionsToolbarElementBase {
+@@ -90,6 +100,8 @@ export class ExtensionsToolbarElement extends ExtensionsToolbarElementBase {
    extensions: chrome.developerPrivate.ExtensionInfo[];
    delegate: ToolbarDelegate;
    inDevMode: boolean;
@@ -580,7 +581,7 @@ diff --git a/chrome/browser/resources/extensions/toolbar.ts b/chrome/browser/res
    devModeControlledByPolicy: boolean;
    isChildAccount: boolean;
  
-@@ -150,6 +162,14 @@ export class ExtensionsToolbarElement extends ExtensionsToolbarElementBase {
+@@ -138,6 +150,14 @@ export class ExtensionsToolbarElement extends ExtensionsToolbarElementBase {
          'Options_ToggleDeveloperMode_' + (e.detail ? 'Enabled' : 'Disabled'));
    }
  
@@ -614,8 +615,8 @@ diff --git a/chrome/browser/resources/webstore_app/manifest.json b/chrome/browse
 diff --git a/chrome/browser/ui/webui/extensions/extensions_ui.cc b/chrome/browser/ui/webui/extensions/extensions_ui.cc
 --- a/chrome/browser/ui/webui/extensions/extensions_ui.cc
 +++ b/chrome/browser/ui/webui/extensions/extensions_ui.cc
-@@ -61,6 +61,8 @@
- #include "chrome/browser/ui/webui/extensions/ash/kiosk_apps_handler.h"
+@@ -63,6 +63,8 @@
+ #include "chrome/browser/ash/crosapi/browser_util.h"
  #endif
  
 +#include "chrome/browser/extensions/api/developer_private/developer_private_api.h"
@@ -623,7 +624,7 @@ diff --git a/chrome/browser/ui/webui/extensions/extensions_ui.cc b/chrome/browse
  namespace extensions {
  
  namespace {
-@@ -374,6 +376,8 @@ content::WebUIDataSource* CreateAndAddExtensionsSource(Profile* profile,
+@@ -376,6 +378,8 @@ content::WebUIDataSource* CreateAndAddExtensionsSource(Profile* profile,
        {"itemSuspiciousInstallLearnMore",
         IDS_EXTENSIONS_ADDED_WITHOUT_KNOWLEDGE_LEARN_MORE},
        {"toolbarDevMode", IDS_EXTENSIONS_DEVELOPER_MODE},
@@ -632,7 +633,7 @@ diff --git a/chrome/browser/ui/webui/extensions/extensions_ui.cc b/chrome/browse
        {"toolbarLoadUnpacked", IDS_EXTENSIONS_TOOLBAR_LOAD_UNPACKED},
        {"toolbarLoadUnpackedDone", IDS_EXTENSIONS_TOOLBAR_LOAD_UNPACKED_DONE},
        {"toolbarPack", IDS_EXTENSIONS_TOOLBAR_PACK},
-@@ -446,6 +450,10 @@ content::WebUIDataSource* CreateAndAddExtensionsSource(Profile* profile,
+@@ -448,6 +452,10 @@ content::WebUIDataSource* CreateAndAddExtensionsSource(Profile* profile,
    source->AddString("hostPermissionsLearnMoreLink",
                      chrome_extension_constants::kRuntimeHostPermissionsHelpURL);
    source->AddBoolean(kInDevModeKey, in_dev_mode);
@@ -688,7 +689,7 @@ diff --git a/chrome/common/extensions/api/developer_private.idl b/chrome/common/
 diff --git a/components/update_client/update_query_params.cc b/components/update_client/update_query_params.cc
 --- a/components/update_client/update_query_params.cc
 +++ b/components/update_client/update_query_params.cc
-@@ -88,9 +88,8 @@ UpdateQueryParamsDelegate* g_delegate = nullptr;
+@@ -86,9 +86,8 @@ UpdateQueryParamsDelegate* g_delegate = nullptr;
  // static
  std::string UpdateQueryParams::Get(ProdId prod) {
    return base::StringPrintf(
@@ -700,7 +701,7 @@ diff --git a/components/update_client/update_query_params.cc b/components/update
        g_delegate ? g_delegate->GetExtraParams().c_str() : "");
  }
  
-@@ -151,7 +150,7 @@ const char* UpdateQueryParams::GetNaclArch() {
+@@ -149,7 +148,7 @@ const char* UpdateQueryParams::GetNaclArch() {
  
  // static
  std::string UpdateQueryParams::GetProdVersion() {
@@ -1135,7 +1136,7 @@ diff --git a/extensions/browser/updater/safe_manifest_parser.cc b/extensions/bro
 diff --git a/extensions/common/extension_features.cc b/extensions/common/extension_features.cc
 --- a/extensions/common/extension_features.cc
 +++ b/extensions/common/extension_features.cc
-@@ -183,4 +183,19 @@ BASE_FEATURE(kUseNewServiceWorkerTaskQueue,
+@@ -190,4 +190,19 @@ BASE_FEATURE(kUseNewServiceWorkerTaskQueue,
               "UseNewServiceWorkerTaskQueue",
               base::FEATURE_DISABLED_BY_DEFAULT);
  
@@ -1158,7 +1159,7 @@ diff --git a/extensions/common/extension_features.cc b/extensions/common/extensi
 diff --git a/extensions/common/extension_features.h b/extensions/common/extension_features.h
 --- a/extensions/common/extension_features.h
 +++ b/extensions/common/extension_features.h
-@@ -217,6 +217,10 @@ BASE_DECLARE_FEATURE(kUseItemSnippetsAPI);
+@@ -224,6 +224,10 @@ BASE_DECLARE_FEATURE(kUseItemSnippetsAPI);
  // If enabled, use the new simpler, more efficient service worker task queue.
  BASE_DECLARE_FEATURE(kUseNewServiceWorkerTaskQueue);
  

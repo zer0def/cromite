@@ -48,7 +48,7 @@ diff --git a/services/device/geolocation/android/java/src/org/chromium/device/ge
 diff --git a/services/device/public/cpp/device_features.cc b/services/device/public/cpp/device_features.cc
 --- a/services/device/public/cpp/device_features.cc
 +++ b/services/device/public/cpp/device_features.cc
-@@ -45,6 +45,7 @@ BASE_FEATURE(kWinSystemLocationPermission,
+@@ -58,6 +58,7 @@ const base::FeatureParam<int> kWinSystemLocationPermissionPollingParam{
  BASE_FEATURE(kLocationProviderManager,
               "LocationProviderManager",
               base::FEATURE_DISABLED_BY_DEFAULT);
@@ -56,7 +56,7 @@ diff --git a/services/device/public/cpp/device_features.cc b/services/device/pub
  
  #if BUILDFLAG(IS_CHROMEOS)
  // Enables crash key logging for USB device open operations on ChromeOS. See
-@@ -67,7 +68,7 @@ const base::FeatureParam<device::mojom::LocationProviderManagerMode>::Option
+@@ -80,7 +81,7 @@ const base::FeatureParam<device::mojom::LocationProviderManagerMode>::Option
  const base::FeatureParam<device::mojom::LocationProviderManagerMode>
      kLocationProviderManagerParam{
          &kLocationProviderManager, "LocationProviderManagerMode",

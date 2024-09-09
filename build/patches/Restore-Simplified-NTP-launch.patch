@@ -41,7 +41,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 diff --git a/chrome/android/chrome_java_resources.gni b/chrome/android/chrome_java_resources.gni
 --- a/chrome/android/chrome_java_resources.gni
 +++ b/chrome/android/chrome_java_resources.gni
-@@ -538,6 +538,7 @@ chrome_java_resources = [
+@@ -543,6 +543,7 @@ chrome_java_resources = [
    "java/res/layout/new_tab_page_layout.xml",
    "java/res/layout/new_tab_page_tile_grid_placeholder.xml",
    "java/res/layout/open_full_chrome_history_header.xml",
@@ -52,7 +52,7 @@ diff --git a/chrome/android/chrome_java_resources.gni b/chrome/android/chrome_ja
 diff --git a/chrome/android/chrome_java_sources.gni b/chrome/android/chrome_java_sources.gni
 --- a/chrome/android/chrome_java_sources.gni
 +++ b/chrome/android/chrome_java_sources.gni
-@@ -623,6 +623,7 @@ chrome_java_sources = [
+@@ -626,6 +626,7 @@ chrome_java_sources = [
    "java/src/org/chromium/chrome/browser/feedback/FeedFeedbackCollector.java",
    "java/src/org/chromium/chrome/browser/feedback/HelpAndFeedbackLauncherImpl.java",
    "java/src/org/chromium/chrome/browser/feedback/ScreenshotTask.java",
@@ -60,7 +60,7 @@ diff --git a/chrome/android/chrome_java_sources.gni b/chrome/android/chrome_java
    "java/src/org/chromium/chrome/browser/findinpage/FindToolbar.java",
    "java/src/org/chromium/chrome/browser/findinpage/FindToolbarManager.java",
    "java/src/org/chromium/chrome/browser/findinpage/FindToolbarObserver.java",
-@@ -1054,6 +1055,7 @@ chrome_java_sources = [
+@@ -1042,6 +1043,7 @@ chrome_java_sources = [
    "java/src/org/chromium/chrome/browser/suggestions/mostvisited/MostVisitedSitesMetadataUtils.java",
    "java/src/org/chromium/chrome/browser/suggestions/tile/MostVisitedTilesCoordinator.java",
    "java/src/org/chromium/chrome/browser/suggestions/tile/MostVisitedTilesLayout.java",
@@ -206,7 +206,7 @@ diff --git a/chrome/android/java/res/values/dimens.xml b/chrome/android/java/res
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/feedback/ChromeFeedbackCollector.java b/chrome/android/java/src/org/chromium/chrome/browser/feedback/ChromeFeedbackCollector.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/feedback/ChromeFeedbackCollector.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/feedback/ChromeFeedbackCollector.java
-@@ -63,6 +63,7 @@ public class ChromeFeedbackCollector extends FeedbackCollector<ChromeFeedbackCol
+@@ -66,6 +66,7 @@ public class ChromeFeedbackCollector extends FeedbackCollector<ChromeFeedbackCol
          sources.add(new LowEndDeviceFeedbackSource());
          sources.add(new IMEFeedbackSource());
          sources.add(new PermissionFeedbackSource());
@@ -295,15 +295,15 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ntp/NewTabPageL
  import android.view.View;
  import android.view.ViewGroup;
  import android.widget.LinearLayout;
-@@ -32,6 +33,7 @@ import org.chromium.chrome.R;
+@@ -31,6 +32,7 @@ import org.chromium.base.supplier.ObservableSupplier;
+ import org.chromium.chrome.R;
  import org.chromium.chrome.browser.feed.FeedSurfaceScrollDelegate;
- import org.chromium.chrome.browser.flags.ChromeFeatureList;
  import org.chromium.chrome.browser.lens.LensEntryPoint;
 +import org.chromium.chrome.browser.flags.ChromeFeatureList;
  import org.chromium.chrome.browser.lens.LensMetrics;
  import org.chromium.chrome.browser.lifecycle.ActivityLifecycleDispatcher;
  import org.chromium.chrome.browser.logo.LogoBridge.Logo;
-@@ -89,6 +91,8 @@ public class NewTabPageLayout extends LinearLayout {
+@@ -88,6 +90,8 @@ public class NewTabPageLayout extends LinearLayout {
      private @Nullable DisplayStyleObserver mDisplayStyleObserver;
      private CallbackController mCallbackController = new CallbackController();
  
@@ -312,7 +312,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ntp/NewTabPageL
      /**
       * Whether the tiles shown in the layout have finished loading.
       * With {@link #mHasShownView}, it's one of the 2 flags used to track initialisation progress.
-@@ -101,7 +105,7 @@ public class NewTabPageLayout extends LinearLayout {
+@@ -100,7 +104,7 @@ public class NewTabPageLayout extends LinearLayout {
       */
      private boolean mHasShownView;
  
@@ -321,7 +321,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ntp/NewTabPageL
      private boolean mSearchProviderIsGoogle;
      private boolean mShowingNonStandardGoogleLogo;
  
-@@ -272,6 +276,7 @@ public class NewTabPageLayout extends LinearLayout {
+@@ -258,6 +262,7 @@ public class NewTabPageLayout extends LinearLayout {
          initializeLogoCoordinator(searchProviderHasLogo, searchProviderIsGoogle);
          initializeMostVisitedTilesCoordinator(
                  mProfile, lifecycleDispatcher, tileGroupDelegate, touchEnabledDelegate);
@@ -329,7 +329,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ntp/NewTabPageL
          initializeSearchBoxTextView();
          initializeVoiceSearchButton();
          initializeLensButton();
-@@ -610,7 +615,7 @@ public class NewTabPageLayout extends LinearLayout {
+@@ -597,7 +602,7 @@ public class NewTabPageLayout extends LinearLayout {
                  && mInitialized) {
              return;
          }
@@ -338,7 +338,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ntp/NewTabPageL
          mSearchProviderIsGoogle = isGoogle;
  
          if (!mSearchProviderIsGoogle) {
-@@ -945,6 +950,22 @@ public class NewTabPageLayout extends LinearLayout {
+@@ -932,6 +937,22 @@ public class NewTabPageLayout extends LinearLayout {
          return mMostVisitedTilesCoordinator;
      }
  
@@ -364,9 +364,9 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ntp/NewTabPageL
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/suggestions/SuggestionsNavigationDelegate.java b/chrome/android/java/src/org/chromium/chrome/browser/suggestions/SuggestionsNavigationDelegate.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/suggestions/SuggestionsNavigationDelegate.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/suggestions/SuggestionsNavigationDelegate.java
-@@ -18,6 +18,11 @@ import org.chromium.chrome.browser.ui.native_page.NativePageHost;
- import org.chromium.content_public.browser.LoadUrlParams;
+@@ -23,6 +23,11 @@ import org.chromium.content_public.browser.LoadUrlParams;
  import org.chromium.ui.base.PageTransition;
+ import org.chromium.url.GURL;
  
 +import org.chromium.chrome.browser.bookmarks.BookmarkUtils;
 +import org.chromium.chrome.browser.download.DownloadUtils;
@@ -375,8 +375,8 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/suggestions/Sug
 +
  /** Extension of {@link NativePageNavigationDelegate} with suggestions-specific methods. */
  public class SuggestionsNavigationDelegate extends NativePageNavigationDelegateImpl {
-     public SuggestionsNavigationDelegate(
-@@ -30,6 +35,18 @@ public class SuggestionsNavigationDelegate extends NativePageNavigationDelegateI
+ 
+@@ -63,6 +68,18 @@ public class SuggestionsNavigationDelegate extends NativePageNavigationDelegateI
          super(activity, profile, host, tabModelSelector, tabGroupCreationDialogManager, tab);
      }
  
@@ -692,7 +692,7 @@ diff --git a/chrome/browser/engagement/important_sites_util.cc b/chrome/browser/
 diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browser/flags/android/chrome_feature_list.cc
 --- a/chrome/browser/flags/android/chrome_feature_list.cc
 +++ b/chrome/browser/flags/android/chrome_feature_list.cc
-@@ -247,6 +247,7 @@ const base::Feature* const kFeaturesExposedToJava[] = {
+@@ -254,6 +254,7 @@ const base::Feature* const kFeaturesExposedToJava[] = {
      &kGtsCloseTabAnimation,
      &kIncognitoReauthenticationForAndroid,
      &kIncognitoScreenshot,
@@ -709,26 +709,26 @@ diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/f
      public static final String MESSAGES_FOR_ANDROID_ADS_BLOCKED = "MessagesForAndroidAdsBlocked";
 +    public static final String SIMPLIFIED_NTP = "SimplifiedNTP";
      public static final String SEARCH_READY_OMNIBOX = "SearchReadyOmnibox";
-     public static final String MOST_VISITED_TILES_SELECT_EXISTING_TAB =
-             "MostVisitedTilesSelectExistingTab";
-@@ -650,7 +651,7 @@ public abstract class ChromeFeatureList {
+     public static final String MOST_VISITED_TILES_RESELECT = "MostVisitedTilesReselect";
+     public static final String MUlTI_INSTANCE_APPLICATION_STATUS_CLEANUP =
+@@ -640,7 +641,7 @@ public abstract class ChromeFeatureList {
      public static final CachedFlag sLogoPolish = newCachedFlag(LOGO_POLISH, true);
      public static final CachedFlag sLogoPolishAnimationKillSwitch =
              newCachedFlag(LOGO_POLISH_ANIMATION_KILL_SWITCH, true);
 -    public static final CachedFlag sMagicStackAndroid = newCachedFlag(MAGIC_STACK_ANDROID, true);
 +    public static final CachedFlag sMagicStackAndroid = newCachedFlag(MAGIC_STACK_ANDROID, false);
-     public static final CachedFlag sMostVisitedTilesSelectExistingTab =
-             newCachedFlag(MOST_VISITED_TILES_SELECT_EXISTING_TAB, false);
+     public static final CachedFlag sMostVisitedTilesReselect =
+             newCachedFlag(MOST_VISITED_TILES_RESELECT, false);
      public static final CachedFlag sMultiInstanceApplicationStatusCleanup =
-@@ -684,7 +685,7 @@ public abstract class ChromeFeatureList {
+@@ -675,7 +676,7 @@ public abstract class ChromeFeatureList {
              newCachedFlag(SMALLER_TAB_STRIP_TITLE_LIMIT, true);
      public static final CachedFlag sStartSurfaceReturnTime =
              newCachedFlag(START_SURFACE_RETURN_TIME, true);
 -    public static final CachedFlag sSurfacePolish = newCachedFlag(SURFACE_POLISH, true);
 +    public static final CachedFlag sSurfacePolish = newCachedFlag(SURFACE_POLISH, false);
-     public static final CachedFlag sSurfacePolishForToolbarKillSwitch =
-             newCachedFlag(SURFACE_POLISH_FOR_TOOLBAR_KILL_SWITCH, true);
      public static final CachedFlag sTabDragDropAsWindowAndroid =
+             newCachedFlag(TAB_DRAG_DROP_ANDROID, false);
+     public static final CachedFlag sTabGroupCreationDialogAndroid =
 diff --git a/components/history/core/browser/top_sites_impl.h b/components/history/core/browser/top_sites_impl.h
 --- a/components/history/core/browser/top_sites_impl.h
 +++ b/components/history/core/browser/top_sites_impl.h

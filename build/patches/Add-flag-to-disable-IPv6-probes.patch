@@ -45,7 +45,7 @@ new file mode 100644
 diff --git a/net/BUILD.gn b/net/BUILD.gn
 --- a/net/BUILD.gn
 +++ b/net/BUILD.gn
-@@ -1077,6 +1077,7 @@ component("net") {
+@@ -1081,6 +1081,7 @@ component("net") {
      "//build:chromeos_buildflags",
      "//components/miracle_parameter/common",
      "//net/http:transport_security_state_generated_files",

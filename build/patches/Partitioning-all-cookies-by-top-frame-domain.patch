@@ -44,7 +44,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 diff --git a/chrome/browser/chrome_content_browser_client.cc b/chrome/browser/chrome_content_browser_client.cc
 --- a/chrome/browser/chrome_content_browser_client.cc
 +++ b/chrome/browser/chrome_content_browser_client.cc
-@@ -3668,7 +3668,7 @@ bool ChromeContentBrowserClient::IsFullCookieAccessAllowed(
+@@ -3717,7 +3717,7 @@ bool ChromeContentBrowserClient::IsFullCookieAccessAllowed(
    scoped_refptr<content_settings::CookieSettings> cookie_settings =
        CookieSettingsFactory::GetForProfile(profile);
    if (!cookie_settings) {
@@ -56,7 +56,7 @@ diff --git a/chrome/browser/chrome_content_browser_client.cc b/chrome/browser/ch
 diff --git a/chrome/browser/extensions/api/cookies/cookies_helpers.cc b/chrome/browser/extensions/api/cookies/cookies_helpers.cc
 --- a/chrome/browser/extensions/api/cookies/cookies_helpers.cc
 +++ b/chrome/browser/extensions/api/cookies/cookies_helpers.cc
-@@ -255,6 +255,10 @@ bool ValidateCookieApiPartitionKey(
+@@ -257,6 +257,10 @@ bool ValidateCookieApiPartitionKey(
  bool CookieMatchesPartitionKeyCollection(
      const net::CookiePartitionKeyCollection& cookie_partition_key_collection,
      const net::CanonicalCookie& cookie) {
@@ -70,7 +70,7 @@ diff --git a/chrome/browser/extensions/api/cookies/cookies_helpers.cc b/chrome/b
 diff --git a/chrome/browser/net/profile_network_context_service.cc b/chrome/browser/net/profile_network_context_service.cc
 --- a/chrome/browser/net/profile_network_context_service.cc
 +++ b/chrome/browser/net/profile_network_context_service.cc
-@@ -791,16 +791,16 @@ ProfileNetworkContextService::CreateCookieManagerParams(
+@@ -826,16 +826,16 @@ ProfileNetworkContextService::CreateCookieManagerParams(
    // UI to interact with SameSite cookies on accounts.google.com, which is used
    // for displaying a list of available accounts on the NTP
    // (chrome://new-tab-page), etc.
@@ -107,7 +107,7 @@ diff --git a/chrome/browser/privacy_sandbox/privacy_sandbox_settings_delegate.cc
 diff --git a/chrome/browser/storage_access_api/storage_access_grant_permission_context.cc b/chrome/browser/storage_access_api/storage_access_grant_permission_context.cc
 --- a/chrome/browser/storage_access_api/storage_access_grant_permission_context.cc
 +++ b/chrome/browser/storage_access_api/storage_access_grant_permission_context.cc
-@@ -420,6 +420,18 @@ void StorageAccessGrantPermissionContext::CheckForAutoGrantOrAutoDenial(
+@@ -417,6 +417,18 @@ void StorageAccessGrantPermissionContext::CheckForAutoGrantOrAutoDenial(
      permissions::PermissionRequestData request_data,
      permissions::BrowserPermissionCallback callback,
      net::FirstPartySetMetadata metadata) {
@@ -160,8 +160,8 @@ diff --git a/components/content_settings/core/browser/cookie_settings.cc b/compo
    if (url.is_empty() || first_party_url.is_empty()) {
      return;
    }
-@@ -406,6 +407,7 @@ bool CookieSettings::MitigationsEnabledFor3pcdInternal() const {
-                 ->AreThirdPartyCookiesAllowedByEnterprise();
+@@ -403,6 +404,7 @@ bool CookieSettings::MitigationsEnabledFor3pcdInternal() const {
+     return !tracking_protection_settings_->AreAllThirdPartyCookiesBlocked();
    }
  
 +  if ((true)) return false;
@@ -303,7 +303,7 @@ new file mode 100644
 diff --git a/net/cookies/canonical_cookie.cc b/net/cookies/canonical_cookie.cc
 --- a/net/cookies/canonical_cookie.cc
 +++ b/net/cookies/canonical_cookie.cc
-@@ -999,9 +999,6 @@ bool CanonicalCookie::IsCanonicalForFromStorage() const {
+@@ -995,9 +995,6 @@ bool CanonicalCookie::IsCanonicalForFromStorage() const {
      if (CookiePartitionKey::HasNonce(PartitionKey())) {
        return true;
      }
@@ -392,7 +392,7 @@ diff --git a/net/extras/sqlite/sqlite_persistent_cookie_store.cc b/net/extras/sq
 diff --git a/net/url_request/url_request_http_job.cc b/net/url_request/url_request_http_job.cc
 --- a/net/url_request/url_request_http_job.cc
 +++ b/net/url_request/url_request_http_job.cc
-@@ -888,13 +888,9 @@ void URLRequestHttpJob::SetCookieHeaderAndStart(
+@@ -891,13 +891,9 @@ void URLRequestHttpJob::SetCookieHeaderAndStart(
      AnnotateAndMoveUserBlockedCookies(maybe_included_cookies, excluded_cookies);
    }
  
@@ -435,7 +435,7 @@ diff --git a/services/network/cookie_settings.cc b/services/network/cookie_setti
 diff --git a/services/network/restricted_cookie_manager.cc b/services/network/restricted_cookie_manager.cc
 --- a/services/network/restricted_cookie_manager.cc
 +++ b/services/network/restricted_cookie_manager.cc
-@@ -905,6 +905,12 @@ void RestrictedCookieManager::SetCookieFromString(
+@@ -853,6 +853,12 @@ void RestrictedCookieManager::SetCookieFromString(
  
    std::move(callback).Run();
  

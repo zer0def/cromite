@@ -60,7 +60,7 @@ diff --git a/components/resources/search_engine_choice_scaled_resources.grdp b/c
 diff --git a/components/search_engines/prepopulated_engines.json b/components/search_engines/prepopulated_engines.json
 --- a/components/search_engines/prepopulated_engines.json
 +++ b/components/search_engines/prepopulated_engines.json
-@@ -113,6 +113,16 @@
+@@ -115,6 +115,16 @@
        "id": 92
      },
  
@@ -77,7 +77,7 @@ diff --git a/components/search_engines/prepopulated_engines.json b/components/se
      "ecosia": {
        "name": "Ecosia",
        "keyword": "ecosia.org",
-@@ -182,6 +192,27 @@
+@@ -184,6 +194,27 @@
        "id": 111
      },
  
@@ -123,7 +123,7 @@ diff --git a/components/search_engines/search_engine_choice/search_engine_choice
 diff --git a/components/search_engines/search_engine_countries-inc.cc b/components/search_engines/search_engine_countries-inc.cc
 --- a/components/search_engines/search_engine_countries-inc.cc
 +++ b/components/search_engines/search_engine_countries-inc.cc
-@@ -33,6 +33,7 @@ struct EngineAndTier {
+@@ -38,6 +38,7 @@ struct EngineAndTier {
  
  // Default (for countries with no better engine set)
  constexpr EngineAndTier engines_default[] = {
@@ -131,7 +131,7 @@ diff --git a/components/search_engines/search_engine_countries-inc.cc b/componen
      {SearchEngineTier::kTopEngines, &google},
      {SearchEngineTier::kTopEngines, &bing},
      {SearchEngineTier::kTopEngines, &yahoo},
-@@ -1449,5 +1450,7 @@ const std::vector<EngineAndTier> GetPrepopulationSetFromCountryID(
+@@ -1454,5 +1455,7 @@ const std::vector<EngineAndTier> GetPrepopulationSetFromCountryID(
    for (size_t i = 0; i < num_engines; i++) {
      t_url.push_back(engines[i]);
    }
@@ -161,7 +161,7 @@ diff --git a/components/search_engines/search_engine_type.h b/components/search_
 diff --git a/components/search_engines/template_url_prepopulate_data.cc b/components/search_engines/template_url_prepopulate_data.cc
 --- a/components/search_engines/template_url_prepopulate_data.cc
 +++ b/components/search_engines/template_url_prepopulate_data.cc
-@@ -80,7 +80,6 @@ GetPrepopulatedEnginesForEeaRegionCountries(int country_id,
+@@ -85,7 +85,6 @@ GetPrepopulatedEnginesForEeaRegionCountries(int country_id,
    generator.seed(profile_seed);
    std::shuffle(t_urls.begin(), t_urls.end(), generator);
  

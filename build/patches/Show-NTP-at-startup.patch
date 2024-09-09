@@ -93,7 +93,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ChromeInactivit
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java b/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java
-@@ -2184,6 +2184,8 @@ public class ChromeTabbedActivity extends ChromeActivity<ChromeActivityComponent
+@@ -2188,6 +2188,8 @@ public class ChromeTabbedActivity extends ChromeActivity<ChromeActivityComponent
          mInactivityTracker =
                  new ChromeInactivityTracker(
                          ChromePreferenceKeys.TABBED_ACTIVITY_LAST_BACKGROUNDED_TIME_MS_PREF);
@@ -148,7 +148,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tasks/ReturnToC
 diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browser/flags/android/chrome_feature_list.cc
 --- a/chrome/browser/flags/android/chrome_feature_list.cc
 +++ b/chrome/browser/flags/android/chrome_feature_list.cc
-@@ -296,6 +296,7 @@ const base::Feature* const kFeaturesExposedToJava[] = {
+@@ -304,6 +304,7 @@ const base::Feature* const kFeaturesExposedToJava[] = {
      &kReportParentalControlSitesChild,
      &kSearchInCCT,
      &kSearchResumptionModuleAndroid,
@@ -197,7 +197,7 @@ new file mode 100644
 diff --git a/chrome/browser/preferences/android/java/src/org/chromium/chrome/browser/preferences/ChromePreferenceKeys.java b/chrome/browser/preferences/android/java/src/org/chromium/chrome/browser/preferences/ChromePreferenceKeys.java
 --- a/chrome/browser/preferences/android/java/src/org/chromium/chrome/browser/preferences/ChromePreferenceKeys.java
 +++ b/chrome/browser/preferences/android/java/src/org/chromium/chrome/browser/preferences/ChromePreferenceKeys.java
-@@ -784,6 +784,8 @@ public final class ChromePreferenceKeys {
+@@ -788,6 +788,8 @@ public final class ChromePreferenceKeys {
  
      public static final String TABBED_ACTIVITY_LAST_BACKGROUNDED_TIME_MS_PREF =
              "ChromeTabbedActivity.BackgroundTimeMs";
@@ -232,7 +232,7 @@ diff --git a/chrome/browser/single_tab/android/java/src/org/chromium/chrome/brow
 diff --git a/chrome/browser/single_tab/android/java/src/org/chromium/chrome/browser/single_tab/SingleTabSwitcherOnNtpMediator.java b/chrome/browser/single_tab/android/java/src/org/chromium/chrome/browser/single_tab/SingleTabSwitcherOnNtpMediator.java
 --- a/chrome/browser/single_tab/android/java/src/org/chromium/chrome/browser/single_tab/SingleTabSwitcherOnNtpMediator.java
 +++ b/chrome/browser/single_tab/android/java/src/org/chromium/chrome/browser/single_tab/SingleTabSwitcherOnNtpMediator.java
-@@ -269,14 +269,14 @@ public class SingleTabSwitcherOnNtpMediator {
+@@ -267,14 +267,14 @@ public class SingleTabSwitcherOnNtpMediator {
                          public void onPageLoadFinished(Tab tab, GURL url) {
                              super.onPageLoadFinished(tab, url);
                              mPropertyModel.set(TITLE, tab.getTitle());
