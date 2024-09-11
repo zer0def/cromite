@@ -34,12 +34,13 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../autofill/AutofillManagerWrapper.java      |  5 +-
  .../components/autofill/AutofillProvider.java |  7 ++
  .../BrowserSelectionActionMenuDelegate.java   | 62 ++++++++++++++
- .../browser/content_autofill_driver.cc        | 13 +++
+ .../browser/content_autofill_driver.cc        | 11 +++
  .../content/browser/content_autofill_driver.h | 10 +++
  .../content_autofill_driver_factory.cc        | 12 +++
  .../content/renderer/autofill_agent.cc        |  6 ++
  .../renderer/password_autofill_agent.cc       |  5 +-
  .../autofill/core/browser/autofill_driver.h   |  2 +
+ .../core/browser/autofill_driver_factory.cc   |  4 +
  .../autofill/core/browser/autofill_manager.h  |  2 +
  .../core/browser/browser_autofill_manager.cc  |  2 +
  .../core/browser/browser_autofill_manager.h   |  2 +
@@ -47,7 +48,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../autofill/core/common/autofill_features.h  | 22 -----
  .../autofill/core/common/autofill_prefs.cc    |  4 +-
  .../autofill/core/common/autofill_prefs.h     |  5 ++
- 32 files changed, 268 insertions(+), 167 deletions(-)
+ 33 files changed, 270 insertions(+), 167 deletions(-)
  create mode 100644 components/android_autofill/browser/java/src/org/chromium/components/autofill/BrowserSelectionActionMenuDelegate.java
 
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/password_manager/settings/PasswordSettings.java b/chrome/android/java/src/org/chromium/chrome/browser/password_manager/settings/PasswordSettings.java
@@ -736,16 +737,7 @@ diff --git a/components/autofill/content/browser/content_autofill_driver.cc b/co
        },
        source, Lift(source, std::forward<ActualArgs>(args))...);
  }
-@@ -262,6 +269,8 @@ ContentAutofillDriver::ContentAutofillDriver(
- 
- ContentAutofillDriver::~ContentAutofillDriver() {
-   owner_->router().UnregisterDriver(*this, /*driver_is_dying=*/true);
-+  if (secondary_autofill_manager_)
-+    secondary_autofill_manager_->Reset();
- }
- 
- void ContentAutofillDriver::Reset(ContentAutofillDriverFactoryPassKey) {
-@@ -604,6 +613,10 @@ ContentAutofillDriver::GetAutofillAgent() {
+@@ -604,6 +611,10 @@ ContentAutofillDriver::GetAutofillAgent() {
    return autofill_agent_;
  }
  
@@ -874,6 +866,20 @@ diff --git a/components/autofill/core/browser/autofill_driver.h b/components/aut
    // Returns whether the AutofillDriver instance is associated with an active
    // frame in the MPArch sense.
    virtual bool IsActive() const = 0;
+diff --git a/components/autofill/core/browser/autofill_driver_factory.cc b/components/autofill/core/browser/autofill_driver_factory.cc
+--- a/components/autofill/core/browser/autofill_driver_factory.cc
++++ b/components/autofill/core/browser/autofill_driver_factory.cc
+@@ -25,6 +25,10 @@ void AutofillDriverFactory::SetLifecycleStateAndNotifyObservers(
+   }
+   driver.GetAutofillManager().OnAutofillDriverLifecycleStateChanged(
+       old_state, new_state, /*pass_key=*/{});
++  if (auto secondary = driver.secondary_autofill_manager()) {
++    secondary->OnAutofillDriverLifecycleStateChanged(
++      old_state, new_state, /*pass_key=*/{});
++  }
+ }
+ 
+ }  // namespace autofill
 diff --git a/components/autofill/core/browser/autofill_manager.h b/components/autofill/core/browser/autofill_manager.h
 --- a/components/autofill/core/browser/autofill_manager.h
 +++ b/components/autofill/core/browser/autofill_manager.h

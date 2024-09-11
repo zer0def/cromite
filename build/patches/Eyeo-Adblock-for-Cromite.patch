@@ -85,7 +85,7 @@ deactivation of all pop-ups (default disabled)
  .../core/converter/parser/url_filter.cc       |   10 +-
  .../converter/parser/url_filter_options.cc    |   21 +-
  .../converter/parser/url_filter_options.h     |    1 +
- .../serializer/flatbuffer_serializer.cc       |   82 +-
+ .../serializer/flatbuffer_serializer.cc       |   83 +-
  components/adblock/core/features.cc           |    3 +-
  components/adblock/core/hash/schema_hash.h    |   10 +
  .../adblock/core/sitekey_storage_impl.cc      |   11 +-
@@ -129,7 +129,7 @@ deactivation of all pop-ups (default disabled)
  .../blink/renderer/core/css/style_engine.h    |    1 +
  .../renderer/core/exported/web_document.cc    |   15 +-
  .../definitions/adblock_private.d.ts          |   14 +
- 119 files changed, 6722 insertions(+), 1309 deletions(-)
+ 119 files changed, 6723 insertions(+), 1309 deletions(-)
  create mode 100644 chrome/browser/resources/settings/adblock_page/adblock_page.html
  create mode 100644 chrome/browser/resources/settings/adblock_page/adblock_page.ts
  rename components/adblock/android/java/res/xml/{adblock_preferences.xml => eyeo_adblock_preferences.xml} (56%)
@@ -2894,7 +2894,7 @@ diff --git a/components/adblock/content/browser/adblock_webcontents_observer.h b
 diff --git a/components/adblock/content/browser/element_hider_impl.cc b/components/adblock/content/browser/element_hider_impl.cc
 --- a/components/adblock/content/browser/element_hider_impl.cc
 +++ b/components/adblock/content/browser/element_hider_impl.cc
-@@ -208,7 +208,7 @@ void InsertUserCSSAndApplyElemHidingEmuJS(
+@@ -211,7 +211,7 @@ void InsertUserCSSAndApplyElemHidingEmuJS(
    if (!frame_host) {
      // Render frame host was destroyed before element hiding could be applied.
      // This is not a bug, just legitimate a race condition.
@@ -2903,7 +2903,7 @@ diff --git a/components/adblock/content/browser/element_hider_impl.cc b/componen
      return;
    }
    auto* info = ElementHiderInfo::GetOrCreateForCurrentDocument(frame_host);
-@@ -236,13 +236,9 @@ void InsertUserCSSAndApplyElemHidingEmuJS(
+@@ -239,13 +239,9 @@ void InsertUserCSSAndApplyElemHidingEmuJS(
    }
  
    if (!input.snippet_js.empty()) {
@@ -4146,7 +4146,7 @@ diff --git a/components/adblock/core/common/adblock_constants.cc b/components/ad
 diff --git a/components/adblock/core/common/adblock_constants.h b/components/adblock/core/common/adblock_constants.h
 --- a/components/adblock/core/common/adblock_constants.h
 +++ b/components/adblock/core/common/adblock_constants.h
-@@ -28,7 +28,6 @@ namespace flat {
+@@ -27,7 +27,6 @@ namespace flat {
  enum AbpResource : int8_t;
  }
  
@@ -4281,7 +4281,7 @@ diff --git a/components/adblock/core/common/adblock_utils.cc b/components/adbloc
 diff --git a/components/adblock/core/configuration/filtering_configuration.h b/components/adblock/core/configuration/filtering_configuration.h
 --- a/components/adblock/core/configuration/filtering_configuration.h
 +++ b/components/adblock/core/configuration/filtering_configuration.h
-@@ -66,6 +66,9 @@ class FilteringConfiguration {
+@@ -65,6 +65,9 @@ class FilteringConfiguration {
    virtual void SetEnabled(bool enabled) = 0;
    virtual bool IsEnabled() const = 0;
  
@@ -4341,7 +4341,7 @@ diff --git a/components/adblock/core/configuration/persistent_filtering_configur
 diff --git a/components/adblock/core/converter/flatbuffer_converter.cc b/components/adblock/core/converter/flatbuffer_converter.cc
 --- a/components/adblock/core/converter/flatbuffer_converter.cc
 +++ b/components/adblock/core/converter/flatbuffer_converter.cc
-@@ -125,7 +125,7 @@ void FlatbufferConverter::ConvertFilter(
+@@ -124,7 +124,7 @@ void FlatbufferConverter::ConvertFilter(
                std::string(filter_str.data(), filter_str.size()))) {
          flatbuffer_serializer.SerializeUrlFilter(std::move(url_filter.value()));
        } else {
@@ -4517,15 +4517,15 @@ diff --git a/components/adblock/core/converter/parser/url_filter_options.h b/com
 diff --git a/components/adblock/core/converter/serializer/flatbuffer_serializer.cc b/components/adblock/core/converter/serializer/flatbuffer_serializer.cc
 --- a/components/adblock/core/converter/serializer/flatbuffer_serializer.cc
 +++ b/components/adblock/core/converter/serializer/flatbuffer_serializer.cc
-@@ -21,6 +21,7 @@
+@@ -20,6 +20,7 @@
+ #include "base/logging.h"
  #include "base/notreached.h"
- #include "base/strings/string_piece.h"
  #include "base/strings/string_util.h"
 +#include "base/strings/utf_string_conversions.h"
  #include "components/adblock/core/common/adblock_constants.h"
  #include "components/adblock/core/common/regex_filter_pattern.h"
  #include "components/adblock/core/converter/parser/filter_classifier.h"
-@@ -28,6 +29,67 @@
+@@ -27,6 +28,68 @@
  
  namespace adblock {
  
@@ -4582,7 +4582,8 @@ diff --git a/components/adblock/core/converter/serializer/flatbuffer_serializer.
 +  };
 +
 +  template<int N>
-+  bool IsInList(const std::u16string& command, const char16_t*(&list)[N]) {
++  bool IsInList(const std::u16string& command, const char16_t*(&input)[N]) {
++    auto list = base::span(input);
 +    for(int t = 0; t < N; ++t)
 +      if (base::EqualsCaseInsensitiveASCII(command, list[t]))
 +        return true;
@@ -4593,7 +4594,7 @@ diff --git a/components/adblock/core/converter/serializer/flatbuffer_serializer.
  class Buffer : public FlatbufferData {
   public:
    explicit Buffer(flatbuffers::DetachedBuffer&& buffer)
-@@ -118,9 +180,25 @@ void FlatbufferSerializer::SerializeContentFilter(
+@@ -121,9 +184,25 @@ void FlatbufferSerializer::SerializeContentFilter(
  void FlatbufferSerializer::SerializeSnippetFilter(
      const SnippetFilter snippet_filter) {
    if (!allow_privileged_) {
@@ -4620,7 +4621,7 @@ diff --git a/components/adblock/core/converter/serializer/flatbuffer_serializer.
  
    std::vector<flatbuffers::Offset<adblock::flat::SnippetFunctionCall>> offsets;
    offsets.reserve(snippet_filter.snippet_script.size());
-@@ -141,7 +219,7 @@ void FlatbufferSerializer::SerializeSnippetFilter(
+@@ -144,7 +223,7 @@ void FlatbufferSerializer::SerializeSnippetFilter(
  void FlatbufferSerializer::SerializeUrlFilter(const UrlFilter url_filter) {
    const auto& options = url_filter.options;
    if (!allow_privileged_ && options.Headers().has_value()) {
@@ -4926,7 +4927,7 @@ diff --git a/components/adblock/core/subscription/ongoing_subscription_request_i
 diff --git a/components/adblock/core/subscription/preloaded_subscription_provider_impl.cc b/components/adblock/core/subscription/preloaded_subscription_provider_impl.cc
 --- a/components/adblock/core/subscription/preloaded_subscription_provider_impl.cc
 +++ b/components/adblock/core/subscription/preloaded_subscription_provider_impl.cc
-@@ -63,10 +63,10 @@ class PreloadedSubscriptionProviderImpl::SingleSubscriptionProvider {
+@@ -62,10 +62,10 @@ class PreloadedSubscriptionProviderImpl::SingleSubscriptionProvider {
            utils::MakeFlatbufferDataFromResourceBundle(
                info_.flatbuffer_resource_id),
            Subscription::InstallationState::Preloaded, base::Time());
@@ -5094,7 +5095,7 @@ diff --git a/components/adblock/core/subscription/subscription_config.h b/compon
 diff --git a/components/adblock/core/subscription/subscription_downloader_impl.cc b/components/adblock/core/subscription/subscription_downloader_impl.cc
 --- a/components/adblock/core/subscription/subscription_downloader_impl.cc
 +++ b/components/adblock/core/subscription/subscription_downloader_impl.cc
-@@ -56,6 +56,7 @@ GURL AddUrlParameters(const GURL& subscription_url,
+@@ -55,6 +55,7 @@ GURL AddUrlParameters(const GURL& subscription_url,
                        const SubscriptionPersistentMetadata* persistent_metadata,
                        const utils::AppInfo& client_metadata,
                        const bool is_disabled) {
@@ -5102,7 +5103,7 @@ diff --git a/components/adblock/core/subscription/subscription_downloader_impl.c
    const std::string query = base::StrCat(
        {"addonName=", "eyeo-chromium-sdk", "&addonVersion=", "1.0",
         "&application=", base::EscapeQueryParamValue(client_metadata.name, true),
-@@ -116,6 +117,8 @@ void SubscriptionDownloaderImpl::StartDownload(
+@@ -115,6 +116,8 @@ void SubscriptionDownloaderImpl::StartDownload(
  }
  
  void SubscriptionDownloaderImpl::CancelDownload(const GURL& subscription_url) {
@@ -5111,7 +5112,7 @@ diff --git a/components/adblock/core/subscription/subscription_downloader_impl.c
    DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
    ongoing_downloads_.erase(subscription_url);
  }
-@@ -140,10 +143,6 @@ void SubscriptionDownloaderImpl::DoHeadRequest(
+@@ -139,10 +142,6 @@ void SubscriptionDownloaderImpl::DoHeadRequest(
  
  bool SubscriptionDownloaderImpl::IsUrlAllowed(
      const GURL& subscription_url) const {
@@ -5122,7 +5123,7 @@ diff --git a/components/adblock/core/subscription/subscription_downloader_impl.c
    if (!subscription_url.SchemeIs("https") &&
        !subscription_url.SchemeIs("data")) {
      return false;
-@@ -193,11 +192,11 @@ void SubscriptionDownloaderImpl::OnDownloadFinished(
+@@ -192,11 +191,11 @@ void SubscriptionDownloaderImpl::OnDownloadFinished(
      persistent_metadata_->IncrementDownloadErrorCount(subscription_url);
      if (std::get<RetryPolicy>(download_it->second) ==
          RetryPolicy::RetryUntilSucceeded) {
@@ -5136,7 +5137,7 @@ diff --git a/components/adblock/core/subscription/subscription_downloader_impl.c
                      << subscription_url << ", will abort";
        std::move(std::get<DownloadCompletedCallback>(download_it->second))
            .Run(nullptr);
-@@ -214,8 +213,10 @@ void SubscriptionDownloaderImpl::OnDownloadFinished(
+@@ -213,8 +212,10 @@ void SubscriptionDownloaderImpl::OnDownloadFinished(
        TRACE_ID_LOCAL(GenerateTraceId(subscription_url)), "url",
        subscription_url.spec());
  
@@ -5148,7 +5149,7 @@ diff --git a/components/adblock/core/subscription/subscription_downloader_impl.c
        base::BindOnce(&SubscriptionDownloaderImpl::OnConversionFinished,
                       weak_ptr_factory_.GetWeakPtr(), subscription_url));
  }
-@@ -229,14 +230,14 @@ void SubscriptionDownloaderImpl::OnConversionFinished(
+@@ -228,14 +229,14 @@ void SubscriptionDownloaderImpl::OnConversionFinished(
        TRACE_ID_LOCAL(GenerateTraceId(subscription_url)));
    const auto download_it = ongoing_downloads_.find(subscription_url);
    if (download_it == ongoing_downloads_.end()) {
@@ -5165,7 +5166,7 @@ diff --git a/components/adblock/core/subscription/subscription_downloader_impl.c
              << " successfully";
      std::move(std::get<DownloadCompletedCallback>(download_it->second))
          .Run(std::move(
-@@ -279,7 +280,7 @@ void SubscriptionDownloaderImpl::AbortWithWarning(
+@@ -278,7 +279,7 @@ void SubscriptionDownloaderImpl::AbortWithWarning(
    if (ongoing_download_it == ongoing_downloads_.end()) {
      return;
    }
@@ -5444,7 +5445,7 @@ diff --git a/components/adblock/core/subscription/subscription_updater_impl.cc b
 diff --git a/components/adblock/core/subscription/subscription_validator_impl.cc b/components/adblock/core/subscription/subscription_validator_impl.cc
 --- a/components/adblock/core/subscription/subscription_validator_impl.cc
 +++ b/components/adblock/core/subscription/subscription_validator_impl.cc
-@@ -64,11 +64,11 @@ bool IsSignatureValidInternal(
+@@ -63,11 +63,11 @@ bool IsSignatureValidInternal(
    const auto* expected_hash = initial_subscription_signatures.FindString(
        path.BaseName().AsUTF8Unsafe());
    if (!expected_hash) {

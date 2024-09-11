@@ -204,7 +204,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tab/TabContextM
 diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browser/flags/android/chrome_feature_list.cc
 --- a/chrome/browser/flags/android/chrome_feature_list.cc
 +++ b/chrome/browser/flags/android/chrome_feature_list.cc
-@@ -313,6 +313,7 @@ const base::Feature* const kFeaturesExposedToJava[] = {
+@@ -312,6 +312,7 @@ const base::Feature* const kFeaturesExposedToJava[] = {
      &kTabGroupCreationDialogAndroid,
      &kTabGroupParityAndroid,
      &kTabletTabSwitcherLongPressMenu,
@@ -541,7 +541,7 @@ diff --git a/third_party/blink/renderer/core/page/context_menu_controller.cc b/t
 +  if (!do_not_show_context_menu &&
 +        base::FeatureList::IsEnabled(features::kShowAlwaysContextMenuOnLinks)) {
 +    if (auto* anchor_element = DynamicTo<HTMLAnchorElement>(result.URLElement())) {
-+      MouseEvent event;
++      MouseEvent& event = *MouseEvent::Create();
 +      event.SetTarget(mouse_event->target());
 +      anchor_element->HandleClick(event, /*do_not_show_context_menu*/true);
 +      return true;

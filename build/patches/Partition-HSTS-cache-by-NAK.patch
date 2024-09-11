@@ -9,7 +9,10 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../core/browser/hsts_query.cc                |   1 +
  .../web_package/signed_exchange_handler.cc    |   7 +-
  .../web_package/signed_exchange_handler.h     |   4 +
- .../web_package/signed_exchange_loader.cc     |   2 +-
+ .../web_package/signed_exchange_loader.cc     |   3 +-
+ .../web_package/signed_exchange_loader.h      |   2 +
+ .../signed_exchange_prefetch_handler.cc       |   2 +-
+ .../signed_exchange_request_handler.cc        |   1 +
  net/http/transport_security_state.cc          | 109 ++++++++++++------
  net/http/transport_security_state.h           |  39 ++++---
  net/quic/crypto/proof_verifier_chromium.cc    |   5 +-
@@ -22,7 +25,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  services/network/network_context.cc           |  31 +++--
  services/network/network_context.h            |  13 ++-
  .../public/mojom/network_context.mojom        |   9 +-
- 18 files changed, 175 insertions(+), 102 deletions(-)
+ 21 files changed, 180 insertions(+), 103 deletions(-)
 
 diff --git a/chrome/browser/ssl/https_upgrades_interceptor.cc b/chrome/browser/ssl/https_upgrades_interceptor.cc
 --- a/chrome/browser/ssl/https_upgrades_interceptor.cc
@@ -155,7 +158,15 @@ diff --git a/content/browser/web_package/signed_exchange_handler.h b/content/bro
 diff --git a/content/browser/web_package/signed_exchange_loader.cc b/content/browser/web_package/signed_exchange_loader.cc
 --- a/content/browser/web_package/signed_exchange_loader.cc
 +++ b/content/browser/web_package/signed_exchange_loader.cc
-@@ -126,7 +126,7 @@ SignedExchangeLoader::SignedExchangeLoader(
+@@ -74,6 +74,7 @@ SignedExchangeLoader::SignedExchangeLoader(
+     std::unique_ptr<SignedExchangeReporter> reporter,
+     scoped_refptr<network::SharedURLLoaderFactory> url_loader_factory,
+     URLLoaderThrottlesGetter url_loader_throttles_getter,
++    const net::NetworkAnonymizationKey& network_anonymization_key,
+     int frame_tree_node_id,
+     const std::string& accept_langs,
+     bool keep_entry_for_prefetch_cache)
+@@ -126,7 +127,7 @@ SignedExchangeLoader::SignedExchangeLoader(
              std::move(outer_response_body)),
          base::BindOnce(&SignedExchangeLoader::OnHTTPExchangeFound,
                         weak_factory_.GetWeakPtr()),
@@ -164,6 +175,48 @@ diff --git a/content/browser/web_package/signed_exchange_loader.cc b/content/bro
          keep_entry_for_prefetch_cache
              ? std::nullopt
              : std::make_optional(outer_request_.trusted_params->isolation_info),
+diff --git a/content/browser/web_package/signed_exchange_loader.h b/content/browser/web_package/signed_exchange_loader.h
+--- a/content/browser/web_package/signed_exchange_loader.h
++++ b/content/browser/web_package/signed_exchange_loader.h
+@@ -31,6 +31,7 @@ class URLLoaderThrottle;
+ }  // namespace blink
+ 
+ namespace net {
++class NetworkAnonymizationKey;
+ class SourceStream;
+ }  // namespace net
+ 
+@@ -73,6 +74,7 @@ class CONTENT_EXPORT SignedExchangeLoader final
+       std::unique_ptr<SignedExchangeReporter> reporter,
+       scoped_refptr<network::SharedURLLoaderFactory> url_loader_factory,
+       URLLoaderThrottlesGetter url_loader_throttles_getter,
++      const net::NetworkAnonymizationKey& network_anonymization_key,
+       int frame_tree_node_id,
+       const std::string& accept_langs,
+       bool keep_entry_for_prefetch_cache);
+diff --git a/content/browser/web_package/signed_exchange_prefetch_handler.cc b/content/browser/web_package/signed_exchange_prefetch_handler.cc
+--- a/content/browser/web_package/signed_exchange_prefetch_handler.cc
++++ b/content/browser/web_package/signed_exchange_prefetch_handler.cc
+@@ -56,7 +56,7 @@ SignedExchangePrefetchHandler::SignedExchangePrefetchHandler(
+       network::mojom::kURLLoadOptionNone,
+       false /* should_redirect_to_fallback */, std::move(devtools_proxy),
+       std::move(reporter), std::move(url_loader_factory),
+-      loader_throttles_getter, frame_tree_node_id, accept_langs,
++      loader_throttles_getter, network_anonymization_key, frame_tree_node_id, accept_langs,
+       keep_entry_for_prefetch_cache);
+ }
+ 
+diff --git a/content/browser/web_package/signed_exchange_request_handler.cc b/content/browser/web_package/signed_exchange_request_handler.cc
+--- a/content/browser/web_package/signed_exchange_request_handler.cc
++++ b/content/browser/web_package/signed_exchange_request_handler.cc
+@@ -116,6 +116,7 @@ bool SignedExchangeRequestHandler::MaybeCreateLoaderForResponse(
+       std::move(client), url_loader->Unbind(), url_loader_options_,
+       true /* should_redirect_to_fallback */, std::move(devtools_proxy),
+       std::move(reporter), url_loader_factory_, url_loader_throttles_getter_,
++      network_anonymization_key,
+       frame_tree_node_id_, accept_langs_,
+       false /* keep_entry_for_prefetch_cache */);
+ 
 diff --git a/net/http/transport_security_state.cc b/net/http/transport_security_state.cc
 --- a/net/http/transport_security_state.cc
 +++ b/net/http/transport_security_state.cc

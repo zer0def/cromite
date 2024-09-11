@@ -157,7 +157,7 @@ diff --git a/third_party/blink/common/client_hints/client_hints.cc b/third_party
  #include "base/strings/string_util.h"
  #include "services/network/public/cpp/client_hints.h"
  #include "third_party/blink/public/common/features.h"
-+#include "third_party/blink/renderer/platform/runtime_enabled_features.h"
++#include "third_party/blink/public/common/features_generated.h"
  #include "third_party/blink/public/common/permissions_policy/permissions_policy.h"
  #include "url/origin.h"
  
@@ -170,7 +170,7 @@ diff --git a/third_party/blink/common/client_hints/client_hints.cc b/third_party
      case network::mojom::WebClientHintsType::kUAMobile:
      case network::mojom::WebClientHintsType::kUAPlatform:
 -      return true;
-+      return RuntimeEnabledFeatures::UserAgentClientHintEnabled();
++      return base::FeatureList::IsEnabled(blink::features::kUserAgentClientHint);
 +    case network::mojom::WebClientHintsType::kSaveData:
 +      return false;
      default:

@@ -4,26 +4,27 @@ Subject: Remove help menu item
 
 License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 ---
- chrome/android/java/res/menu/main_menu.xml                   | 3 ---
- .../res/menu/save_password_preferences_action_bar_menu.xml   | 1 +
- .../src/org/chromium/chrome/browser/KeyboardShortcuts.java   | 3 ---
- .../src/org/chromium/chrome/browser/app/ChromeActivity.java  | 5 -----
- .../autofill/settings/AutofillPaymentMethodsFragment.java    | 1 +
- .../browser/autofill/settings/AutofillProfilesFragment.java  | 1 +
- .../browser/browsing_data/ClearBrowsingDataFragment.java     | 1 +
- .../browser/password_manager/settings/PasswordSettings.java  | 1 +
- .../chrome/browser/privacy/settings/PrivacySettings.java     | 1 +
- .../chromium/chrome/browser/settings/SettingsActivity.java   | 1 +
- .../chrome/browser/sync/settings/GoogleServicesSettings.java | 1 +
- .../chrome/browser/sync/settings/ManageSyncSettings.java     | 1 +
- .../android/java/res/menu/prefeditor_editor_menu.xml         | 1 +
- .../browser/autofill/options/AutofillOptionsFragment.java    | 1 +
- .../browser/password_check/PasswordCheckFragmentView.java    | 1 +
- .../java/res/menu/credential_edit_action_bar_menu.xml        | 3 ++-
- .../prefetch/settings/PreloadPagesSettingsFragmentBase.java  | 1 +
- .../privacy_sandbox/PrivacySandboxSettingsBaseFragment.java  | 1 +
- .../settings/SafeBrowsingSettingsFragmentBase.java           | 1 +
- 19 files changed, 17 insertions(+), 12 deletions(-)
+ chrome/android/java/res/menu/main_menu.xml               | 3 ---
+ .../menu/save_password_preferences_action_bar_menu.xml   | 1 +
+ .../org/chromium/chrome/browser/KeyboardShortcuts.java   | 3 ---
+ .../org/chromium/chrome/browser/app/ChromeActivity.java  | 9 ---------
+ .../settings/AutofillPaymentMethodsFragment.java         | 1 +
+ .../autofill/settings/AutofillProfilesFragment.java      | 1 +
+ .../browser/browsing_data/ClearBrowsingDataFragment.java | 1 +
+ .../chrome/browser/customtabs/BaseCustomTabActivity.java | 1 -
+ .../password_manager/settings/PasswordSettings.java      | 1 +
+ .../chrome/browser/privacy/settings/PrivacySettings.java | 1 +
+ .../chrome/browser/settings/SettingsActivity.java        | 1 +
+ .../browser/sync/settings/GoogleServicesSettings.java    | 1 +
+ .../chrome/browser/sync/settings/ManageSyncSettings.java | 1 +
+ .../android/java/res/menu/prefeditor_editor_menu.xml     | 1 +
+ .../autofill/options/AutofillOptionsFragment.java        | 1 +
+ .../password_check/PasswordCheckFragmentView.java        | 1 +
+ .../java/res/menu/credential_edit_action_bar_menu.xml    | 3 ++-
+ .../settings/PreloadPagesSettingsFragmentBase.java       | 1 +
+ .../PrivacySandboxSettingsBaseFragment.java              | 1 +
+ .../settings/SafeBrowsingSettingsFragmentBase.java       | 1 +
+ 20 files changed, 17 insertions(+), 17 deletions(-)
 
 diff --git a/chrome/android/java/res/menu/main_menu.xml b/chrome/android/java/res/menu/main_menu.xml
 --- a/chrome/android/java/res/menu/main_menu.xml
@@ -65,18 +66,22 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/KeyboardShortcu
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActivity.java b/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActivity.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActivity.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActivity.java
-@@ -2579,11 +2579,6 @@ public abstract class ChromeActivity<C extends ChromeActivityComponent>
+@@ -2578,15 +2578,6 @@ public abstract class ChromeActivity<C extends ChromeActivityComponent>
+ 
          final Tab currentTab = getActivityTab();
  
-         if (id == R.id.help_id) {
+-        if (id == R.id.help_id) {
 -            String url = currentTab != null ? currentTab.getUrl().getSpec() : "";
 -            startHelpAndFeedback(
 -                    url,
 -                    "MobileMenuFeedback",
 -                    getTabModelSelector().getCurrentModel().getProfile());
-             return true;
-         }
- 
+-            return true;
+-        }
+-
+         if (id == R.id.open_history_menu_id) {
+             if (currentTab != null && UrlUtilities.isNtpUrl(currentTab.getUrl())) {
+                 NewTabPageUma.recordAction(NewTabPageUma.ACTION_OPENED_HISTORY_MANAGER);
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/autofill/settings/AutofillPaymentMethodsFragment.java b/chrome/android/java/src/org/chromium/chrome/browser/autofill/settings/AutofillPaymentMethodsFragment.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/autofill/settings/AutofillPaymentMethodsFragment.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/autofill/settings/AutofillPaymentMethodsFragment.java
@@ -110,6 +115,17 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/browsing_data/C
      }
  
      @Override
+diff --git a/chrome/android/java/src/org/chromium/chrome/browser/customtabs/BaseCustomTabActivity.java b/chrome/android/java/src/org/chromium/chrome/browser/customtabs/BaseCustomTabActivity.java
+--- a/chrome/android/java/src/org/chromium/chrome/browser/customtabs/BaseCustomTabActivity.java
++++ b/chrome/android/java/src/org/chromium/chrome/browser/customtabs/BaseCustomTabActivity.java
+@@ -757,7 +757,6 @@ public abstract class BaseCustomTabActivity extends ChromeActivity<BaseCustomTab
+         // Disable creating new tabs, bookmark, print, help, focus_url, etc.
+         if (id == R.id.focus_url_bar
+                 || id == R.id.all_bookmarks_menu_id
+-                || id == R.id.help_id
+                 || id == R.id.recent_tabs_menu_id
+                 || id == R.id.new_incognito_tab_menu_id
+                 || id == R.id.new_tab_menu_id) {
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/password_manager/settings/PasswordSettings.java b/chrome/android/java/src/org/chromium/chrome/browser/password_manager/settings/PasswordSettings.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/password_manager/settings/PasswordSettings.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/password_manager/settings/PasswordSettings.java

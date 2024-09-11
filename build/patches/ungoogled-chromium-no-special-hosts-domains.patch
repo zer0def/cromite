@@ -16,6 +16,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../browser/chrome_content_browser_client.cc  |  32 +-
  .../domain_reliability/service_factory.cc     |  33 +-
  chrome/browser/extensions/BUILD.gn            |   1 -
+ chrome/browser/feedback/BUILD.gn              |   1 -
  .../log_sources/chrome_internal_log_source.cc |   5 -
  chrome/browser/first_run/first_run.cc         |   8 -
  chrome/browser/google/BUILD.gn                |   4 +-
@@ -63,7 +64,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  ...gled-chromium-no-special-hosts-domains.inc |   1 +
  net/base/url_util.cc                          |  25 +-
  services/network/network_context.cc           |   2 +-
- 56 files changed, 55 insertions(+), 853 deletions(-)
+ 57 files changed, 55 insertions(+), 854 deletions(-)
  create mode 100644 cromite_flags/content/public/common/content_features_cc/ungoogled-chromium-no-special-hosts-domains.inc
 
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ui/RootUiCoordinator.java b/chrome/android/java/src/org/chromium/chrome/browser/ui/RootUiCoordinator.java
@@ -381,6 +382,17 @@ diff --git a/chrome/browser/extensions/BUILD.gn b/chrome/browser/extensions/BUIL
      "//chrome/browser/image_decoder",
      "//chrome/browser/media/router",
      "//chrome/browser/media/router:media_router_feature",
+diff --git a/chrome/browser/feedback/BUILD.gn b/chrome/browser/feedback/BUILD.gn
+--- a/chrome/browser/feedback/BUILD.gn
++++ b/chrome/browser/feedback/BUILD.gn
+@@ -100,7 +100,6 @@ source_set("feedback_impl") {
+       "//chrome/browser/crash_upload_list",
+       "//chrome/browser/devtools",
+       "//chrome/browser/extensions",
+-      "//chrome/browser/google",
+       "//chrome/browser/profiles:profile",
+       "//chrome/browser/sync",
+       "//chrome/browser/sync:factories",
 diff --git a/chrome/browser/feedback/system_logs/log_sources/chrome_internal_log_source.cc b/chrome/browser/feedback/system_logs/log_sources/chrome_internal_log_source.cc
 --- a/chrome/browser/feedback/system_logs/log_sources/chrome_internal_log_source.cc
 +++ b/chrome/browser/feedback/system_logs/log_sources/chrome_internal_log_source.cc

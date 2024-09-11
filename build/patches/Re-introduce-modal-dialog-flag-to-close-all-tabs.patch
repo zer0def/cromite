@@ -12,9 +12,9 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  chrome/browser/flags/android/chrome_feature_list.cc |  1 +
  .../chrome/browser/flags/ChromeFeatureList.java     |  1 +
  ...ntroduce-modal-dialog-flag-to-close-all-tabs.inc | 13 +++++++++++++
- ...ntroduce-modal-dialog-flag-to-close-all-tabs.inc |  9 +++++++++
+ ...ntroduce-modal-dialog-flag-to-close-all-tabs.inc |  7 +++++++
  ...ntroduce-modal-dialog-flag-to-close-all-tabs.inc |  5 +++++
- 6 files changed, 35 insertions(+)
+ 6 files changed, 33 insertions(+)
  create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Re-introduce-modal-dialog-flag-to-close-all-tabs.inc
  create mode 100644 cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Re-introduce-modal-dialog-flag-to-close-all-tabs.inc
  create mode 100644 cromite_flags/chrome/browser/flags/android/chrome_feature_list_h/Re-introduce-modal-dialog-flag-to-close-all-tabs.inc
@@ -86,14 +86,12 @@ diff --git a/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/R
 new file mode 100644
 --- /dev/null
 +++ b/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Re-introduce-modal-dialog-flag-to-close-all-tabs.inc
-@@ -0,0 +1,9 @@
+@@ -0,0 +1,7 @@
 +#if BUILDFLAG(IS_ANDROID)
 +
 +CROMITE_FEATURE(kCloseAllTabsModalDialog,
 +                "CloseAllTabsModalDialog",
 +                base::FEATURE_ENABLED_BY_DEFAULT);
-+
-+SET_CROMITE_FEATURE_ENABLED(kArchiveTabService);
 +
 +#endif
 diff --git a/cromite_flags/chrome/browser/flags/android/chrome_feature_list_h/Re-introduce-modal-dialog-flag-to-close-all-tabs.inc b/cromite_flags/chrome/browser/flags/android/chrome_feature_list_h/Re-introduce-modal-dialog-flag-to-close-all-tabs.inc

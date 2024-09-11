@@ -54,7 +54,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../java/res/layout/scripts_preference.xml    |  40 +
  .../android/java/res/values/dimens.xml        |  11 +
  .../java/res/xml/userscripts_preferences.xml  |  34 +
- .../user_scripts/UserScriptsUtils.java        |  87 ++
+ .../user_scripts/UserScriptsUtils.java        |  88 ++
  .../user_scripts/FragmentWindowAndroid.java   |  90 ++
  .../user_scripts/IUserScriptsUtils.java       |  22 +
  .../components/user_scripts/ScriptInfo.java   |  37 +
@@ -74,7 +74,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../user-script-ui/user-scripts-ui.js         |   9 +
  .../browser/ui/user_scripts_ui.cc             | 146 ++++
  .../user_scripts/browser/ui/user_scripts_ui.h |  37 +
- .../browser/user_script_loader.cc             | 708 +++++++++++++++
+ .../browser/user_script_loader.cc             | 706 +++++++++++++++
  .../user_scripts/browser/user_script_loader.h | 168 ++++
  .../browser/user_script_pref_info.cc          |  34 +
  .../browser/user_script_pref_info.h           |  72 ++
@@ -85,7 +85,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  components/user_scripts/common/BUILD.gn       |  48 ++
  components/user_scripts/common/constants.h    |  15 +
  components/user_scripts/common/error_utils.cc |  54 ++
- components/user_scripts/common/error_utils.h  |  24 +
+ components/user_scripts/common/error_utils.h  |  22 +
  .../common/extension_message_generator.cc     |  29 +
  .../common/extension_message_generator.h      |  11 +
  .../user_scripts/common/extension_messages.cc |  40 +
@@ -93,15 +93,15 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  components/user_scripts/common/host_id.cc     |  31 +
  components/user_scripts/common/host_id.h      |  35 +
  .../user_scripts/common/script_constants.h    |  33 +
- components/user_scripts/common/url_pattern.cc | 803 ++++++++++++++++++
- components/user_scripts/common/url_pattern.h  | 303 +++++++
+ components/user_scripts/common/url_pattern.cc | 802 ++++++++++++++++++
+ components/user_scripts/common/url_pattern.h  | 302 +++++++
  .../user_scripts/common/url_pattern_set.cc    | 335 ++++++++
  .../user_scripts/common/url_pattern_set.h     | 160 ++++
  components/user_scripts/common/user_script.cc | 329 +++++++
- components/user_scripts/common/user_script.h  | 403 +++++++++
+ components/user_scripts/common/user_script.h  | 402 +++++++++
  .../common/user_scripts_features.cc           |  32 +
  .../common/user_scripts_features.h            |  36 +
- components/user_scripts/common/view_type.cc   |  39 +
+ components/user_scripts/common/view_type.cc   |  37 +
  components/user_scripts/common/view_type.h    |  48 ++
  components/user_scripts/renderer/BUILD.gn     |  65 ++
  .../renderer/extension_frame_helper.cc        |  95 +++
@@ -135,7 +135,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../Experimental-user-scripts-support.inc     |  13 +
  ipc/ipc_message_start.h                       |   1 +
  tools/gritsettings/resource_ids.spec          |   6 +
- 108 files changed, 9484 insertions(+), 2 deletions(-)
+ 108 files changed, 9476 insertions(+), 2 deletions(-)
  create mode 100644 components/user_scripts/README.md
  create mode 100755 components/user_scripts/android/BUILD.gn
  create mode 100644 components/user_scripts/android/java/res/layout/accept_script_item.xml
@@ -1229,7 +1229,7 @@ diff --git a/components/user_scripts/android/java/src/org/chromium/chrome/browse
 new file mode 100755
 --- /dev/null
 +++ b/components/user_scripts/android/java/src/org/chromium/chrome/browser/user_scripts/UserScriptsUtils.java
-@@ -0,0 +1,87 @@
+@@ -0,0 +1,88 @@
 +/*
 +    This file is part of Bromite.
 +
@@ -1260,6 +1260,7 @@ new file mode 100755
 +import org.chromium.base.IntentUtils;
 +
 +import org.chromium.chrome.browser.IntentHandler;
++import org.chromium.chrome.browser.settings.SettingsLauncherFactory;
 +import org.chromium.chrome.browser.settings.SettingsLauncherImpl;
 +import org.chromium.components.browser_ui.settings.SettingsLauncher;
 +
@@ -1297,7 +1298,7 @@ new file mode 100755
 +
 +        if (visibleName.toUpperCase().endsWith(".USER.JS") == false) return false;
 +
-+        SettingsLauncher settingsLauncher = new SettingsLauncherImpl();
++        SettingsLauncher settingsLauncher = SettingsLauncherFactory.createSettingsLauncher();
 +        Intent intent = settingsLauncher.createSettingsActivityIntent(
 +                context, UserScriptsPreferences.class,
 +                UserScriptsPreferences.createFragmentArgsForInstall(filePath));
@@ -2831,7 +2832,7 @@ diff --git a/components/user_scripts/browser/user_script_loader.cc b/components/
 new file mode 100755
 --- /dev/null
 +++ b/components/user_scripts/browser/user_script_loader.cc
-@@ -0,0 +1,708 @@
+@@ -0,0 +1,706 @@
 +/*
 +    This file is part of Bromite.
 +
@@ -2880,8 +2881,6 @@ new file mode 100755
 +#include "content/public/browser/browser_context.h"
 +#include "content/public/browser/browser_task_traits.h"
 +#include "content/public/browser/browser_thread.h"
-+#include "content/public/browser/notification_service.h"
-+#include "content/public/browser/notification_types.h"
 +#include "content/public/browser/render_process_host.h"
 +#include "ui/shell_dialogs/selected_file_info.h"
 +#include "ui/shell_dialogs/select_file_dialog.h"
@@ -3052,7 +3051,7 @@ new file mode 100755
 +      if (base::FeatureList::IsEnabled(features::kEnableLoggingUserScripts))
 +        LOG(INFO) << "UserScriptLoader: path " << user_script_path << " is a content uri";
 +
-+      infile = OpenContentUriForRead(user_script_path);
++      infile = OpenContentUri(user_script_path, base::File::FLAG_OPEN | base::File::FLAG_READ);
 +    } else {
 +      infile = base::File(user_script_path, base::File::FLAG_OPEN | base::File::FLAG_READ);
 +    }
@@ -4462,7 +4461,7 @@ diff --git a/components/user_scripts/common/error_utils.h b/components/user_scri
 new file mode 100755
 --- /dev/null
 +++ b/components/user_scripts/common/error_utils.h
-@@ -0,0 +1,24 @@
+@@ -0,0 +1,22 @@
 +// Copyright (c) 2011 The Chromium Authors. All rights reserved.
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
@@ -4471,8 +4470,6 @@ new file mode 100755
 +#define USERSCRIPTS_COMMON_ERROR_UTILS_H_
 +
 +#include <string>
-+
-+#include "base/strings/string_piece.h"
 +
 +namespace user_scripts {
 +
@@ -4775,7 +4772,7 @@ diff --git a/components/user_scripts/common/url_pattern.cc b/components/user_scr
 new file mode 100755
 --- /dev/null
 +++ b/components/user_scripts/common/url_pattern.cc
-@@ -0,0 +1,803 @@
+@@ -0,0 +1,802 @@
 +// Copyright (c) 2012 The Chromium Authors. All rights reserved.
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
@@ -4790,7 +4787,6 @@ new file mode 100755
 +#include "base/strings/pattern.h"
 +#include "base/strings/strcat.h"
 +#include "base/strings/string_number_conversions.h"
-+#include "base/strings/string_piece.h"
 +#include "base/strings/string_split.h"
 +#include "base/strings/string_util.h"
 +#include "base/strings/stringprintf.h"
@@ -5583,7 +5579,7 @@ diff --git a/components/user_scripts/common/url_pattern.h b/components/user_scri
 new file mode 100755
 --- /dev/null
 +++ b/components/user_scripts/common/url_pattern.h
-@@ -0,0 +1,303 @@
+@@ -0,0 +1,302 @@
 +// Copyright (c) 2012 The Chromium Authors. All rights reserved.
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
@@ -5595,7 +5591,6 @@ new file mode 100755
 +#include <string>
 +#include <vector>
 +
-+#include "base/strings/string_piece.h"
 +#include "net/base/registry_controlled_domains/registry_controlled_domain.h"
 +#include "third_party/abseil-cpp/absl/types/optional.h"
 +
@@ -6730,7 +6725,7 @@ diff --git a/components/user_scripts/common/user_script.h b/components/user_scri
 new file mode 100755
 --- /dev/null
 +++ b/components/user_scripts/common/user_script.h
-@@ -0,0 +1,403 @@
+@@ -0,0 +1,402 @@
 +// Copyright 2013 The Chromium Authors. All rights reserved.
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
@@ -6743,7 +6738,6 @@ new file mode 100755
 +#include <vector>
 +
 +#include "base/files/file_path.h"
-+#include "base/strings/string_piece.h"
 +#include "script_constants.h"
 +#include "host_id.h"
 +#include "url_pattern.h"
@@ -7216,14 +7210,12 @@ diff --git a/components/user_scripts/common/view_type.cc b/components/user_scrip
 new file mode 100755
 --- /dev/null
 +++ b/components/user_scripts/common/view_type.cc
-@@ -0,0 +1,39 @@
+@@ -0,0 +1,37 @@
 +// Copyright (c) 2012 The Chromium Authors. All rights reserved.
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
 +#include "view_type.h"
-+
-+#include "base/strings/string_piece.h"
 +
 +namespace user_scripts {
 +

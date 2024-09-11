@@ -98,17 +98,18 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../webauthn/cred_man/CredManHelper.java      |  16 +-
  .../cred_man/CredManMetricsHelper.java        |   2 +-
  .../push_messaging/push_messaging_manager.cc  |   2 +-
- content/public/android/BUILD.gn               |   4 -
+ content/public/android/BUILD.gn               |   6 -
+ .../webid/IdentityCredentialsDelegate.java    |  92 +--
  content/test/BUILD.gn                         |   4 -
  device/BUILD.gn                               |   3 -
  services/BUILD.gn                             |   9 -
  services/device/geolocation/BUILD.gn          |   4 -
  services/shape_detection/BUILD.gn             |   2 -
- third_party/android_deps/BUILD.gn             | 759 +-----------------
+ third_party/android_deps/BUILD.gn             | 762 +-----------------
  .../preconditions/javatests/BUILD.gn          |   1 -
  .../gms/ChromiumPlayServicesAvailability.java |  10 +-
  third_party/cardboard/BUILD.gn                |   4 -
- 84 files changed, 116 insertions(+), 2256 deletions(-)
+ 85 files changed, 117 insertions(+), 2352 deletions(-)
  create mode 100644 components/webauthn/android/java/src/org/chromium/components/webauthn/ConditionalUiState.java
 
 diff --git a/android_webview/expectations/system_webview_bundle.AndroidManifest.expected b/android_webview/expectations/system_webview_bundle.AndroidManifest.expected
@@ -3576,6 +3577,123 @@ diff --git a/content/public/android/BUILD.gn b/content/public/android/BUILD.gn
      "//base:base_java",
      "//base:process_launcher_java",
      "//build:chromeos_buildflags",
+@@ -425,8 +421,6 @@ android_library("content_full_java") {
+ android_library("identity_credentials_public_impl_java") {
+   sources = [ "java/src/org/chromium/content/browser/webid/IdentityCredentialsDelegate.java" ]
+   deps = [
+-    "$google_play_services_package:google_play_services_identity_credentials_java",
+-    "$google_play_services_package:google_play_services_tasks_java",
+     "//base:base_java",
+     "//third_party/androidx:androidx_core_core_java",
+   ]
+diff --git a/content/public/android/java/src/org/chromium/content/browser/webid/IdentityCredentialsDelegate.java b/content/public/android/java/src/org/chromium/content/browser/webid/IdentityCredentialsDelegate.java
+--- a/content/public/android/java/src/org/chromium/content/browser/webid/IdentityCredentialsDelegate.java
++++ b/content/public/android/java/src/org/chromium/content/browser/webid/IdentityCredentialsDelegate.java
+@@ -15,13 +15,6 @@ import android.os.Handler;
+ import android.os.Looper;
+ import android.os.ResultReceiver;
+ 
+-import com.google.android.gms.identitycredentials.CredentialOption;
+-import com.google.android.gms.identitycredentials.GetCredentialException;
+-import com.google.android.gms.identitycredentials.GetCredentialRequest;
+-import com.google.android.gms.identitycredentials.IdentityCredentialClient;
+-import com.google.android.gms.identitycredentials.IdentityCredentialManager;
+-import com.google.android.gms.identitycredentials.IntentHelper;
+-
+ import org.chromium.base.Log;
+ import org.chromium.base.Promise;
+ 
+@@ -36,89 +29,6 @@ public class IdentityCredentialsDelegate {
+     }
+ 
+     public Promise<byte[]> get(Activity window, String origin, String request) {
+-        final IdentityCredentialClient client;
+-        try {
+-            client = IdentityCredentialManager.Companion.getClient(window);
+-        } catch (Exception e) {
+-            // Thrown when running in phones without the most current GMS
+-            // version.
+-            return Promise.rejected();
+-        }
+-
+-        final Promise<byte[]> result = new Promise<byte[]>();
+-
+-        ResultReceiver resultReceiver =
+-                new ResultReceiver(new Handler(Looper.getMainLooper())) {
+-                    // android.credentials.GetCredentialException requires API level 34
+-                    @SuppressLint("NewApi")
+-                    @Override
+-                    protected void onReceiveResult(int code, Bundle data) {
+-                        Log.d(TAG, "Received a response");
+-                        try {
+-                            var response = IntentHelper.extractGetCredentialResponse(code, data);
+-                            var token =
+-                                    response.getCredential()
+-                                            .getData()
+-                                            .getByteArray("identityToken");
+-                            result.fulfill(token);
+-                        } catch (Exception e) {
+-                            Log.e(TAG, e.toString());
+-
+-                            if (e instanceof GetCredentialException
+-                                    && Build.VERSION.SDK_INT
+-                                            >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+-                                String exceptionType = ((GetCredentialException) e).getType();
+-                                result.reject(
+-                                        new android.credentials.GetCredentialException(
+-                                                exceptionType, e.getMessage()));
+-                            } else {
+-                                result.reject(e);
+-                            }
+-                        }
+-                    }
+-                };
+-
+-        client.getCredential(
+-                        new GetCredentialRequest(
+-                                Arrays.asList(
+-                                        new CredentialOption(
+-                                                "com.credman.IdentityCredential",
+-                                                new Bundle(),
+-                                                new Bundle(),
+-                                                request,
+-                                                "",
+-                                                "")),
+-                                new Bundle(),
+-                                origin,
+-                                resultReceiver))
+-                .addOnSuccessListener(
+-                        response -> {
+-                            try {
+-                                Log.d(TAG, "Sending an intent for sender");
+-                                Log.d(TAG, request);
+-                                startIntentSenderForResult(
+-                                        /** activity= */
+-                                        window,
+-                                        /** intent= */
+-                                        response.getPendingIntent().getIntentSender(),
+-                                        /** requestCode= */
+-                                        777,
+-                                        /** fillInIntent= */
+-                                        null,
+-                                        /** flagsMask= */
+-                                        0,
+-                                        /** flagsValues= */
+-                                        0,
+-                                        /** extraFlags= */
+-                                        0,
+-                                        /** options= */
+-                                        null);
+-                            } catch (SendIntentException e) {
+-                                Log.e(TAG, "Sending an intent for sender failed");
+-                                result.reject(e);
+-                            }
+-                        });
+-
+-        return result;
++        return Promise.rejected();
+     }
+ }
 diff --git a/content/test/BUILD.gn b/content/test/BUILD.gn
 --- a/content/test/BUILD.gn
 +++ b/content/test/BUILD.gn
@@ -4472,6 +4590,30 @@ diff --git a/third_party/android_deps/BUILD.gn b/third_party/android_deps/BUILD.
    # This is generated, do not edit. Update BuildConfigGenerator.groovy instead.
    java_prebuilt("io_perfmark_perfmark_api_java") {
      jar_path = "cipd/libs/io_perfmark_perfmark_api/perfmark-api-0.25.0.jar"
+@@ -2383,7 +1626,6 @@ if (!limit_android_deps) {
+     ]
+     testonly = true
+     deps = [
+-      ":com_google_auto_value_auto_value_annotations_java",
+       ":org_robolectric_pluginapi_java",
+       ":org_robolectric_utils_java",
+       "//third_party/android_deps:guava_android_java",
+@@ -2405,7 +1647,6 @@ if (!limit_android_deps) {
+     ]
+     testonly = true
+     deps = [
+-      ":com_google_auto_value_auto_value_annotations_java",
+       ":org_robolectric_annotations_java",
+       ":org_robolectric_pluginapi_java",
+       ":org_robolectric_utils_java",
+@@ -2475,7 +1716,6 @@ if (!limit_android_deps) {
+     ]
+     testonly = true
+     deps = [
+-      ":com_google_auto_value_auto_value_annotations_java",
+       ":org_robolectric_annotations_java",
+       ":org_robolectric_nativeruntime_java",
+       ":org_robolectric_pluginapi_java",
 diff --git a/third_party/android_deps/local_modifications/preconditions/javatests/BUILD.gn b/third_party/android_deps/local_modifications/preconditions/javatests/BUILD.gn
 --- a/third_party/android_deps/local_modifications/preconditions/javatests/BUILD.gn
 +++ b/third_party/android_deps/local_modifications/preconditions/javatests/BUILD.gn

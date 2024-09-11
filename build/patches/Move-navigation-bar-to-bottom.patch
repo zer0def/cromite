@@ -18,24 +18,24 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  cc/input/browser_controls_offset_manager.cc   |   6 +
  cc/trees/layer_tree_host_impl.cc              |   3 +
  .../tab_management/TabGroupUiCoordinator.java |   7 +-
- .../tab_management/TabGroupUiMediator.java    |  56 ++++++-
+ .../tab_management/TabGroupUiMediator.java    |  56 +++++-
  .../tab_management/TabGroupUiProperties.java  |   7 +-
  .../tab_management/TabGroupUiToolbarView.java |  17 ++
  .../tab_management/TabGroupUiViewBinder.java  |   3 +
- .../tab_management/TabListCoordinator.java    | 153 +++++++++++++++++-
+ .../tab_management/TabListCoordinator.java    | 162 +++++++++++++++++-
  .../TabListEmptyCoordinator.java              |  17 +-
  .../settings/AccessibilitySettings.java       |  26 +++
  .../ChromeAccessibilitySettingsDelegate.java  |  69 ++++++++
  .../chrome/browser/app/ChromeActivity.java    |   3 +
  .../compositor/CompositorViewHolder.java      |   7 +
- .../layouts/LayoutManagerChrome.java          |  19 ++-
+ .../layouts/LayoutManagerChrome.java          |  19 +-
  .../layouts/LayoutManagerChromeTablet.java    |   4 +-
  .../layouts/ToolbarSwipeLayout.java           |  14 +-
  .../overlays/strip/ScrollDelegate.java        |   2 +-
- .../strip/StripLayoutHelperManager.java       |  37 ++++-
+ .../strip/StripLayoutHelperManager.java       |  37 +++-
  .../scene_layer/StaticTabSceneLayer.java      |   7 +-
  .../scene_layer/TabListSceneLayer.java        |   8 +
- .../scene_layer/TabStripSceneLayer.java       |  19 ++-
+ .../scene_layer/TabStripSceneLayer.java       |  19 +-
  .../browser/findinpage/FindToolbarTablet.java |  10 +-
  .../fullscreen/BrowserControlsManager.java    |  12 ++
  .../messages/MessageContainerCoordinator.java |  16 +-
@@ -45,10 +45,10 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../chrome/browser/ntp/RecentTabsPage.java    |  30 +++-
  .../browser/searchwidget/SearchActivity.java  |  11 ++
  .../browser/settings/SettingsActivity.java    |   5 +
- .../StatusIndicatorCoordinator.java           |   9 ++
+ .../StatusIndicatorCoordinator.java           |   9 +
  .../StatusIndicatorSceneLayer.java            |   6 +-
- .../browser/toolbar/ToolbarManager.java       |  37 ++++-
- .../chrome/browser/ui/BottomContainer.java    |  18 +++
+ .../browser/toolbar/ToolbarManager.java       |  37 +++-
+ .../chrome/browser/ui/BottomContainer.java    |  18 ++
  .../ui/system/StatusBarColorController.java   |   8 +
  .../android/compositor/layer/toolbar_layer.cc |  10 +-
  .../scene_layer/tab_strip_scene_layer.cc      |  16 +-
@@ -60,14 +60,14 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../browser/flags/ChromeFeatureList.java      |  10 ++
  chrome/browser/hub/internal/BUILD.gn          |   5 +
  .../chrome/browser/hub/HubCoordinator.java    |   8 +
- .../chrome/browser/hub/HubManagerImpl.java    |  24 ++-
+ .../chrome/browser/hub/HubManagerImpl.java    |  16 +-
  .../browser/hub/ReversedLinearLayout.java     |  42 +++++
  .../android/res/layout/hub_layout.xml         |   4 +-
  .../android/res/layout/hub_toolbar_layout.xml |   2 +-
  chrome/browser/prefs/browser_prefs.cc         |   2 +-
  .../chrome/browser/ui/appmenu/AppMenu.java    |  40 ++++-
  .../ui/appmenu/AppMenuHandlerImpl.java        |  10 ++
- ...mniboxSuggestionsDropdownEmbedderImpl.java |  18 +++
+ ...mniboxSuggestionsDropdownEmbedderImpl.java |  18 ++
  .../suggestions/AutocompleteCoordinator.java  |  13 ++
  .../suggestions/AutocompleteMediator.java     |   6 +-
  .../DropdownItemViewInfoListManager.java      |   7 +-
@@ -81,8 +81,8 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../bottom/BottomControlsMediator.java        |  20 ++-
  .../bottom/BottomControlsProperties.java      |   6 +-
  .../bottom/BottomControlsViewBinder.java      |   2 +
- .../bottom/ScrollingBottomViewSceneLayer.java |  19 ++-
- .../toolbar/top/ToolbarControlContainer.java  |   9 ++
+ .../bottom/ScrollingBottomViewSceneLayer.java |  19 +-
+ .../toolbar/top/ToolbarControlContainer.java  |   9 +
  .../top/TopToolbarOverlayCoordinator.java     |  10 ++
  .../top/TopToolbarOverlayProperties.java      |   8 +-
  .../toolbar/top/TopToolbarSceneLayer.java     |  10 +-
@@ -90,7 +90,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../AccessibilitySettingsDelegate.java        |   7 +
  .../render_widget_host_view_android.cc        |   3 +
  .../Move-navigation-bar-to-bottom.inc         |  17 ++
- 77 files changed, 1006 insertions(+), 83 deletions(-)
+ 77 files changed, 1009 insertions(+), 81 deletions(-)
  create mode 100644 chrome/browser/hub/internal/android/java/src/org/chromium/chrome/browser/hub/ReversedLinearLayout.java
  create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Move-navigation-bar-to-bottom.inc
 
@@ -425,7 +425,15 @@ diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser
  import android.graphics.Rect;
  import android.util.Size;
  import android.view.LayoutInflater;
-@@ -57,6 +61,8 @@ import org.chromium.ui.modelutil.PropertyModelChangeProcessor;
+@@ -16,6 +20,7 @@ import android.view.View;
+ import android.view.View.OnLayoutChangeListener;
+ import android.view.ViewGroup;
+ import android.view.ViewTreeObserver.OnGlobalLayoutListener;
++import android.widget.FrameLayout;
+ import android.widget.ImageView;
+ 
+ import androidx.annotation.IntDef;
+@@ -57,6 +62,8 @@ import org.chromium.ui.modelutil.PropertyModelChangeProcessor;
  import org.chromium.ui.modelutil.SimpleRecyclerViewAdapter;
  import org.chromium.ui.widget.ViewLookupCachingFrameLayout;
  
@@ -434,7 +442,7 @@ diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser
  import java.lang.annotation.Retention;
  import java.lang.annotation.RetentionPolicy;
  import java.util.List;
-@@ -114,6 +120,128 @@ public class TabListCoordinator
+@@ -114,6 +121,128 @@ public class TabListCoordinator
      private int mAwaitingTabId = Tab.INVALID_TAB_ID;
      private @TabActionState int mTabActionState;
  
@@ -563,7 +571,7 @@ diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser
      /**
       * Construct a coordinator for UI that shows a list of tabs.
       *
-@@ -356,6 +484,12 @@ public class TabListCoordinator
+@@ -356,6 +485,12 @@ public class TabListCoordinator
                                  checkAwaitingLayout();
                              }
                          };
@@ -576,7 +584,7 @@ diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser
                  mRecyclerView.setLayoutManager(gridLayoutManager);
                  mMediator.registerOrientationListener(gridLayoutManager);
                  mMediator.updateSpanCount(
-@@ -367,8 +501,7 @@ public class TabListCoordinator
+@@ -367,8 +502,7 @@ public class TabListCoordinator
                          .getDecorView()
                          .getWindowVisibleDisplayFrame(frame);
                  updateGridCardLayout(frame.width());
@@ -586,11 +594,19 @@ diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser
                  LinearLayoutManager layoutManager =
                          new LinearLayoutManager(
                                  context,
-@@ -383,6 +516,17 @@ public class TabListCoordinator
+@@ -383,6 +517,25 @@ public class TabListCoordinator
                              }
                          };
                  mRecyclerView.setLayoutManager(layoutManager);
 +            } else if (mMode == TabListMode.LIST) {
++                if (dialogHandler == null && selectionDelegateProvider == null &&
++                        ChromeFeatureList.sMoveTopToolbarToBottom.isEnabled()) {
++                    FrameLayout.LayoutParams recyclerViewParams =
++                        (FrameLayout.LayoutParams) mRecyclerView.getLayoutParams();
++                    int toolbarHeightPx = mBrowserControlsStateProvider.getTopControlsHeight();
++                    recyclerViewParams.topMargin = toolbarHeightPx;
++                    mRecyclerView.setLayoutParams(recyclerViewParams);
++                }
 +                LinearLayoutManager layout =
 +                    new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false) {
 +                            @Override
@@ -604,7 +620,7 @@ diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser
              }
              mMediator.setRecyclerViewItemAnimationToggle(mRecyclerView::setDisableItemAnimations);
          }
-@@ -400,7 +544,7 @@ public class TabListCoordinator
+@@ -400,7 +553,7 @@ public class TabListCoordinator
          if (mHasEmptyView) {
              mTabListEmptyCoordinator =
                      new TabListEmptyCoordinator(
@@ -613,7 +629,7 @@ diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser
              mEmptyStateHeadingResId = emptyHeadingStringResId;
              mEmptyStateSubheadingResId = emptySubheadingStringResId;
              mEmptyStateImageResId = emptyImageResId;
-@@ -689,6 +833,9 @@ public class TabListCoordinator
+@@ -689,6 +842,9 @@ public class TabListCoordinator
      void prepareTabSwitcherPaneView() {
          registerLayoutChangeListener();
          mRecyclerView.setupCustomItemAnimator();
@@ -2033,29 +2049,14 @@ diff --git a/chrome/browser/hub/internal/android/java/src/org/chromium/chrome/br
          mHubContainerView.setLayoutParams(params);
      }
  
-@@ -242,6 +250,8 @@ public class HubManagerImpl implements HubManager, HubController {
-             mSnackbarManager.popParentViewFromOverrideStack(mSnackbarOverrideToken);
-             mSnackbarOverrideToken = TokenHolder.INVALID_TOKEN;
+@@ -256,6 +264,8 @@ public class HubManagerImpl implements HubManager, HubController {
          }
-+        if (ChromeFeatureList.sMoveTopToolbarToBottom.isEnabled())
-+            mSnackbarManager.setParentView(null);
-     }
- 
-     private void attachPaneDependencies(@Nullable Pane pane) {
-@@ -254,8 +264,12 @@ public class HubManagerImpl implements HubManager, HubController {
-             mMenuOrKeyboardActionController.registerMenuOrKeyboardActionHandler(
-                     menuOrKeyboardActionHandler);
-         }
--        mSnackbarOverrideToken =
--                mSnackbarManager.pushParentViewToOverrideStack(
+         mSnackbarOverrideToken =
+                 mSnackbarManager.pushParentViewToOverrideStack(
 -                        mHubCoordinator.getSnackbarContainer());
-+        if (ChromeFeatureList.sMoveTopToolbarToBottom.isEnabled())
-+            mSnackbarManager.setParentView((ViewGroup)getPaneHostView());
-+        else {
-+            mSnackbarOverrideToken =
-+                    mSnackbarManager.pushParentViewToOverrideStack(
-+                            mHubCoordinator.getSnackbarContainer());
-+        }
++                    ChromeFeatureList.sMoveTopToolbarToBottom.isEnabled()
++                        ? (ViewGroup)getPaneHostView()
++                        : mHubCoordinator.getSnackbarContainer());
      }
  }
 diff --git a/chrome/browser/hub/internal/android/java/src/org/chromium/chrome/browser/hub/ReversedLinearLayout.java b/chrome/browser/hub/internal/android/java/src/org/chromium/chrome/browser/hub/ReversedLinearLayout.java

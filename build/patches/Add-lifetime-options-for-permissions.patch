@@ -606,8 +606,8 @@ diff --git a/components/permissions/android/java/src/org/chromium/components/per
 +            TextView lifetimeOptionsText = new TextView(context);
 +            lifetimeOptionsText.setText(context.getString(
 +                        org.chromium.components.permissions.R.string.session_permissions_title));
-+            ApiCompatibilityUtils.setTextAppearance(
-+                    lifetimeOptionsText, R.style.TextAppearance_TextMedium_Primary);
++            lifetimeOptionsText.setTextAppearance(
++                    lifetimeOptionsText.getContext(), R.style.TextAppearance_TextMedium_Primary);
 +
 +            LinearLayout.LayoutParams lifetimeOptionsTextLayoutParams =
 +                    new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);

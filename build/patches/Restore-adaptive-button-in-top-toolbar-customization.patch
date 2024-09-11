@@ -9,7 +9,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 ---
  .../chrome/browser/settings/MainSettings.java |  3 +-
  chrome/browser/flag-metadata.json             |  3 +-
- .../flags/android/chrome_feature_list.cc      |  5 ++
+ .../flags/android/chrome_feature_list.cc      |  4 ++
  .../browser/flags/ChromeFeatureList.java      |  1 +
  .../AdaptiveToolbarButtonController.java      |  9 +++
  .../adaptive/AdaptiveToolbarFeatures.java     | 65 ++++++++++++++++++-
@@ -18,7 +18,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../AdaptiveToolbarStatePredictorTest.java    | 15 +++++
  ...oButtonGroupAdaptiveToolbarPreference.java |  1 +
  ...ve-button-in-top-toolbar-customization.inc |  3 +
- 11 files changed, 110 insertions(+), 6 deletions(-)
+ 11 files changed, 109 insertions(+), 6 deletions(-)
  create mode 100644 cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Restore-adaptive-button-in-top-toolbar-customization.inc
 
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/settings/MainSettings.java b/chrome/android/java/src/org/chromium/chrome/browser/settings/MainSettings.java
@@ -59,15 +59,7 @@ diff --git a/chrome/browser/flag-metadata.json b/chrome/browser/flag-metadata.js
 diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browser/flags/android/chrome_feature_list.cc
 --- a/chrome/browser/flags/android/chrome_feature_list.cc
 +++ b/chrome/browser/flags/android/chrome_feature_list.cc
-@@ -168,6 +168,7 @@ const base::Feature* const kFeaturesExposedToJava[] = {
-     &history::kOrganicRepeatableQueries,
-     &history_clusters::internal::kJourneys,
-     &history_clusters::internal::kOmniboxAction,
-+    &kAdaptiveButtonInTopToolbar,
-     &kAdaptiveButtonInTopToolbarTranslate,
-     &kAdaptiveButtonInTopToolbarAddToBookmarks,
-     &kAdaptiveButtonInTopToolbarCustomizationV2,
-@@ -420,6 +421,10 @@ static jlong JNI_ChromeFeatureMap_GetNativeMap(JNIEnv* env) {
+@@ -420,6 +420,10 @@ static jlong JNI_ChromeFeatureMap_GetNativeMap(JNIEnv* env) {
  
  // Alphabetical:
  
