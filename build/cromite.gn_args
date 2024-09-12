@@ -99,6 +99,9 @@ safe_browsing_use_unrar = false
 # see https://chromium-review.googlesource.com/c/chromium/src/+/5778493
 enable_request_header_integrity = false
 
+# Disable precompiled headers because they are incompatible with the unsafe_buffers configuration
+enable_precompiled_headers = false
+
 declare_args() {
   _is_debug_build = ""
   build_webview = false
