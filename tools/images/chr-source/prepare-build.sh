@@ -55,6 +55,7 @@ echo >>../.gclient "        \"src/third_party/perl\": None,"
 echo >>../.gclient "        \"src/tools/skia_goldctl/win\": None,"
 echo >>../.gclient "        \"src/third_party/screen-ai/windows_amd64\": None,"
 echo >>../.gclient "        \"src/third_party/screen-ai/windows_386\": None,"
+echo >>../.gclient "        \"src/third_party/cronet_android_mainline_clang/linux-amd64\": None,"
 echo >>../.gclient "    },"
 
 echo >>../.gclient "    \"custom_hooks\" : ["
