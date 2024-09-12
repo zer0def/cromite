@@ -59,7 +59,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -2563,6 +2563,7 @@ static_library("browser") {
+@@ -2416,6 +2416,7 @@ static_library("browser") {
      "//third_party/ungoogled:switches",
      "//services/device/public/mojom",
      "//services/device/public/mojom:usb",
@@ -70,7 +70,7 @@ diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -213,6 +213,7 @@
+@@ -220,6 +220,7 @@
  #include "sandbox/policy/features.h"
  #include "sandbox/policy/switches.h"
  #include "services/device/public/cpp/device_features.h"
@@ -81,8 +81,8 @@ diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 diff --git a/chrome/browser/download/android/download_controller.cc b/chrome/browser/download/android/download_controller.cc
 --- a/chrome/browser/download/android/download_controller.cc
 +++ b/chrome/browser/download/android/download_controller.cc
-@@ -234,6 +234,36 @@ void RecordDownloadBlocklistState(download::DownloadItem* item) {
-   checker->Start();
+@@ -280,6 +280,36 @@ void LogAppVerificationPromptToPrefs(download::DownloadItem* item) {
+   update->Append(base::TimeToValue(base::Time::Now()));
  }
  
 +const net::NetworkTrafficAnnotationTag traffic_annotation =
@@ -118,7 +118,7 @@ diff --git a/chrome/browser/download/android/download_controller.cc b/chrome/bro
  }  // namespace
  
  static void JNI_DownloadController_OnAcquirePermissionResult(
-@@ -280,7 +310,7 @@ static void JNI_DownloadController_DownloadUrl(JNIEnv* env,
+@@ -326,7 +356,7 @@ static void JNI_DownloadController_DownloadUrl(JNIEnv* env,
    if (download_manager) {
      auto dl_params = std::make_unique<download::DownloadUrlParameters>(
          GURL(url),
@@ -289,7 +289,7 @@ new file mode 100644
 diff --git a/net/BUILD.gn b/net/BUILD.gn
 --- a/net/BUILD.gn
 +++ b/net/BUILD.gn
-@@ -1079,6 +1079,7 @@ component("net") {
+@@ -1083,6 +1083,7 @@ component("net") {
      "//build:chromeos_buildflags",
      "//components/miracle_parameter/common",
      "//net/http:transport_security_state_generated_files",
@@ -324,7 +324,7 @@ diff --git a/net/url_request/url_request_http_job.cc b/net/url_request/url_reque
  }
  
  URLRequestHttpJob::~URLRequestHttpJob() {
-@@ -737,6 +740,18 @@ void URLRequestHttpJob::MaybeStartTransactionInternal(int result) {
+@@ -740,6 +743,18 @@ void URLRequestHttpJob::MaybeStartTransactionInternal(int result) {
  void URLRequestHttpJob::StartTransactionInternal() {
    DCHECK(!override_response_headers_);
  
@@ -1655,7 +1655,7 @@ diff --git a/services/network/network_context.cc b/services/network/network_cont
  #include "services/network/brokered_client_socket_factory.h"
  #include "services/network/cookie_manager.h"
  #include "services/network/data_remover_util.h"
-@@ -1715,6 +1716,9 @@ void NetworkContext::OnNewSCTAuditingReportSent() {
+@@ -1744,6 +1745,9 @@ void NetworkContext::OnNewSCTAuditingReportSent() {
  void NetworkContext::CreateUDPSocket(
      mojo::PendingReceiver<mojom::UDPSocket> receiver,
      mojo::PendingRemote<mojom::UDPSocketListener> listener) {
@@ -1665,7 +1665,7 @@ diff --git a/services/network/network_context.cc b/services/network/network_cont
    socket_factory_->CreateUDPSocket(std::move(receiver), std::move(listener));
  }
  
-@@ -1727,6 +1731,17 @@ void NetworkContext::CreateRestrictedUDPSocket(
+@@ -1756,6 +1760,17 @@ void NetworkContext::CreateRestrictedUDPSocket(
      mojo::PendingRemote<mojom::UDPSocketListener> listener,
      CreateRestrictedUDPSocketCallback callback) {
    // SimpleHostResolver is transitively owned by |this|.
@@ -1683,7 +1683,7 @@ diff --git a/services/network/network_context.cc b/services/network/network_cont
    socket_factory_->CreateRestrictedUDPSocket(
        addr, mode, traffic_annotation, std::move(params), std::move(receiver),
        std::move(listener), SimpleHostResolver::Create(this),
-@@ -1739,6 +1754,17 @@ void NetworkContext::CreateTCPServerSocket(
+@@ -1768,6 +1783,17 @@ void NetworkContext::CreateTCPServerSocket(
      const net::MutableNetworkTrafficAnnotationTag& traffic_annotation,
      mojo::PendingReceiver<mojom::TCPServerSocket> receiver,
      CreateTCPServerSocketCallback callback) {
@@ -1701,7 +1701,7 @@ diff --git a/services/network/network_context.cc b/services/network/network_cont
    socket_factory_->CreateTCPServerSocket(
        local_addr, std::move(options),
        static_cast<net::NetworkTrafficAnnotationTag>(traffic_annotation),
-@@ -1753,6 +1779,21 @@ void NetworkContext::CreateTCPConnectedSocket(
+@@ -1782,6 +1808,21 @@ void NetworkContext::CreateTCPConnectedSocket(
      mojo::PendingReceiver<mojom::TCPConnectedSocket> receiver,
      mojo::PendingRemote<mojom::SocketObserver> observer,
      CreateTCPConnectedSocketCallback callback) {
@@ -1723,7 +1723,7 @@ diff --git a/services/network/network_context.cc b/services/network/network_cont
    socket_factory_->CreateTCPConnectedSocket(
        local_addr, remote_addr_list, std::move(tcp_connected_socket_options),
        static_cast<net::NetworkTrafficAnnotationTag>(traffic_annotation),
-@@ -1764,6 +1805,20 @@ void NetworkContext::CreateTCPBoundSocket(
+@@ -1793,6 +1834,20 @@ void NetworkContext::CreateTCPBoundSocket(
      const net::MutableNetworkTrafficAnnotationTag& traffic_annotation,
      mojo::PendingReceiver<mojom::TCPBoundSocket> receiver,
      CreateTCPBoundSocketCallback callback) {
@@ -1744,7 +1744,7 @@ diff --git a/services/network/network_context.cc b/services/network/network_cont
    socket_factory_->CreateTCPBoundSocket(
        local_addr,
        static_cast<net::NetworkTrafficAnnotationTag>(traffic_annotation),
-@@ -1830,6 +1885,24 @@ void NetworkContext::CreateWebSocket(
+@@ -1859,6 +1914,24 @@ void NetworkContext::CreateWebSocket(
      mojo::PendingRemote<mojom::WebSocketAuthenticationHandler> auth_handler,
      mojo::PendingRemote<mojom::TrustedHeaderClient> header_client,
      const std::optional<base::UnguessableToken>& throttling_profile_id) {
@@ -1772,7 +1772,7 @@ diff --git a/services/network/network_context.cc b/services/network/network_cont
 diff --git a/services/network/public/cpp/simple_url_loader.cc b/services/network/public/cpp/simple_url_loader.cc
 --- a/services/network/public/cpp/simple_url_loader.cc
 +++ b/services/network/public/cpp/simple_url_loader.cc
-@@ -1284,6 +1284,8 @@ SimpleURLLoaderImpl::SimpleURLLoaderImpl(
+@@ -1299,6 +1299,8 @@ SimpleURLLoaderImpl::SimpleURLLoaderImpl(
        timeout_timer_(timeout_tick_clock_) {
    // Allow creation and use on different threads.
    DETACH_FROM_SEQUENCE(sequence_checker_);
@@ -1781,7 +1781,7 @@ diff --git a/services/network/public/cpp/simple_url_loader.cc b/services/network
  #if DCHECK_IS_ON()
    if (resource_request_->request_body) {
      for (const DataElement& element :
-@@ -1731,6 +1733,22 @@ void SimpleURLLoaderImpl::StartRequest(
+@@ -1792,6 +1794,22 @@ void SimpleURLLoaderImpl::StartRequest(
      resource_request_->request_body->AppendDataPipe(
          string_upload_data_pipe_getter_->GetRemoteForNewUpload());
    }
@@ -1807,7 +1807,7 @@ diff --git a/services/network/public/cpp/simple_url_loader.cc b/services/network
 diff --git a/services/network/public/cpp/simple_url_loader.h b/services/network/public/cpp/simple_url_loader.h
 --- a/services/network/public/cpp/simple_url_loader.h
 +++ b/services/network/public/cpp/simple_url_loader.h
-@@ -18,6 +18,7 @@
+@@ -19,6 +19,7 @@
  #include "base/functional/callback_forward.h"
  #include "services/network/public/cpp/url_loader_completion_status.h"
  #include "services/network/public/mojom/url_response_head.mojom-forward.h"
@@ -1815,7 +1815,7 @@ diff --git a/services/network/public/cpp/simple_url_loader.h b/services/network/
  
  class GURL;
  
-@@ -413,6 +414,8 @@ class COMPONENT_EXPORT(NETWORK_CPP) SimpleURLLoader {
+@@ -423,6 +424,8 @@ class COMPONENT_EXPORT(NETWORK_CPP) SimpleURLLoader {
  
   protected:
    SimpleURLLoader();
@@ -2117,7 +2117,7 @@ diff --git a/third_party/blink/renderer/platform/loader/fetch/url_loader/url_loa
 diff --git a/tools/traffic_annotation/scripts/auditor/auditor.py b/tools/traffic_annotation/scripts/auditor/auditor.py
 --- a/tools/traffic_annotation/scripts/auditor/auditor.py
 +++ b/tools/traffic_annotation/scripts/auditor/auditor.py
-@@ -867,6 +867,7 @@ class ArchivedAnnotation:
+@@ -869,6 +869,7 @@ class ArchivedAnnotation:
    # the XML. This is used to serialize/deserialize the XML.
    FIELDS = [
        "id", "added_in_milestone", "type", "second_id", "reserved",

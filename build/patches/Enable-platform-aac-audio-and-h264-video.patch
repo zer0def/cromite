@@ -69,7 +69,7 @@ diff --git a/media/base/android/media_codec_util.cc b/media/base/android/media_c
 diff --git a/media/base/win/mf_helpers.cc b/media/base/win/mf_helpers.cc
 --- a/media/base/win/mf_helpers.cc
 +++ b/media/base/win/mf_helpers.cc
-@@ -19,6 +19,7 @@
+@@ -24,6 +24,7 @@
  #include "base/check_op.h"
  #include "base/win/scoped_co_mem.h"
  #include "base/win/windows_version.h"
@@ -77,7 +77,7 @@ diff --git a/media/base/win/mf_helpers.cc b/media/base/win/mf_helpers.cc
  #include "media/base/audio_codecs.h"
  #include "media/base/audio_decoder_config.h"
  #include "media/base/channel_layout.h"
-@@ -467,7 +468,11 @@ HRESULT GetAacAudioType(const AudioDecoderConfig& decoder_config,
+@@ -472,7 +473,11 @@ HRESULT GetAacAudioType(const AudioDecoderConfig& decoder_config,
  
    size_t extra_size = wave_format_size - sizeof(WAVEFORMATEX);
    aac_wave_format->wfx.cbSize = static_cast<WORD>(extra_size);
@@ -92,7 +92,7 @@ diff --git a/media/base/win/mf_helpers.cc b/media/base/win/mf_helpers.cc
 diff --git a/media/filters/ffmpeg_audio_decoder.cc b/media/filters/ffmpeg_audio_decoder.cc
 --- a/media/filters/ffmpeg_audio_decoder.cc
 +++ b/media/filters/ffmpeg_audio_decoder.cc
-@@ -91,6 +91,16 @@ void FFmpegAudioDecoder::Initialize(const AudioDecoderConfig& config,
+@@ -96,6 +96,16 @@ void FFmpegAudioDecoder::Initialize(const AudioDecoderConfig& config,
      return;
    }
  
@@ -112,7 +112,7 @@ diff --git a/media/filters/ffmpeg_audio_decoder.cc b/media/filters/ffmpeg_audio_
 diff --git a/media/filters/ffmpeg_demuxer.cc b/media/filters/ffmpeg_demuxer.cc
 --- a/media/filters/ffmpeg_demuxer.cc
 +++ b/media/filters/ffmpeg_demuxer.cc
-@@ -794,6 +794,7 @@ void FFmpegDemuxerStream::InitBitstreamConverter() {
+@@ -799,6 +799,7 @@ void FFmpegDemuxerStream::InitBitstreamConverter() {
        // FFmpeg doesn't understand xHE-AAC profiles yet, which can't be put in
        // ADTS anyways, so skip bitstream conversion when the profile is
        // unknown.
@@ -123,7 +123,7 @@ diff --git a/media/filters/ffmpeg_demuxer.cc b/media/filters/ffmpeg_demuxer.cc
 diff --git a/media/filters/ffmpeg_video_decoder.cc b/media/filters/ffmpeg_video_decoder.cc
 --- a/media/filters/ffmpeg_video_decoder.cc
 +++ b/media/filters/ffmpeg_video_decoder.cc
-@@ -17,6 +17,7 @@
+@@ -22,6 +22,7 @@
  #include "base/memory/raw_ptr.h"
  #include "base/task/bind_post_task.h"
  #include "base/task/sequenced_task_runner.h"
@@ -131,7 +131,7 @@ diff --git a/media/filters/ffmpeg_video_decoder.cc b/media/filters/ffmpeg_video_
  #include "media/base/decoder_buffer.h"
  #include "media/base/limits.h"
  #include "media/base/media_log.h"
-@@ -120,6 +121,16 @@ static void ReleaseVideoBufferImpl(void* opaque, uint8_t* data) {
+@@ -126,6 +127,16 @@ static void ReleaseVideoBufferImpl(void* opaque, uint8_t* data) {
  
  // static
  bool FFmpegVideoDecoder::IsCodecSupported(VideoCodec codec) {
@@ -145,13 +145,13 @@ diff --git a/media/filters/ffmpeg_video_decoder.cc b/media/filters/ffmpeg_video_
 +    return false;
 +  }
 +#endif
-   return avcodec_find_decoder(VideoCodecToCodecID(codec)) != nullptr;
+   // We only build support for H.264.
+   return codec == VideoCodec::kH264 && IsBuiltInVideoCodec(codec);
  }
- 
 diff --git a/media/filters/win/media_foundation_audio_decoder.cc b/media/filters/win/media_foundation_audio_decoder.cc
 --- a/media/filters/win/media_foundation_audio_decoder.cc
 +++ b/media/filters/win/media_foundation_audio_decoder.cc
-@@ -99,11 +99,15 @@ std::optional<MFT_REGISTER_TYPE_INFO> GetTypeInfo(
+@@ -104,11 +104,15 @@ std::optional<MFT_REGISTER_TYPE_INFO> GetTypeInfo(
  #endif
  #if BUILDFLAG(USE_PROPRIETARY_CODECS)
      case AudioCodec::kAAC:
@@ -167,7 +167,7 @@ diff --git a/media/filters/win/media_foundation_audio_decoder.cc b/media/filters
  #endif
  #if BUILDFLAG(ENABLE_PLATFORM_AC4_AUDIO)
      case AudioCodec::kAC4:
-@@ -317,8 +321,13 @@ void MediaFoundationAudioDecoder::Reset(base::OnceClosure reset_cb) {
+@@ -322,8 +326,13 @@ void MediaFoundationAudioDecoder::Reset(base::OnceClosure reset_cb) {
  }
  
  bool MediaFoundationAudioDecoder::NeedsBitstreamConversion() const {

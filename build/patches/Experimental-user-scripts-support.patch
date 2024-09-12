@@ -54,7 +54,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../java/res/layout/scripts_preference.xml    |  40 +
  .../android/java/res/values/dimens.xml        |  11 +
  .../java/res/xml/userscripts_preferences.xml  |  34 +
- .../user_scripts/UserScriptsUtils.java        |  87 ++
+ .../user_scripts/UserScriptsUtils.java        |  88 ++
  .../user_scripts/FragmentWindowAndroid.java   |  90 ++
  .../user_scripts/IUserScriptsUtils.java       |  22 +
  .../components/user_scripts/ScriptInfo.java   |  37 +
@@ -74,7 +74,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../user-script-ui/user-scripts-ui.js         |   9 +
  .../browser/ui/user_scripts_ui.cc             | 146 ++++
  .../user_scripts/browser/ui/user_scripts_ui.h |  37 +
- .../browser/user_script_loader.cc             | 708 +++++++++++++++
+ .../browser/user_script_loader.cc             | 706 +++++++++++++++
  .../user_scripts/browser/user_script_loader.h | 168 ++++
  .../browser/user_script_pref_info.cc          |  34 +
  .../browser/user_script_pref_info.h           |  72 ++
@@ -85,7 +85,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  components/user_scripts/common/BUILD.gn       |  48 ++
  components/user_scripts/common/constants.h    |  15 +
  components/user_scripts/common/error_utils.cc |  54 ++
- components/user_scripts/common/error_utils.h  |  24 +
+ components/user_scripts/common/error_utils.h  |  22 +
  .../common/extension_message_generator.cc     |  29 +
  .../common/extension_message_generator.h      |  11 +
  .../user_scripts/common/extension_messages.cc |  40 +
@@ -93,15 +93,15 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  components/user_scripts/common/host_id.cc     |  31 +
  components/user_scripts/common/host_id.h      |  35 +
  .../user_scripts/common/script_constants.h    |  33 +
- components/user_scripts/common/url_pattern.cc | 803 ++++++++++++++++++
- components/user_scripts/common/url_pattern.h  | 303 +++++++
+ components/user_scripts/common/url_pattern.cc | 802 ++++++++++++++++++
+ components/user_scripts/common/url_pattern.h  | 302 +++++++
  .../user_scripts/common/url_pattern_set.cc    | 335 ++++++++
  .../user_scripts/common/url_pattern_set.h     | 160 ++++
  components/user_scripts/common/user_script.cc | 329 +++++++
- components/user_scripts/common/user_script.h  | 403 +++++++++
+ components/user_scripts/common/user_script.h  | 402 +++++++++
  .../common/user_scripts_features.cc           |  32 +
  .../common/user_scripts_features.h            |  36 +
- components/user_scripts/common/view_type.cc   |  39 +
+ components/user_scripts/common/view_type.cc   |  37 +
  components/user_scripts/common/view_type.h    |  48 ++
  components/user_scripts/renderer/BUILD.gn     |  65 ++
  .../renderer/extension_frame_helper.cc        |  95 +++
@@ -135,7 +135,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../Experimental-user-scripts-support.inc     |  13 +
  ipc/ipc_message_start.h                       |   1 +
  tools/gritsettings/resource_ids.spec          |   6 +
- 108 files changed, 9484 insertions(+), 2 deletions(-)
+ 108 files changed, 9476 insertions(+), 2 deletions(-)
  create mode 100644 components/user_scripts/README.md
  create mode 100755 components/user_scripts/android/BUILD.gn
  create mode 100644 components/user_scripts/android/java/res/layout/accept_script_item.xml
@@ -226,7 +226,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 diff --git a/chrome/android/BUILD.gn b/chrome/android/BUILD.gn
 --- a/chrome/android/BUILD.gn
 +++ b/chrome/android/BUILD.gn
-@@ -199,7 +199,11 @@ if (current_toolchain == default_toolchain) {
+@@ -200,7 +200,11 @@ if (current_toolchain == default_toolchain) {
      sources = chrome_java_resources
      sources += [ "//chrome/android/java/res_app/layout/main.xml" ]
  
@@ -239,7 +239,7 @@ diff --git a/chrome/android/BUILD.gn b/chrome/android/BUILD.gn
        ":chrome_base_module_resources",
        ":ui_locale_string_resources",
        "//chrome/android/webapk/libs/common:splash_resources",
-@@ -670,6 +674,7 @@ if (current_toolchain == default_toolchain) {
+@@ -674,6 +678,7 @@ if (current_toolchain == default_toolchain) {
        "//components/ukm/android:java",
        "//components/url_formatter/android:url_formatter_java",
        "//components/user_prefs/android:java",
@@ -288,7 +288,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/download/Downlo
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/init/ProcessInitializationHandler.java b/chrome/android/java/src/org/chromium/chrome/browser/init/ProcessInitializationHandler.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/init/ProcessInitializationHandler.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/init/ProcessInitializationHandler.java
-@@ -147,6 +147,8 @@ import java.util.Date;
+@@ -146,6 +146,8 @@ import java.util.Date;
  import java.util.List;
  import java.util.Locale;
  
@@ -297,7 +297,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/init/ProcessIni
  /**
   * Handles the initialization dependences of the browser process. This is meant to handle the
   * initialization that is not tied to any particular Activity, and the logic that should only be
-@@ -621,6 +623,8 @@ public class ProcessInitializationHandler {
+@@ -620,6 +622,8 @@ public class ProcessInitializationHandler {
  
                      DefaultBrowserInfo.initBrowserFetcher();
  
@@ -309,15 +309,15 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/init/ProcessIni
 diff --git a/chrome/android/java_sources.gni b/chrome/android/java_sources.gni
 --- a/chrome/android/java_sources.gni
 +++ b/chrome/android/java_sources.gni
-@@ -20,6 +20,7 @@ import("//chrome/common/features.gni")
- import("//components/feed/features.gni")
+@@ -20,6 +20,7 @@ import("//chrome/browser/tab_group_sync/android/test_java_sources.gni")
+ import("//chrome/common/features.gni")
  import("//components/offline_pages/buildflags/features.gni")
  import("//device/vr/buildflags/buildflags.gni")
 +import("//components/user_scripts/android/java_sources.gni")
  
  # Only used for testing, should not be shipped to end users.
  if (enable_offline_pages_harness) {
-@@ -56,3 +57,5 @@ if (enable_cardboard) {
+@@ -57,3 +58,5 @@ if (enable_cardboard) {
      "java/src/org/chromium/chrome/browser/vr/VrCompositorDelegateProviderImpl.java",
    ]
  }
@@ -326,7 +326,7 @@ diff --git a/chrome/android/java_sources.gni b/chrome/android/java_sources.gni
 diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -3729,6 +3729,13 @@ static_library("browser") {
+@@ -3457,6 +3457,13 @@ static_library("browser") {
        ]
        deps += [ "//chrome/android/modules/dev_ui/provider:native" ]
      }
@@ -343,7 +343,7 @@ diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -174,6 +174,7 @@
+@@ -181,6 +181,7 @@
  #include "components/ui_devtools/switches.h"
  #include "components/variations/variations_switches.h"
  #include "components/version_info/channel.h"
@@ -354,7 +354,7 @@ diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 diff --git a/chrome/browser/prefs/browser_prefs.cc b/chrome/browser/prefs/browser_prefs.cc
 --- a/chrome/browser/prefs/browser_prefs.cc
 +++ b/chrome/browser/prefs/browser_prefs.cc
-@@ -278,6 +278,7 @@
+@@ -271,6 +271,7 @@
  #include "components/permissions/contexts/geolocation_permission_context_android.h"
  #include "components/query_tiles/tile_service_prefs.h"
  #include "components/webapps/browser/android/install_prompt_prefs.h"
@@ -362,7 +362,7 @@ diff --git a/chrome/browser/prefs/browser_prefs.cc b/chrome/browser/prefs/browse
  #else  // BUILDFLAG(IS_ANDROID)
  #include "chrome/browser/cart/cart_service.h"
  #include "chrome/browser/companion/core/promo_handler.h"
-@@ -1854,6 +1855,9 @@ void RegisterProfilePrefs(user_prefs::PrefRegistrySyncable* registry,
+@@ -1893,6 +1894,9 @@ void RegisterProfilePrefs(user_prefs::PrefRegistrySyncable* registry,
    translate::TranslatePrefs::RegisterProfilePrefs(registry);
    omnibox::RegisterProfilePrefs(registry);
    ZeroSuggestProvider::RegisterProfilePrefs(registry);
@@ -375,7 +375,7 @@ diff --git a/chrome/browser/prefs/browser_prefs.cc b/chrome/browser/prefs/browse
 diff --git a/chrome/browser/profiles/BUILD.gn b/chrome/browser/profiles/BUILD.gn
 --- a/chrome/browser/profiles/BUILD.gn
 +++ b/chrome/browser/profiles/BUILD.gn
-@@ -76,6 +76,9 @@ source_set("profile") {
+@@ -77,6 +77,9 @@ source_set("profile") {
      "//content/public/browser",
      "//extensions/buildflags",
    ]
@@ -388,7 +388,7 @@ diff --git a/chrome/browser/profiles/BUILD.gn b/chrome/browser/profiles/BUILD.gn
 diff --git a/chrome/browser/profiles/chrome_browser_main_extra_parts_profiles.cc b/chrome/browser/profiles/chrome_browser_main_extra_parts_profiles.cc
 --- a/chrome/browser/profiles/chrome_browser_main_extra_parts_profiles.cc
 +++ b/chrome/browser/profiles/chrome_browser_main_extra_parts_profiles.cc
-@@ -539,6 +539,10 @@
+@@ -537,6 +537,10 @@
  #include "chrome/browser/enterprise/data_controls/reporting_service.h"
  #endif
  
@@ -412,7 +412,7 @@ diff --git a/chrome/browser/profiles/chrome_browser_main_extra_parts_profiles.cc
 diff --git a/chrome/browser/profiles/profile_manager.cc b/chrome/browser/profiles/profile_manager.cc
 --- a/chrome/browser/profiles/profile_manager.cc
 +++ b/chrome/browser/profiles/profile_manager.cc
-@@ -117,6 +117,10 @@
+@@ -118,6 +118,10 @@
  #include "extensions/common/manifest.h"
  #endif
  
@@ -423,7 +423,7 @@ diff --git a/chrome/browser/profiles/profile_manager.cc b/chrome/browser/profile
  #if BUILDFLAG(ENABLE_SESSION_SERVICE)
  #include "chrome/browser/sessions/app_session_service_factory.h"
  #include "chrome/browser/sessions/session_service_factory.h"
-@@ -1529,6 +1533,13 @@ void ProfileManager::DoFinalInitForServices(Profile* profile,
+@@ -1517,6 +1521,13 @@ void ProfileManager::DoFinalInitForServices(Profile* profile,
    ChildAccountServiceFactory::GetForProfile(profile)->Init();
    SupervisedUserServiceFactory::GetForProfile(profile)->Init();
    ListFamilyMembersServiceFactory::GetForProfile(profile)->Init();
@@ -501,7 +501,7 @@ diff --git a/chrome/browser/profiles/renderer_updater.h b/chrome/browser/profile
 diff --git a/chrome/browser/ui/webui/chrome_web_ui_controller_factory.cc b/chrome/browser/ui/webui/chrome_web_ui_controller_factory.cc
 --- a/chrome/browser/ui/webui/chrome_web_ui_controller_factory.cc
 +++ b/chrome/browser/ui/webui/chrome_web_ui_controller_factory.cc
-@@ -91,6 +91,7 @@
+@@ -92,6 +92,7 @@
  #include "components/security_interstitials/content/known_interception_disclosure_ui.h"
  #include "components/security_interstitials/content/urls.h"
  #include "components/site_engagement/content/site_engagement_service.h"
@@ -509,7 +509,7 @@ diff --git a/chrome/browser/ui/webui/chrome_web_ui_controller_factory.cc b/chrom
  #include "content/public/browser/web_contents.h"
  #include "content/public/browser/web_ui.h"
  #include "content/public/common/content_client.h"
-@@ -479,6 +480,10 @@ WebUIFactoryFunction GetWebUIFactoryFunction(WebUI* web_ui,
+@@ -457,6 +458,10 @@ WebUIFactoryFunction GetWebUIFactoryFunction(WebUI* web_ui,
      return &NewWebUI<UserActionsUI>;
    if (url.host_piece() == chrome::kChromeUIVersionHost)
      return &NewWebUI<VersionUI>;
@@ -581,7 +581,7 @@ diff --git a/chrome/renderer/chrome_content_renderer_client.cc b/chrome/renderer
  using autofill::AutofillAgent;
  using autofill::PasswordAutofillAgent;
  using autofill::PasswordGenerationAgent;
-@@ -451,6 +456,14 @@ void ChromeContentRendererClient::RenderThreadStarted() {
+@@ -450,6 +455,14 @@ void ChromeContentRendererClient::RenderThreadStarted() {
        WebString::FromASCII(extensions::kExtensionScheme));
  #endif
  
@@ -596,8 +596,8 @@ diff --git a/chrome/renderer/chrome_content_renderer_client.cc b/chrome/renderer
  #if BUILDFLAG(ENABLE_SPELLCHECK)
    if (!spellcheck_)
      InitSpellCheck();
-@@ -614,6 +627,15 @@ void ChromeContentRendererClient::RenderFrameCreated(
-       render_frame, registry);
+@@ -613,6 +626,15 @@ void ChromeContentRendererClient::RenderFrameCreated(
+                                                                   registry);
  #endif
  
 +#if BUILDFLAG(IS_ANDROID)
@@ -612,7 +612,7 @@ diff --git a/chrome/renderer/chrome_content_renderer_client.cc b/chrome/renderer
  #if BUILDFLAG(ENABLE_PPAPI)
    new PepperHelper(render_frame);
  #endif
-@@ -1661,6 +1683,17 @@ void ChromeContentRendererClient::RunScriptsAtDocumentStart(
+@@ -1667,6 +1689,17 @@ void ChromeContentRendererClient::RunScriptsAtDocumentStart(
        render_frame);
    // |render_frame| might be dead by now.
  #endif
@@ -630,7 +630,7 @@ diff --git a/chrome/renderer/chrome_content_renderer_client.cc b/chrome/renderer
  }
  
  void ChromeContentRendererClient::RunScriptsAtDocumentEnd(
-@@ -1670,6 +1703,17 @@ void ChromeContentRendererClient::RunScriptsAtDocumentEnd(
+@@ -1676,6 +1709,17 @@ void ChromeContentRendererClient::RunScriptsAtDocumentEnd(
        render_frame);
    // |render_frame| might be dead by now.
  #endif
@@ -648,7 +648,7 @@ diff --git a/chrome/renderer/chrome_content_renderer_client.cc b/chrome/renderer
  }
  
  void ChromeContentRendererClient::RunScriptsAtDocumentIdle(
-@@ -1679,6 +1723,17 @@ void ChromeContentRendererClient::RunScriptsAtDocumentIdle(
+@@ -1685,6 +1729,17 @@ void ChromeContentRendererClient::RunScriptsAtDocumentIdle(
        render_frame);
    // |render_frame| might be dead by now.
  #endif
@@ -691,7 +691,7 @@ diff --git a/chrome/renderer/chrome_render_thread_observer.cc b/chrome/renderer/
 diff --git a/components/components_strings.grd b/components/components_strings.grd
 --- a/components/components_strings.grd
 +++ b/components/components_strings.grd
-@@ -339,6 +339,7 @@
+@@ -340,6 +340,7 @@
        <part file="user_education_strings.grdp" />
        <part file="version_ui_strings.grdp" />
        <part file="webapps_strings.grdp" />
@@ -1229,7 +1229,7 @@ diff --git a/components/user_scripts/android/java/src/org/chromium/chrome/browse
 new file mode 100755
 --- /dev/null
 +++ b/components/user_scripts/android/java/src/org/chromium/chrome/browser/user_scripts/UserScriptsUtils.java
-@@ -0,0 +1,87 @@
+@@ -0,0 +1,88 @@
 +/*
 +    This file is part of Bromite.
 +
@@ -1260,6 +1260,7 @@ new file mode 100755
 +import org.chromium.base.IntentUtils;
 +
 +import org.chromium.chrome.browser.IntentHandler;
++import org.chromium.chrome.browser.settings.SettingsLauncherFactory;
 +import org.chromium.chrome.browser.settings.SettingsLauncherImpl;
 +import org.chromium.components.browser_ui.settings.SettingsLauncher;
 +
@@ -1297,7 +1298,7 @@ new file mode 100755
 +
 +        if (visibleName.toUpperCase().endsWith(".USER.JS") == false) return false;
 +
-+        SettingsLauncher settingsLauncher = new SettingsLauncherImpl();
++        SettingsLauncher settingsLauncher = SettingsLauncherFactory.createSettingsLauncher();
 +        Intent intent = settingsLauncher.createSettingsActivityIntent(
 +                context, UserScriptsPreferences.class,
 +                UserScriptsPreferences.createFragmentArgsForInstall(filePath));
@@ -2831,7 +2832,7 @@ diff --git a/components/user_scripts/browser/user_script_loader.cc b/components/
 new file mode 100755
 --- /dev/null
 +++ b/components/user_scripts/browser/user_script_loader.cc
-@@ -0,0 +1,708 @@
+@@ -0,0 +1,706 @@
 +/*
 +    This file is part of Bromite.
 +
@@ -2880,8 +2881,6 @@ new file mode 100755
 +#include "content/public/browser/browser_context.h"
 +#include "content/public/browser/browser_task_traits.h"
 +#include "content/public/browser/browser_thread.h"
-+#include "content/public/browser/notification_service.h"
-+#include "content/public/browser/notification_types.h"
 +#include "content/public/browser/render_process_host.h"
 +#include "ui/shell_dialogs/selected_file_info.h"
 +#include "ui/shell_dialogs/select_file_dialog.h"
@@ -3052,7 +3051,7 @@ new file mode 100755
 +      if (base::FeatureList::IsEnabled(features::kEnableLoggingUserScripts))
 +        LOG(INFO) << "UserScriptLoader: path " << user_script_path << " is a content uri";
 +
-+      infile = OpenContentUriForRead(user_script_path);
++      infile = OpenContentUri(user_script_path, base::File::FLAG_OPEN | base::File::FLAG_READ);
 +    } else {
 +      infile = base::File(user_script_path, base::File::FLAG_OPEN | base::File::FLAG_READ);
 +    }
@@ -4462,7 +4461,7 @@ diff --git a/components/user_scripts/common/error_utils.h b/components/user_scri
 new file mode 100755
 --- /dev/null
 +++ b/components/user_scripts/common/error_utils.h
-@@ -0,0 +1,24 @@
+@@ -0,0 +1,22 @@
 +// Copyright (c) 2011 The Chromium Authors. All rights reserved.
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
@@ -4471,8 +4470,6 @@ new file mode 100755
 +#define USERSCRIPTS_COMMON_ERROR_UTILS_H_
 +
 +#include <string>
-+
-+#include "base/strings/string_piece.h"
 +
 +namespace user_scripts {
 +
@@ -4775,7 +4772,7 @@ diff --git a/components/user_scripts/common/url_pattern.cc b/components/user_scr
 new file mode 100755
 --- /dev/null
 +++ b/components/user_scripts/common/url_pattern.cc
-@@ -0,0 +1,803 @@
+@@ -0,0 +1,802 @@
 +// Copyright (c) 2012 The Chromium Authors. All rights reserved.
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
@@ -4790,7 +4787,6 @@ new file mode 100755
 +#include "base/strings/pattern.h"
 +#include "base/strings/strcat.h"
 +#include "base/strings/string_number_conversions.h"
-+#include "base/strings/string_piece.h"
 +#include "base/strings/string_split.h"
 +#include "base/strings/string_util.h"
 +#include "base/strings/stringprintf.h"
@@ -5583,7 +5579,7 @@ diff --git a/components/user_scripts/common/url_pattern.h b/components/user_scri
 new file mode 100755
 --- /dev/null
 +++ b/components/user_scripts/common/url_pattern.h
-@@ -0,0 +1,303 @@
+@@ -0,0 +1,302 @@
 +// Copyright (c) 2012 The Chromium Authors. All rights reserved.
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
@@ -5595,7 +5591,6 @@ new file mode 100755
 +#include <string>
 +#include <vector>
 +
-+#include "base/strings/string_piece.h"
 +#include "net/base/registry_controlled_domains/registry_controlled_domain.h"
 +#include "third_party/abseil-cpp/absl/types/optional.h"
 +
@@ -6730,7 +6725,7 @@ diff --git a/components/user_scripts/common/user_script.h b/components/user_scri
 new file mode 100755
 --- /dev/null
 +++ b/components/user_scripts/common/user_script.h
-@@ -0,0 +1,403 @@
+@@ -0,0 +1,402 @@
 +// Copyright 2013 The Chromium Authors. All rights reserved.
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
@@ -6743,7 +6738,6 @@ new file mode 100755
 +#include <vector>
 +
 +#include "base/files/file_path.h"
-+#include "base/strings/string_piece.h"
 +#include "script_constants.h"
 +#include "host_id.h"
 +#include "url_pattern.h"
@@ -7216,14 +7210,12 @@ diff --git a/components/user_scripts/common/view_type.cc b/components/user_scrip
 new file mode 100755
 --- /dev/null
 +++ b/components/user_scripts/common/view_type.cc
-@@ -0,0 +1,39 @@
+@@ -0,0 +1,37 @@
 +// Copyright (c) 2012 The Chromium Authors. All rights reserved.
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
 +#include "view_type.h"
-+
-+#include "base/strings/string_piece.h"
 +
 +namespace user_scripts {
 +
@@ -10473,7 +10465,7 @@ diff --git a/ipc/ipc_message_start.h b/ipc/ipc_message_start.h
 diff --git a/tools/gritsettings/resource_ids.spec b/tools/gritsettings/resource_ids.spec
 --- a/tools/gritsettings/resource_ids.spec
 +++ b/tools/gritsettings/resource_ids.spec
-@@ -1048,6 +1048,12 @@
+@@ -1053,6 +1053,12 @@
    "components/search_engine_descriptions_strings.grd": {
      "messages": [7260],
    },

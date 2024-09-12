@@ -51,11 +51,11 @@ diff --git a/chrome/android/java/res/menu/main_menu.xml b/chrome/android/java/re
 +            android:icon="@drawable/ic_folder_blue_24dp" />
          <item android:id="@+id/menu_select_tabs"
              android:title="@string/menu_select_tabs"
-             android:icon="@drawable/ic_select_tabs" />
+             android:icon="@drawable/ic_select_check_box_24dp" />
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java b/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java
-@@ -91,6 +91,7 @@ import org.chromium.chrome.browser.base.ColdStartTracker;
+@@ -92,6 +92,7 @@ import org.chromium.chrome.browser.base.ColdStartTracker;
  import org.chromium.chrome.browser.bookmarks.BookmarkUtils;
  import org.chromium.chrome.browser.browserservices.intents.WebappConstants;
  import org.chromium.chrome.browser.compositor.CompositorViewHolder;
@@ -63,7 +63,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedAct
  import org.chromium.chrome.browser.compositor.layouts.Layout;
  import org.chromium.chrome.browser.compositor.layouts.LayoutManagerChrome;
  import org.chromium.chrome.browser.compositor.layouts.LayoutManagerChromePhone;
-@@ -2725,6 +2726,8 @@ public class ChromeTabbedActivity extends ChromeActivity<ChromeActivityComponent
+@@ -2731,6 +2732,8 @@ public class ChromeTabbedActivity extends ChromeActivity<ChromeActivityComponent
                      getTabModelSelectorSupplier().get(),
                      closeAllTabsRunnable);
              RecordUserAction.record("MobileMenuCloseAllTabs");
@@ -72,7 +72,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedAct
          } else if (id == R.id.close_all_incognito_tabs_menu_id) {
              // Close only incognito tabs
              Runnable closeAllTabsRunnable =
-@@ -2803,6 +2806,27 @@ public class ChromeTabbedActivity extends ChromeActivity<ChromeActivityComponent
+@@ -2817,6 +2820,27 @@ public class ChromeTabbedActivity extends ChromeActivity<ChromeActivityComponent
          getTabModalLifetimeHandler().onOmniboxFocusChanged(hasFocus);
      }
  
@@ -220,7 +220,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/bookmarks/Bookm
 diff --git a/chrome/browser/bookmarks/android/bookmark_bridge.cc b/chrome/browser/bookmarks/android/bookmark_bridge.cc
 --- a/chrome/browser/bookmarks/android/bookmark_bridge.cc
 +++ b/chrome/browser/bookmarks/android/bookmark_bridge.cc
-@@ -179,7 +179,7 @@ class FileBookmarksExportObserver: public BookmarksExportObserver {
+@@ -184,7 +184,7 @@ class FileBookmarksExportObserver: public BookmarksExportObserver {
  
      JNIEnv* env = AttachCurrentThread();
      Java_BookmarkBridge_bookmarksExported(env, obj_, window_->GetJavaObject(),
@@ -229,7 +229,7 @@ diff --git a/chrome/browser/bookmarks/android/bookmark_bridge.cc b/chrome/browse
                                            result == Result::kSuccess);
      delete this;
    }
-@@ -350,6 +350,33 @@ jboolean BookmarkBridge::AreAccountBookmarkFoldersActive(JNIEnv* env) {
+@@ -355,6 +355,33 @@ jboolean BookmarkBridge::AreAccountBookmarkFoldersActive(JNIEnv* env) {
    return bookmark_model_->account_mobile_node() != nullptr;
  }
  
@@ -263,7 +263,7 @@ diff --git a/chrome/browser/bookmarks/android/bookmark_bridge.cc b/chrome/browse
  base::android::ScopedJavaLocalRef<jobject>
  BookmarkBridge::GetMostRecentlyAddedUserBookmarkIdForUrl(JNIEnv* env,
                                                           const GURL& url) {
-@@ -462,6 +489,7 @@ void BookmarkBridge::GetAllFoldersWithDepths(
+@@ -467,6 +494,7 @@ void BookmarkBridge::GetAllFoldersWithDepths(
    // Vector to temporarily contain all child bookmarks at same level for sorting
    std::vector<const BookmarkNode*> bookmarks = {
        bookmark_model_->mobile_node(),
@@ -271,7 +271,7 @@ diff --git a/chrome/browser/bookmarks/android/bookmark_bridge.cc b/chrome/browse
        bookmark_model_->bookmark_bar_node(),
        bookmark_model_->other_node(),
    };
-@@ -555,6 +583,9 @@ std::vector<const BookmarkNode*> BookmarkBridge::GetTopLevelFolderIdsImpl(
+@@ -560,6 +588,9 @@ std::vector<const BookmarkNode*> BookmarkBridge::GetTopLevelFolderIdsImpl(
      top_level_folders.push_back(other_node);
    }
  
@@ -281,7 +281,7 @@ diff --git a/chrome/browser/bookmarks/android/bookmark_bridge.cc b/chrome/browse
    const BookmarkNode* reading_list_node =
        local_or_syncable_reading_list_manager_->GetRoot();
    if (IsPermanentFolderVisible(ignore_visibility, reading_list_node)) {
-@@ -1261,6 +1292,17 @@ void BookmarkBridge::GetBookmarksOfType(
+@@ -1266,6 +1297,17 @@ void BookmarkBridge::GetBookmarksOfType(
    AddBookmarkNodesToBookmarkIdList(env, j_list, results);
  }
  
@@ -391,7 +391,7 @@ diff --git a/chrome/browser/download/android/java/src/org/chromium/chrome/browse
 diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chrome/browser/ui/android/strings/android_chrome_strings.grd
 --- a/chrome/browser/ui/android/strings/android_chrome_strings.grd
 +++ b/chrome/browser/ui/android/strings/android_chrome_strings.grd
-@@ -4423,6 +4423,9 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>delete the Chrome d
+@@ -4372,6 +4372,9 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>delete the Chrome d
        <message name="IDS_MENU_SELECT_TABS" desc="Menu item for bulk editing tabs. [CHAR_LIMIT=27]">
          Select tabs
        </message>
@@ -705,7 +705,7 @@ diff --git a/components/bookmarks/browser/bookmark_node.cc b/components/bookmark
 +    case bookmarks::BookmarkNode::TABS_COLLECTION:
 +      return !is_desktop;
      case BookmarkNode::URL:
-       NOTREACHED_NORETURN();
+       NOTREACHED();
      case BookmarkNode::FOLDER:
 @@ -211,6 +213,15 @@ BookmarkPermanentNode::CreateMobileBookmarks(int64_t id) {
        l10n_util::GetStringUTF16(IDS_BOOKMARK_BAR_MOBILE_FOLDER_NAME)));

@@ -84,7 +84,7 @@ Enabled by default
 diff --git a/DEPS b/DEPS
 --- a/DEPS
 +++ b/DEPS
-@@ -494,6 +494,10 @@ vars = {
+@@ -498,6 +498,10 @@ vars = {
    # Three lines of non-changing comments so that
    # the commit queue can handle CLs rolling feed
    # and whatever else without interference from each other.
@@ -95,7 +95,7 @@ diff --git a/DEPS b/DEPS
    'highway_revision': '8295336dd70f1201d42c22ab5b0861de38cf8fbf',
    # Three lines of non-changing comments so that
    # the commit queue can handle CLs rolling ffmpeg
-@@ -1633,6 +1637,9 @@ deps = {
+@@ -1664,6 +1668,9 @@ deps = {
    'src/third_party/dawn':
      Var('dawn_git') + '/dawn.git' + '@' +  Var('dawn_revision'),
  
@@ -190,8 +190,8 @@ diff --git a/cc/paint/paint_image.h b/cc/paint/paint_image.h
 -enum class ImageType { kPNG, kJPEG, kWEBP, kGIF, kICO, kBMP, kAVIF, kInvalid };
 +enum class ImageType { kPNG, kJPEG, kWEBP, kGIF, kICO, kBMP, kAVIF, kJXL, kInvalid };
  
- enum class AuxImage : size_t { kDefault = 0, kGainmap = 1 };
- static constexpr std::array<AuxImage, 2> kAllAuxImages = {AuxImage::kDefault,
+ // An encoded image may include several auxiliary images within it. This enum
+ // is used to index those images. Auxiliary images can have different sizes and
 diff --git a/cc/tiles/image_decode_cache.h b/cc/tiles/image_decode_cache.h
 --- a/cc/tiles/image_decode_cache.h
 +++ b/cc/tiles/image_decode_cache.h
@@ -329,7 +329,7 @@ diff --git a/media/media_options.gni b/media/media_options.gni
 diff --git a/net/base/mime_util.cc b/net/base/mime_util.cc
 --- a/net/base/mime_util.cc
 +++ b/net/base/mime_util.cc
-@@ -169,6 +169,7 @@ static const MimeInfo kPrimaryMappings[] = {
+@@ -165,6 +165,7 @@ static const MimeInfo kPrimaryMappings[] = {
      {"image/avif", "avif"},
      {"image/gif", "gif"},
      {"image/jpeg", "jpeg,jpg"},
@@ -337,7 +337,7 @@ diff --git a/net/base/mime_util.cc b/net/base/mime_util.cc
      {"image/png", "png"},
      {"image/apng", "png,apng"},
      {"image/svg+xml", "svg,svgz"},
-@@ -672,6 +673,7 @@ static const char* const kStandardImageTypes[] = {"image/avif",
+@@ -660,6 +661,7 @@ static const char* const kStandardImageTypes[] = {"image/avif",
                                                    "image/gif",
                                                    "image/ief",
                                                    "image/jpeg",
@@ -348,7 +348,7 @@ diff --git a/net/base/mime_util.cc b/net/base/mime_util.cc
 diff --git a/net/base/mime_util_unittest.cc b/net/base/mime_util_unittest.cc
 --- a/net/base/mime_util_unittest.cc
 +++ b/net/base/mime_util_unittest.cc
-@@ -44,6 +44,7 @@ TEST(MimeUtilTest, GetWellKnownMimeTypeFromExtension) {
+@@ -40,6 +40,7 @@ TEST(MimeUtilTest, GetWellKnownMimeTypeFromExtension) {
        {FILE_PATH_LITERAL("webm"), "video/webm"},
        {FILE_PATH_LITERAL("weba"), "audio/webm"},
        {FILE_PATH_LITERAL("avif"), "image/avif"},
@@ -356,7 +356,7 @@ diff --git a/net/base/mime_util_unittest.cc b/net/base/mime_util_unittest.cc
        {FILE_PATH_LITERAL("epub"), "application/epub+zip"},
        {FILE_PATH_LITERAL("apk"), "application/vnd.android.package-archive"},
        {FILE_PATH_LITERAL("cer"), "application/x-x509-ca-cert"},
-@@ -85,6 +86,7 @@ TEST(MimeUtilTest, ExtensionTest) {
+@@ -81,6 +82,7 @@ TEST(MimeUtilTest, ExtensionTest) {
      {FILE_PATH_LITERAL("webm"), {"video/webm"}},
      {FILE_PATH_LITERAL("weba"), {"audio/webm"}},
      {FILE_PATH_LITERAL("avif"), {"image/avif"}},
@@ -364,7 +364,7 @@ diff --git a/net/base/mime_util_unittest.cc b/net/base/mime_util_unittest.cc
  #if BUILDFLAG(IS_CHROMEOS_ASH)
      // These are test cases for testing platform mime types on ChromeOS.
      {FILE_PATH_LITERAL("epub"), {"application/epub+zip"}},
-@@ -501,6 +503,7 @@ TEST(MimeUtilTest, TestGetExtensionsForMimeType) {
+@@ -497,6 +499,7 @@ TEST(MimeUtilTest, TestGetExtensionsForMimeType) {
        {"MeSsAge/*", 1, "eml"},
        {"message/", 0, nullptr, true},
        {"image/avif", 1, "avif"},
@@ -375,7 +375,7 @@ diff --git a/net/base/mime_util_unittest.cc b/net/base/mime_util_unittest.cc
 diff --git a/third_party/.gitignore b/third_party/.gitignore
 --- a/third_party/.gitignore
 +++ b/third_party/.gitignore
-@@ -89,6 +89,7 @@
+@@ -86,6 +86,7 @@
  /libgifcodec
  /libjingle/source
  /libupnp
@@ -467,7 +467,7 @@ diff --git a/third_party/blink/common/mime_util/mime_util_unittest.cc b/third_pa
 diff --git a/third_party/blink/public/devtools_protocol/browser_protocol.pdl b/third_party/blink/public/devtools_protocol/browser_protocol.pdl
 --- a/third_party/blink/public/devtools_protocol/browser_protocol.pdl
 +++ b/third_party/blink/public/devtools_protocol/browser_protocol.pdl
-@@ -4473,6 +4473,7 @@ domain Emulation
+@@ -4523,6 +4523,7 @@ domain Emulation
    experimental type DisabledImageType extends string
      enum
        avif
@@ -608,7 +608,7 @@ diff --git a/third_party/blink/renderer/modules/webcodecs/image_decoder_fuzzer.c
 diff --git a/third_party/blink/renderer/platform/BUILD.gn b/third_party/blink/renderer/platform/BUILD.gn
 --- a/third_party/blink/renderer/platform/BUILD.gn
 +++ b/third_party/blink/renderer/platform/BUILD.gn
-@@ -2365,6 +2365,10 @@ source_set("blink_platform_unittests_sources") {
+@@ -2369,6 +2369,10 @@ source_set("blink_platform_unittests_sources") {
      sources += [ "text/locale_icu_test.cc" ]
    }
  
@@ -619,7 +619,7 @@ diff --git a/third_party/blink/renderer/platform/BUILD.gn b/third_party/blink/re
    sources += [ "testing/run_all_tests.cc" ]
  
    configs += [
-@@ -2411,6 +2415,7 @@ source_set("blink_platform_unittests_sources") {
+@@ -2415,6 +2419,7 @@ source_set("blink_platform_unittests_sources") {
      "//third_party/blink/renderer/platform/wtf",
      "//third_party/dawn/src/dawn/native",
      "//third_party/dawn/src/dawn/wire",
@@ -740,7 +740,7 @@ diff --git a/third_party/blink/renderer/platform/image-decoders/image_decoder.cc
  
    return String();
  }
-@@ -314,6 +330,13 @@ std::unique_ptr<ImageDecoder> ImageDecoder::CreateByMimeType(
+@@ -318,6 +334,13 @@ std::unique_ptr<ImageDecoder> ImageDecoder::CreateByMimeType(
            alpha_option, high_bit_depth_decoding_option, color_behavior,
            max_decoded_bytes, animation_option);
      }
@@ -2218,7 +2218,7 @@ diff --git a/third_party/blink/tools/commit_stats/git-dirs.txt b/third_party/bli
 diff --git a/third_party/blink/web_tests/TestExpectations b/third_party/blink/web_tests/TestExpectations
 --- a/third_party/blink/web_tests/TestExpectations
 +++ b/third_party/blink/web_tests/TestExpectations
-@@ -4713,6 +4713,12 @@ crbug.com/1199522 http/tests/devtools/layers/layers-3d-view-hit-testing.js [ Fai
+@@ -4872,6 +4872,12 @@ crbug.com/1199522 http/tests/devtools/layers/layers-3d-view-hit-testing.js [ Fai
  # Started failing after rolling new version of check-layout-th.js
  css3/flexbox/perpendicular-writing-modes-inside-flex-item.html [ Failure ]
  
@@ -2234,7 +2234,7 @@ diff --git a/third_party/blink/web_tests/TestExpectations b/third_party/blink/we
 diff --git a/third_party/blink/web_tests/VirtualTestSuites b/third_party/blink/web_tests/VirtualTestSuites
 --- a/third_party/blink/web_tests/VirtualTestSuites
 +++ b/third_party/blink/web_tests/VirtualTestSuites
-@@ -437,6 +437,15 @@
+@@ -431,6 +431,15 @@
      "args": ["--enable-blink-features=FractionalScrollOffsets"],
      "expires": "Jun 1, 2025"
    },
@@ -2649,7 +2649,7 @@ new file mode 100644
 diff --git a/tools/metrics/histograms/enums.xml b/tools/metrics/histograms/enums.xml
 --- a/tools/metrics/histograms/enums.xml
 +++ b/tools/metrics/histograms/enums.xml
-@@ -21311,6 +21311,7 @@ from previous Chrome versions.
+@@ -20938,6 +20938,7 @@ from previous Chrome versions.
    <int value="188610022" label="NewMessageListView:enabled"/>
    <int value="189728101" label="FasterLocationReload:disabled"/>
    <int value="189777537" label="DisableInitialMostVisitedFadeIn:enabled"/>
@@ -2660,7 +2660,7 @@ diff --git a/tools/metrics/histograms/enums.xml b/tools/metrics/histograms/enums
 diff --git a/tools/metrics/histograms/metadata/blink/enums.xml b/tools/metrics/histograms/metadata/blink/enums.xml
 --- a/tools/metrics/histograms/metadata/blink/enums.xml
 +++ b/tools/metrics/histograms/metadata/blink/enums.xml
-@@ -227,7 +227,7 @@ chromium-metrics-reviews@google.com.
+@@ -214,7 +214,7 @@ chromium-metrics-reviews@google.com.
    <int value="5" label="kImageICO"/>
    <int value="6" label="kImageBMP"/>
    <int value="7" label="kImageAVIF"/>

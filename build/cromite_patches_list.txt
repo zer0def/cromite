@@ -169,7 +169,6 @@ sharing-hub-always-use-visible-URL.patch
 Enable-HEVC-by-default.patch
 Partition-blobs-by-top-frame-URL.patch
 Override-Navigator-Language.patch
-Disable-add-to-home-screen-prompt.patch
 Remove-HTTP-referrals-in-cross-origin-navigation.patch
 Enable-third-party-storage-partitioning.patch
 Restore-adaptive-button-in-top-toolbar-customization.patch

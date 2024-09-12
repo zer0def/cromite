@@ -13137,7 +13137,7 @@ e)fqMZZ`3a)Ds&5H<cfp<0000<MNUMnLSTYHt&Yn8
 diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -2062,6 +2062,7 @@ static_library("browser") {
+@@ -1899,6 +1899,7 @@ static_library("browser") {
      "//build:chromeos_buildflags",
      "//build/config/chromebox_for_meetings:buildflags",
      "//build/config/compiler:compiler_buildflags",
@@ -13160,7 +13160,7 @@ diff --git a/chrome/browser/omaha/android/java/src/org/chromium/chrome/browser/o
 diff --git a/chrome/browser/prefs/chrome_pref_service_factory.cc b/chrome/browser/prefs/chrome_pref_service_factory.cc
 --- a/chrome/browser/prefs/chrome_pref_service_factory.cc
 +++ b/chrome/browser/prefs/chrome_pref_service_factory.cc
-@@ -25,6 +25,7 @@
+@@ -30,6 +30,7 @@
  #include "build/branding_buildflags.h"
  #include "build/build_config.h"
  #include "build/chromeos_buildflags.h"
@@ -13168,7 +13168,7 @@ diff --git a/chrome/browser/prefs/chrome_pref_service_factory.cc b/chrome/browse
  #include "chrome/browser/browser_process.h"
  #include "chrome/browser/enterprise/signin/enterprise_signin_prefs.h"
  #include "chrome/browser/policy/chrome_browser_policy_connector.h"
-@@ -291,10 +292,7 @@ std::unique_ptr<ProfilePrefStoreManager> CreateProfilePrefStoreManager(
+@@ -290,10 +291,7 @@ std::unique_ptr<ProfilePrefStoreManager> CreateProfilePrefStoreManager(
  #endif
    std::string seed;
    CHECK(ui::ResourceBundle::HasSharedInstance());
@@ -13218,7 +13218,7 @@ diff --git a/chrome/browser/resources/settings/settings_menu/settings_menu.html 
          </a>
          <a role="menuitem" id="about-menu" href="/help"
              class="cr-nav-menu-item">
--          <iron-icon icon="settings:about"></iron-icon>
+-          <iron-icon icon="cr:chrome-product"></iron-icon>
 +          <span id="aboutIcon" class="cr-icon" role="presentation"></span>
            $i18n{aboutPageTitle}
            <cr-ripple></cr-ripple>
@@ -13226,7 +13226,7 @@ diff --git a/chrome/browser/resources/settings/settings_menu/settings_menu.html 
 diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chrome/browser/ui/android/strings/android_chrome_strings.grd
 --- a/chrome/browser/ui/android/strings/android_chrome_strings.grd
 +++ b/chrome/browser/ui/android/strings/android_chrome_strings.grd
-@@ -2438,7 +2438,7 @@ Your Google account may have other forms of browsing history like searches and a
+@@ -2393,7 +2393,7 @@ Your Google account may have other forms of browsing history like searches and a
          About Chrome
        </message>
        <message name="IDS_LEGAL_INFORMATION_SUMMARY" desc="Summary for legal information" meaning="Android">
@@ -18920,7 +18920,7 @@ diff --git a/components/version_ui/resources/about_version_mobile.css b/componen
 diff --git a/content/child/runtime_features.cc b/content/child/runtime_features.cc
 --- a/content/child/runtime_features.cc
 +++ b/content/child/runtime_features.cc
-@@ -617,7 +617,7 @@ void ResolveInvalidConfigurations() {
+@@ -622,7 +622,7 @@ void ResolveInvalidConfigurations() {
         base::FeatureList::IsEnabled(
             features::kPrivacySandboxAdsAPIsM1Override)) &&
        !base::FeatureList::IsEnabled(blink::features::kFencedFrames)) {
@@ -18929,7 +18929,7 @@ diff --git a/content/child/runtime_features.cc b/content/child/runtime_features.
          << "Fenced frames cannot be enabled in this configuration. Use --"
          << switches::kEnableFeatures << "="
          << blink::features::kFencedFrames.name << " instead.";
-@@ -627,9 +627,8 @@ void ResolveInvalidConfigurations() {
+@@ -632,9 +632,8 @@ void ResolveInvalidConfigurations() {
    if (!base::FeatureList::IsEnabled(blink::features::kFencedFrames) &&
        base::FeatureList::IsEnabled(
            blink::features::kFencedFramesLocalUnpartitionedDataAccess)) {
@@ -18941,7 +18941,7 @@ diff --git a/content/child/runtime_features.cc b/content/child/runtime_features.
          << "Fenced frames must be enabled in order to enable local "
             "unpartitioned "
          << "data access. Use --" << switches::kEnableFeatures << "="
-@@ -642,7 +641,7 @@ void ResolveInvalidConfigurations() {
+@@ -647,7 +646,7 @@ void ResolveInvalidConfigurations() {
    // The Document API should be additionally gated by the
    // `kBrowsingTopicsDocumentAPI` feature.
    if (!base::FeatureList::IsEnabled(blink::features::kBrowsingTopics)) {
@@ -18950,7 +18950,7 @@ diff --git a/content/child/runtime_features.cc b/content/child/runtime_features.
          << "Topics cannot be enabled in this configuration. Use --"
          << switches::kEnableFeatures << "="
          << blink::features::kBrowsingTopics.name << " in addition.";
-@@ -662,7 +661,7 @@ void ResolveInvalidConfigurations() {
+@@ -667,7 +666,7 @@ void ResolveInvalidConfigurations() {
    }
  
    if (!base::FeatureList::IsEnabled(blink::features::kSharedStorageAPI)) {
@@ -18959,7 +18959,7 @@ diff --git a/content/child/runtime_features.cc b/content/child/runtime_features.
          << "SharedStorage cannot be enabled in this "
             "configuration. Use --"
          << switches::kEnableFeatures << "="
-@@ -672,7 +671,7 @@ void ResolveInvalidConfigurations() {
+@@ -677,7 +676,7 @@ void ResolveInvalidConfigurations() {
  
    if (!base::FeatureList::IsEnabled(blink::features::kSharedStorageAPIM118) ||
        !base::FeatureList::IsEnabled(blink::features::kSharedStorageAPI)) {
@@ -18968,7 +18968,7 @@ diff --git a/content/child/runtime_features.cc b/content/child/runtime_features.
          << "SharedStorage for M118+ cannot be enabled in this "
             "configuration. Use --"
          << switches::kEnableFeatures << "="
-@@ -683,7 +682,7 @@ void ResolveInvalidConfigurations() {
+@@ -688,7 +687,7 @@ void ResolveInvalidConfigurations() {
  
    if (!base::FeatureList::IsEnabled(blink::features::kSharedStorageAPIM125) ||
        !base::FeatureList::IsEnabled(blink::features::kSharedStorageAPI)) {
@@ -18977,7 +18977,7 @@ diff --git a/content/child/runtime_features.cc b/content/child/runtime_features.
          << "SharedStorage for M125+ cannot be enabled in this "
             "configuration. Use --"
          << switches::kEnableFeatures << "="
-@@ -694,7 +693,7 @@ void ResolveInvalidConfigurations() {
+@@ -699,7 +698,7 @@ void ResolveInvalidConfigurations() {
  
    if (!base::FeatureList::IsEnabled(
            attribution_reporting::features::kConversionMeasurement)) {
@@ -18986,7 +18986,7 @@ diff --git a/content/child/runtime_features.cc b/content/child/runtime_features.
          << "AttributionReporting cannot be enabled in this "
             "configuration. Use --"
          << switches::kEnableFeatures << "="
-@@ -707,8 +706,8 @@ void ResolveInvalidConfigurations() {
+@@ -712,8 +711,8 @@ void ResolveInvalidConfigurations() {
            attribution_reporting::features::kConversionMeasurement) ||
        !base::FeatureList::IsEnabled(
            network::features::kAttributionReportingCrossAppWeb)) {
@@ -18997,7 +18997,7 @@ diff --git a/content/child/runtime_features.cc b/content/child/runtime_features.
          << "AttributionReportingCrossAppWeb cannot be enabled in this "
             "configuration. Use --"
          << switches::kEnableFeatures << "="
-@@ -719,7 +718,7 @@ void ResolveInvalidConfigurations() {
+@@ -724,7 +723,7 @@ void ResolveInvalidConfigurations() {
    }
  
    if (!base::FeatureList::IsEnabled(blink::features::kInterestGroupStorage)) {
