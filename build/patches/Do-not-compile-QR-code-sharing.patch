@@ -172,7 +172,7 @@ diff --git a/chrome/browser/ui/browser_command_controller.cc b/chrome/browser/ui
 diff --git a/chrome/browser/ui/browser_commands.cc b/chrome/browser/ui/browser_commands.cc
 --- a/chrome/browser/ui/browser_commands.cc
 +++ b/chrome/browser/ui/browser_commands.cc
-@@ -1664,6 +1664,7 @@ void SendTabToSelf(Browser* browser) {
+@@ -1667,6 +1667,7 @@ void SendTabToSelf(Browser* browser) {
  }
  
  bool CanGenerateQrCode(const Browser* browser) {
