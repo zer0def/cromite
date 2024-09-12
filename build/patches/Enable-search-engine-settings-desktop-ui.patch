@@ -29,7 +29,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../browser/search_engines/android/BUILD.gn   |   2 +
  .../java/res/layout/search_engine_layout.xml  |  25 ++
  .../settings/SearchEngineSettings.java        |  20 ++
- chrome/browser/ui/BUILD.gn                    |  12 +
+ chrome/browser/ui/BUILD.gn                    |  18 ++
  .../edit_search_engine_controller.cc          |   8 +-
  .../edit_search_engine_controller.h           |   6 +-
  .../keyword_editor_controller.cc              |  13 +-
@@ -70,7 +70,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  ui/webui/resources/include_polymer.gni        |   2 +-
  ui/webui/resources/js/BUILD.gn                |   2 +-
  ui/webui/resources/js/load_time_data.ts       |  17 +-
- 63 files changed, 1087 insertions(+), 61 deletions(-)
+ 63 files changed, 1093 insertions(+), 61 deletions(-)
  create mode 100644 chrome/app/settings_strings_android.grdp
  create mode 100644 chrome/browser/search_engines/android/java/res/layout/search_engine_layout.xml
  create mode 100644 chrome/browser/ui/webui/settings/settings_localized_strings_provider_android.cc
@@ -856,7 +856,20 @@ diff --git a/chrome/browser/search_engines/android/java/src/org/chromium/chrome/
 diff --git a/chrome/browser/ui/BUILD.gn b/chrome/browser/ui/BUILD.gn
 --- a/chrome/browser/ui/BUILD.gn
 +++ b/chrome/browser/ui/BUILD.gn
-@@ -1039,6 +1039,18 @@ static_library("ui") {
+@@ -739,6 +739,12 @@ static_library("ui") {
+     "//v8:v8_version",
+   ]
+ 
++  if (is_android) {
++    deps += [
++      "//ui/webui/resources/cr_components/help_bubble:mojo_bindings",
++    ]
++  }
++
+   if (is_chrome_branded) {
+     deps += [ "//components/plus_addresses/resources:vector_icons" ]
+   }
+@@ -1039,6 +1045,18 @@ static_library("ui") {
      # TODO(b/335257259): Resolve circular deps.
      # Any circular includes must depend on the target "//chrome/browser:browser_public_dependencies".
      allow_circular_includes_from += [ "//chrome/browser/facilitated_payments" ]
