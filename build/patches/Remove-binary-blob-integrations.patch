@@ -3697,7 +3697,7 @@ diff --git a/content/public/android/java/src/org/chromium/content/browser/webid/
 diff --git a/content/test/BUILD.gn b/content/test/BUILD.gn
 --- a/content/test/BUILD.gn
 +++ b/content/test/BUILD.gn
-@@ -3581,10 +3581,6 @@ if (is_android) {
+@@ -3582,10 +3582,6 @@ if (is_android) {
      testonly = true
      sources = content_java_sources_needing_jni
      deps = [

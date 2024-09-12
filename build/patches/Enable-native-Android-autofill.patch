@@ -751,7 +751,7 @@ diff --git a/components/autofill/content/browser/content_autofill_driver.cc b/co
 diff --git a/components/autofill/content/browser/content_autofill_driver.h b/components/autofill/content/browser/content_autofill_driver.h
 --- a/components/autofill/content/browser/content_autofill_driver.h
 +++ b/components/autofill/content/browser/content_autofill_driver.h
-@@ -135,6 +135,12 @@ class ContentAutofillDriver : public AutofillDriver,
+@@ -137,6 +137,12 @@ class ContentAutofillDriver : public AutofillDriver,
    // AutofillDriverFactory. Called on certain types of navigations.
    void Reset(ContentAutofillDriverFactoryPassKey pass_key);
  
@@ -764,7 +764,7 @@ diff --git a/components/autofill/content/browser/content_autofill_driver.h b/com
    content::RenderFrameHost* render_frame_host() { return &*render_frame_host_; }
    const content::RenderFrameHost* render_frame_host() const {
      return &*render_frame_host_;
-@@ -292,6 +298,10 @@ class ContentAutofillDriver : public AutofillDriver,
+@@ -294,6 +300,10 @@ class ContentAutofillDriver : public AutofillDriver,
    // The factory that created this driver. Outlives `this`.
    const raw_ref<ContentAutofillDriverFactory> owner_;
  

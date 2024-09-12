@@ -163,7 +163,7 @@ diff --git a/cc/trees/layer_tree_host_impl.cc b/cc/trees/layer_tree_host_impl.cc
 diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabGroupUiCoordinator.java b/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabGroupUiCoordinator.java
 --- a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabGroupUiCoordinator.java
 +++ b/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabGroupUiCoordinator.java
-@@ -39,6 +39,7 @@ import org.chromium.components.feature_engagement.FeatureConstants;
+@@ -40,6 +40,7 @@ import org.chromium.components.feature_engagement.FeatureConstants;
  import org.chromium.ui.modaldialog.ModalDialogManager;
  import org.chromium.ui.modelutil.PropertyModel;
  import org.chromium.ui.modelutil.PropertyModelChangeProcessor;
@@ -171,7 +171,7 @@ diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser
  
  import java.util.List;
  
-@@ -161,7 +162,8 @@ public class TabGroupUiCoordinator
+@@ -169,7 +170,8 @@ public class TabGroupUiCoordinator
      public void initializeWithNative(
              Activity activity,
              BottomControlsCoordinator.BottomControlsVisibilityController visibilityController,
@@ -181,7 +181,7 @@ diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser
          var currentTabModelFilterSupplier =
                  mTabModelSelector.getTabModelFilterProvider().getCurrentTabModelFilterSupplier();
          try (TraceEvent e = TraceEvent.scoped("TabGroupUiCoordinator.initializeWithNative")) {
-@@ -220,7 +222,8 @@ public class TabGroupUiCoordinator
+@@ -229,7 +231,8 @@ public class TabGroupUiCoordinator
                              mLayoutStateProviderSupplier,
                              mIncognitoStateProvider,
                              mTabGridDialogControllerSupplier,
@@ -432,8 +432,8 @@ diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser
 +import android.widget.FrameLayout;
  import android.widget.ImageView;
  
- import androidx.annotation.IntDef;
-@@ -57,6 +62,8 @@ import org.chromium.ui.modelutil.PropertyModelChangeProcessor;
+ import androidx.annotation.DrawableRes;
+@@ -58,6 +63,8 @@ import org.chromium.ui.modelutil.PropertyModelChangeProcessor;
  import org.chromium.ui.modelutil.SimpleRecyclerViewAdapter;
  import org.chromium.ui.widget.ViewLookupCachingFrameLayout;
  
@@ -442,7 +442,7 @@ diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser
  import java.lang.annotation.Retention;
  import java.lang.annotation.RetentionPolicy;
  import java.util.List;
-@@ -114,6 +121,128 @@ public class TabListCoordinator
+@@ -115,6 +122,128 @@ public class TabListCoordinator
      private int mAwaitingTabId = Tab.INVALID_TAB_ID;
      private @TabActionState int mTabActionState;
  
@@ -571,7 +571,7 @@ diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser
      /**
       * Construct a coordinator for UI that shows a list of tabs.
       *
-@@ -356,6 +485,12 @@ public class TabListCoordinator
+@@ -311,6 +440,12 @@ public class TabListCoordinator
                                  checkAwaitingLayout();
                              }
                          };
@@ -584,7 +584,7 @@ diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser
                  mRecyclerView.setLayoutManager(gridLayoutManager);
                  mMediator.registerOrientationListener(gridLayoutManager);
                  mMediator.updateSpanCount(
-@@ -367,8 +502,7 @@ public class TabListCoordinator
+@@ -322,8 +457,7 @@ public class TabListCoordinator
                          .getDecorView()
                          .getWindowVisibleDisplayFrame(frame);
                  updateGridCardLayout(frame.width());
@@ -594,7 +594,7 @@ diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser
                  LinearLayoutManager layoutManager =
                          new LinearLayoutManager(
                                  context,
-@@ -383,6 +517,25 @@ public class TabListCoordinator
+@@ -338,6 +472,25 @@ public class TabListCoordinator
                              }
                          };
                  mRecyclerView.setLayoutManager(layoutManager);
@@ -620,16 +620,16 @@ diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser
              }
              mMediator.setRecyclerViewItemAnimationToggle(mRecyclerView::setDisableItemAnimations);
          }
-@@ -400,7 +553,7 @@ public class TabListCoordinator
-         if (mHasEmptyView) {
+@@ -358,7 +511,7 @@ public class TabListCoordinator
+         if (hasEmptyView) {
              mTabListEmptyCoordinator =
                      new TabListEmptyCoordinator(
 -                            parentView, mModel, this::runOnItemAnimatorFinished);
 +                            parentView, mModel, this::runOnItemAnimatorFinished, mBrowserControlsStateProvider);
-             mEmptyStateHeadingResId = emptyHeadingStringResId;
-             mEmptyStateSubheadingResId = emptySubheadingStringResId;
-             mEmptyStateImageResId = emptyImageResId;
-@@ -689,6 +842,9 @@ public class TabListCoordinator
+         }
+ 
+         configureRecyclerViewTouchHelpers(mMode, mTabActionState);
+@@ -644,6 +797,9 @@ public class TabListCoordinator
      void prepareTabSwitcherPaneView() {
          registerLayoutChangeListener();
          mRecyclerView.setupCustomItemAnimator();
