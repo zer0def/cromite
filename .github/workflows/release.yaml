@@ -140,7 +140,6 @@ jobs:
           cp $OUTPUTFILE_WIN/libEGL.dll chrome-win/
           cp $OUTPUTFILE_WIN/libGLESv2.dll chrome-win/
           cp $OUTPUTFILE_WIN/Logo.png chrome-win/
-          cp $OUTPUTFILE_WIN/mojo_core.dll chrome-win/
           cp $OUTPUTFILE_WIN/notification_helper.exe chrome-win/
           cp $OUTPUTFILE_WIN/resources.pak chrome-win/
           cp $OUTPUTFILE_WIN/SmallLogo.png chrome-win/
