@@ -40,16 +40,58 @@ Please note that this project is not free of bugs and that changing the behaviou
 
 All built versions are available as [releases](https://github.com/uazo/cromite/releases).
 
-Cromite is currently built for ARM64, x86 (Android SDK version 23+) and Windows x64.
+Cromite is currently built for ARM, ARM64, Android x86, Windows x64 and Linux.
 
-You will automatically receive notifications about new updates (and be able to install them) via the auto updater functionality (enabled by default), see [related wiki page](https://github.com/bromite/bromite/wiki/AutomaticUpdates).
+The following files will be present for each release:
+
+#### Cromite apk for android:
+- [arm64_ChromePublic.apk](https://github.com/uazo/cromite/releases/latest/download/arm64_ChromePublic.apk)
+- [arm_ChromePublic.apk](https://github.com/uazo/cromite/releases/latest/download/arm_ChromePublic.apk)
+- [x64_ChromePublic.apk](https://github.com/uazo/cromite/releases/latest/download/x64_ChromePublic.apk)
+
+#### Cromite System WebView apk for android:
+- [arm64_SystemWebView64.apk](https://github.com/uazo/cromite/releases/latest/download/arm64_SystemWebView64.apk)
+- [x64_SystemWebView64.apk](https://github.com/uazo/cromite/releases/latest/download/x64_SystemWebView64.apk)
+
+#### Linux package:
+- [chrome-lin64.tar.gz](https://github.com/uazo/cromite/releases/latest/download/chrome-lin64.tar.gz)
+
+#### Windows package:
+- [chrome-win.zip](https://github.com/uazo/cromite/releases/latest/download/chrome-win.zip)
+
+Additional files are also available:
+
+#### Vanilla Chromium for android (used for tests):
+- arm64_VanillaChromium.apk
+- arm_VanillaChromium.apk
+- x64_VanillaChromium.apk
+
+#### SystemWebView Shell (used for tests)
+- arm64_SystemWebViewShell.apk
+- x64_SystemWebViewShell.apk
+
+#### Debugging symbols and proguard file for java stacktrace deobfuscation
+- x64_ChromePublic.apk.mapping
+- arm64_ChromePublic.apk.mapping
+- arm64_symbols.zip
+
+#### Build time analysis file:
+- arm64_ninja_log_trace.html
+
+#### Chrlauncher autoupdate file:
+- updateurl.txt
 
 ### F-droid
 
 Official F-droid repo url:
 https://www.cromite.org/fdroid/repo/?fingerprint=49F37E74DEE483DCA2B991334FB5A0200787430D0B5F9A783DD5F13695E9517B
 
-### Auto-update setup for windows
+### Auto-update in Android
+
+You will automatically receive notifications about new updates (and be able to install them) via the auto updater functionality.
+You will be asked whether you want to activate the functionality during the first start-up.
+
+### Auto-update setup for Windows
 
 1. Download https://github.com/henrypp/chrlauncher/releases
 2. Create a `chrlauncher.ini`
@@ -86,10 +128,13 @@ icacls . /grant "*S-1-15-2-2:(OI)(CI)(RX)"
 see https://github.com/uazo/bromite-buildtools/issues/51
 
 ### Enable AppContainer for renderer process in windows
-you can activate the 'RendererAppContainer' flag from the command line with
+you can activate (highly recommended) the 'RendererAppContainer' flag from the command line with
 ```
   --enable-features=RendererAppContainer
 ```
+
+### Auto-update setup for linux
+working in progress in https://github.com/uazo/cromite/issues/771
 
 ### Making Cromite work in Ubuntu 24.04 and its derivatives (kubuntu, etc)
 This happens because, starting with Ubuntu 24.04, Apparmor
@@ -113,8 +158,6 @@ Now, run `sudo apparmor_parser -r /etc/apparmor.d/cromite` to apply the changes.
 `sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0`
 #### 3. Disabling the restriction permanently
 Add `kernel.apparmor_restrict_unprivileged_userns=0` to the file `/etc/sysctl.d/60-apparmor-namespace.conf`.  Create the file if not exists.
-### Auto-update setup for linux
-working in progress in https://github.com/uazo/cromite/issues/771
 
 # Contributing
 
