@@ -37,14 +37,37 @@ jobs:
       - name: Reclaiming disk space on / by removing dotnet/android/ghc
         #if: ${{ github.event.inputs.type == '' }}
         run: |
-          test -d /usr/share/dotnet && sudo rm -rf /usr/share/dotnet
-          test -d /usr/local/lib/android && sudo rm -rf /usr/local/lib/android
-          test -d /opt/ghc && sudo rm -rf /opt/ghc
-          test -d /opt/hostedtoolcache/CodeQL && sudo rm -rf /opt/hostedtoolcache/CodeQL
+          df -h
+
+          DIR=/usr/share/dotnet && sudo rm -rf $DIR
+          DIR=/usr/local/lib/android && sudo rm -rf $DIR
+          DIR=/opt/ghc && sudo rm -rf $DIR
+          DIR=/opt/hostedtoolcache/CodeQL && sudo rm -rf $DIR
+          DIR=/usr/local/.ghcup && sudo rm -rf $DIR
+          DIR=/usr/lib/jvm && test -d $DIR && sudo rm -rf $DIR
+          DIR=/usr/local/julia1.10.5 && test -d $DIR && sudo rm -rf $DIR
+          DIR=/usr/local/x86_64-linux-gnu && test -d $DIR && sudo rm -rf $DIR
+          DIR=/usr/local/gcc && test -d $DIR && sudo rm -rf $DIR
+          DIR=/usr/local/llvm-15 && test -d $DIR && sudo rm -rf $DIR
+          DIR=/usr/local/llvm-14 && test -d $DIR && sudo rm -rf $DIR
+          DIR=/usr/local/llvm-13 && test -d $DIR && sudo rm -rf $DIR
+          DIR=/usr/local/heroku && test -d $DIR && sudo rm -rf $DIR
+          DIR=/usr/share/swift && test -d $DIR && sudo rm -rf $DIR
+          DIR=/usr/share/miniconda && test -d $DIR && sudo rm -rf $DIR
+          DIR=/usr/share/az_12.1.0 && test -d $DIR && sudo rm -rf $DIR
+          DIR=/usr/local/share/powershell && test -d $DIR && sudo rm -rf $DIR
+          DIR=/usr/local/share/chromium && test -d $DIR && sudo rm -rf $DIR
+          DIR=/usr/lib/gcc && test -d $DIR && sudo rm -rf $DIR
+          DIR=/usr/lib/llvm-15 && test -d $DIR && sudo rm -rf $DIR
+          DIR=/usr/lib/llvm-14 && test -d $DIR && sudo rm -rf $DIR
+          DIR=/usr/lib/llvm-13 && test -d $DIR && sudo rm -rf $DIR
+
           sudo apt-get remove google-cloud-cli azure-cli google-chrome-stable \
                        firefox mysql-server-core-8.0 mono-devel podman \
                        powershell || true
           sudo apt-get autoremove
+
+          df -h
 
       - name: Enable proxy on container
         shell: bash
