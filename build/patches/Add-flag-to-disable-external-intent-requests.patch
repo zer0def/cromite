@@ -105,7 +105,7 @@ new file mode 100644
 +        Allow forward URL requests to external intents
 +    </message>
 +    <message name="IDS_ALLOW_EXTERNAL_INTENT_REQUESTS_SUMMARY" desc="">
-+        If disabled, URL requests will never allow for redirecting to an external intent.
++        If disabled, URL requests will never allow redirection to an external intent, such as open application or dialer. Caution: since no verification is possible on the information, allows linkage between browser browsing and activity on the application.
 +    </message>
 +</grit-part>
 diff --git a/cromite_flags/chrome/browser/about_flags_cc/Add-flag-to-disable-external-intent-requests.inc b/cromite_flags/chrome/browser/about_flags_cc/Add-flag-to-disable-external-intent-requests.inc

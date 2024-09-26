@@ -22,7 +22,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  chrome/browser/profiles/profile_manager.h     |  2 +
  .../clear_browsing_data_dialog.html           | 44 +++++++++++
  .../clear_browsing_data_dialog.ts             |  2 +
- .../strings/android_chrome_strings.grd        |  3 +
+ .../strings/android_chrome_strings.grd        |  5 +-
  .../settings_localized_strings_provider.cc    |  1 +
  .../content/browsing_data_helper.cc           |  9 ++-
  .../core/browsing_data_policies_utils.cc      | 20 ++---
@@ -33,7 +33,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  components/browsing_data/core/pref_names.h    | 10 +++
  .../search_engines/template_url_service.cc    |  1 +
  content/browser/storage_partition_impl.cc     |  1 +
- 29 files changed, 326 insertions(+), 22 deletions(-)
+ 29 files changed, 327 insertions(+), 23 deletions(-)
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/browsing_data/ClearBrowsingDataFragmentAtStart.java
 
 diff --git a/chrome/android/chrome_java_sources.gni b/chrome/android/chrome_java_sources.gni
@@ -553,6 +553,15 @@ diff --git a/chrome/browser/resources/settings/clear_browsing_data_dialog/clear_
 diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chrome/browser/ui/android/strings/android_chrome_strings.grd
 --- a/chrome/browser/ui/android/strings/android_chrome_strings.grd
 +++ b/chrome/browser/ui/android/strings/android_chrome_strings.grd
+@@ -1387,7 +1387,7 @@ For example, some websites may respond to this request by showing you ads that a
+         Delete browsing data
+       </message>
+       <message name="IDS_CLEAR_BROWSING_DATA_SUMMARY" desc="Summary of the settings item that opens the Delete Browsing Data dialog.">
+-        Delete history, cookies, site data, cache…
++        Delete immediately or choose when to delete browsing data
+       </message>
+       <message name="IDS_CLEAR_BROWSING_DATA_HISTORY_DIALOG_TITLE" desc="Title of a dialog that is shown after the deletion of browsing history finished.">
+         Deleted Chrome data
 @@ -1548,6 +1548,9 @@ Your Google account may have other forms of browsing history like searches and a
        <message name="IDS_ANDROID_APP_HISTORY_OPEN_FULL_OTHER_FORMS" desc="The informational message at the top of the history page letting users know that app-specific history may be missing some entries, followed by the info on the other forms of browing history.">
          Some of your history might not show up here. To see all your Chrome history, open full Chrome history. Also, your Google Account may have other forms of browsing history at <ph name="BEGIN_LINK">&lt;link&gt;</ph>myactivity.google.com<ph name="END_LINK">&lt;/link&gt;</ph>.
