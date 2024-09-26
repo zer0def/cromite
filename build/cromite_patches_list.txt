@@ -294,6 +294,7 @@ Add-a-GN-flag-to-disable-trybot-verification.patch
 Override-the-MV2-deprecation.patch
 Enable-ClickToCall.patch
 Remove-sideloading-of-version-dll.patch
+Cromite-Branding--improve-settings-ui.patch
 
 # temporary or wip patches
 Temp-PerformanceNavigationTiming-privacy-fix.patch
