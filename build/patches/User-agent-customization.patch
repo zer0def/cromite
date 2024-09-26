@@ -257,7 +257,7 @@ new file mode 100644
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActivity.java b/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActivity.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActivity.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActivity.java
-@@ -2739,6 +2739,7 @@ public abstract class ChromeActivity<C extends ChromeActivityComponent>
+@@ -2742,6 +2742,7 @@ public abstract class ChromeActivity<C extends ChromeActivityComponent>
              TabUtils.switchUserAgent(
                      currentTab,
                      usingDesktopUserAgent,
@@ -1262,7 +1262,7 @@ diff --git a/content/browser/renderer_host/navigation_controller_android.h b/con
 diff --git a/content/browser/renderer_host/render_process_host_impl.cc b/content/browser/renderer_host/render_process_host_impl.cc
 --- a/content/browser/renderer_host/render_process_host_impl.cc
 +++ b/content/browser/renderer_host/render_process_host_impl.cc
-@@ -3443,6 +3443,7 @@ void RenderProcessHostImpl::PropagateBrowserCommandLineToRenderer(
+@@ -3445,6 +3445,7 @@ void RenderProcessHostImpl::PropagateBrowserCommandLineToRenderer(
        switches::kLacrosUseChromeosProtectedMedia,
        switches::kLacrosUseChromeosProtectedAv1,
  #endif

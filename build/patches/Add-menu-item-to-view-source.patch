@@ -54,7 +54,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedAct
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActivity.java b/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActivity.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActivity.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActivity.java
-@@ -2720,6 +2720,11 @@ public abstract class ChromeActivity<C extends ChromeActivityComponent>
+@@ -2723,6 +2723,11 @@ public abstract class ChromeActivity<C extends ChromeActivityComponent>
              return doOpenWebApk(currentTab);
          }
  
