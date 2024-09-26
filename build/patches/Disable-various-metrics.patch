@@ -18,8 +18,9 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  components/ntp_tiles/BUILD.gn                   |  3 ---
  .../ntp_tiles/custom_links_manager_impl.cc      |  1 -
  components/ntp_tiles/most_visited_sites.cc      |  2 --
+ .../site_data/leveldb_site_data_store.cc        |  2 +-
  services/metrics/public/cpp/ukm_recorder.cc     |  1 +
- 10 files changed, 7 insertions(+), 44 deletions(-)
+ 11 files changed, 8 insertions(+), 45 deletions(-)
 
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/firstrun/FirstRunActivityBase.java b/chrome/android/java/src/org/chromium/chrome/browser/firstrun/FirstRunActivityBase.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/firstrun/FirstRunActivityBase.java
@@ -219,6 +220,18 @@ diff --git a/components/ntp_tiles/most_visited_sites.cc b/components/ntp_tiles/m
    }
    if (!current_tiles_.has_value() || (*current_tiles_ != fixed_tiles)) {
      current_tiles_.emplace(std::move(fixed_tiles));
+diff --git a/components/performance_manager/persistence/site_data/leveldb_site_data_store.cc b/components/performance_manager/persistence/site_data/leveldb_site_data_store.cc
+--- a/components/performance_manager/persistence/site_data/leveldb_site_data_store.cc
++++ b/components/performance_manager/persistence/site_data/leveldb_site_data_store.cc
+@@ -30,7 +30,7 @@ namespace performance_manager {
+ 
+ namespace {
+ 
+-std::atomic<bool> g_use_in_memory_db_for_testing = false;
++std::atomic<bool> g_use_in_memory_db_for_testing = true;
+ 
+ // The name of the following histograms is the same as the one used in the
+ // //c/b/resource_coordinator version of this file. It's fine to keep the same
 diff --git a/services/metrics/public/cpp/ukm_recorder.cc b/services/metrics/public/cpp/ukm_recorder.cc
 --- a/services/metrics/public/cpp/ukm_recorder.cc
 +++ b/services/metrics/public/cpp/ukm_recorder.cc
