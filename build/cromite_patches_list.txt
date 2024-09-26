@@ -301,6 +301,7 @@ TEMP-Add-a-log-to-track-strange-behavior.patch
 Temp-guard-FileSystemAccessPersistentPermissions.patch
 Never-treat-Proguard-warnings-as-errors.patch
 Temp-disable-experimental-web-platform-features.patch
+Block-leakage-of-urls-in-sandbox-iframes.patch
 Fix-chromium-build-bugs.patch
 
 # adblock patches
