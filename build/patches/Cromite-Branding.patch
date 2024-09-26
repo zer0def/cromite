@@ -47,7 +47,6 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../drawable-xhdpi/fre_product_logo.png       | Bin 5151 -> 34576 bytes
  .../drawable-xxhdpi/fre_product_logo.png      | Bin 7720 -> 60959 bytes
  .../drawable-xxxhdpi/fre_product_logo.png     | Bin 10740 -> 93273 bytes
- .../embedder_support/user_agent_utils.cc      |   2 +-
  .../vector_icons/product_chrome_refresh.icon  |  93 +++++++++---------
  .../chromium/product_logo.png                 | Bin 1562 -> 3577 bytes
  .../chromium/product_logo_white.png           | Bin 1417 -> 3040 bytes
@@ -57,7 +56,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../resources/about_version_mobile.css        |   9 ++
  content/child/runtime_features.cc             |  23 +++--
  tools/grit/grit/grd_reader.py                 |  35 +++++++
- 53 files changed, 184 insertions(+), 114 deletions(-)
+ 52 files changed, 183 insertions(+), 113 deletions(-)
 
 diff --git a/build/BUILD.gn b/build/BUILD.gn
 --- a/build/BUILD.gn
@@ -18176,18 +18175,6 @@ z-aP~TXJZ`-(Yg4YH}L#8=YM{CKWmuBV|oH(e6M*W+WLnfYBCzOQRGLiPvyZq6&Nv6
 z4G!>zy1hcOdP%7GG2>1P`Or}=o{p{?6G1~J{`Cl{gUX-*clf=;TVY)N<lVO9k)vG$
 i?Ib$(ofrX17!1R|`h|N%TnD<%35@j2bgPM^i2nno*_EOI
 
-diff --git a/components/embedder_support/user_agent_utils.cc b/components/embedder_support/user_agent_utils.cc
---- a/components/embedder_support/user_agent_utils.cc
-+++ b/components/embedder_support/user_agent_utils.cc
-@@ -187,7 +187,7 @@ const blink::UserAgentBrandList GetUserAgentBrandList(
-   bool parse_result = base::StringToInt(major_version, &major_version_number);
-   DCHECK(parse_result);
-   std::optional<std::string> brand;
--  brand = "Google Chrome";
-+  brand = "Cromite";
-   std::optional<std::string> maybe_brand_override =
-       base::GetFieldTrialParamValueByFeature(features::kGreaseUACH,
-                                              "brand_override");
 diff --git a/components/omnibox/browser/vector_icons/product_chrome_refresh.icon b/components/omnibox/browser/vector_icons/product_chrome_refresh.icon
 --- a/components/omnibox/browser/vector_icons/product_chrome_refresh.icon
 +++ b/components/omnibox/browser/vector_icons/product_chrome_refresh.icon
