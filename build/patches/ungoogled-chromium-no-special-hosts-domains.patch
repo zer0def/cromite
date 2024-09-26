@@ -40,7 +40,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../webui/settings/reset_settings_handler.cc  |   1 -
  .../upgrade_detector/upgrade_detector_impl.cc |   6 -
  chrome/common/BUILD.gn                        |   2 -
- .../google_accounts_private_api_util.cc       |   1 +
+ .../google_accounts_private_api_util.cc       |   3 +
  .../url_loader_throttle_provider_impl.cc      |  11 -
  chrome/test/BUILD.gn                          |   1 -
  components/domain_reliability/BUILD.gn        |   5 +-
@@ -64,7 +64,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  ...gled-chromium-no-special-hosts-domains.inc |   1 +
  net/base/url_util.cc                          |  25 +-
  services/network/network_context.cc           |   2 +-
- 57 files changed, 55 insertions(+), 854 deletions(-)
+ 57 files changed, 57 insertions(+), 854 deletions(-)
  create mode 100644 cromite_flags/content/public/common/content_features_cc/ungoogled-chromium-no-special-hosts-domains.inc
 
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ui/RootUiCoordinator.java b/chrome/android/java/src/org/chromium/chrome/browser/ui/RootUiCoordinator.java
@@ -914,11 +914,13 @@ diff --git a/chrome/common/BUILD.gn b/chrome/common/BUILD.gn
 diff --git a/chrome/renderer/google_accounts_private_api_util.cc b/chrome/renderer/google_accounts_private_api_util.cc
 --- a/chrome/renderer/google_accounts_private_api_util.cc
 +++ b/chrome/renderer/google_accounts_private_api_util.cc
-@@ -22,6 +22,7 @@ const url::Origin& GetAllowedGoogleAccountsOrigin() {
+@@ -22,6 +22,9 @@ const url::Origin& GetAllowedGoogleAccountsOrigin() {
  
  bool ShouldExposeGoogleAccountsJavascriptApi(
      content::RenderFrame* render_frame) {
++#if !BUILDFLAG(IS_ANDROID)
 +  if ((true)) return false;
++#endif
    DCHECK(render_frame);
  
    const url::Origin origin = render_frame->GetWebFrame()->GetSecurityOrigin();
