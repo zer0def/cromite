@@ -18,9 +18,10 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../privacy/settings/PrivacySettings.java     | 24 +++++++++++++++++++
  .../chrome/browser/tab/TabAssociatedApp.java  |  6 ++++-
  .../strings/android_chrome_strings.grd        | 14 +++++++++++
+ .../OriginVerifier.java                       |  5 ++++
  .../core/common/language_experiments.cc       |  1 +
  .../add-custom-tab-intents-privacy-option.inc |  1 +
- 9 files changed, 83 insertions(+), 1 deletion(-)
+ 10 files changed, 88 insertions(+), 1 deletion(-)
  create mode 100644 cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/add-custom-tab-intents-privacy-option.inc
 
 diff --git a/chrome/android/java/res/xml/privacy_preferences.xml b/chrome/android/java/res/xml/privacy_preferences.xml
@@ -219,11 +220,26 @@ diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chro
 +        Open external links in incognito
 +      </message>
 +      <message name="IDS_OPEN_EXTERNAL_LINKS_INCOGNITO_SUMMARY" desc="Summary text for 'Open external links in incognito' settings-privacy option.">
-+        Force the opening of all external links in incognito mode
++        Force the opening of all external links in incognito mode. Caution: there is only one incognito profile.
 +      </message>
        <!-- Usage Stats strings -->
        <message name="IDS_USAGE_STATS_CONSENT_TITLE" desc="Title for activity authorizing Digital Wellbeing to access Chrome usage data">
          Show your Chrome activity in Digital Wellbeing?
+diff --git a/components/content_relationship_verification/android/java/src/org/chromium/components/content_relationship_verification/OriginVerifier.java b/components/content_relationship_verification/android/java/src/org/chromium/components/content_relationship_verification/OriginVerifier.java
+--- a/components/content_relationship_verification/android/java/src/org/chromium/components/content_relationship_verification/OriginVerifier.java
++++ b/components/content_relationship_verification/android/java/src/org/chromium/components/content_relationship_verification/OriginVerifier.java
+@@ -180,6 +180,11 @@ public abstract class OriginVerifier {
+         assert mNativeOriginVerifier != 0
+                 : "Either provide a browserContextHandle to "
+                         + "OriginVerifier#ctor or call initNativeOriginVerifier.";
++        if ((true)) {
++            PostTask.runOrPostTask(
++                    TaskTraits.UI_DEFAULT, new VerifiedCallback(origin, false, null));
++            return;
++        }
+ 
+         String scheme = origin.uri().getScheme();
+         String host = origin.uri().getHost();
 diff --git a/components/language/core/common/language_experiments.cc b/components/language/core/common/language_experiments.cc
 --- a/components/language/core/common/language_experiments.cc
 +++ b/components/language/core/common/language_experiments.cc
