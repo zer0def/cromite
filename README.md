@@ -33,6 +33,7 @@ Please note that this project is not free of bugs and that changing the behaviou
 # Docs
 - [Privacy Policy](https://github.com/uazo/cromite/blob/master/docs/PRIVACY_POLICY.md)
 - [Features](https://github.com/uazo/cromite/blob/master/docs/FEATURES.md)
+- [Faqs](https://github.com/uazo/cromite/blob/master/docs/FAQ.md)
 - [How to build](https://github.com/uazo/cromite/blob/master/docs/HOW_TO_BUILD.md)
 - [Patch list](https://github.com/uazo/cromite/blob/master/docs/PATCHES.md)
 
