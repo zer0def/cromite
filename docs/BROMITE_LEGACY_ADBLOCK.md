@@ -1,7 +1,7 @@
 # Legacy Bromite AdBlock engine
 
 For compatibility, in Cromite you will still find the old Bromite adblock.
-Since v77 Bromite uses [Chromium subresource filter](https://github.com/chromium/chromium/tree/master/components/subresource_filter) with the full filter lists mentioned in the README.
+Since v77 Bromite uses [Chromium subresource filter](https://github.com/chromium/chromium/tree/main/components/subresource_filter) with the full filter lists mentioned in the README.
 
 This engine does not currently support CSS rules; as a result some sites will show ads.
 
