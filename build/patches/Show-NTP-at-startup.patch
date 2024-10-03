@@ -17,13 +17,14 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../cromite/sShowNtpAtStartupAndroid.java     | 33 +++++++++++++++++++
  .../preferences/ChromePreferenceKeys.java     |  2 ++
  .../LegacyChromePreferenceKeys.java           |  1 +
+ .../res/layout/single_tab_module_layout.xml   | 12 +++----
  .../SingleTabSwitcherCoordinator.java         |  2 +-
- .../SingleTabSwitcherOnNtpMediator.java       |  4 +--
+ .../SingleTabSwitcherOnNtpMediator.java       |  5 +--
  .../show-ntp-at-startup.grdp                  |  9 +++++
  .../about_flags_cc/show-ntp-at-startup.inc    | 12 +++++++
  .../show-ntp-at-startup.inc                   |  5 +++
  .../show-ntp-at-startup.inc                   |  1 +
- 15 files changed, 105 insertions(+), 4 deletions(-)
+ 16 files changed, 112 insertions(+), 10 deletions(-)
  create mode 100644 chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/cromite/sShowNtpAtStartupAndroid.java
  create mode 100644 chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/show-ntp-at-startup.grdp
  create mode 100644 cromite_flags/chrome/browser/about_flags_cc/show-ntp-at-startup.inc
@@ -217,6 +218,45 @@ diff --git a/chrome/browser/preferences/android/java/src/org/chromium/chrome/bro
                  ChromePreferenceKeys.TABMODEL_ACTIVE_TAB_ID,
                  ChromePreferenceKeys.TABMODEL_HAS_COMPUTED_MAX_ID,
                  ChromePreferenceKeys.TABMODEL_HAS_RUN_FILE_MIGRATION,
+diff --git a/chrome/browser/single_tab/android/java/res/layout/single_tab_module_layout.xml b/chrome/browser/single_tab/android/java/res/layout/single_tab_module_layout.xml
+--- a/chrome/browser/single_tab/android/java/res/layout/single_tab_module_layout.xml
++++ b/chrome/browser/single_tab/android/java/res/layout/single_tab_module_layout.xml
+@@ -71,7 +71,7 @@ found in the LICENSE file.
+           <RelativeLayout
+               android:id="@+id/tab_images"
+               android:layout_width="wrap_content"
+-              android:layout_height="match_parent"
++              android:layout_height="wrap_content"
+               android:background="@drawable/single_tab_thumbnail_background"
+               tools:ignore="UselessParent">
+ 
+@@ -122,21 +122,21 @@ found in the LICENSE file.
+           <TextView
+               android:id="@+id/tab_title_view"
+               android:layout_width="match_parent"
+-              android:layout_height="0dp"
+-              android:layout_weight="1"
++              android:layout_height="wrap_content"
+               android:ellipsize="end"
+               android:gravity="start|top"
+-              android:maxLines="3"
++              android:singleLine="true"
+               android:textAppearance="@style/TextAppearance.Headline2Thick.Secondary"
+                 tools:ignore="NestedWeights"/>
+ 
+           <TextView
+               android:id="@+id/tab_url_view"
++              android:layout_weight="1"
+               android:layout_width="match_parent"
+-              android:layout_height="wrap_content"
++              android:layout_height="match_parent"
+               android:layout_marginBottom="2dp"
+               android:gravity="start"
+-              android:singleLine="true"
++              android:singleLine="false"
+               android:textAppearance="@style/TextAppearance.TextSmall.Secondary" />
+       </LinearLayout>
+ 
 diff --git a/chrome/browser/single_tab/android/java/src/org/chromium/chrome/browser/single_tab/SingleTabSwitcherCoordinator.java b/chrome/browser/single_tab/android/java/src/org/chromium/chrome/browser/single_tab/SingleTabSwitcherCoordinator.java
 --- a/chrome/browser/single_tab/android/java/src/org/chromium/chrome/browser/single_tab/SingleTabSwitcherCoordinator.java
 +++ b/chrome/browser/single_tab/android/java/src/org/chromium/chrome/browser/single_tab/SingleTabSwitcherCoordinator.java
@@ -232,7 +272,15 @@ diff --git a/chrome/browser/single_tab/android/java/src/org/chromium/chrome/brow
 diff --git a/chrome/browser/single_tab/android/java/src/org/chromium/chrome/browser/single_tab/SingleTabSwitcherOnNtpMediator.java b/chrome/browser/single_tab/android/java/src/org/chromium/chrome/browser/single_tab/SingleTabSwitcherOnNtpMediator.java
 --- a/chrome/browser/single_tab/android/java/src/org/chromium/chrome/browser/single_tab/SingleTabSwitcherOnNtpMediator.java
 +++ b/chrome/browser/single_tab/android/java/src/org/chromium/chrome/browser/single_tab/SingleTabSwitcherOnNtpMediator.java
-@@ -267,14 +267,14 @@ public class SingleTabSwitcherOnNtpMediator {
+@@ -109,6 +109,7 @@ public class SingleTabSwitcherOnNtpMediator {
+                         mSingleTabCardClickedCallback = null;
+                     }
+                 });
++        if (mSeeMoreLinkClickedCallback != null)
+         mPropertyModel.set(
+                 SEE_MORE_LINK_CLICK_LISTENER,
+                 () -> {
+@@ -267,14 +268,14 @@ public class SingleTabSwitcherOnNtpMediator {
                          public void onPageLoadFinished(Tab tab, GURL url) {
                              super.onPageLoadFinished(tab, url);
                              mPropertyModel.set(TITLE, tab.getTitle());
