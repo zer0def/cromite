@@ -25,6 +25,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../mipmap-xxxhdpi/app_icon.png               | Bin 9667 -> 20837 bytes
  .../mipmap-xxxhdpi/layered_app_icon.png       | Bin 3652 -> 29220 bytes
  .../layered_app_icon_background.png           | Bin 3519 -> 142032 bytes
+ .../values/channel_constants.xml              |   8 +-
  .../inline/BromiteInlineUpdateController.java |  19 +++-
  chrome/app/extensions_strings.grdp            |   4 +-
  chrome/app/settings_strings.grdp              |   2 +-
@@ -56,7 +57,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../resources/about_version_mobile.css        |   9 ++
  content/child/runtime_features.cc             |  23 +++--
  tools/grit/grit/grd_reader.py                 |  35 +++++++
- 52 files changed, 183 insertions(+), 113 deletions(-)
+ 53 files changed, 187 insertions(+), 117 deletions(-)
 
 diff --git a/build/BUILD.gn b/build/BUILD.gn
 --- a/build/BUILD.gn
@@ -9115,6 +9116,22 @@ zk0U>@{Db0uvVi{o$%=-6@&Jp4mhhHYo~{+5O$ZdgIR*B?vJ5$!R3PXBkQ0>lqcPjJ
 zG!=nXw2&abs#xr~fFDF!vq@X7`+qtd5cw$r{cp#9R6!ToGG#p=PkT1k)Wlt8^P%Pg
 W=g!Ha2?pSwIRxeC=1^|uclqCxqvpf_
 
+diff --git a/chrome/android/java/res_chromium_base/values/channel_constants.xml b/chrome/android/java/res_chromium_base/values/channel_constants.xml
+--- a/chrome/android/java/res_chromium_base/values/channel_constants.xml
++++ b/chrome/android/java/res_chromium_base/values/channel_constants.xml
+@@ -7,8 +7,8 @@ found in the LICENSE file.
+ 
+ <resources xmlns:android="http://schemas.android.com/apk/res/android">
+     <!-- The application name displayed to the user. -->
+-    <string name="app_name" translatable="false">Chromium</string>
+-    <string name="bookmark_widget_title" translatable="false">Chromium bookmarks</string>
+-    <string name="search_widget_title" translatable="false">Chromium search</string>
+-    <string name="quick_action_search_widget_title" translatable="false">Chromium quick action search</string>
++    <string name="app_name" translatable="false">Cromite</string>
++    <string name="bookmark_widget_title" translatable="false">Cromite bookmarks</string>
++    <string name="search_widget_title" translatable="false">Cromite search</string>
++    <string name="quick_action_search_widget_title" translatable="false">Cromite quick action search</string>
+ </resources>
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/omaha/inline/BromiteInlineUpdateController.java b/chrome/android/java/src/org/chromium/chrome/browser/omaha/inline/BromiteInlineUpdateController.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/omaha/inline/BromiteInlineUpdateController.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/omaha/inline/BromiteInlineUpdateController.java
