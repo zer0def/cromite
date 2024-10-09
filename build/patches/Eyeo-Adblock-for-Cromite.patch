@@ -42,7 +42,7 @@ deactivation of all pop-ups (default disabled)
  .../java/res/layout/adblock_custom_item.xml   |   14 +-
  .../layout/adblock_filter_lists_list_item.xml |   15 +
  ...ences.xml => eyeo_adblock_preferences.xml} |   39 +-
- .../components/adblock/AdblockController.java |   51 +-
+ .../components/adblock/AdblockController.java |   53 +-
  .../AdblockAllowedDomainsFragment.java        |    7 +-
  .../AdblockCustomFilterListsFragment.java     |   32 +-
  .../AdblockCustomFiltersFragment.java         |    7 +-
@@ -98,7 +98,7 @@ deactivation of all pop-ups (default disabled)
  .../adblock/core/subscription/subscription.cc |   18 +
  .../adblock/core/subscription/subscription.h  |    3 +
  .../subscription_collection_impl.cc           |    1 +
- .../core/subscription/subscription_config.cc  |   24 +-
+ .../core/subscription/subscription_config.cc  |   26 +-
  .../core/subscription/subscription_config.h   |    6 +-
  .../subscription_downloader_impl.cc           |   21 +-
  .../subscription_persistent_metadata.h        |    1 +
@@ -129,7 +129,7 @@ deactivation of all pop-ups (default disabled)
  .../blink/renderer/core/css/style_engine.h    |    1 +
  .../renderer/core/exported/web_document.cc    |   15 +-
  .../definitions/adblock_private.d.ts          |   14 +
- 119 files changed, 6723 insertions(+), 1309 deletions(-)
+ 119 files changed, 6725 insertions(+), 1311 deletions(-)
  create mode 100644 chrome/browser/resources/settings/adblock_page/adblock_page.html
  create mode 100644 chrome/browser/resources/settings/adblock_page/adblock_page.ts
  rename components/adblock/android/java/res/xml/{adblock_preferences.xml => eyeo_adblock_preferences.xml} (56%)
@@ -1105,7 +1105,7 @@ new file mode 100644
 +            <div class="cr-secondary-text">
 +                Snippets are pieces of JavaScript code, injected by the Adblock Plus, that execute within the context of a website and combat advanced ads that circumvent ordinary blocking.
 +                The functionality is ONLY allowed for the list
-+                <a href="https://easylist-downloads.adblockplus.org/abp-filters-anti-cv.txt">abp-filters-anti-cv.txt</a>
++                <a href="https://www.cromite.org/filters/abp-filters-anti-cv.txt">abp-filters-anti-cv.txt</a>
 +                which is activated by this setting.
 +                <br><a href="https://gitlab.com/eyeo/anti-cv/abp-filters-anti-cv">Open ABP anti-circumvention filter list repo</a>
 +                <br><a href="https://developers.eyeo.com/snippets/snippets-overview">Open ABP Snippets Overview</a>
@@ -1964,7 +1964,7 @@ diff --git a/components/adblock/android/adblock_strings.grd b/components/adblock
 +      <message name="IDS_ADBLOCK_SETTINGS_PRIVILEGED_FILTERS_ENABLED_SUMMARY" desc="">
 +        Snippets are pieces of JavaScript code, injected by the Adblock Plus, that execute within the context of a website and combat advanced ads that circumvent ordinary blocking.
 +The functionality is ONLY allowed for the list
-+https://easylist-downloads.adblockplus.org/abp-filters-anti-cv.txt
++https://www.cromite.org/filters/abp-filters-anti-cv.txt
 +which is activated by this setting.
 +      </message>
 +      <message name="IDS_ADBLOCK_SETTINGS_OPEN_REPO_URL_TEXT" desc="">
@@ -2146,6 +2146,15 @@ rename to components/adblock/android/java/res/xml/eyeo_adblock_preferences.xml
 diff --git a/components/adblock/android/java/src/org/chromium/components/adblock/AdblockController.java b/components/adblock/android/java/src/org/chromium/components/adblock/AdblockController.java
 --- a/components/adblock/android/java/src/org/chromium/components/adblock/AdblockController.java
 +++ b/components/adblock/android/java/src/org/chromium/components/adblock/AdblockController.java
+@@ -50,7 +50,7 @@ public final class AdblockController extends FilteringConfiguration {
+         super("adblock");
+         try {
+             mAcceptableAds =
+-                    new URL("https://easylist-downloads.adblockplus.org/exceptionrules.txt");
++                    new URL("about:blank");
+         } catch (java.net.MalformedURLException e) {
+             mAcceptableAds = null;
+         }
 @@ -73,6 +73,10 @@ public final class AdblockController extends FilteringConfiguration {
          private String mTitle;
          private String mVersion = "";
@@ -4998,6 +5007,15 @@ diff --git a/components/adblock/core/subscription/subscription_collection_impl.c
 diff --git a/components/adblock/core/subscription/subscription_config.cc b/components/adblock/core/subscription/subscription_config.cc
 --- a/components/adblock/core/subscription/subscription_config.cc
 +++ b/components/adblock/core/subscription/subscription_config.cc
+@@ -24,7 +24,7 @@ namespace {
+ int g_port_for_testing = 0;
+ 
+ std::string GetHost() {
+-  GURL url("https://easylist-downloads.adblockplus.org");
++  GURL url("https://www.cromite.org/filters/");
+   if (!g_port_for_testing) {
+     return url.spec();
+   }
 @@ -239,17 +239,23 @@ const std::vector<KnownSubscriptionInfo>& config::GetKnownSubscriptions() {
         SubscriptionFirstRunBehavior::SubscribeIfLocaleMatch,
         SubscriptionPrivilegedFilterStatus::Forbidden},
