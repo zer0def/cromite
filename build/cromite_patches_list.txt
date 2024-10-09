@@ -175,7 +175,7 @@ Add-kill-switch-for-unsupported-clangd-flags.patch
 # cromite patches
 WIN-enable-pdf-plugin.patch
 WIN-disable-annotate-downloads.patch
-WIN-enable-HighEfficiencyMode-by-default.patch
+Enable-HighEfficiencyMode-by-default.patch
 WIN-enable-file-system-access-blocklist.patch
 WIN-Disable-TabHoverCard-images.patch
 WIN-Fix-log-to-file.patch
