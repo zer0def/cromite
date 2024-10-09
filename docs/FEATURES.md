@@ -121,17 +121,16 @@ Disabling it by default allows the user to choose each time how the browser shou
 - Disable NTP remote suggestions by default
 - Disable privacy issues in password manager (Affiliation service)
 - Disable translations and ranker fetcher
-- Disable AMP by default
 - Disable remote service for geolocation
 - Remove binary blob (google play services) integrations
 - Remove references to fonts.googleapis.com from ReadAnything and Distiller
-- Remove Google Accounts private API
 - (ANDROID) Disable barcode, face and text detection APIs via google play services
 - (ANDROID) Disable GSA by default (googlequicksearchbox, GoogleAppActivity, Lens, Voice Assist)
 - (ANDROID) Disable Google PrivacyGuide and Google SafetyCheck
 - (ANDROID) Remove preload of com.google.android.gms.fonts
 - (ANDROID) Disable use of gms for geolocation
 - (ANDROID) Do not store passwords by default in google play services
+- (DESKTOP) Remove Google Accounts private API
 - (DESKTOP) Does not allow the Chrome web store to know the list of installed extensions
 
 #### Enhancements
