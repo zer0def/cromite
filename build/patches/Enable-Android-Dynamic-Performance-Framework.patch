@@ -4,9 +4,10 @@ Subject: Enable Android Dynamic Performance Framework
 
 License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
- chrome/version.gni                | 4 ++--
- components/viz/common/features.cc | 2 ++
- 2 files changed, 4 insertions(+), 2 deletions(-)
+ chrome/version.gni                                      | 4 ++--
+ components/viz/common/features.cc                       | 2 ++
+ components/viz/service/performance_hint/hint_session.cc | 3 +++
+ 3 files changed, 7 insertions(+), 2 deletions(-)
 
 diff --git a/chrome/version.gni b/chrome/version.gni
 --- a/chrome/version.gni
@@ -44,4 +45,17 @@ diff --git a/components/viz/common/features.cc b/components/viz/common/features.
  
  // If enabled, Chrome includes the Compositor GPU Thread into the
  // ADPF(Android Dynamic Performance Framework) hint session, instead
+diff --git a/components/viz/service/performance_hint/hint_session.cc b/components/viz/service/performance_hint/hint_session.cc
+--- a/components/viz/service/performance_hint/hint_session.cc
++++ b/components/viz/service/performance_hint/hint_session.cc
+@@ -230,6 +230,9 @@ void HintSessionFactoryImpl::WakeUp() {
+   (*hint_sessions_.begin())->WakeUp();
+ }
+ 
++// Notify me when this is introduced
++[[maybe_unused]] void IsAdpfEnabled() {}
++
+ }  // namespace
+ 
+ // static
 --
