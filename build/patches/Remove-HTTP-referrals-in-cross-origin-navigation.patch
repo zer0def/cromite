@@ -120,7 +120,7 @@ new file mode 100644
 diff --git a/chrome/android/java/res/xml/privacy_preferences.xml b/chrome/android/java/res/xml/privacy_preferences.xml
 --- a/chrome/android/java/res/xml/privacy_preferences.xml
 +++ b/chrome/android/java/res/xml/privacy_preferences.xml
-@@ -116,6 +116,10 @@ found in the LICENSE file.
+@@ -121,6 +121,10 @@ found in the LICENSE file.
          android:title="@string/close_tabs_on_exit_title"
          android:summary="@string/close_tabs_on_exit_summary"
          android:defaultValue="false" />
@@ -178,7 +178,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/privacy/setting
  import org.chromium.chrome.browser.privacy.secure_dns.SecureDnsSettings;
  import org.chromium.chrome.browser.privacy_guide.PrivacyGuideInteractions;
  import org.chromium.chrome.browser.privacy_sandbox.PrivacySandboxBridge;
-@@ -76,6 +77,7 @@ public class PrivacySettings extends ChromeBaseSettingsFragment
+@@ -85,6 +86,7 @@ public class PrivacySettings extends ChromeBaseSettingsFragment
      private static final String PREF_DO_NOT_TRACK = "do_not_track";
      private static final String PREF_SAFE_BROWSING = "safe_browsing";
      private static final String PREF_SYNC_AND_SERVICES_LINK = "sync_and_services_link";
@@ -186,7 +186,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/privacy/setting
      private static final String PREF_PRIVACY_SANDBOX = "privacy_sandbox";
      private static final String PREF_PROXY_OPTIONS = "proxy";
      private static final String PREF_PRIVACY_GUIDE = "privacy_guide";
-@@ -438,6 +440,10 @@ public class PrivacySettings extends ChromeBaseSettingsFragment
+@@ -464,6 +466,10 @@ public class PrivacySettings extends ChromeBaseSettingsFragment
                              : R.string.text_off);
          }
  

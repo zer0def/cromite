@@ -31,7 +31,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 diff --git a/chrome/android/java/res/xml/privacy_preferences.xml b/chrome/android/java/res/xml/privacy_preferences.xml
 --- a/chrome/android/java/res/xml/privacy_preferences.xml
 +++ b/chrome/android/java/res/xml/privacy_preferences.xml
-@@ -83,7 +83,12 @@ found in the LICENSE file.
+@@ -88,7 +88,12 @@ found in the LICENSE file.
          android:title="@string/settings_incognito_tab_lock_title"
          android:summary="@string/settings_incognito_tab_lock_summary_android_setting_off"
          android:persistent="false" />
