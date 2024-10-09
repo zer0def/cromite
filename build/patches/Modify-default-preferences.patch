@@ -10,7 +10,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  chrome/browser/preloading/preloading_prefs.h   |  2 +-
  chrome/browser/profiles/profile.cc             |  2 +-
  .../reset_page/reset_profile_dialog.html       |  2 +-
- chrome/browser/ui/browser_ui_prefs.cc          |  4 ++--
+ chrome/browser/ui/browser_ui_prefs.cc          |  6 +++---
  components/bookmarks/browser/BUILD.gn          |  2 ++
  components/bookmarks/browser/bookmark_utils.cc |  7 +++++--
  components/bookmarks/browser/features.cc       | 17 +++++++++++++++++
@@ -22,7 +22,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../primary_account_manager.cc                 |  2 +-
  .../Modify-default-preferences.inc             |  8 ++++++++
  .../features_cc/Modify-default-preferences.inc |  1 +
- 18 files changed, 66 insertions(+), 16 deletions(-)
+ 18 files changed, 67 insertions(+), 17 deletions(-)
  create mode 100644 components/bookmarks/browser/features.cc
  create mode 100644 components/bookmarks/browser/features.h
  create mode 100755 cromite_flags/chrome/browser/about_flags_cc/Modify-default-preferences.inc
@@ -115,6 +115,15 @@ diff --git a/chrome/browser/ui/browser_ui_prefs.cc b/chrome/browser/ui/browser_u
    registry->RegisterDictionaryPref(prefs::kBrowserWindowPlacement);
    registry->RegisterDictionaryPref(prefs::kBrowserWindowPlacementPopup);
    registry->RegisterDictionaryPref(prefs::kAppWindowPlacement);
+@@ -170,7 +170,7 @@ void RegisterBrowserUserPrefs(user_prefs::PrefRegistrySyncable* registry) {
+ #endif
+ 
+   registry->RegisterBooleanPref(
+-      prefs::kHttpsOnlyModeEnabled, false,
++      prefs::kHttpsOnlyModeEnabled, true,
+       user_prefs::PrefRegistrySyncable::SYNCABLE_PREF);
+   registry->RegisterBooleanPref(
+       prefs::kHttpsFirstBalancedMode, false,
 diff --git a/components/bookmarks/browser/BUILD.gn b/components/bookmarks/browser/BUILD.gn
 --- a/components/bookmarks/browser/BUILD.gn
 +++ b/components/bookmarks/browser/BUILD.gn
