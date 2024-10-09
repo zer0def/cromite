@@ -224,7 +224,7 @@ diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/f
      public static final String NOTIFICATION_PERMISSION_VARIANT = "NotificationPermissionVariant";
      public static final String NOTIFICATION_PERMISSION_BOTTOM_SHEET =
              "NotificationPermissionBottomSheet";
-@@ -669,6 +671,8 @@ public abstract class ChromeFeatureList {
+@@ -670,6 +672,8 @@ public abstract class ChromeFeatureList {
              newCachedFlag(DISABLE_TOOLBAR_SWIPE_UP, false);
      public static final CachedFlag sMoveTopToolbarToBottom =
              newCachedFlag(MOVE_TOP_TOOLBAR_TO_BOTTOM, false);
@@ -233,7 +233,7 @@ diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/f
      public static final CachedFlag sPrivacyGuidePreloadAndroid =
              newCachedFlag(PRIVACY_GUIDE_PRELOAD_ANDROID, false);
      public static final CachedFlag sOptimizationGuidePushNotifications =
-@@ -828,6 +832,7 @@ public abstract class ChromeFeatureList {
+@@ -830,6 +834,7 @@ public abstract class ChromeFeatureList {
                      sTabWindowManagerIndexReassignmentActivityNotInAppTasks,
                      sTabWindowManagerReportIndicesMismatch,
                      sUseChimeAndroidSdk,
