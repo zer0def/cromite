@@ -291,6 +291,7 @@ Bubble-Locking-on-UI-DevTools.patch
 Add-a-GN-flag-to-disable-trybot-verification.patch
 Override-the-MV2-deprecation.patch
 Remove-sideloading-of-version-dll.patch
+Use-browser-navigation-handler.patch
 Cromite-Branding--improve-settings-ui.patch
 
 # temporary or wip patches
