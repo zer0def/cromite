@@ -717,10 +717,10 @@ diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/f
              newCachedFlag(LOGO_POLISH_ANIMATION_KILL_SWITCH, true);
 -    public static final CachedFlag sMagicStackAndroid = newCachedFlag(MAGIC_STACK_ANDROID, true);
 +    public static final CachedFlag sMagicStackAndroid = newCachedFlag(MAGIC_STACK_ANDROID, false);
+     public static final CachedFlag sMayLaunchurlUsesSeparateStoragePartition = newCachedFlag(MAYLAUNCHURL_USES_SEPARATE_STORAGE_PARTITION, false);
      public static final CachedFlag sMostVisitedTilesReselect =
              newCachedFlag(MOST_VISITED_TILES_RESELECT, false);
-     public static final CachedFlag sMultiInstanceApplicationStatusCleanup =
-@@ -675,7 +676,7 @@ public abstract class ChromeFeatureList {
+@@ -676,7 +677,7 @@ public abstract class ChromeFeatureList {
              newCachedFlag(SMALLER_TAB_STRIP_TITLE_LIMIT, true);
      public static final CachedFlag sStartSurfaceReturnTime =
              newCachedFlag(START_SURFACE_RETURN_TIME, true);
