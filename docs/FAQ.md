@@ -75,3 +75,23 @@ ADB in Cromite is enhanced with support for cname uncloaking and blocking even i
 I haven't decided yet. Currently the motivation is that I have no time or desire to understand how donations work in my country and with my current job position.
 Fortunately, I don't need it for now.
 
+## Why is JIT disabled by default? How to enable JIT selectively per site?
+JIT stands for Just-In-Time compilation and is a feature of chromium v8 which is the module responsible for executing javascript code. The purpose of JIT is to compile javascript to speed up its execution.
+
+However, the use of JIT opens up possible security holes exploited over time to scale the chromium sandbox and allow access to privileged processes by javascript. Technically, the reason is that the memory used by JIT is read/write/execute and can therefore be exploited to insert code from, for example, a UAF (use-after-free) error within a javascript callback. In addition, the activation of JIT allows the exchange of shared memory between different frames, an amazing and at the same time risky feature.
+
+For this reason, in cromite (and its predecessor cromite) it was chosen to disable JIT by default, penalising execution but offering a smaller attack surface.
+
+If you trust the site or have performance needs or need to use WebAssembly, you can activate that feature specifically for that website via UI:
+<details>
+<summary>Show me how</summary>
+  
+<img src="https://github.com/user-attachments/assets/e350754d-6dbf-4d86-a532-27dd390ca0ff">
+<br>
+<img src="https://github.com/user-attachments/assets/ef112ee5-f4ac-48bb-be46-9e21cbf9a165">
+<br>
+<img src="https://github.com/user-attachments/assets/f90811cd-46aa-4327-b36d-1c87150a2bb2">
+<br>
+</details>
+
+
