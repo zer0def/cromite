@@ -148,7 +148,7 @@ body:
   - type: dropdown
     id: is_incognito
     attributes:
-      label: Is this bug happening in an incognito tab?
+      label: Is this bug happening ONLY in an incognito tab?
       multiple: false
       options:
         - "Yes"
