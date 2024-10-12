@@ -4,9 +4,9 @@ Subject: WIN Disable updater
 
 ---
  chrome/browser/active_use_util.h              |  2 +-
- chrome/browser/updater/BUILD.gn               | 16 ---------
- .../browser/updater/browser_updater_client.cc | 33 +------------------
- 3 files changed, 2 insertions(+), 49 deletions(-)
+ chrome/browser/updater/BUILD.gn               | 16 ----------
+ .../browser/updater/browser_updater_client.cc | 29 +------------------
+ 3 files changed, 2 insertions(+), 45 deletions(-)
 
 diff --git a/chrome/browser/active_use_util.h b/chrome/browser/active_use_util.h
 --- a/chrome/browser/active_use_util.h
@@ -48,7 +48,7 @@ diff --git a/chrome/browser/updater/BUILD.gn b/chrome/browser/updater/BUILD.gn
 diff --git a/chrome/browser/updater/browser_updater_client.cc b/chrome/browser/updater/browser_updater_client.cc
 --- a/chrome/browser/updater/browser_updater_client.cc
 +++ b/chrome/browser/updater/browser_updater_client.cc
-@@ -30,19 +30,6 @@ BrowserUpdaterClient::~BrowserUpdaterClient() = default;
+@@ -36,19 +36,6 @@ BrowserUpdaterClient::~BrowserUpdaterClient() {
  
  void BrowserUpdaterClient::Register(base::OnceClosure complete) {
    DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
@@ -68,9 +68,9 @@ diff --git a/chrome/browser/updater/browser_updater_client.cc b/chrome/browser/u
  }
  
  void BrowserUpdaterClient::RegistrationCompleted(base::OnceClosure complete,
-@@ -73,18 +60,6 @@ void BrowserUpdaterClient::GetUpdaterVersionCompleted(
- void BrowserUpdaterClient::CheckForUpdate(
-     updater::UpdateService::StateChangeCallback version_updater_callback) {
+@@ -80,18 +67,6 @@ void BrowserUpdaterClient::CheckForUpdate(
+     base::RepeatingCallback<void(const updater::UpdateService::UpdateState&)>
+         version_updater_callback) {
    DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
 -
 -  updater::UpdateService::UpdateState update_state;
@@ -87,19 +87,15 @@ diff --git a/chrome/browser/updater/browser_updater_client.cc b/chrome/browser/u
  }
  
  void BrowserUpdaterClient::UpdateCompleted(
-@@ -130,13 +105,7 @@ void BrowserUpdaterClient::IsBrowserRegisteredCompleted(
+@@ -138,9 +113,7 @@ void BrowserUpdaterClient::IsBrowserRegisteredCompleted(
      base::OnceCallback<void(bool)> callback,
      const std::vector<updater::UpdateService::AppState>& apps) {
    DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
--  const std::string app_id = GetAppId();
--  std::move(callback).Run(
--      std::find_if(apps.begin(), apps.end(),
--                   [&](const updater::UpdateService::AppState& app) {
--                     return base::EqualsCaseInsensitiveASCII(app.app_id,
--                                                             app_id);
--                   }) != apps.end());
+-  std::move(callback).Run(std::find_if(apps.begin(), apps.end(),
+-                                       &BrowserUpdaterClient::AppMatches) !=
+-                          apps.end());
 +  std::move(callback).Run(true);
  }
  
- scoped_refptr<BrowserUpdaterClient> BrowserUpdaterClient::Create(
+ // User and System BrowserUpdaterClients must be kept separate - the template
 --

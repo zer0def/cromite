@@ -38,7 +38,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/compositor/Comp
  import org.chromium.chrome.browser.fullscreen.BrowserControlsManager;
  import org.chromium.chrome.browser.fullscreen.FullscreenManager;
  import org.chromium.chrome.browser.layouts.EventFilter.EventType;
-@@ -96,6 +97,7 @@ import org.chromium.ui.resources.dynamics.DynamicResourceLoader;
+@@ -98,6 +99,7 @@ import org.chromium.ui.resources.dynamics.DynamicResourceLoader;
  import org.chromium.url.GURL;
  
  import java.util.ArrayList;
@@ -46,7 +46,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/compositor/Comp
  import java.util.HashSet;
  import java.util.List;
  import java.util.Set;
-@@ -1322,7 +1324,12 @@ public class CompositorViewHolder extends FrameLayout
+@@ -1325,7 +1327,12 @@ public class CompositorViewHolder extends FrameLayout
      protected void onLayout(boolean changed, int l, int t, int r, int b) {
          if (changed) onViewportChanged();
          super.onLayout(changed, l, t, r, b);
@@ -194,7 +194,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/gesturenav/Side
      private @CloseTarget int mCloseIndicator;
  
      private @BackGestureEventSwipeEdge int mInitiatingEdge;
-@@ -229,10 +230,10 @@ public class SideSlideLayout extends ViewGroup {
+@@ -223,10 +224,10 @@ public class SideSlideLayout extends ViewGroup {
       * Set the direction used for sliding gesture.
       * @param forward {@code true} if direction is forward.
       */
@@ -209,7 +209,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/gesturenav/Side
      }
  
      public void setInitiatingEdge(@BackGestureEventSwipeEdge int edge) {
-@@ -326,7 +327,7 @@ public class SideSlideLayout extends ViewGroup {
+@@ -332,7 +333,7 @@ public class SideSlideLayout extends ViewGroup {
          mWillNavigate = navigating;
  
          if (mCloseIndicator != CloseTarget.NONE) {
@@ -218,7 +218,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/gesturenav/Side
                  mArrowView.showCaption(mCloseIndicator);
                  mArrowViewWidth = mArrowView.getMeasuredWidth();
              } else {
-@@ -342,6 +343,20 @@ public class SideSlideLayout extends ViewGroup {
+@@ -348,6 +349,20 @@ public class SideSlideLayout extends ViewGroup {
                                  ? -targetDiff
                                  : targetDiff);
          setTargetOffsetLeftAndRight(targetX - mCurrentTargetOffset);

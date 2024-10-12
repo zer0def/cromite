@@ -22,7 +22,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 diff --git a/components/performance_manager/features.cc b/components/performance_manager/features.cc
 --- a/components/performance_manager/features.cc
 +++ b/components/performance_manager/features.cc
-@@ -154,6 +154,7 @@ const base::FeatureParam<int> kThresholdChromeCPUPercent{
+@@ -143,6 +143,7 @@ BASE_FEATURE(kUrgentPageDiscarding,
  BASE_FEATURE(kCPUMeasurementInFreezingPolicy,
               "CPUMeasurementInFreezingPolicy",
               base::FEATURE_DISABLED_BY_DEFAULT);
@@ -30,7 +30,7 @@ diff --git a/components/performance_manager/features.cc b/components/performance
  
  // Note: This param is associated with `kCPUMeasurementInFreezingPolicy` instead
  // of `kFreezingOnBatterySaver`, to allow retrieving the value without
-@@ -170,8 +171,13 @@ BASE_FEATURE(kFreezingOnBatterySaverForTesting,
+@@ -159,9 +160,14 @@ BASE_FEATURE(kFreezingOnBatterySaverForTesting,
               "FreezingOnBatterySaverForTesting",
               base::FEATURE_DISABLED_BY_DEFAULT);
  
@@ -43,7 +43,8 @@ diff --git a/components/performance_manager/features.cc b/components/performance
               base::FEATURE_DISABLED_BY_DEFAULT);
 +SET_CROMITE_FEATURE_ENABLED(kResourceAttributionIncludeOrigins);
  
- }  // namespace performance_manager::features
+ BASE_FEATURE(kSeamlessRenderFrameSwap,
+              "SeamlessRenderFrameSwap",
 diff --git a/components/performance_manager/freezing/freezing_policy.cc b/components/performance_manager/freezing/freezing_policy.cc
 --- a/components/performance_manager/freezing/freezing_policy.cc
 +++ b/components/performance_manager/freezing/freezing_policy.cc
@@ -64,7 +65,7 @@ diff --git a/components/performance_manager/freezing/freezing_policy.cc b/compon
 diff --git a/components/performance_manager/public/features.h b/components/performance_manager/public/features.h
 --- a/components/performance_manager/public/features.h
 +++ b/components/performance_manager/public/features.h
-@@ -160,6 +160,9 @@ BASE_DECLARE_FEATURE(kFreezingOnBatterySaver);
+@@ -157,6 +157,9 @@ BASE_DECLARE_FEATURE(kFreezingOnBatterySaver);
  // - Pretend that all tabs have high CPU usage in background.
  BASE_DECLARE_FEATURE(kFreezingOnBatterySaverForTesting);
  
@@ -102,10 +103,10 @@ diff --git a/components/performance_manager/user_tuning/prefs.cc b/components/pe
 diff --git a/content/browser/renderer_host/page_lifecycle_state_manager.cc b/content/browser/renderer_host/page_lifecycle_state_manager.cc
 --- a/content/browser/renderer_host/page_lifecycle_state_manager.cc
 +++ b/content/browser/renderer_host/page_lifecycle_state_manager.cc
-@@ -77,6 +77,14 @@ void PageLifecycleStateManager::SetFrameTreeVisibility(
-     return;
+@@ -88,6 +88,14 @@ void PageLifecycleStateManager::SetFrameTreeVisibility(
+     frozen_explicitly_ = false;
+   }
  
-   frame_tree_visibility_ = visibility;
 +  if (visibility == blink::mojom::PageVisibilityState::kVisible) {
 +    // Unset `frozen_explicitly_` when the page is shown, to reflect that the
 +    // Blink page scheduler unfreezes the page in that situation. This ensures

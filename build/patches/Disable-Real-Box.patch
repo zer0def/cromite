@@ -13,7 +13,7 @@ Real-box is search box in ntp
 diff --git a/chrome/browser/prefs/browser_prefs.cc b/chrome/browser/prefs/browser_prefs.cc
 --- a/chrome/browser/prefs/browser_prefs.cc
 +++ b/chrome/browser/prefs/browser_prefs.cc
-@@ -2170,7 +2170,7 @@ void RegisterProfilePrefs(user_prefs::PrefRegistrySyncable* registry,
+@@ -2254,7 +2254,7 @@ void RegisterProfilePrefs(user_prefs::PrefRegistrySyncable* registry,
    registry->RegisterBooleanPref(
        prefs::kLensRegionSearchEnabled, true,
        user_prefs::PrefRegistrySyncable::SYNCABLE_PREF);
@@ -28,8 +28,8 @@ diff --git a/chrome/browser/resources/new_tab_page/app.html b/chrome/browser/res
 @@ -16,14 +16,6 @@
        ?hidden="${!this.logoEnabled_}">
    </ntp-logo>
-   <div id="realboxContainer">
--    <cr-searchbox id="realbox" ?is-dark="${this.isThemeDark_()}"
+   <div id="searchboxContainer">
+-    <cr-searchbox id="searchbox" ?is-dark="${this.isThemeDark_()}"
 -        ?color-source-is-baseline="${this.colorSourceIsBaseline}"
 -        @open-lens-search="${this.onOpenLensSearch_}"
 -        @open-voice-search="${this.onOpenVoiceSearch_}" ?shown="${this.realboxShown_}"
@@ -43,7 +43,7 @@ diff --git a/chrome/browser/resources/new_tab_page/app.html b/chrome/browser/res
 diff --git a/chrome/browser/ui/webui/searchbox/searchbox_handler.cc b/chrome/browser/ui/webui/searchbox/searchbox_handler.cc
 --- a/chrome/browser/ui/webui/searchbox/searchbox_handler.cc
 +++ b/chrome/browser/ui/webui/searchbox/searchbox_handler.cc
-@@ -457,6 +457,7 @@ void SearchboxHandler::SetupWebUIDataSource(content::WebUIDataSource* source,
+@@ -451,6 +451,7 @@ void SearchboxHandler::SetupWebUIDataSource(content::WebUIDataSource* source,
                                              Profile* profile,
                                              bool enable_voice_search,
                                              bool enable_lens_search) {
@@ -54,7 +54,7 @@ diff --git a/chrome/browser/ui/webui/searchbox/searchbox_handler.cc b/chrome/bro
 diff --git a/components/search/ntp_features.cc b/components/search/ntp_features.cc
 --- a/components/search/ntp_features.cc
 +++ b/components/search/ntp_features.cc
-@@ -161,7 +161,7 @@ BASE_FEATURE(kNtpHandleMostVisitedNavigationExplicitly,
+@@ -118,7 +118,7 @@ BASE_FEATURE(kNtpDriveModuleShowSixFiles,
  
  // If enabled, logo will be shown.
  // This is a kill switch. Keep indefinitely.
@@ -63,7 +63,7 @@ diff --git a/components/search/ntp_features.cc b/components/search/ntp_features.
  
  // If enabled, middle slot promo will be shown.
  // This is a kill switch. Keep indefinitely.
-@@ -229,8 +229,8 @@ BASE_FEATURE(kNtpModulesRedesigned,
+@@ -186,8 +186,8 @@ BASE_FEATURE(kNtpModulesRedesigned,
  // If enabled, OneGoogleBar will be shown.
  // This is a kill switch. Keep indefinitely.
  BASE_FEATURE(kNtpOneGoogleBar,

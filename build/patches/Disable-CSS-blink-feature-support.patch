@@ -16,15 +16,15 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 diff --git a/third_party/blink/renderer/core/css/parser/css_supports_parser.cc b/third_party/blink/renderer/core/css/parser/css_supports_parser.cc
 --- a/third_party/blink/renderer/core/css/parser/css_supports_parser.cc
 +++ b/third_party/blink/renderer/core/css/parser/css_supports_parser.cc
-@@ -322,7 +322,7 @@ CSSSupportsParser::Result CSSSupportsParser::ConsumeBlinkFeatureFn(
-       stream.ConsumeUntilPeekedTypeIs<kRightParenthesisToken>();
-   return RuntimeEnabledFeatures::IsFeatureEnabledFromString(
-              feature_name_block.Peek().Value().Utf8())
--             ? Result::kSupported
-+             ? Result::kUnsupported
-              : Result::kUnsupported;
- }
- 
+@@ -227,7 +227,7 @@ bool CSSSupportsParser::ConsumeBlinkFeatureFn(CSSParserTokenStream& stream) {
+             feature_name.Value().Utf8()) &&
+         guard.Release()) {
+       stream.ConsumeWhitespace();
+-      return true;
++      return false;
+     }
+   }
+   return false;
 diff --git a/third_party/blink/renderer/core/speculation_rules/document_rule_predicate.cc b/third_party/blink/renderer/core/speculation_rules/document_rule_predicate.cc
 --- a/third_party/blink/renderer/core/speculation_rules/document_rule_predicate.cc
 +++ b/third_party/blink/renderer/core/speculation_rules/document_rule_predicate.cc

@@ -83,21 +83,20 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tracing/setting
  import androidx.preference.PreferenceFragmentCompat;
  
  import org.chromium.base.ResettersForTesting;
-@@ -15,11 +17,13 @@ import org.chromium.base.version_info.VersionInfo;
- import org.chromium.chrome.R;
- import org.chromium.chrome.browser.preferences.ChromePreferenceKeys;
+@@ -19,10 +21,12 @@ import org.chromium.chrome.browser.preferences.ChromePreferenceKeys;
  import org.chromium.chrome.browser.preferences.ChromeSharedPreferences;
-+import org.chromium.chrome.browser.util.PlatformUtil;
+ import org.chromium.components.browser_ui.settings.SettingsPage;
  import org.chromium.components.browser_ui.settings.SettingsUtils;
++import org.chromium.chrome.browser.util.PlatformUtil;
  
  /** Settings fragment containing preferences aimed at Chrome and web developers. */
- public class DeveloperSettings extends PreferenceFragmentCompat {
+ public class DeveloperSettings extends PreferenceFragmentCompat implements SettingsPage {
      private static final String UI_PREF_BETA_STABLE_HINT = "beta_stable_hint";
 +    private static final String TEST_GWP_ASAN_KEY = "test_gwp_asan";
  
      // Non-translated strings:
      private static final String MSG_DEVELOPER_OPTIONS_TITLE = "Developer options";
-@@ -54,5 +58,21 @@ public class DeveloperSettings extends PreferenceFragmentCompat {
+@@ -58,6 +62,22 @@ public class DeveloperSettings extends PreferenceFragmentCompat implements Setti
          if (VersionInfo.isBetaBuild() || VersionInfo.isStableBuild()) {
              getPreferenceScreen().removePreference(findPreference(UI_PREF_BETA_STABLE_HINT));
          }
@@ -118,11 +117,12 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tracing/setting
 +            return true;
 +        });
      }
- }
+ 
+     @Override
 diff --git a/chrome/app/chrome_main_delegate.cc b/chrome/app/chrome_main_delegate.cc
 --- a/chrome/app/chrome_main_delegate.cc
 +++ b/chrome/app/chrome_main_delegate.cc
-@@ -2021,7 +2021,7 @@ void ChromeMainDelegate::InitializeMemorySystem() {
+@@ -2009,7 +2009,7 @@ void ChromeMainDelegate::InitializeMemorySystem() {
    const std::string process_type =
        command_line->GetSwitchValueASCII(switches::kProcessType);
    const bool is_browser_process = process_type.empty();
