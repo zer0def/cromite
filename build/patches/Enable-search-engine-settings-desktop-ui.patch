@@ -44,6 +44,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../settings_localized_strings_provider.cc    |   8 +
  ...ings_localized_strings_provider_android.cc | 198 +++++++++++++
  ...tings_localized_strings_provider_android.h |  19 ++
+ .../browser/ui/webui/settings/settings_ui.cc  |   4 +-
  .../ui/webui/settings/settings_ui_android.cc  | 126 +++++++++
  .../ui/webui/settings/settings_ui_android.h   | 103 +++++++
  chrome/chrome_paks.gni                        |  11 +
@@ -70,7 +71,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  ui/webui/resources/include_polymer.gni        |   2 +-
  ui/webui/resources/js/BUILD.gn                |   2 +-
  ui/webui/resources/js/load_time_data.ts       |  17 +-
- 63 files changed, 1093 insertions(+), 61 deletions(-)
+ 64 files changed, 1095 insertions(+), 63 deletions(-)
  create mode 100644 chrome/app/settings_strings_android.grdp
  create mode 100644 chrome/browser/search_engines/android/java/res/layout/search_engine_layout.xml
  create mode 100644 chrome/browser/ui/webui/settings/settings_localized_strings_provider_android.cc
@@ -1577,6 +1578,24 @@ new file mode 100644
 +}  // namespace settings
 +
 +#endif  // CHROME_BROWSER_UI_WEBUI_SETTINGS_SETTINGS_LOCALIZED_STRINGS_PROVIDER_ANDROID_H_
+diff --git a/chrome/browser/ui/webui/settings/settings_ui.cc b/chrome/browser/ui/webui/settings/settings_ui.cc
+--- a/chrome/browser/ui/webui/settings/settings_ui.cc
++++ b/chrome/browser/ui/webui/settings/settings_ui.cc
+@@ -460,12 +460,12 @@ SettingsUI::SettingsUI(content::WebUI* web_ui)
+   web_ui->AddMessageHandler(std::make_unique<MetricsHandler>());
+ 
+   webui::SetupWebUIDataSource(
+-      html_source, base::make_span(kSettingsResources, kSettingsResourcesSize),
++      html_source, base::span(kSettingsResources),
+       IDR_SETTINGS_SETTINGS_HTML);
+ 
+ #if !BUILDFLAG(OPTIMIZE_WEBUI)
+   html_source->AddResourcePaths(
+-      base::make_span(kSettingsSharedResources, kSettingsSharedResourcesSize));
++      base::span(kSettingsSharedResources));
+ #endif
+ 
+   AddLocalizedStrings(html_source, profile, web_ui->GetWebContents());
 diff --git a/chrome/browser/ui/webui/settings/settings_ui_android.cc b/chrome/browser/ui/webui/settings/settings_ui_android.cc
 new file mode 100644
 --- /dev/null
@@ -1657,7 +1676,7 @@ new file mode 100644
 +  web_ui->DoNotCrashOnUnhandledMessage();
 +
 +  webui::SetupWebUIDataSource(
-+      html_source, base::make_span(kSettingsResources, kSettingsResourcesSize),
++      html_source, base::span(kSettingsResources),
 +      IDR_SETTINGS_SETTINGS_HTML);
 +
 +  html_source->AddBoolean(
@@ -1666,7 +1685,7 @@ new file mode 100644
 +
 +#if !BUILDFLAG(OPTIMIZE_WEBUI)
 +  html_source->AddResourcePaths(
-+      base::make_span(kSettingsSharedResources, kSettingsSharedResourcesSize));
++      base::span(kSettingsSharedResources));
 +#endif
 +
 +  AddLocalizedStringsAndroid(html_source, profile, web_ui->GetWebContents());

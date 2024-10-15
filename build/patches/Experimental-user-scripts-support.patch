@@ -48,7 +48,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../renderer/chrome_render_thread_observer.cc |   5 +
  components/components_strings.grd             |   1 +
  components/user_scripts/README.md             | 150 ++++
- components/user_scripts/android/BUILD.gn      |  84 ++
+ components/user_scripts/android/BUILD.gn      |  86 ++
  .../java/res/layout/accept_script_item.xml    | 160 ++++
  .../java/res/layout/accept_script_list.xml    |  10 +
  .../java/res/layout/scripts_preference.xml    |  40 +
@@ -93,7 +93,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  components/user_scripts/common/host_id.cc     |  31 +
  components/user_scripts/common/host_id.h      |  35 +
  .../user_scripts/common/script_constants.h    |  33 +
- components/user_scripts/common/url_pattern.cc | 808 ++++++++++++++++++
+ components/user_scripts/common/url_pattern.cc | 809 ++++++++++++++++++
  components/user_scripts/common/url_pattern.h  | 302 +++++++
  .../user_scripts/common/url_pattern_set.cc    | 335 ++++++++
  .../user_scripts/common/url_pattern_set.h     | 160 ++++
@@ -135,7 +135,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../Experimental-user-scripts-support.inc     |  13 +
  ipc/ipc_message_start.h                       |   1 +
  tools/gritsettings/resource_ids.spec          |   6 +
- 108 files changed, 9480 insertions(+), 2 deletions(-)
+ 108 files changed, 9483 insertions(+), 2 deletions(-)
  create mode 100644 components/user_scripts/README.md
  create mode 100755 components/user_scripts/android/BUILD.gn
  create mode 100644 components/user_scripts/android/java/res/layout/accept_script_item.xml
@@ -858,7 +858,7 @@ diff --git a/components/user_scripts/android/BUILD.gn b/components/user_scripts/
 new file mode 100755
 --- /dev/null
 +++ b/components/user_scripts/android/BUILD.gn
-@@ -0,0 +1,84 @@
+@@ -0,0 +1,86 @@
 +# This file is part of Bromite.
 +
 +# Bromite is free software: you can redistribute it and/or modify
@@ -878,17 +878,18 @@ new file mode 100755
 +import("//third_party/jni_zero/jni_zero.gni")
 +
 +generate_jni("user_scripts_jni_headers") {
-+  sources = [ "java/src/org/chromium/components/user_scripts/UserScriptsBridge.java" ]
++  sources =
++      [ "java/src/org/chromium/components/user_scripts/UserScriptsBridge.java" ]
 +}
 +
 +android_resources("java_resources") {
 +  sources = [
-+    "java/res/xml/userscripts_preferences.xml",
 +    "java/res/layout/accept_script_item.xml",
 +    "java/res/layout/accept_script_list.xml",
 +    "java/res/layout/scripts_preference.xml",
-+    "java/res/values/dimens.xml"
-+   ]
++    "java/res/values/dimens.xml",
++    "java/res/xml/userscripts_preferences.xml",
++  ]
 +
 +  deps = [
 +    "//components/browser_ui/strings/android:browser_ui_strings_grd",
@@ -901,29 +902,30 @@ new file mode 100755
 +android_library("java") {
 +  sources = [
 +    "java/src/org/chromium/components/user_scripts/FragmentWindowAndroid.java",
-+    "java/src/org/chromium/components/user_scripts/UserScriptsPreferences.java",
-+    "java/src/org/chromium/components/user_scripts/UserScriptsBridge.java",
 +    "java/src/org/chromium/components/user_scripts/IUserScriptsUtils.java",
++    "java/src/org/chromium/components/user_scripts/ScriptInfo.java",
 +    "java/src/org/chromium/components/user_scripts/ScriptListBaseAdapter.java",
 +    "java/src/org/chromium/components/user_scripts/ScriptListPreference.java",
-+    "java/src/org/chromium/components/user_scripts/ScriptInfo.java",
++    "java/src/org/chromium/components/user_scripts/UserScriptsBridge.java",
++    "java/src/org/chromium/components/user_scripts/UserScriptsPreferences.java",
 +  ]
 +  deps = [
 +    ":java_resources",
 +    "//base:base_java",
-+    "//third_party/jni_zero:jni_zero_java",
-+    "//components/embedder_support/android:browser_context_java",
++    "//base:content_uri_utils_java",
++    "//build/android:build_java",
 +    "//components/browser_ui/settings/android:java",
 +    "//components/browser_ui/widget/android:java",
-+    "//content/public/android:content_java",
++    "//components/embedder_support/android:browser_context_java",
 +    "//components/prefs/android:java",
-+    "//build/android:build_java",
-+    "//third_party/androidx:androidx_fragment_fragment_java",
-+    "//third_party/androidx:androidx_recyclerview_recyclerview_java",
++    "//content/public/android:content_java",
 +    "//third_party/androidx:androidx_annotation_annotation_java",
 +    "//third_party/androidx:androidx_appcompat_appcompat_resources_java",
-+    "//third_party/androidx:androidx_preference_preference_java",
 +    "//third_party/androidx:androidx_core_core_java",
++    "//third_party/androidx:androidx_fragment_fragment_java",
++    "//third_party/androidx:androidx_preference_preference_java",
++    "//third_party/androidx:androidx_recyclerview_recyclerview_java",
++    "//third_party/jni_zero:jni_zero_java",
 +    "//ui/android:ui_java",
 +  ]
 +  srcjar_deps = [ ":user_scripts_jni_headers" ]
@@ -938,8 +940,8 @@ new file mode 100755
 +  deps = [
 +    ":user_scripts_jni_headers",
 +    "//base",
-+    "//components/user_scripts/browser",
 +    "//components/permissions",
++    "//components/user_scripts/browser",
 +    "//content/public/browser",
 +  ]
 +}
@@ -4770,7 +4772,7 @@ diff --git a/components/user_scripts/common/url_pattern.cc b/components/user_scr
 new file mode 100755
 --- /dev/null
 +++ b/components/user_scripts/common/url_pattern.cc
-@@ -0,0 +1,808 @@
+@@ -0,0 +1,809 @@
 +// Copyright (c) 2012 The Chromium Authors. All rights reserved.
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
@@ -4861,18 +4863,19 @@ new file mode 100755
 +}
 +
 +bool IsValidPortForScheme(std::string_view scheme, std::string_view port) {
-+  if (port == "*")
++  if (port == "*") {
 +    return true;
++  }
 +
 +  // Only accept non-wildcard ports if the scheme uses ports.
-+  if (url::DefaultPortForScheme(scheme.data(), scheme.length()) ==
-+      url::PORT_UNSPECIFIED) {
++  if (url::DefaultPortForScheme(scheme) == url::PORT_UNSPECIFIED) {
 +    return false;
 +  }
 +
 +  int parsed_port = url::PORT_UNSPECIFIED;
-+  if (!base::StringToInt(port, &parsed_port))
++  if (!base::StringToInt(port, &parsed_port)) {
 +    return false;
++  }
 +  return (parsed_port >= 0) && (parsed_port < 65536);
 +}
 +

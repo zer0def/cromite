@@ -33,6 +33,7 @@ deactivation of all pop-ups (default disabled)
  .../settings/settings_menu/settings_menu.html |    5 +
  chrome/browser/ui/tab_helpers.cc              |    6 +-
  .../adblock_internals_page_handler_impl.cc    |   23 +-
+ .../adblock_internals/adblock_internals_ui.cc |    3 +-
  .../common/extensions/api/_api_features.json  |    4 +-
  .../extensions/api/_permission_features.json  |    8 -
  .../common/extensions/api/adblock_private.idl |    8 +
@@ -55,7 +56,7 @@ deactivation of all pop-ups (default disabled)
  .../browser/adblock_url_loader_factory.h      |    7 +-
  .../browser/adblock_webcontents_observer.cc   |   25 +-
  .../browser/adblock_webcontents_observer.h    |    5 +-
- .../content/browser/element_hider_impl.cc     |   10 +-
+ .../content/browser/element_hider_impl.cc     |    9 +-
  .../browser/frame_hierarchy_builder.cc        |    3 +-
  .../browser/resource_classification_runner.h  |    9 +
  .../resource_classification_runner_impl.cc    |   83 +-
@@ -100,7 +101,7 @@ deactivation of all pop-ups (default disabled)
  .../subscription_collection_impl.cc           |    1 +
  .../core/subscription/subscription_config.cc  |   26 +-
  .../core/subscription/subscription_config.h   |    6 +-
- .../subscription_downloader_impl.cc           |   21 +-
+ .../subscription_downloader_impl.cc           |   29 +-
  .../subscription_persistent_metadata.h        |    1 +
  .../subscription_persistent_metadata_impl.cc  |    7 +
  .../subscription_persistent_metadata_impl.h   |    1 +
@@ -129,7 +130,7 @@ deactivation of all pop-ups (default disabled)
  .../blink/renderer/core/css/style_engine.h    |    1 +
  .../renderer/core/exported/web_document.cc    |   15 +-
  .../definitions/adblock_private.d.ts          |   14 +
- 119 files changed, 6725 insertions(+), 1311 deletions(-)
+ 120 files changed, 6731 insertions(+), 1315 deletions(-)
  create mode 100644 chrome/browser/resources/settings/adblock_page/adblock_page.html
  create mode 100644 chrome/browser/resources/settings/adblock_page/adblock_page.ts
  rename components/adblock/android/java/res/xml/{adblock_preferences.xml => eyeo_adblock_preferences.xml} (56%)
@@ -161,7 +162,7 @@ diff --git a/chrome/android/java/res/xml/main_preferences.xml b/chrome/android/j
  <!-- The main_preferences file will be reordered with the upcoming autofill
  options. Only the order changes. Each pref should exist here and in the layout
  for the previous order (main_preferences_legacy). -->
-@@ -120,6 +111,11 @@ for the previous order (main_preferences_legacy). -->
+@@ -125,6 +116,11 @@ for the previous order (main_preferences_legacy). -->
          android:key="adblock"
          android:order="13"
          android:title="@string/prefs_adblock"/>
@@ -173,7 +174,7 @@ diff --git a/chrome/android/java/res/xml/main_preferences.xml b/chrome/android/j
      <Preference
          android:key="notifications"
          android:order="22"
-@@ -134,11 +130,6 @@ for the previous order (main_preferences_legacy). -->
+@@ -139,11 +135,6 @@ for the previous order (main_preferences_legacy). -->
          android:key="accessibility"
          android:order="24"
          android:title="@string/prefs_accessibility"/>
@@ -1747,6 +1748,19 @@ diff --git a/chrome/browser/ui/webui/adblock_internals/adblock_internals_page_ha
  }
  
  void AdblockInternalsPageHandlerImpl::OnTelemetryServiceInfoArrived(
+diff --git a/chrome/browser/ui/webui/adblock_internals/adblock_internals_ui.cc b/chrome/browser/ui/webui/adblock_internals/adblock_internals_ui.cc
+--- a/chrome/browser/ui/webui/adblock_internals/adblock_internals_ui.cc
++++ b/chrome/browser/ui/webui/adblock_internals/adblock_internals_ui.cc
+@@ -30,8 +30,7 @@ AdblockInternalsUI::AdblockInternalsUI(content::WebUI* web_ui)
+   content::WebUIDataSource* source = content::WebUIDataSource::CreateAndAdd(
+       profile_, chrome::kChromeUIAdblockInternalsHost);
+   webui::SetupWebUIDataSource(source,
+-                              base::make_span(kAdblockInternalsResources,
+-                                              kAdblockInternalsResourcesSize),
++                              base::span(kAdblockInternalsResources),
+                               IDR_ADBLOCK_INTERNALS_ADBLOCK_INTERNALS_HTML);
+ }
+ 
 diff --git a/chrome/common/extensions/api/_api_features.json b/chrome/common/extensions/api/_api_features.json
 --- a/chrome/common/extensions/api/_api_features.json
 +++ b/chrome/common/extensions/api/_api_features.json
@@ -2912,7 +2926,7 @@ diff --git a/components/adblock/content/browser/element_hider_impl.cc b/componen
      return;
    }
    auto* info = ElementHiderInfo::GetOrCreateForCurrentDocument(frame_host);
-@@ -239,13 +239,9 @@ void InsertUserCSSAndApplyElemHidingEmuJS(
+@@ -239,13 +239,10 @@ void InsertUserCSSAndApplyElemHidingEmuJS(
    }
  
    if (!input.snippet_js.empty()) {
@@ -2922,9 +2936,9 @@ diff --git a/components/adblock/content/browser/element_hider_impl.cc b/componen
 -    frame_host->ExecuteJavaScriptInIsolatedWorld(
 +    frame_host->ExecuteJavaScriptForTests(
          base::UTF8ToUTF16(input.snippet_js),
--        content::RenderFrameHost::JavaScriptResultCallback(),
+         content::RenderFrameHost::JavaScriptResultCallback(),
 -        content::ISOLATED_WORLD_ID_ADBLOCK);
-+        content::RenderFrameHost::JavaScriptResultCallback());
++        content::ISOLATED_WORLD_ID_GLOBAL);
  
      DVLOG(1) << "[eyeo] Snippet - executed JS in frame"
               << " '" << frame_host->GetFrameName() << "'";
@@ -5141,7 +5155,25 @@ diff --git a/components/adblock/core/subscription/subscription_downloader_impl.c
    if (!subscription_url.SchemeIs("https") &&
        !subscription_url.SchemeIs("data")) {
      return false;
-@@ -192,11 +191,11 @@ void SubscriptionDownloaderImpl::OnDownloadFinished(
+@@ -156,12 +155,14 @@ void SubscriptionDownloaderImpl::OnHeadersOnlyDownloaded(
+     scoped_refptr<net::HttpResponseHeaders> headers) {
+   DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
+   DCHECK(ongoing_ping_.has_value());
+-  base::Time date;
++
+   std::string version("");
+ 
+   // Parse date or Date from response headers.
+-  if (headers && headers->GetDateValue(&date)) {
+-    version = utils::ConvertBaseTimeToABPFilterVersionFormat(date);
++  if (headers) {
++    if (auto date = headers->GetDateValue()) {
++      version = utils::ConvertBaseTimeToABPFilterVersionFormat(date.value());
++    }
+   }
+ 
+   std::move(std::get<HeadRequestCallback>(*ongoing_ping_))
+@@ -192,11 +193,11 @@ void SubscriptionDownloaderImpl::OnDownloadFinished(
      persistent_metadata_->IncrementDownloadErrorCount(subscription_url);
      if (std::get<RetryPolicy>(download_it->second) ==
          RetryPolicy::RetryUntilSucceeded) {
@@ -5155,7 +5187,7 @@ diff --git a/components/adblock/core/subscription/subscription_downloader_impl.c
                      << subscription_url << ", will abort";
        std::move(std::get<DownloadCompletedCallback>(download_it->second))
            .Run(nullptr);
-@@ -213,8 +212,10 @@ void SubscriptionDownloaderImpl::OnDownloadFinished(
+@@ -213,8 +214,10 @@ void SubscriptionDownloaderImpl::OnDownloadFinished(
        TRACE_ID_LOCAL(GenerateTraceId(subscription_url)), "url",
        subscription_url.spec());
  
@@ -5167,7 +5199,7 @@ diff --git a/components/adblock/core/subscription/subscription_downloader_impl.c
        base::BindOnce(&SubscriptionDownloaderImpl::OnConversionFinished,
                       weak_ptr_factory_.GetWeakPtr(), subscription_url));
  }
-@@ -228,14 +229,14 @@ void SubscriptionDownloaderImpl::OnConversionFinished(
+@@ -228,14 +231,14 @@ void SubscriptionDownloaderImpl::OnConversionFinished(
        TRACE_ID_LOCAL(GenerateTraceId(subscription_url)));
    const auto download_it = ongoing_downloads_.find(subscription_url);
    if (download_it == ongoing_downloads_.end()) {
@@ -5184,7 +5216,7 @@ diff --git a/components/adblock/core/subscription/subscription_downloader_impl.c
              << " successfully";
      std::move(std::get<DownloadCompletedCallback>(download_it->second))
          .Run(std::move(
-@@ -278,7 +279,7 @@ void SubscriptionDownloaderImpl::AbortWithWarning(
+@@ -278,7 +281,7 @@ void SubscriptionDownloaderImpl::AbortWithWarning(
    if (ongoing_download_it == ongoing_downloads_.end()) {
      return;
    }

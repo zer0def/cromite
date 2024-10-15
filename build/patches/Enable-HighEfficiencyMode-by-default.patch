@@ -14,9 +14,8 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../performance_manager/freezing/freezing_policy.cc       | 4 ++--
  components/performance_manager/public/features.h          | 3 +++
  components/performance_manager/user_tuning/prefs.cc       | 6 +++---
- .../browser/renderer_host/page_lifecycle_state_manager.cc | 8 ++++++++
  .../Enable-freeze-high-cpu-background-usage.inc           | 8 ++++++++
- 6 files changed, 30 insertions(+), 5 deletions(-)
+ 5 files changed, 22 insertions(+), 5 deletions(-)
  create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Enable-freeze-high-cpu-background-usage.inc
 
 diff --git a/components/performance_manager/features.cc b/components/performance_manager/features.cc
@@ -100,24 +99,6 @@ diff --git a/components/performance_manager/user_tuning/prefs.cc b/components/pe
    registry->RegisterTimePref(kLastBatteryUseTimestamp, base::Time());
    registry->RegisterBooleanPref(kDiscardRingTreatmentEnabled, true);
    registry->RegisterBooleanPref(kPerformanceInterventionNotificationEnabled,
-diff --git a/content/browser/renderer_host/page_lifecycle_state_manager.cc b/content/browser/renderer_host/page_lifecycle_state_manager.cc
---- a/content/browser/renderer_host/page_lifecycle_state_manager.cc
-+++ b/content/browser/renderer_host/page_lifecycle_state_manager.cc
-@@ -88,6 +88,14 @@ void PageLifecycleStateManager::SetFrameTreeVisibility(
-     frozen_explicitly_ = false;
-   }
- 
-+  if (visibility == blink::mojom::PageVisibilityState::kVisible) {
-+    // Unset `frozen_explicitly_` when the page is shown, to reflect that the
-+    // Blink page scheduler unfreezes the page in that situation. This ensures
-+    // that the page is frozen if SetIsFrozen(true) is called while the page is
-+    // hidden in the future (SetIsFrozen(true) no-ops if `frozen_explicitly_` is
-+    // true).
-+    is_set_frozen_called_ = false;
-+  }
-   SendUpdatesToRendererIfNeeded(
-       /*page_restore_params=*/nullptr, base::NullCallback());
-   // TODO(yuzus): When a page is frozen and made visible, the page should
 diff --git a/cromite_flags/chrome/browser/about_flags_cc/Enable-freeze-high-cpu-background-usage.inc b/cromite_flags/chrome/browser/about_flags_cc/Enable-freeze-high-cpu-background-usage.inc
 new file mode 100644
 --- /dev/null

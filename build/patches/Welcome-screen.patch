@@ -262,7 +262,7 @@ diff --git a/chrome/android/java/res/values/styles.xml b/chrome/android/java/res
 +    <style name="FreWelcomePageTitle" parent="FreTitle">
 +        <item name="android:textAppearance">@style/TextAppearance.FreFirstFrameTitle</item>
 +    </style>
-+    <style name="FreAcceptTosButton" parent="FilledButton.Flat">
++    <style name="FreAcceptTosButton" parent="FilledButton">
 +        <item name="android:textAppearance">@style/TextAppearance.FreFirstFrameButton</item>
 +    </style>
 +

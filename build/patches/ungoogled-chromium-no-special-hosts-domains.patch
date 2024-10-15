@@ -29,6 +29,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../new_tab_page/promos/promo_service.cc      |   6 +-
  .../from_gws_page_load_metrics_observer.cc    |   6 +-
  .../page_load_metrics_initialize.cc           |   5 -
+ chrome/browser/profile_resetter/BUILD.gn      |   1 -
  .../profile_resetter/profile_resetter.cc      |   3 +-
  chrome/browser/safe_browsing/BUILD.gn         |   1 -
  chrome/browser/search_engines/BUILD.gn        |   1 -
@@ -64,7 +65,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  ...gled-chromium-no-special-hosts-domains.inc |   1 +
  net/base/url_util.cc                          |  25 +-
  services/network/network_context.cc           |   2 +-
- 57 files changed, 58 insertions(+), 855 deletions(-)
+ 58 files changed, 58 insertions(+), 856 deletions(-)
  create mode 100644 cromite_flags/content/public/common/content_features_cc/ungoogled-chromium-no-special-hosts-domains.inc
 
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ui/RootUiCoordinator.java b/chrome/android/java/src/org/chromium/chrome/browser/ui/RootUiCoordinator.java
@@ -710,6 +711,17 @@ diff --git a/chrome/browser/page_load_metrics/page_load_metrics_initialize.cc b/
      tracker->AddObserver(std::make_unique<ForegroundDurationUKMObserver>());
      tracker->AddObserver(
          std::make_unique<DocumentWritePageLoadMetricsObserver>());
+diff --git a/chrome/browser/profile_resetter/BUILD.gn b/chrome/browser/profile_resetter/BUILD.gn
+--- a/chrome/browser/profile_resetter/BUILD.gn
++++ b/chrome/browser/profile_resetter/BUILD.gn
+@@ -18,7 +18,6 @@ if (!is_android) {
+     deps = [
+       "//chrome/browser:browser",
+       "//chrome/browser/browsing_data:constants",
+-      "//chrome/browser/google:google",
+       "//chrome/browser/search/background:background",
+       "//chrome/browser/search_engines:search_engines",
+       "//chrome/test:test_support",
 diff --git a/chrome/browser/profile_resetter/profile_resetter.cc b/chrome/browser/profile_resetter/profile_resetter.cc
 --- a/chrome/browser/profile_resetter/profile_resetter.cc
 +++ b/chrome/browser/profile_resetter/profile_resetter.cc

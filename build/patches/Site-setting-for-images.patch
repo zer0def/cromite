@@ -15,7 +15,7 @@ Require: Content-settings-infrastructure.patch
  .../bromite_content_settings/images.grdp      |  23 +++++
  .../bromite_content_settings/images.inc       |   6 ++
  .../core/browser/content_settings_registry.cc |   2 +-
- .../renderer/content_settings_agent_impl.cc   |  15 +++
+ .../renderer/content_settings_agent_impl.cc   |  14 +++
  .../renderer/content_settings_agent_impl.h    |   2 +
  .../platform/web_content_settings_client.h    |   5 +
  .../blink/renderer/core/frame/local_frame.cc  |  13 ---
@@ -27,7 +27,7 @@ Require: Content-settings-infrastructure.patch
  .../platform/loader/fetch/fetch_context.h     |   2 +-
  .../platform/loader/fetch/resource_fetcher.cc |  17 +++-
  .../platform/loader/fetch/resource_fetcher.h  |   2 +
- 21 files changed, 178 insertions(+), 36 deletions(-)
+ 21 files changed, 177 insertions(+), 36 deletions(-)
  create mode 100644 components/browser_ui/site_settings/android/java/res/drawable-hdpi/permission_images.png
  create mode 100644 components/browser_ui/site_settings/android/java/res/drawable-mdpi/permission_images.png
  create mode 100644 components/browser_ui/site_settings/android/java/res/drawable-xhdpi/permission_images.png
@@ -271,7 +271,7 @@ diff --git a/components/content_settings/core/browser/content_settings_registry.
 diff --git a/components/content_settings/renderer/content_settings_agent_impl.cc b/components/content_settings/renderer/content_settings_agent_impl.cc
 --- a/components/content_settings/renderer/content_settings_agent_impl.cc
 +++ b/components/content_settings/renderer/content_settings_agent_impl.cc
-@@ -334,6 +334,21 @@ bool ContentSettingsAgentImpl::AllowStorageAccessSync(
+@@ -334,6 +334,20 @@ bool ContentSettingsAgentImpl::AllowStorageAccessSync(
    return result;
  }
  
@@ -279,7 +279,6 @@ diff --git a/components/content_settings/renderer/content_settings_agent_impl.cc
 +                                          const WebURL& image_url) {
 +  bool allow = enabled_per_settings;
 +  if (enabled_per_settings) {
-+    allow = allow || IsAllowlistedForContentSettingsCromite();
 +    if (content_setting_rules_) {
 +      allow = AllowContentSetting(ContentSettingsType::IMAGES,
 +                                  image_url, enabled_per_settings);
@@ -459,7 +458,7 @@ diff --git a/third_party/blink/renderer/platform/loader/fetch/resource_fetcher.c
        allow_stale_resources_(false),
        image_fetched_(false),
        transparent_image_optimization_enabled_(base::FeatureList::IsEnabled(
-@@ -1920,7 +1921,7 @@ bool ResourceFetcher::IsImageResourceDisallowedToBeReused(
+@@ -1918,7 +1919,7 @@ bool ResourceFetcher::IsImageResourceDisallowedToBeReused(
    if (existing_resource.GetType() != ResourceType::kImage)
      return false;
  
@@ -468,7 +467,7 @@ diff --git a/third_party/blink/renderer/platform/loader/fetch/resource_fetcher.c
  }
  
  ResourceFetcher::RevalidationPolicy
-@@ -2163,8 +2164,20 @@ void ResourceFetcher::SetAutoLoadImages(bool enable) {
+@@ -2161,8 +2162,20 @@ void ResourceFetcher::SetAutoLoadImages(bool enable) {
    ReloadImagesIfNotDeferred();
  }
  
@@ -501,7 +500,7 @@ diff --git a/third_party/blink/renderer/platform/loader/fetch/resource_fetcher.h
  
    FetchContext& Context() const;
    void ClearContext();
-@@ -686,6 +687,7 @@ class PLATFORM_EXPORT ResourceFetcher
+@@ -688,6 +689,7 @@ class PLATFORM_EXPORT ResourceFetcher
  
    // 27 bits left
    bool auto_load_images_ : 1;

@@ -15,9 +15,9 @@ See also: https://github.com/bromite/bromite/issues/547
 Original License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 ---
- .../settings/PasswordSettings.java            | 82 ++++++++++++++++++-
+ .../settings/PasswordSettings.java            | 83 ++++++++++++++++++-
  .../chrome/browser/settings/MainSettings.java |  3 +-
- .../chromium/chrome/browser/tab/TabImpl.java  | 41 ++++++++--
+ .../chromium/chrome/browser/tab/TabImpl.java  | 41 +++++++--
  chrome/browser/about_flags.cc                 | 31 -------
  chrome/browser/android/tab_android.cc         |  3 +-
  chrome/browser/autofill/android/BUILD.gn      |  2 +-
@@ -25,7 +25,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  chrome/browser/flag_descriptions.cc           |  6 --
  chrome/browser/flag_descriptions.h            |  3 -
  .../strings/android_chrome_strings.grd        |  6 ++
- .../ui/autofill/autofill_client_provider.cc   | 78 +-----------------
+ .../ui/autofill/autofill_client_provider.cc   | 78 +----------------
  .../ui/autofill/autofill_client_provider.h    |  6 --
  chrome/browser/ui/tab_helpers.cc              |  4 +-
  components/android_autofill/browser/BUILD.gn  |  1 +
@@ -48,33 +48,35 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../autofill/core/common/autofill_features.h  | 22 -----
  .../autofill/core/common/autofill_prefs.cc    |  4 +-
  .../autofill/core/common/autofill_prefs.h     |  5 ++
- 33 files changed, 270 insertions(+), 165 deletions(-)
+ 33 files changed, 271 insertions(+), 165 deletions(-)
  create mode 100644 components/android_autofill/browser/java/src/org/chromium/components/autofill/BrowserSelectionActionMenuDelegate.java
 
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/password_manager/settings/PasswordSettings.java b/chrome/android/java/src/org/chromium/chrome/browser/password_manager/settings/PasswordSettings.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/password_manager/settings/PasswordSettings.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/password_manager/settings/PasswordSettings.java
-@@ -28,6 +28,7 @@ import androidx.preference.PreferenceCategory;
+@@ -28,7 +28,9 @@ import androidx.preference.PreferenceCategory;
  import androidx.preference.PreferenceGroup;
  
  import org.chromium.base.BuildInfo;
 +import org.chromium.base.StrictModeContext;
  import org.chromium.base.metrics.RecordHistogram;
++import org.chromium.base.supplier.Supplier;
  import org.chromium.base.supplier.ObservableSupplier;
  import org.chromium.base.supplier.ObservableSupplierImpl;
-@@ -61,6 +62,11 @@ import java.lang.annotation.Retention;
+ import org.chromium.base.supplier.OneshotSupplier;
+@@ -61,6 +63,11 @@ import java.lang.annotation.Retention;
  import java.lang.annotation.RetentionPolicy;
  import java.util.Locale;
  
 +import org.chromium.chrome.browser.ui.messages.snackbar.SnackbarManager;
 +import org.chromium.chrome.browser.ui.messages.snackbar.INeedSnackbarManager;
 +import org.chromium.chrome.browser.ui.messages.snackbar.Snackbar;
-+import org.chromium.chrome.browser.ApplicationLifetime;
++import org.chromium.chrome.browser.lifetime.ApplicationLifetime;
 +
  /**
   * The "Passwords" screen in Settings, which allows the user to enable or disable password saving,
   * to view saved passwords (just the username and URL), and to delete saved passwords.
-@@ -68,7 +74,7 @@ import java.util.Locale;
+@@ -68,7 +75,7 @@ import java.util.Locale;
  public class PasswordSettings extends ChromeBaseSettingsFragment
          implements PasswordListObserver,
                  Preference.OnPreferenceClickListener,
@@ -83,20 +85,20 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/password_manage
      @IntDef({
          TrustedVaultBannerState.NOT_SHOWN,
          TrustedVaultBannerState.OFFER_OPT_IN,
-@@ -98,6 +104,12 @@ public class PasswordSettings extends ChromeBaseSettingsFragment
+@@ -98,6 +105,12 @@ public class PasswordSettings extends ChromeBaseSettingsFragment
      public static final String PREF_TRUSTED_VAULT_BANNER = "trusted_vault_banner";
      public static final String PREF_KEY_MANAGE_ACCOUNT_LINK = "manage_account_link";
  
 +    public static final String PREF_ANDROID_AUTOFILL_SWITCH = "android_autofill_switch";
 +    public static final String PREF_ANDROID_AUTOFILL_INCOGNITO_SWITCH = "android_autofill_incognito_switch";
 +
-+    private SnackbarManager mSnackbarManager;
++    private Supplier<SnackbarManager> mSnackbarManagerSupplier;
 +    private Snackbar mSnackbar;
 +
      private static final String PREF_KEY_CATEGORY_SAVED_PASSWORDS = "saved_passwords";
      private static final String PREF_KEY_CATEGORY_EXCEPTIONS = "exceptions";
      private static final String PREF_KEY_SAVED_PASSWORDS_NO_TEXT = "saved_passwords_no_text";
-@@ -130,6 +142,8 @@ public class PasswordSettings extends ChromeBaseSettingsFragment
+@@ -130,6 +143,8 @@ public class PasswordSettings extends ChromeBaseSettingsFragment
      private Preference mLinkPref;
      private Menu mMenu;
  
@@ -105,7 +107,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/password_manage
      private @ManagePasswordsReferrer int mManagePasswordsReferrer;
      private OneshotSupplier<BottomSheetController> mBottomSheetControllerSupplier;
      private final ObservableSupplierImpl<String> mPageTitle = new ObservableSupplierImpl<>();
-@@ -315,6 +329,7 @@ public class PasswordSettings extends ChromeBaseSettingsFragment
+@@ -315,6 +330,7 @@ public class PasswordSettings extends ChromeBaseSettingsFragment
          }
  
          createSavePasswordsSwitch();
@@ -113,7 +115,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/password_manage
          if (shouldShowAutoSigninOption()) {
              createAutoSignInCheckbox();
          }
-@@ -587,6 +602,71 @@ public class PasswordSettings extends ChromeBaseSettingsFragment
+@@ -587,6 +603,71 @@ public class PasswordSettings extends ChromeBaseSettingsFragment
                  getPrefService().getBoolean(Pref.CREDENTIALS_ENABLE_SERVICE));
      }
  
@@ -151,8 +153,8 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/password_manage
 +
 +        mEnableAndroidAutofillSwitch.setOnPreferenceChangeListener((preference, newValue) -> {
 +            getPrefService().setBoolean(Pref.AUTOFILL_ANDROID_ENABLED, (boolean) newValue);
-+            if (!mSnackbarManager.isShowing())
-+                mSnackbarManager.showSnackbar(mSnackbar);
++            if (!mSnackbarManagerSupplier.get().isShowing())
++                mSnackbarManagerSupplier.get().showSnackbar(mSnackbar);
 +            return true;
 +        });
 +
@@ -172,14 +174,14 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/password_manage
 +
 +        mEnableAndroidAutofillIncognitoSwitch.setOnPreferenceChangeListener((preference, newValue) -> {
 +            getPrefService().setBoolean(Pref.AUTOFILL_ANDROID_INCOGNITO_ENABLED, (boolean) newValue);
-+            if (!mSnackbarManager.isShowing())
-+                mSnackbarManager.showSnackbar(mSnackbar);
++            if (!mSnackbarManagerSupplier.get().isShowing())
++                mSnackbarManagerSupplier.get().showSnackbar(mSnackbar);
 +            return true;
 +        });
 +    }
 +
-+    public void setSnackbarManager(SnackbarManager manager) {
-+        mSnackbarManager = manager;
++    public void setSnackbarManagerSupplier(Supplier<SnackbarManager> manager) {
++        mSnackbarManagerSupplier = manager;
 +    }
 +
      private void createAutoSignInCheckbox() {

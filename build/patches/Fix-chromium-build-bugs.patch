@@ -6,11 +6,13 @@ because of
 https://bugs.chromium.org/p/chromium/issues/detail?id=1491776#c10
 ---
  BUILD.gn                                           |  1 -
+ chrome/browser/extensions/api/BUILD.gn             |  1 -
  .../navigation_predictor_metrics_document_data.h   |  2 ++
  chrome/browser/safe_browsing/BUILD.gn              |  1 +
  chrome/browser/ui/browser_commands.cc              |  1 +
  chrome/browser/ui/lens/lens_overlay_controller.cc  |  1 +
  .../webid/fedcm_account_selection_view_desktop.cc  |  1 +
+ .../ui/webui/searchbox/searchbox_handler.cc        |  1 +
  .../component_updater/installer_policies/BUILD.gn  |  1 +
  .../omnibox/browser/autocomplete_classifier.cc     |  4 ++--
  components/omnibox/browser/omnibox_field_trial.cc  |  4 ++--
@@ -18,7 +20,7 @@ https://bugs.chromium.org/p/chromium/issues/detail?id=1491776#c10
  .../phishing_classifier/phishing_image_embedder.cc | 14 +++-----------
  content/browser/browser_interface_binders.cc       |  1 +
  net/BUILD.gn                                       |  1 +
- 13 files changed, 17 insertions(+), 16 deletions(-)
+ 15 files changed, 18 insertions(+), 17 deletions(-)
 
 diff --git a/BUILD.gn b/BUILD.gn
 --- a/BUILD.gn
@@ -31,6 +33,17 @@ diff --git a/BUILD.gn b/BUILD.gn
            "//android_webview/tools/sdk_sandbox",
            "//android_webview/tools/system_webview_shell",
            "//chrome/android:chrome_junit_tests",
+diff --git a/chrome/browser/extensions/api/BUILD.gn b/chrome/browser/extensions/api/BUILD.gn
+--- a/chrome/browser/extensions/api/BUILD.gn
++++ b/chrome/browser/extensions/api/BUILD.gn
+@@ -34,7 +34,6 @@ group("api_implementations") {
+     "//chrome/browser/extensions/api/downloads_internal",
+     "//chrome/browser/extensions/api/experimental_ai_data",
+     "//chrome/browser/extensions/api/font_settings",
+-    "//chrome/browser/extensions/api/mdns",
+     "//chrome/browser/extensions/api/module",
+     "//chrome/browser/extensions/api/networking_private",
+     "//chrome/browser/extensions/api/omnibox",
 diff --git a/chrome/browser/navigation_predictor/navigation_predictor_metrics_document_data.h b/chrome/browser/navigation_predictor/navigation_predictor_metrics_document_data.h
 --- a/chrome/browser/navigation_predictor/navigation_predictor_metrics_document_data.h
 +++ b/chrome/browser/navigation_predictor/navigation_predictor_metrics_document_data.h
@@ -87,6 +100,17 @@ diff --git a/chrome/browser/ui/views/webid/fedcm_account_selection_view_desktop.
  #include "chrome/browser/accessibility/accessibility_state_utils.h"
  #include "chrome/browser/net/system_network_context_manager.h"
  #include "chrome/browser/ui/browser_finder.h"
+diff --git a/chrome/browser/ui/webui/searchbox/searchbox_handler.cc b/chrome/browser/ui/webui/searchbox/searchbox_handler.cc
+--- a/chrome/browser/ui/webui/searchbox/searchbox_handler.cc
++++ b/chrome/browser/ui/webui/searchbox/searchbox_handler.cc
+@@ -6,6 +6,7 @@
+ 
+ #include "base/base64.h"
+ #include "base/base64url.h"
++#include "base/containers/contains.h"
+ #include "build/branding_buildflags.h"
+ #include "chrome/browser/bookmarks/bookmark_model_factory.h"
+ #include "chrome/browser/browser_process.h"
 diff --git a/components/component_updater/installer_policies/BUILD.gn b/components/component_updater/installer_policies/BUILD.gn
 --- a/components/component_updater/installer_policies/BUILD.gn
 +++ b/components/component_updater/installer_policies/BUILD.gn

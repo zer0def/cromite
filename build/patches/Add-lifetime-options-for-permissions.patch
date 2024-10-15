@@ -56,6 +56,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../one_time_permissions_tracker.cc           | 33 +++++++-
  .../one_time_permissions_tracker.h            |  5 +-
  .../one_time_permissions_tracker_factory.cc   |  2 +-
+ .../views/permissions/chip/chip_controller.cc |  2 +-
  .../permissions/embedded_permission_prompt.cc |  2 +-
  ...exclusive_access_permission_prompt_view.cc |  2 +-
  .../permission_prompt_bubble_base_view.cc     |  2 +-
@@ -87,7 +88,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  components/permissions/permission_request.h   | 16 +++-
  .../permissions/permission_request_manager.cc | 45 ++++++----
  .../permissions/permission_request_manager.h  | 11 ++-
- 35 files changed, 489 insertions(+), 62 deletions(-)
+ 36 files changed, 490 insertions(+), 63 deletions(-)
 
 diff --git a/chrome/browser/permissions/last_tab_standing_tracker.cc b/chrome/browser/permissions/last_tab_standing_tracker.cc
 --- a/chrome/browser/permissions/last_tab_standing_tracker.cc
@@ -226,6 +227,18 @@ diff --git a/chrome/browser/permissions/one_time_permissions_tracker_factory.cc 
 -  return std::make_unique<OneTimePermissionsTracker>();
 +  return std::make_unique<OneTimePermissionsTracker>(context);
  }
+diff --git a/chrome/browser/ui/views/permissions/chip/chip_controller.cc b/chrome/browser/ui/views/permissions/chip/chip_controller.cc
+--- a/chrome/browser/ui/views/permissions/chip/chip_controller.cc
++++ b/chrome/browser/ui/views/permissions/chip/chip_controller.cc
+@@ -234,7 +234,7 @@ void ChipController::OnWidgetDestroyed(views::Widget* widget) {
+       active_chip_permission_request_manager_.value()->Accept();
+       break;
+     case permissions::PermissionAction::GRANTED_ONCE:
+-      active_chip_permission_request_manager_.value()->AcceptThisTime();
++      active_chip_permission_request_manager_.value()->AcceptThisTime(content_settings::mojom::LifetimeMode::ONLY_THIS_TIME);
+       break;
+     case permissions::PermissionAction::DENIED:
+       active_chip_permission_request_manager_.value()->Deny();
 diff --git a/chrome/browser/ui/views/permissions/embedded_permission_prompt.cc b/chrome/browser/ui/views/permissions/embedded_permission_prompt.cc
 --- a/chrome/browser/ui/views/permissions/embedded_permission_prompt.cc
 +++ b/chrome/browser/ui/views/permissions/embedded_permission_prompt.cc

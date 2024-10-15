@@ -60,7 +60,7 @@ diff --git a/build/android/java/templates/BuildConfig.template b/build/android/j
      public static boolean IS_CRONET_BUILD;
  #endif
  
-+    public static MAYBE_FINAL String BUILD_TARGET_CPU = _BUILD_TARGET_CPU;
++    public static String BUILD_TARGET_CPU = QUOTE(_BUILD_TARGET_CPU);
 +
  #if defined(_WRITE_CLANG_PROFILING_DATA)
      public static boolean WRITE_CLANG_PROFILING_DATA = true;
@@ -73,7 +73,7 @@ diff --git a/build/config/android/rules.gni b/build/config/android/rules.gni
        defines = []
  
 +      # add arch to org.chromium.build.BuildConfig
-+      defines += [ "_BUILD_TARGET_CPU=\"${target_cpu}\"" ]
++      defines += [ "_BUILD_TARGET_CPU=${target_cpu}" ]
 +
        if ((defined(invoker.assertions_implicitly_enabled) &&
             invoker.assertions_implicitly_enabled) || enable_java_asserts) {

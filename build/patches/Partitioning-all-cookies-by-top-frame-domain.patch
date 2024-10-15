@@ -16,12 +16,13 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  ...storage_access_grant_permission_context.cc | 12 +++++
  .../experiment/experiment_manager_impl.cc     |  1 +
  .../strings/android/site_settings.grdp        |  4 +-
- .../core/browser/cookie_settings.cc           |  2 +
+ .../core/browser/cookie_settings.cc           |  4 +-
  .../core/common/cookie_settings_base.cc       | 52 +------------------
  ...ioning-all-cookies-by-top-frame-domain.inc |  3 ++
  ...ioning-all-cookies-by-top-frame-domain.inc |  1 +
  ...ioning-all-cookies-by-top-frame-domain.inc |  1 +
  ...ioning-all-cookies-by-top-frame-domain.inc | 16 ++++++
+ ...ioning-all-cookies-by-top-frame-domain.inc |  1 +
  net/cookies/canonical_cookie.cc               |  3 --
  net/cookies/cookie_deletion_info.cc           |  3 +-
  net/cookies/cookie_monster.cc                 |  1 +
@@ -35,11 +36,12 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../modules/cookie_store/cookie_store.cc      |  3 ++
  .../cookie_store_delete_options.idl           |  2 +-
  ui/webui/webui_allowlist.cc                   |  1 +
- 26 files changed, 85 insertions(+), 78 deletions(-)
+ 27 files changed, 86 insertions(+), 80 deletions(-)
  create mode 100644 cromite_flags/components/content_settings/core/common/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
  create mode 100644 cromite_flags/components/permissions/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
  create mode 100644 cromite_flags/content/public/common/content_features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
  create mode 100644 cromite_flags/net/base/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
+ create mode 100644 cromite_flags/services/network/public/cpp/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
 
 diff --git a/chrome/browser/chrome_content_browser_client.cc b/chrome/browser/chrome_content_browser_client.cc
 --- a/chrome/browser/chrome_content_browser_client.cc
@@ -169,14 +171,16 @@ diff --git a/components/content_settings/core/browser/cookie_settings.cc b/compo
    if (url.is_empty() || first_party_url.is_empty()) {
      return;
    }
-@@ -385,6 +386,7 @@ bool CookieSettings::ShouldBlockThirdPartyCookiesInternal() const {
-   DCHECK(thread_checker_.CalledOnValidThread());
-   DCHECK(pref_change_registrar_);
+@@ -411,8 +412,7 @@ bool CookieSettings::ShouldBlockThirdPartyCookiesInternal() const {
+ }
  
-+  if ((true)) return false;
-   if (net::cookie_util::IsForceThirdPartyCookieBlockingEnabled()) {
-     return true;
-   }
+ bool CookieSettings::MitigationsEnabledFor3pcdInternal() const {
+-  return AreThirdPartyCookiesLimited() ||
+-         net::cookie_util::IsForceThirdPartyCookieBlockingEnabled();
++  return false;
+ }
+ 
+ void CookieSettings::OnContentSettingChanged(
 diff --git a/components/content_settings/core/common/cookie_settings_base.cc b/components/content_settings/core/common/cookie_settings_base.cc
 --- a/components/content_settings/core/common/cookie_settings_base.cc
 +++ b/components/content_settings/core/common/cookie_settings_base.cc
@@ -296,7 +300,13 @@ new file mode 100644
 +
 +// Implement `Activate-Storage-Access: retry` header semantics
 +// https://source.chromium.org/chromium/chromium/src/+/ca4775cd3edadea0c3e756e772c3afc766e46fd1
-+SET_CROMITE_FEATURE_DISABLED(kStorageAccessHeaderRetry);
++// SET_CROMITE_FEATURE_DISABLED(kStorageAccessHeaderRetry);
+diff --git a/cromite_flags/services/network/public/cpp/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc b/cromite_flags/services/network/public/cpp/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
+new file mode 100644
+--- /dev/null
++++ b/cromite_flags/services/network/public/cpp/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
+@@ -0,0 +1 @@
++SET_CROMITE_FEATURE_DISABLED(kStorageAccessHeaders);
 diff --git a/net/cookies/canonical_cookie.cc b/net/cookies/canonical_cookie.cc
 --- a/net/cookies/canonical_cookie.cc
 +++ b/net/cookies/canonical_cookie.cc

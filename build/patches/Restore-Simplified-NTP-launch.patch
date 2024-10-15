@@ -28,9 +28,9 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../browser/flags/ChromeFeatureList.java      |   3 +-
  .../history/core/browser/top_sites_impl.h     |   2 +-
  .../Restore-Simplified-NTP-launch.inc         |  12 ++
- .../Restore-Simplified-NTP-launch.inc         |   6 +
+ .../Restore-Simplified-NTP-launch.inc         |   5 +
  .../Restore-Simplified-NTP-launch.inc         |   1 +
- 24 files changed, 395 insertions(+), 29 deletions(-)
+ 24 files changed, 394 insertions(+), 29 deletions(-)
  create mode 100644 chrome/android/java/res/layout/ntp_shortcuts.xml
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/feedback/SimplifiedNtpFeedbackSource.java
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/suggestions/tile/MostVisitedTilesGridLayout.java
@@ -753,12 +753,11 @@ diff --git a/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/R
 new file mode 100644
 --- /dev/null
 +++ b/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Restore-Simplified-NTP-launch.inc
-@@ -0,0 +1,6 @@
+@@ -0,0 +1,5 @@
 +CROMITE_FEATURE(kSimplifiedNTP,
 +                "SimplifiedNTP",
 +                base::FEATURE_ENABLED_BY_DEFAULT);
 +
-+SET_CROMITE_FEATURE_DISABLED(kSurfacePolish);
 +SET_CROMITE_FEATURE_DISABLED(kMagicStackAndroid);
 diff --git a/cromite_flags/chrome/browser/flags/android/chrome_feature_list_h/Restore-Simplified-NTP-launch.inc b/cromite_flags/chrome/browser/flags/android/chrome_feature_list_h/Restore-Simplified-NTP-launch.inc
 new file mode 100644

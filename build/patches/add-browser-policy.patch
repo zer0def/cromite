@@ -15,7 +15,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  ...ccount_consistency_mode_manager_factory.cc |   2 +-
  .../throttled_gaia_auth_fetcher.cc            |   5 +
  chrome/browser/signin/chrome_signin_client.cc |   7 +-
- .../browser/signin/dice_response_handler.cc   |   2 +
+ .../browser/signin/dice_response_handler.cc   |   4 +-
  .../ui/webui/policy/policy_ui_handler.cc      | 104 ++++++++++++-
  .../ui/webui/policy/policy_ui_handler.h       |   2 +
  .../strings/android/browser_ui_strings.grd    |   2 +-
@@ -36,7 +36,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../gaia_cookie_manager_service.cc            |   4 +
  google_apis/gaia/gaia_auth_fetcher.cc         |   1 +
  net/socket/ssl_client_socket_impl.cc          |   3 +
- 32 files changed, 323 insertions(+), 150 deletions(-)
+ 32 files changed, 324 insertions(+), 151 deletions(-)
 
 diff --git a/base/win/win_util.cc b/base/win/win_util.cc
 --- a/base/win/win_util.cc
@@ -344,6 +344,15 @@ diff --git a/chrome/browser/signin/chrome_signin_client.cc b/chrome/browser/sign
 diff --git a/chrome/browser/signin/dice_response_handler.cc b/chrome/browser/signin/dice_response_handler.cc
 --- a/chrome/browser/signin/dice_response_handler.cc
 +++ b/chrome/browser/signin/dice_response_handler.cc
+@@ -64,7 +64,7 @@ namespace {
+ // The UMA histograms that logs events related to Dice responses.
+ const char kDiceResponseHeaderHistogram[] = "Signin.DiceResponseHeader";
+ const char kDiceTokenFetchResultHistogram[] = "Signin.DiceTokenFetchResult";
+-const char kDiceTokenBindingOutcomeHistogram[] =
++[[maybe_unused]] const char kDiceTokenBindingOutcomeHistogram[] =
+     "Signin.DiceTokenBindingOutcome";
+ 
+ // Used for UMA. Do not reorder, append new values at the end.
 @@ -526,8 +526,10 @@ void DiceResponseHandler::ProcessDiceSignoutHeader(
    // - If there is a policy restriction on removing the primary account.
    bool invalidate_only_primary_account =

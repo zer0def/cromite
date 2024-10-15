@@ -37,10 +37,10 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../strings/android_chrome_strings.grd        |  14 +
  chrome/common/pref_names.h                    |   5 +
  .../strings/android/site_settings.grdp        |   3 +
- components/component_updater/BUILD.gn         |   7 +
+ components/component_updater/BUILD.gn         |   8 +
  .../adblock_updater_service.cc                | 281 ++++++++++++++++++
  .../adblock_updater_service.h                 | 103 +++++++
- .../download_filters_task.cc                  | 239 +++++++++++++++
+ .../download_filters_task.cc                  | 250 ++++++++++++++++
  .../component_updater/download_filters_task.h | 129 ++++++++
  ...ent_subresource_filter_throttle_manager.cc |  15 +
  ...tent_subresource_filter_throttle_manager.h |   2 +
@@ -51,7 +51,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../browser/subresource_filter_features.cc    | 116 +-------
  .../core/browser/verified_ruleset_dealer.cc   |   4 +
  .../core/common/indexed_ruleset.cc            |   5 +-
- 39 files changed, 1261 insertions(+), 129 deletions(-)
+ 39 files changed, 1273 insertions(+), 129 deletions(-)
  create mode 100644 chrome/android/java/res/layout/adblock_editor.xml
  create mode 100644 chrome/android/java/res/xml/adblock_preferences.xml
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/settings/AdBlockEditor.java
@@ -775,7 +775,7 @@ diff --git a/components/component_updater/BUILD.gn b/components/component_update
      "component_updater_service.cc",
      "component_updater_service.h",
      "component_updater_service_internal.h",
-@@ -49,6 +55,7 @@ static_library("component_updater") {
+@@ -49,9 +55,11 @@ static_library("component_updater") {
      "//components/update_client",
      "//components/version_info",
      "//net",
@@ -783,6 +783,10 @@ diff --git a/components/component_updater/BUILD.gn b/components/component_update
      "//third_party/boringssl",
      "//ui/base",
      "//url",
++    "//content/common:buildflags"
+   ]
+ }
+ 
 diff --git a/components/component_updater/adblock_updater_service.cc b/components/component_updater/adblock_updater_service.cc
 new file mode 100644
 --- /dev/null
@@ -1181,7 +1185,7 @@ diff --git a/components/component_updater/download_filters_task.cc b/components/
 new file mode 100644
 --- /dev/null
 +++ b/components/component_updater/download_filters_task.cc
-@@ -0,0 +1,239 @@
+@@ -0,0 +1,250 @@
 +/*
 +    This file is part of Bromite.
 +
@@ -1351,10 +1355,21 @@ new file mode 100644
 +  final_url_ = final_url;
 +  response_code_ = response_head.headers ? response_head.headers->response_code() : -1;
 +
-+  if (!response_head.headers->GetLastModifiedValue(&last_modified_))
-+    LOG(WARNING) << "DownloadFiltersTask: fetching URL '" << final_url.spec() << "' with method " << (min_last_modified_.is_null() ? "GET" : "HEAD") << " (no Last-Modified header)";
-+  else
-+    LOG(INFO) << "DownloadFiltersTask: fetching URL '" << final_url.spec() << "' with method " << (min_last_modified_.is_null() ? "GET" : "HEAD");
++  std::optional<base::Time> last_modified_value =
++          response_head.headers->GetLastModifiedValue();
++  if (last_modified_value) {
++    last_modified_ = last_modified_value.value();
++    LOG(INFO) << "DownloadFiltersTask: fetching URL '"
++              << final_url.spec()
++              << "' with method "
++              << (min_last_modified_.is_null() ? "GET" : "HEAD");
++  } else {
++    LOG(WARNING) << "DownloadFiltersTask: fetching URL '"
++                 << final_url.spec()
++                 << "' with method "
++                 << (min_last_modified_.is_null() ? "GET" : "HEAD")
++                 << " (no Last-Modified header)";
++  }
 +}
 +
 +void DownloadFiltersTask::OnDownloadComplete(base::FilePath file_path) {

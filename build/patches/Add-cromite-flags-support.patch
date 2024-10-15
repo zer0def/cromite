@@ -24,8 +24,8 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../settings/AccessibilitySettings.java       |   5 +-
  .../homepage/settings/HomepageSettings.java   |   2 +-
  .../privacy/settings/PrivacySettings.java     |   2 +-
- .../settings/FragmentDependencyProvider.java  |  34 ++++
- .../browser/settings/SettingsActivity.java    |  32 ++++
+ .../settings/FragmentDependencyProvider.java  |  10 +-
+ .../browser/settings/SettingsActivity.java    |  42 ++++-
  chrome/browser/about_flags.cc                 |  11 ++
  chrome/browser/browser_features.cc            |   1 +
  chrome/browser/flags/BUILD.gn                 |  13 ++
@@ -35,7 +35,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../flags/cromite/include_all_directory.java  |   1 +
  .../java_template/CromiteCachedFlag.java.tmpl |  47 +++++
  chrome/browser/settings/BUILD.gn              |   1 +
- .../settings/ChromeBaseSettingsFragment.java  |  47 +++++
+ .../settings/ChromeBaseSettingsFragment.java  |  50 ++++++
  .../strings/android_chrome_strings.grd        |   1 +
  .../Add-cromite-flags-support.grdp            |   9 +
  .../placeholder.txt                           |   1 +
@@ -97,7 +97,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  third_party/blink/public/common/features.h    |   1 +
  ui/base/ui_base_features.cc                   |   1 +
  ui/base/ui_base_features.h                    |   1 +
- 84 files changed, 800 insertions(+), 20 deletions(-)
+ 84 files changed, 787 insertions(+), 22 deletions(-)
  create mode 100644 chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/cromite/include_all_directory.java
  create mode 100644 chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/cromite/java_template/CromiteCachedFlag.java.tmpl
  create mode 100644 chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Add-cromite-flags-support.grdp
@@ -506,50 +506,44 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/privacy/setting
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/settings/FragmentDependencyProvider.java b/chrome/android/java/src/org/chromium/chrome/browser/settings/FragmentDependencyProvider.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/settings/FragmentDependencyProvider.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/settings/FragmentDependencyProvider.java
-@@ -69,6 +69,36 @@ import org.chromium.ui.modaldialog.ModalDialogManager;
+@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment;
+ import androidx.fragment.app.FragmentManager;
  
- /** Provides dependencies to fragments in the settings activity. */
- public class FragmentDependencyProvider extends FragmentManager.FragmentLifecycleCallbacks {
-+    private static class RequestRestartDelegate implements ChromeBaseSettingsFragment.RequireRestartDelegate {
-+        private SnackbarManager mSnackbarManager;
-+        private Activity mActivity;
-+
-+        RequestRestartDelegate(SnackbarManager snackbarManager, Activity activity) {
-+            mSnackbarManager = snackbarManager;
-+            mActivity = activity;
-+        }
-+
-+        @Override
-+        public void RequireRestart() {
-+            Snackbar mSnackbar = Snackbar.make(mActivity.getString(R.string.ui_relaunch_notice),
-+                new SnackbarManager.SnackbarController() {
-+                    @Override
-+                    public void onDismissNoAction(Object actionData) { }
-+
-+                    @Override
-+                    public void onAction(Object actionData) {
-+                            ApplicationLifetime.terminate(true);
-+                    }
-+                }, Snackbar.TYPE_NOTIFICATION, Snackbar.UMA_UNKNOWN)
-+                .setSingleLine(false)
-+                .setAction(mActivity.getString(R.string.relaunch),
-+                        /*actionData*/null)
-+                .setDuration(/*durationMs*/70000);
-+            if (!mSnackbarManager.isShowing())
-+                mSnackbarManager.showSnackbar(mSnackbar);
-+        }
-+    }
-+
-     private final Context mContext;
-     private final Profile mProfile;
+ import org.chromium.base.IntentUtils;
++import org.chromium.base.supplier.Supplier;
+ import org.chromium.base.supplier.ObservableSupplier;
+ import org.chromium.base.supplier.OneshotSupplier;
+ import org.chromium.chrome.browser.LaunchIntentDispatcher;
+@@ -78,18 +79,21 @@ public class FragmentDependencyProvider extends FragmentManager.FragmentLifecycl
+     private final OneshotSupplier<SnackbarManager> mSnackbarManagerSupplier;
+     private final OneshotSupplier<BottomSheetController> mBottomSheetControllerSupplier;
+     private final ObservableSupplier<ModalDialogManager> mModalDialogManagerSupplier;
++    private final Supplier<ChromeBaseSettingsFragment.RequireRestartDelegate> mRequireRestartDelegateSupplier;
  
-@@ -98,6 +128,10 @@ public class FragmentDependencyProvider extends FragmentManager.FragmentLifecycl
+     public FragmentDependencyProvider(
+             Context context,
+             Profile profile,
+             OneshotSupplier<SnackbarManager> snackbarManagerSupplier,
+             OneshotSupplier<BottomSheetController> bottomSheetControllerSupplier,
+-            ObservableSupplier<ModalDialogManager> modalDialogManagerSupplier) {
++            ObservableSupplier<ModalDialogManager> modalDialogManagerSupplier,
++            Supplier<ChromeBaseSettingsFragment.RequireRestartDelegate> requireRestartDelegateSupplier) {
+         mContext = context;
+         mProfile = profile;
+         mSnackbarManagerSupplier = snackbarManagerSupplier;
+         mBottomSheetControllerSupplier = bottomSheetControllerSupplier;
+         mModalDialogManagerSupplier = modalDialogManagerSupplier;
++        mRequireRestartDelegateSupplier = requireRestartDelegateSupplier;
+     }
+ 
+     @Override
+@@ -98,6 +102,10 @@ public class FragmentDependencyProvider extends FragmentManager.FragmentLifecycl
              @NonNull Fragment fragment,
              @NonNull Context unusedContext) {
          // Common dependencies attachments.
 +        if (fragment instanceof ChromeBaseSettingsFragment) {
-+            ((ChromeBaseSettingsFragment)fragment).setRequestRestartDelegate(
-+                new RequestRestartDelegate(mSnackbarManager, this));
++            ((ChromeBaseSettingsFragment)fragment).setRequestRestartDelegateSupplier(
++                mRequireRestartDelegateSupplier);
 +        }
          if (fragment instanceof ProfileDependentSetting) {
              ((ProfileDependentSetting) fragment).setProfile(mProfile);
@@ -565,7 +559,24 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/settings/Settin
  import android.annotation.SuppressLint;
  import android.content.Context;
  import android.content.Intent;
-@@ -46,6 +47,7 @@ import org.chromium.chrome.browser.profiles.ProfileManagerUtils;
+@@ -31,7 +32,9 @@ import org.chromium.base.BuildInfo;
+ import org.chromium.base.Callback;
+ import org.chromium.base.Log;
+ import org.chromium.base.metrics.RecordHistogram;
++import org.chromium.base.supplier.Supplier;
+ import org.chromium.base.supplier.ObservableSupplier;
++import org.chromium.base.supplier.OneshotSupplier;
+ import org.chromium.base.supplier.OneshotSupplierImpl;
+ import org.chromium.chrome.R;
+ import org.chromium.chrome.browser.ChromeBaseAppCompatActivity;
+@@ -40,12 +43,14 @@ import org.chromium.chrome.browser.back_press.SecondaryActivityBackPressUma.Seco
+ import org.chromium.chrome.browser.feedback.HelpAndFeedbackLauncherImpl;
+ import org.chromium.chrome.browser.flags.ChromeFeatureList;
+ import org.chromium.chrome.browser.init.ChromeBrowserInitializer;
++import org.chromium.chrome.browser.lifetime.ApplicationLifetime;
+ import org.chromium.chrome.browser.profiles.Profile;
+ import org.chromium.chrome.browser.profiles.ProfileManager;
+ import org.chromium.chrome.browser.profiles.ProfileManagerUtils;
  import org.chromium.chrome.browser.ui.device_lock.MissingDeviceLockLauncher;
  import org.chromium.chrome.browser.ui.messages.snackbar.SnackbarManager;
  import org.chromium.chrome.browser.ui.messages.snackbar.SnackbarManager.SnackbarManageable;
@@ -573,43 +584,57 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/settings/Settin
  import org.chromium.components.browser_ui.bottomsheet.BottomSheetController;
  import org.chromium.components.browser_ui.bottomsheet.BottomSheetControllerFactory;
  import org.chromium.components.browser_ui.bottomsheet.ManagedBottomSheetController;
-@@ -82,6 +84,36 @@ import java.util.Locale;
+@@ -82,6 +87,40 @@ import java.util.Locale;
   */
  public class SettingsActivity extends ChromeBaseAppCompatActivity
          implements PreferenceFragmentCompat.OnPreferenceStartFragmentCallback, SnackbarManageable {
 +    private static class RequestRestartDelegate implements ChromeBaseSettingsFragment.RequireRestartDelegate {
-+        private SnackbarManager mSnackbarManager;
++        private OneshotSupplier<SnackbarManager> mSnackbarManagerSupplier;
 +        private Activity mActivity;
 +
-+        RequestRestartDelegate(SnackbarManager snackbarManager, Activity activity) {
-+            mSnackbarManager = snackbarManager;
++        RequestRestartDelegate(OneshotSupplier<SnackbarManager> snackbarManagerSupplier,
++                               Activity activity) {
++            mSnackbarManagerSupplier = snackbarManagerSupplier;
 +            mActivity = activity;
 +        }
 +
 +        @Override
 +        public void RequireRestart() {
-+            Snackbar mSnackbar = Snackbar.make(mActivity.getString(R.string.ui_relaunch_notice),
-+                new SnackbarManager.SnackbarController() {
-+                    @Override
-+                    public void onDismissNoAction(Object actionData) { }
++            mSnackbarManagerSupplier.onAvailable(
++                (snackbarManager) -> {
++                    Snackbar mSnackbar = Snackbar.make(mActivity.getString(R.string.ui_relaunch_notice),
++                        new SnackbarManager.SnackbarController() {
++                            @Override
++                            public void onDismissNoAction(Object actionData) { }
 +
-+                    @Override
-+                    public void onAction(Object actionData) {
-+                            ApplicationLifetime.terminate(true);
-+                    }
-+                }, Snackbar.TYPE_NOTIFICATION, Snackbar.UMA_UNKNOWN)
-+                .setSingleLine(false)
-+                .setAction(mActivity.getString(R.string.relaunch),
-+                        /*actionData*/null)
-+                .setDuration(/*durationMs*/70000);
-+            if (!mSnackbarManager.isShowing())
-+                mSnackbarManager.showSnackbar(mSnackbar);
++                            @Override
++                            public void onAction(Object actionData) {
++                                    ApplicationLifetime.terminate(true);
++                            }
++                        }, Snackbar.TYPE_NOTIFICATION, Snackbar.UMA_UNKNOWN)
++                        .setSingleLine(false)
++                        .setAction(mActivity.getString(R.string.relaunch),
++                                /*actionData*/null)
++                        .setDuration(/*durationMs*/70000);
++                    if (!snackbarManager.isShowing())
++                        snackbarManager.showSnackbar(mSnackbar);
++                });
 +        }
 +    }
 +
      @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
      public static final String EXTRA_SHOW_FRAGMENT = "show_fragment";
  
+@@ -135,7 +174,8 @@ public class SettingsActivity extends ChromeBaseAppCompatActivity
+                         mProfile,
+                         mSnackbarManagerSupplier,
+                         mBottomSheetControllerSupplier,
+-                        getModalDialogManagerSupplier()),
++                        getModalDialogManagerSupplier(),
++                        () -> new RequestRestartDelegate(mSnackbarManagerSupplier, this)),
+                 true /* recursive */);
+         fragmentManager.registerFragmentLifecycleCallbacks(
+                 new WideDisplayPaddingApplier(), false /* recursive */);
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
@@ -823,7 +848,13 @@ diff --git a/chrome/browser/settings/BUILD.gn b/chrome/browser/settings/BUILD.gn
 diff --git a/chrome/browser/settings/android/java/src/org/chromium/chrome/browser/settings/ChromeBaseSettingsFragment.java b/chrome/browser/settings/android/java/src/org/chromium/chrome/browser/settings/ChromeBaseSettingsFragment.java
 --- a/chrome/browser/settings/android/java/src/org/chromium/chrome/browser/settings/ChromeBaseSettingsFragment.java
 +++ b/chrome/browser/settings/android/java/src/org/chromium/chrome/browser/settings/ChromeBaseSettingsFragment.java
-@@ -12,6 +12,12 @@ import org.chromium.chrome.browser.feedback.HelpAndFeedbackLauncherFactory;
+@@ -7,11 +7,18 @@ package org.chromium.chrome.browser.settings;
+ import androidx.annotation.NonNull;
+ import androidx.preference.PreferenceFragmentCompat;
+ 
++import org.chromium.base.supplier.Supplier;
+ import org.chromium.chrome.browser.feedback.HelpAndFeedbackLauncher;
+ import org.chromium.chrome.browser.feedback.HelpAndFeedbackLauncherFactory;
  import org.chromium.chrome.browser.profiles.Profile;
  import org.chromium.components.browser_ui.settings.SettingsPage;
  
@@ -836,18 +867,19 @@ diff --git a/chrome/browser/settings/android/java/src/org/chromium/chrome/browse
  /**
   * Base class for settings in Chrome.
   *
-@@ -22,6 +28,47 @@ public abstract class ChromeBaseSettingsFragment extends PreferenceFragmentCompa
+@@ -22,6 +29,49 @@ public abstract class ChromeBaseSettingsFragment extends PreferenceFragmentCompa
          implements SettingsPage, ProfileDependentSetting {
      private Profile mProfile;
  
-+    private RequireRestartDelegate mRequireRestartDelegate;
++    private Supplier<ChromeBaseSettingsFragment.RequireRestartDelegate> mRequireRestartDelegateSupplier;
 +
 +    public interface RequireRestartDelegate {
 +        void RequireRestart();
 +    }
 +
-+    public void setRequestRestartDelegate(RequireRestartDelegate delegate) {
-+        mRequireRestartDelegate = delegate;
++    public void setRequestRestartDelegateSupplier(
++                    Supplier<ChromeBaseSettingsFragment.RequireRestartDelegate> delegate) {
++        mRequireRestartDelegateSupplier = delegate;
 +    }
 +
 +    public void onCreatePreferencesCromite(Bundle savedInstanceState, String rootKey) {
@@ -873,8 +905,9 @@ diff --git a/chrome/browser/settings/android/java/src/org/chromium/chrome/browse
 +
 +                switchPref.setOnPreferenceChangeListener((preference, newValue) -> {
 +                    CromiteNativeUtils.setFlagEnabled(featureName, (boolean)newValue);
-+                    if (switchPref.needRestart())
-+                        mRequireRestartDelegate.RequireRestart();
++                    if (switchPref.needRestart()) {
++                        mRequireRestartDelegateSupplier.get().RequireRestart();
++                    }
 +                    return true;
 +                });
 +            }

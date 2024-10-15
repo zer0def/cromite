@@ -99,7 +99,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedAct
                  new ChromeInactivityTracker(
                          ChromePreferenceKeys.TABBED_ACTIVITY_LAST_BACKGROUNDED_TIME_MS_PREF);
 +        mInactivityTracker.setIsStartup(
-+            !CipherFactory.getInstance().restoreFromBundle(getSavedInstanceState()));
++            !CipherLazyHolder.sCipherInstance.restoreFromBundle(getSavedInstanceState()));
          TabUsageTracker.initialize(this.getLifecycleDispatcher(), tabModelSelector);
          TabGroupUsageTracker.initialize(
                  this.getLifecycleDispatcher(), tabModelSelector, this::isWarmOnResume);

@@ -9,7 +9,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  chrome/android/java/res/menu/main_menu.xml                  | 6 ++++++
  .../org/chromium/chrome/browser/ChromeTabbedActivity.java   | 4 ++++
  .../src/org/chromium/chrome/browser/app/ChromeActivity.java | 6 ++++++
- .../chrome/browser/lifetime/ApplicationLifetime.java        | 2 ++
+ .../chrome/browser/init/ChromeLifetimeController.java       | 2 ++
  .../browser/ui/android/strings/android_chrome_strings.grd   | 3 +++
  5 files changed, 21 insertions(+)
 
@@ -43,7 +43,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedAct
  import java.util.concurrent.atomic.AtomicBoolean;
  import java.util.function.DoubleConsumer;
  
-+import org.chromium.chrome.browser.ApplicationLifetime;
++import org.chromium.chrome.browser.lifetime.ApplicationLifetime;
 +
  /**
   * This is the main activity for ChromeMobile when not running in document mode. All the tabs are
@@ -64,7 +64,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActiv
  import org.chromium.chrome.R;
  import org.chromium.chrome.browser.ActivityTabProvider;
  import org.chromium.chrome.browser.ActivityUtils;
-+import org.chromium.chrome.browser.ApplicationLifetime;
++import org.chromium.chrome.browser.lifetime.ApplicationLifetime;
  import org.chromium.chrome.browser.ChromeActivitySessionTracker;
  import org.chromium.chrome.browser.ChromeApplicationImpl;
  import org.chromium.chrome.browser.ChromeKeyboardVisibilityDelegate;
@@ -80,25 +80,25 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActiv
          if (id == R.id.update_menu_id) {
              UpdateMenuItemHelper.getInstance(
                              getProfileProviderSupplier().get().getOriginalProfile())
-diff --git a/chrome/browser/lifetime/android/java/src/org/chromium/chrome/browser/lifetime/ApplicationLifetime.java b/chrome/browser/lifetime/android/java/src/org/chromium/chrome/browser/lifetime/ApplicationLifetime.java
---- a/chrome/browser/lifetime/android/java/src/org/chromium/chrome/browser/lifetime/ApplicationLifetime.java
-+++ b/chrome/browser/lifetime/android/java/src/org/chromium/chrome/browser/lifetime/ApplicationLifetime.java
-@@ -7,6 +7,7 @@ package org.chromium.chrome.browser.lifetime;
- import org.jni_zero.CalledByNative;
- 
- import org.chromium.base.ObserverList;
+diff --git a/chrome/android/java/src/org/chromium/chrome/browser/init/ChromeLifetimeController.java b/chrome/android/java/src/org/chromium/chrome/browser/init/ChromeLifetimeController.java
+--- a/chrome/android/java/src/org/chromium/chrome/browser/init/ChromeLifetimeController.java
++++ b/chrome/android/java/src/org/chromium/chrome/browser/init/ChromeLifetimeController.java
+@@ -18,6 +18,7 @@ import org.chromium.base.ContextUtils;
+ import org.chromium.base.ThreadUtils;
+ import org.chromium.chrome.browser.BrowserRestartActivity;
+ import org.chromium.chrome.browser.lifetime.ApplicationLifetime;
 +import org.chromium.chrome.browser.incognito.IncognitoNotificationManager;
  
- /** Watches for when Chrome is told to restart itself. */
- public class ApplicationLifetime {
-@@ -39,6 +40,7 @@ public class ApplicationLifetime {
+ /**
+  * Answers requests to kill and (potentially) restart Chrome's main browser process.
+@@ -73,6 +74,7 @@ class ChromeLifetimeController
  
-     @CalledByNative
-     public static void terminate(boolean restart) {
+     @Override
+     public void onTerminate(boolean restart) {
 +        IncognitoNotificationManager.dismissIncognitoNotification();
-         for (Observer observer : sObservers) {
-             observer.onTerminate(restart);
-         }
+         mRestartChromeOnDestroy = restart;
+ 
+         // Tell all Chrome Activities to finish themselves.
 diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chrome/browser/ui/android/strings/android_chrome_strings.grd
 --- a/chrome/browser/ui/android/strings/android_chrome_strings.grd
 +++ b/chrome/browser/ui/android/strings/android_chrome_strings.grd

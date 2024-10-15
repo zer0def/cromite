@@ -6,12 +6,12 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 ---
  chrome/android/BUILD.gn                       |  5 ---
  chrome/android/chrome_java_sources.gni        |  1 -
- .../android/java/res/xml/main_preferences.xml | 10 -----
+ .../android/java/res/xml/main_preferences.xml |  5 ---
  .../settings/FragmentDependencyProvider.java  | 37 -------------------
  .../settings/SettingsLauncherImpl.java        | 13 +------
  chrome/browser/BUILD.gn                       |  1 -
  .../suggestions/action/OmniboxPedal.java      |  3 --
- 7 files changed, 2 insertions(+), 68 deletions(-)
+ 7 files changed, 2 insertions(+), 63 deletions(-)
 
 diff --git a/chrome/android/BUILD.gn b/chrome/android/BUILD.gn
 --- a/chrome/android/BUILD.gn
@@ -56,7 +56,7 @@ diff --git a/chrome/android/chrome_java_sources.gni b/chrome/android/chrome_java
 diff --git a/chrome/android/java/res/xml/main_preferences.xml b/chrome/android/java/res/xml/main_preferences.xml
 --- a/chrome/android/java/res/xml/main_preferences.xml
 +++ b/chrome/android/java/res/xml/main_preferences.xml
-@@ -56,16 +56,6 @@ for the previous order (main_preferences_legacy). -->
+@@ -56,11 +56,6 @@ for the previous order (main_preferences_legacy). -->
          android:key="privacy"
          android:order="8"
          android:title="@string/prefs_privacy_security"/>
@@ -65,18 +65,13 @@ diff --git a/chrome/android/java/res/xml/main_preferences.xml b/chrome/android/j
 -        android:key="safety_check"
 -        android:order="9"
 -        android:title="@string/prefs_safety_check"/>
--    <Preference
--        android:fragment="org.chromium.chrome.browser.safety_hub.SafetyHubFragment"
--        android:key="safety_hub"
--        android:order="10"
--        android:title="@string/prefs_safety_check"/>
- 
-     <PreferenceCategory
-         android:key="autofill_section"
+     <Preference
+         android:fragment="org.chromium.chrome.browser.safety_hub.SafetyHubFragment"
+         android:key="safety_hub"
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/settings/FragmentDependencyProvider.java b/chrome/android/java/src/org/chromium/chrome/browser/settings/FragmentDependencyProvider.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/settings/FragmentDependencyProvider.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/settings/FragmentDependencyProvider.java
-@@ -41,13 +41,6 @@ import org.chromium.chrome.browser.privacy_sandbox.PrivacySandboxSettingsBaseFra
+@@ -42,13 +42,6 @@ import org.chromium.chrome.browser.privacy_sandbox.PrivacySandboxSettingsBaseFra
  import org.chromium.chrome.browser.privacy_sandbox.TopicsManageFragment;
  import org.chromium.chrome.browser.profiles.Profile;
  import org.chromium.chrome.browser.safe_browsing.settings.SafeBrowsingSettingsFragmentBase;
@@ -90,7 +85,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/settings/Fragme
  import org.chromium.chrome.browser.search_engines.settings.SearchEngineSettings;
  import org.chromium.chrome.browser.signin.SigninAndHistorySyncActivityLauncherImpl;
  import org.chromium.chrome.browser.signin.SyncConsentActivityLauncherImpl;
-@@ -156,21 +149,6 @@ public class FragmentDependencyProvider extends FragmentManager.FragmentLifecycl
+@@ -130,21 +123,6 @@ public class FragmentDependencyProvider extends FragmentManager.FragmentLifecycl
              baseSiteSettingsFragment.setCustomTabIntentHelper(
                      LaunchIntentDispatcher::createCustomTabActivityIntent);
          }
@@ -112,7 +107,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/settings/Fragme
          if (fragment instanceof PasswordCheckFragmentView) {
              PasswordCheckComponentUiFactory.create(
                      (PasswordCheckFragmentView) fragment,
-@@ -285,18 +263,6 @@ public class FragmentDependencyProvider extends FragmentManager.FragmentLifecycl
+@@ -259,18 +237,6 @@ public class FragmentDependencyProvider extends FragmentManager.FragmentLifecycl
              ((AutofillLocalIbanEditor) fragment)
                      .setModalDialogManagerSupplier(mModalDialogManagerSupplier);
          }
@@ -129,9 +124,9 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/settings/Fragme
 -                    LaunchIntentDispatcher::createCustomTabActivityIntent);
 -        }
          if (fragment instanceof INeedSnackbarManager) {
-             ((INeedSnackbarManager)fragment).setSnackbarManager(mSnackbarManager);
+             ((INeedSnackbarManager)fragment).setSnackbarManagerSupplier(mSnackbarManagerSupplier);
          }
-@@ -311,8 +277,5 @@ public class FragmentDependencyProvider extends FragmentManager.FragmentLifecycl
+@@ -285,8 +251,5 @@ public class FragmentDependencyProvider extends FragmentManager.FragmentLifecycl
          if (fragment instanceof ManageSyncSettings) {
              ((ManageSyncSettings) fragment).setSnackbarManagerSupplier(mSnackbarManagerSupplier);
          }

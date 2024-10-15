@@ -112,7 +112,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/offlinepages/in
 +import org.chromium.chrome.browser.tabmodel.TabModelUtils;
 +import org.chromium.chrome.browser.tabmodel.TabModelSelector;
 +import org.chromium.chrome.browser.tabmodel.TabWindowManager;
-+import org.chromium.chrome.browser.ApplicationLifetime;
++import org.chromium.chrome.browser.lifetime.ApplicationLifetime;
 +import org.chromium.content_public.browser.WebContentsObserver;
 +import org.chromium.content_public.browser.WebContents;
 +import org.chromium.net.NetworkChangeNotifier;

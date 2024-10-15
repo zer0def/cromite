@@ -6,10 +6,10 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 ---
  components/module_installer/android/BUILD.gn  |  1 -
  .../engine/SplitCompatEngine.java             | 64 +------------------
- .../engine/SplitCompatEngineFacade.java       | 26 +-------
+ .../engine/SplitCompatEngineFacade.java       | 25 --------
  .../module_installer/util/ModuleUtil.java     |  3 -
  .../util/SplitCompatInitializer.java          |  6 --
- 5 files changed, 3 insertions(+), 97 deletions(-)
+ 5 files changed, 1 insertion(+), 98 deletions(-)
 
 diff --git a/components/module_installer/android/BUILD.gn b/components/module_installer/android/BUILD.gn
 --- a/components/module_installer/android/BUILD.gn
@@ -135,7 +135,7 @@ diff --git a/components/module_installer/android/java/src/org/chromium/component
 diff --git a/components/module_installer/android/java/src/org/chromium/components/module_installer/engine/SplitCompatEngineFacade.java b/components/module_installer/android/java/src/org/chromium/components/module_installer/engine/SplitCompatEngineFacade.java
 --- a/components/module_installer/android/java/src/org/chromium/components/module_installer/engine/SplitCompatEngineFacade.java
 +++ b/components/module_installer/android/java/src/org/chromium/components/module_installer/engine/SplitCompatEngineFacade.java
-@@ -6,48 +6,26 @@ package org.chromium.components.module_installer.engine;
+@@ -6,48 +6,23 @@ package org.chromium.components.module_installer.engine;
  
  import android.app.Activity;
  
@@ -156,17 +156,15 @@ diff --git a/components/module_installer/android/java/src/org/chromium/component
 -
      public SplitCompatEngineFacade() {
 -        this(SplitInstallManagerFactory.create(ContextUtils.getApplicationContext()));
--    }
--
--    public SplitCompatEngineFacade(SplitInstallManager manager) {
--        mSplitManager = manager;
-+        this(null);
      }
  
+-    public SplitCompatEngineFacade(SplitInstallManager manager) {
+-        mSplitManager = manager;
+-    }
+-
 -    public SplitInstallManager getSplitManager() {
 -        return mSplitManager;
-+    public SplitCompatEngineFacade(Logger umaLogger) {
-     }
+-    }
  
      public void installActivity(Activity activity) {
 -        // Note that SplitCompat (install) needs to be called on the Application Context prior

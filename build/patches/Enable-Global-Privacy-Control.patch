@@ -8,7 +8,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  chrome/android/chrome_java_sources.gni        |   1 +
  .../android/java/res/xml/gpc_preferences.xml  |  15 +++
  .../java/res/xml/privacy_preferences.xml      |   4 +
- .../browser/privacy/settings/GpcSettings.java |  34 ++++++
+ .../browser/privacy/settings/GpcSettings.java |  50 ++++++++
  .../privacy/settings/PrivacySettings.java     |   9 ++
  chrome/app/settings_strings.grdp              |  15 +++
  .../api/settings_private/prefs_util.cc        |   1 +
@@ -46,7 +46,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../web_service_worker_fetch_context_impl.cc  |   3 +
  ...ted_or_shared_worker_fetch_context_impl.cc |   3 +
  .../platform/runtime_enabled_features.json5   |   5 +
- 42 files changed, 368 insertions(+)
+ 42 files changed, 384 insertions(+)
  create mode 100644 chrome/android/java/res/xml/gpc_preferences.xml
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/GpcSettings.java
  create mode 100644 chrome/browser/resources/settings/privacy_page/gpc_toggle.html
@@ -118,10 +118,13 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/privacy/setting
 new file mode 100644
 --- /dev/null
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/GpcSettings.java
-@@ -0,0 +1,34 @@
+@@ -0,0 +1,50 @@
 +package org.chromium.chrome.browser.privacy.settings;
 +
 +import android.os.Bundle;
++
++import org.chromium.base.supplier.ObservableSupplier;
++import org.chromium.base.supplier.ObservableSupplierImpl;
 +
 +import org.chromium.chrome.R;
 +import org.chromium.chrome.browser.preferences.Pref;
@@ -134,10 +137,18 @@ new file mode 100644
 +public class GpcSettings extends ChromeBaseSettingsFragment {
 +    private static final String PREF_SWITCH = "gpc_switch";
 +
++    private final ObservableSupplierImpl<String> mPageTitle = new ObservableSupplierImpl<>();
++
++    @Override
++    public void onActivityCreated(Bundle savedInstanceState) {
++        super.onActivityCreated(savedInstanceState);
++
++        mPageTitle.set(getString(R.string.gpc_title));
++    }
++
 +    @Override
 +    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
 +        SettingsUtils.addPreferencesFromResource(this, R.xml.gpc_preferences);
-+        getActivity().setTitle(R.string.gpc_title);
 +
 +        ChromeSwitchPreference switchPreference =
 +                (ChromeSwitchPreference) findPreference(PREF_SWITCH);
@@ -152,11 +163,16 @@ new file mode 100644
 +                    return true;
 +                });
 +    }
++
++    @Override
++    public ObservableSupplier<String> getPageTitle() {
++        return mPageTitle;
++    }
 +}
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/PrivacySettings.java b/chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/PrivacySettings.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/PrivacySettings.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/PrivacySettings.java
-@@ -100,6 +100,7 @@ public class PrivacySettings extends ChromeBaseSettingsFragment
+@@ -101,6 +101,7 @@ public class PrivacySettings extends ChromeBaseSettingsFragment
      private static final String PREF_SECURE_DNS = "secure_dns";
      private static final String PREF_USAGE_STATS = "usage_stats_reporting";
      private static final String PREF_DO_NOT_TRACK = "do_not_track";
@@ -164,7 +180,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/privacy/setting
      private static final String PREF_SAFE_BROWSING = "safe_browsing";
      private static final String PREF_SYNC_AND_SERVICES_LINK = "sync_and_services_link";
      private static final String PREF_REFERER_POLICY = "referers_policy";
-@@ -495,6 +496,14 @@ public class PrivacySettings extends ChromeBaseSettingsFragment
+@@ -496,6 +497,14 @@ public class PrivacySettings extends ChromeBaseSettingsFragment
                              : R.string.text_off);
          }
  

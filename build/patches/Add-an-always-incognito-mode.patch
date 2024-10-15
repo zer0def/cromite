@@ -37,7 +37,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../chrome/browser/history/HistoryPage.java   |  16 ++
  .../native_page/NativePageFactory.java        |   4 +-
  .../chrome/browser/ntp/RecentTabsManager.java |  28 ++-
- .../privacy/settings/IncognitoSettings.java   | 161 ++++++++++++++++++
+ .../privacy/settings/IncognitoSettings.java   | 162 ++++++++++++++++++
  .../settings/FragmentDependencyProvider.java  |   4 +
  .../HistoricalTabModelObserver.java           |   5 +-
  .../tab/tab_restore/HistoricalTabSaver.java   |   2 +-
@@ -70,7 +70,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../strings/android_chrome_strings.grd        |  25 +++
  .../browser/toolbar/LocationBarModel.java     |   5 +-
  chrome/browser/ui/messages/android/BUILD.gn   |   1 +
- .../snackbar/INeedSnackbarManager.java        |  27 +++
+ .../snackbar/INeedSnackbarManager.java        |  28 +++
  chrome/common/pref_names.h                    |   6 +
  .../browser/content_settings_pref_provider.cc |   6 +-
  .../browser/content_settings_pref_provider.h  |   2 +
@@ -84,7 +84,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../add-an-always-incognito-mode.inc          |   1 +
  .../add-an-always-incognito-mode.inc          |   3 +
  .../add-an-always-incognito-mode.inc          |   1 +
- 65 files changed, 782 insertions(+), 111 deletions(-)
+ 65 files changed, 784 insertions(+), 111 deletions(-)
  create mode 100644 chrome/android/java/res/xml/incognito_preferences.xml
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/AlwaysIncognitoLinkInterceptor.java
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/IncognitoSettings.java
@@ -746,7 +746,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/privacy/setting
 new file mode 100644
 --- /dev/null
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/IncognitoSettings.java
-@@ -0,0 +1,161 @@
+@@ -0,0 +1,162 @@
 +/*
 +    This file is part of Bromite.
 +
@@ -779,6 +779,7 @@ new file mode 100644
 +import androidx.preference.PreferenceFragmentCompat;
 +import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
 +
++import org.chromium.base.supplier.Supplier;
 +import org.chromium.chrome.R;
 +import org.chromium.chrome.browser.preferences.Pref;
 +import org.chromium.chrome.browser.profiles.Profile;
@@ -787,7 +788,7 @@ new file mode 100644
 +import org.chromium.chrome.browser.ui.messages.snackbar.SnackbarManager;
 +import org.chromium.chrome.browser.ui.messages.snackbar.INeedSnackbarManager;
 +import org.chromium.chrome.browser.ui.messages.snackbar.Snackbar;
-+import org.chromium.chrome.browser.ApplicationLifetime;
++import org.chromium.chrome.browser.lifetime.ApplicationLifetime;
 +import org.chromium.components.browser_ui.settings.ChromeSwitchPreference;
 +import org.chromium.components.browser_ui.settings.SettingsUtils;
 +import org.chromium.components.prefs.PrefService;
@@ -799,7 +800,7 @@ new file mode 100644
 +public class IncognitoSettings
 +        extends PreferenceFragmentCompat implements Preference.OnPreferenceChangeListener,
 +                                                    INeedSnackbarManager {
-+    private SnackbarManager mSnackbarManager;
++    private Supplier<SnackbarManager> mSnackbarManagerSupplier;
 +    private Snackbar mSnackbar;
 +
 +    private static final String PREF_ALWAYS_INCOGNITO = "always_incognito";
@@ -871,8 +872,8 @@ new file mode 100644
 +        } else if (PREF_INCOGNITO_SAVE_SITE_SETTING.equals(key)) {
 +            prefService.setBoolean(Pref.INCOGNITO_SAVE_SITE_SETTING_ENABLED, (boolean) newValue);
 +        }
-+        if (!mSnackbarManager.isShowing()) {
-+            mSnackbarManager.showSnackbar(mSnackbar);
++        if (!mSnackbarManagerSupplier.get().isShowing()) {
++            mSnackbarManagerSupplier.get().showSnackbar(mSnackbar);
 +        }
 +        return true;
 +    }
@@ -904,14 +905,14 @@ new file mode 100644
 +    }
 +
 +    @Override
-+    public void setSnackbarManager(SnackbarManager manager) {
-+        mSnackbarManager = manager;
++    public void setSnackbarManagerSupplier(Supplier<SnackbarManager> manager) {
++        mSnackbarManagerSupplier = manager;
 +    }
 +}
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/settings/FragmentDependencyProvider.java b/chrome/android/java/src/org/chromium/chrome/browser/settings/FragmentDependencyProvider.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/settings/FragmentDependencyProvider.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/settings/FragmentDependencyProvider.java
-@@ -57,6 +57,7 @@ import org.chromium.chrome.browser.sync.settings.AccountManagementFragment;
+@@ -58,6 +58,7 @@ import org.chromium.chrome.browser.sync.settings.AccountManagementFragment;
  import org.chromium.chrome.browser.sync.settings.GoogleServicesSettings;
  import org.chromium.chrome.browser.sync.settings.ManageSyncSettings;
  import org.chromium.chrome.browser.ui.messages.snackbar.SnackbarManager;
@@ -919,12 +920,12 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/settings/Fragme
  import org.chromium.components.browser_ui.bottomsheet.BottomSheetController;
  import org.chromium.components.browser_ui.settings.FragmentSettingsLauncher;
  import org.chromium.components.browser_ui.site_settings.BaseSiteSettingsFragment;
-@@ -296,6 +297,9 @@ public class FragmentDependencyProvider extends FragmentManager.FragmentLifecycl
+@@ -270,6 +271,9 @@ public class FragmentDependencyProvider extends FragmentManager.FragmentLifecycl
              safetyHubFragment.setCustomTabIntentHelper(
                      LaunchIntentDispatcher::createCustomTabActivityIntent);
          }
 +        if (fragment instanceof INeedSnackbarManager) {
-+            ((INeedSnackbarManager)fragment).setSnackbarManager(mSnackbarManager);
++            ((INeedSnackbarManager)fragment).setSnackbarManagerSupplier(mSnackbarManagerSupplier);
 +        }
          if (fragment instanceof AccountManagementFragment) {
              ((AccountManagementFragment) fragment)
@@ -1971,7 +1972,7 @@ diff --git a/chrome/browser/ui/messages/android/java/src/org/chromium/chrome/bro
 new file mode 100644
 --- /dev/null
 +++ b/chrome/browser/ui/messages/android/java/src/org/chromium/chrome/browser/ui/messages/snackbar/INeedSnackbarManager.java
-@@ -0,0 +1,27 @@
+@@ -0,0 +1,28 @@
 +/*
 +    This file is part of Bromite.
 +
@@ -1991,13 +1992,14 @@ new file mode 100644
 +
 +package org.chromium.chrome.browser.ui.messages.snackbar;
 +
++import org.chromium.base.supplier.Supplier;
 +import org.chromium.chrome.browser.ui.messages.snackbar.SnackbarManager;
 +
 +/**
 + * An interface that allows using snackbars in the settings
 + */
 +public interface INeedSnackbarManager {
-+    void setSnackbarManager(SnackbarManager manager);
++    void setSnackbarManagerSupplier(Supplier<SnackbarManager> manager);
 +}
 diff --git a/chrome/common/pref_names.h b/chrome/common/pref_names.h
 --- a/chrome/common/pref_names.h
