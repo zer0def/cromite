@@ -245,7 +245,7 @@ new file mode 100644
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/PrivacySettings.java b/chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/PrivacySettings.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/PrivacySettings.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/PrivacySettings.java
-@@ -141,7 +141,7 @@ public class PrivacySettings extends ChromeBaseSettingsFragment
+@@ -142,7 +142,7 @@ public class PrivacySettings extends ChromeBaseSettingsFragment
      public void onCreatePreferencesCromite(Bundle savedInstanceState, String rootKey) {
          mPageTitle.set(getString(R.string.prefs_privacy_security));
  

@@ -159,7 +159,7 @@ diff --git a/third_party/blink/renderer/platform/loader/child_url_loader_factory
 diff --git a/third_party/blink/renderer/platform/loader/fetch/resource_fetcher.cc b/third_party/blink/renderer/platform/loader/fetch/resource_fetcher.cc
 --- a/third_party/blink/renderer/platform/loader/fetch/resource_fetcher.cc
 +++ b/third_party/blink/renderer/platform/loader/fetch/resource_fetcher.cc
-@@ -2917,7 +2917,7 @@ void ResourceFetcher::PrepareForLeakDetection() {
+@@ -2925,7 +2925,7 @@ void ResourceFetcher::PrepareForLeakDetection() {
  void ResourceFetcher::StopFetchingInternal(StopFetchingTarget target) {
    // TODO(toyoshim): May want to suspend scheduler while canceling loaders so
    // that the cancellations below do not awake unnecessary scheduling.

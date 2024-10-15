@@ -96,7 +96,7 @@ diff --git a/chrome/browser/extensions/api/BUILD.gn b/chrome/browser/extensions/
  
  import("//chrome/common/extensions/api/api_sources.gni")
  import("//chrome/common/features.gni")
-@@ -107,6 +111,7 @@ function_registration("api_registration") {
+@@ -106,6 +110,7 @@ function_registration("api_registration") {
      # include generated headers from these targets.
      # TODO(brettw) this should be made unnecessary if possible.
      "//chrome/common/extensions/api",

@@ -43,7 +43,7 @@ diff --git a/chrome/renderer/chrome_content_renderer_client.cc b/chrome/renderer
 diff --git a/components/content_settings/renderer/content_settings_agent_impl.cc b/components/content_settings/renderer/content_settings_agent_impl.cc
 --- a/components/content_settings/renderer/content_settings_agent_impl.cc
 +++ b/components/content_settings/renderer/content_settings_agent_impl.cc
-@@ -448,6 +448,14 @@ void ContentSettingsAgentImpl::ClearBlockedContentSettings() {
+@@ -445,6 +445,14 @@ void ContentSettingsAgentImpl::ClearBlockedContentSettings() {
    cached_script_permissions_.clear();
  }
  
@@ -58,7 +58,7 @@ diff --git a/components/content_settings/renderer/content_settings_agent_impl.cc
  bool ContentSettingsAgentImpl::UpdateOverrides() {
    // Evaluate the content setting rules
    ContentSetting setting = CONTENT_SETTING_ALLOW;
-@@ -458,7 +466,6 @@ bool ContentSettingsAgentImpl::UpdateOverrides() {
+@@ -455,7 +463,6 @@ bool ContentSettingsAgentImpl::UpdateOverrides() {
    }
    return UpdateTimeZoneOverride(
        setting, content_setting_rules_->timezone_override_value);

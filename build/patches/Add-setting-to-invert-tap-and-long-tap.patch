@@ -106,8 +106,8 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/accessibility/s
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/ChromeAccessibilitySettingsDelegate.java b/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/ChromeAccessibilitySettingsDelegate.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/ChromeAccessibilitySettingsDelegate.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/ChromeAccessibilitySettingsDelegate.java
-@@ -136,6 +136,24 @@ public class ChromeAccessibilitySettingsDelegate implements AccessibilitySetting
-             mSnackbarManager.showSnackbar(mSnackbar);
+@@ -137,6 +137,24 @@ public class ChromeAccessibilitySettingsDelegate implements AccessibilitySetting
+             mSnackbarManagerSupplier.get().showSnackbar(mSnackbar);
      }
  
 +    private static class ShowAlwaysContextMenuOnLinksDelegate implements BooleanPreferenceDelegate {
