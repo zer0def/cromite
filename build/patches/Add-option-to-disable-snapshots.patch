@@ -8,14 +8,14 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../tasks/tab_management/TabProperties.java   |  5 +++
  .../java/res/xml/privacy_preferences.xml      |  5 +++
  .../chrome/browser/app/ChromeActivity.java    |  3 +-
- .../privacy/settings/PrivacySettings.java     | 43 ++++++++++++++++++-
+ .../privacy/settings/PrivacySettings.java     | 44 ++++++++++++++++++-
  .../strings/android_chrome_strings.grd        |  8 ++++
- 6 files changed, 69 insertions(+), 3 deletions(-)
+ 6 files changed, 70 insertions(+), 3 deletions(-)
 
 diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabGridViewBinder.java b/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabGridViewBinder.java
 --- a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabGridViewBinder.java
 +++ b/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabGridViewBinder.java
-@@ -336,7 +336,12 @@ class TabGridViewBinder {
+@@ -346,7 +346,12 @@ class TabGridViewBinder {
                      if (result != null) {
                          TabUtils.setDrawableAndUpdateImageMatrix(thumbnail, result, thumbnailSize);
                      } else {
@@ -29,7 +29,7 @@ diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser
                      }
                  };
          if (sThumbnailFetcherForTesting != null) {
-@@ -375,6 +380,7 @@ class TabGridViewBinder {
+@@ -385,6 +390,7 @@ class TabGridViewBinder {
              ViewLookupCachingFrameLayout rootView,
              PropertyModel model,
              TabListFaviconProvider.TabFavicon favicon) {
@@ -40,7 +40,7 @@ diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser
 diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabProperties.java b/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabProperties.java
 --- a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabProperties.java
 +++ b/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabProperties.java
-@@ -82,6 +82,9 @@ public class TabProperties {
+@@ -76,6 +76,9 @@ public class TabProperties {
      public static final WritableBooleanPropertyKey FAVICON_FETCHED =
              new WritableBooleanPropertyKey();
  
@@ -50,7 +50,7 @@ diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser
      /** Property for lazily fetching favicons when required by an item in a UI. */
      public static final WritableObjectPropertyKey<TabListFaviconProvider.TabFaviconFetcher>
              FAVICON_FETCHER = new WritableObjectPropertyKey<>();
-@@ -180,6 +183,7 @@ public class TabProperties {
+@@ -155,6 +158,7 @@ public class TabProperties {
                  CARD_TYPE,
                  CONTENT_DESCRIPTION_STRING,
                  ACTION_BUTTON_DESCRIPTION_STRING,
@@ -58,14 +58,14 @@ diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser
                  SHOPPING_PERSISTED_TAB_DATA_FETCHER,
                  SHOULD_SHOW_PRICE_DROP_TOOLTIP,
                  QUICK_DELETE_ANIMATION_STATUS,
-@@ -196,6 +200,7 @@ public class TabProperties {
-                 TAB_ACTION_BUTTON_LISTENER,
+@@ -173,6 +177,7 @@ public class TabProperties {
+                 TAB_ACTION_BUTTON_DATA,
                  FAVICON_FETCHED,
                  FAVICON_FETCHER,
 +                FAVICON,
                  IS_SELECTED,
                  TITLE,
-                 TABSTRIP_FAVICON_BACKGROUND_COLOR_ID,
+                 HAS_NOTIFICATION_BUBBLE
 diff --git a/chrome/android/java/res/xml/privacy_preferences.xml b/chrome/android/java/res/xml/privacy_preferences.xml
 --- a/chrome/android/java/res/xml/privacy_preferences.xml
 +++ b/chrome/android/java/res/xml/privacy_preferences.xml
@@ -84,7 +84,7 @@ diff --git a/chrome/android/java/res/xml/privacy_preferences.xml b/chrome/androi
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActivity.java b/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActivity.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActivity.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActivity.java
-@@ -145,6 +145,7 @@ import org.chromium.chrome.browser.preferences.ChromePreferenceKeys;
+@@ -141,6 +141,7 @@ import org.chromium.chrome.browser.preferences.ChromePreferenceKeys;
  import org.chromium.chrome.browser.preferences.ChromeSharedPreferences;
  import org.chromium.chrome.browser.preferences.Pref;
  import org.chromium.chrome.browser.printing.TabPrinter;
@@ -92,7 +92,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActiv
  import org.chromium.chrome.browser.profiles.Profile;
  import org.chromium.chrome.browser.profiles.ProfileManager;
  import org.chromium.chrome.browser.profiles.ProfileProvider;
-@@ -725,7 +726,7 @@ public abstract class ChromeActivity<C extends ChromeActivityComponent>
+@@ -716,7 +717,7 @@ public abstract class ChromeActivity<C extends ChromeActivityComponent>
                      new TabContentManager(
                              this,
                              mBrowserControlsManagerSupplier.get(),
@@ -104,14 +104,22 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActiv
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/PrivacySettings.java b/chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/PrivacySettings.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/PrivacySettings.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/PrivacySettings.java
-@@ -72,12 +72,26 @@ import org.chromium.chrome.browser.preferences.ChromeSharedPreferences;
+@@ -19,6 +19,7 @@ import androidx.preference.Preference;
+ 
+ import org.chromium.base.metrics.RecordHistogram;
+ import org.chromium.base.metrics.RecordUserAction;
++import org.chromium.base.supplier.Supplier;
+ import org.chromium.base.supplier.ObservableSupplier;
+ import org.chromium.base.supplier.ObservableSupplierImpl;
+ import org.chromium.base.ContextUtils;
+@@ -74,12 +75,26 @@ import org.chromium.chrome.browser.preferences.ChromeSharedPreferences;
  import org.chromium.components.browser_ui.settings.ChromeSwitchPreference;
  import org.chromium.components.browser_ui.settings.ManagedPreferenceDelegate;
  
 +import org.chromium.chrome.browser.ui.messages.snackbar.SnackbarManager;
 +import org.chromium.chrome.browser.ui.messages.snackbar.INeedSnackbarManager;
 +import org.chromium.chrome.browser.ui.messages.snackbar.Snackbar;
-+import org.chromium.chrome.browser.ApplicationLifetime;
++import org.chromium.chrome.browser.lifetime.ApplicationLifetime;
 +
  import java.util.ArrayList;
  import java.util.List;
@@ -121,18 +129,18 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/privacy/setting
 -        implements Preference.OnPreferenceChangeListener {
 +        implements Preference.OnPreferenceChangeListener, INeedSnackbarManager {
 +
-+    private SnackbarManager mSnackbarManager;
++    private Supplier<SnackbarManager> mSnackbarManagerSupplier;
 +    private Snackbar mSnackbar;
 +
 +    @Override
-+    public void setSnackbarManager(SnackbarManager manager) {
-+        mSnackbarManager = manager;
++    public void setSnackbarManagerSupplier(Supplier<SnackbarManager> manager) {
++        mSnackbarManagerSupplier = manager;
 +    }
 +
      private static final String PREF_CAN_MAKE_PAYMENT = "can_make_payment";
      private static final String PREF_PRELOAD_PAGES = "preload_pages";
      private static final String PREF_HTTPS_FIRST_MODE = "https_first_mode";
-@@ -162,6 +176,21 @@ public class PrivacySettings extends ChromeBaseSettingsFragment
+@@ -165,6 +180,21 @@ public class PrivacySettings extends ChromeBaseSettingsFragment
              }
          }
  
@@ -154,7 +162,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/privacy/setting
          Preference privacyGuidePreference = findPreference(PREF_PRIVACY_GUIDE);
          // Record the launch of PG from the S&P link-row entry point
          privacyGuidePreference.setOnPreferenceClickListener(
-@@ -368,6 +397,7 @@ public class PrivacySettings extends ChromeBaseSettingsFragment
+@@ -376,6 +406,7 @@ public class PrivacySettings extends ChromeBaseSettingsFragment
  
      public static final String PREF_ALLOW_CUSTOM_TAB_INTENTS = "allow_custom_tab_intents";
      public static final String PREF_OPEN_EXTERNAL_LINKS_INCOGNITO = "open_external_links_incognito";
@@ -162,7 +170,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/privacy/setting
  
      @Override
      public boolean onPreferenceChange(Preference preference, Object newValue) {
-@@ -410,6 +440,13 @@ public class PrivacySettings extends ChromeBaseSettingsFragment
+@@ -418,6 +449,13 @@ public class PrivacySettings extends ChromeBaseSettingsFragment
              SharedPreferences.Editor sharedPreferencesEditor = ContextUtils.getAppSharedPreferences().edit();
              sharedPreferencesEditor.putBoolean(PREF_OPEN_EXTERNAL_LINKS_INCOGNITO, (boolean)newValue);
              sharedPreferencesEditor.apply();
@@ -170,13 +178,13 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/privacy/setting
 +            SharedPreferences.Editor sharedPreferencesEditor = ContextUtils.getAppSharedPreferences().edit();
 +            sharedPreferencesEditor.putBoolean(PREF_TABGRID_USE_ICONS, (boolean)newValue);
 +            sharedPreferencesEditor.apply();
-+            if (!mSnackbarManager.isShowing()) {
-+                mSnackbarManager.showSnackbar(mSnackbar);
++            if (!mSnackbarManagerSupplier.get().isShowing()) {
++                mSnackbarManagerSupplier.get().showSnackbar(mSnackbar);
 +            }
          }
          return true;
      }
-@@ -466,6 +503,10 @@ public class PrivacySettings extends ChromeBaseSettingsFragment
+@@ -474,6 +512,10 @@ public class PrivacySettings extends ChromeBaseSettingsFragment
                              : R.string.text_off);
          }
  
@@ -190,7 +198,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/privacy/setting
 diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chrome/browser/ui/android/strings/android_chrome_strings.grd
 --- a/chrome/browser/ui/android/strings/android_chrome_strings.grd
 +++ b/chrome/browser/ui/android/strings/android_chrome_strings.grd
-@@ -5870,6 +5870,14 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>delete the Chrome d
+@@ -5979,6 +5979,14 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>delete the Chrome d
          Your <ph name="FQDN">%1$s<ex>www.amazon.com</ex></ph> timer ran out. It'll start again tomorrow.
        </message>
  

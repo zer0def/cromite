@@ -14,15 +14,14 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../performance_manager/freezing/freezing_policy.cc       | 4 ++--
  components/performance_manager/public/features.h          | 3 +++
  components/performance_manager/user_tuning/prefs.cc       | 6 +++---
- .../browser/renderer_host/page_lifecycle_state_manager.cc | 8 ++++++++
  .../Enable-freeze-high-cpu-background-usage.inc           | 8 ++++++++
- 6 files changed, 30 insertions(+), 5 deletions(-)
+ 5 files changed, 22 insertions(+), 5 deletions(-)
  create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Enable-freeze-high-cpu-background-usage.inc
 
 diff --git a/components/performance_manager/features.cc b/components/performance_manager/features.cc
 --- a/components/performance_manager/features.cc
 +++ b/components/performance_manager/features.cc
-@@ -154,6 +154,7 @@ const base::FeatureParam<int> kThresholdChromeCPUPercent{
+@@ -143,6 +143,7 @@ BASE_FEATURE(kUrgentPageDiscarding,
  BASE_FEATURE(kCPUMeasurementInFreezingPolicy,
               "CPUMeasurementInFreezingPolicy",
               base::FEATURE_DISABLED_BY_DEFAULT);
@@ -30,7 +29,7 @@ diff --git a/components/performance_manager/features.cc b/components/performance
  
  // Note: This param is associated with `kCPUMeasurementInFreezingPolicy` instead
  // of `kFreezingOnBatterySaver`, to allow retrieving the value without
-@@ -170,8 +171,13 @@ BASE_FEATURE(kFreezingOnBatterySaverForTesting,
+@@ -159,9 +160,14 @@ BASE_FEATURE(kFreezingOnBatterySaverForTesting,
               "FreezingOnBatterySaverForTesting",
               base::FEATURE_DISABLED_BY_DEFAULT);
  
@@ -43,7 +42,8 @@ diff --git a/components/performance_manager/features.cc b/components/performance
               base::FEATURE_DISABLED_BY_DEFAULT);
 +SET_CROMITE_FEATURE_ENABLED(kResourceAttributionIncludeOrigins);
  
- }  // namespace performance_manager::features
+ BASE_FEATURE(kSeamlessRenderFrameSwap,
+              "SeamlessRenderFrameSwap",
 diff --git a/components/performance_manager/freezing/freezing_policy.cc b/components/performance_manager/freezing/freezing_policy.cc
 --- a/components/performance_manager/freezing/freezing_policy.cc
 +++ b/components/performance_manager/freezing/freezing_policy.cc
@@ -64,7 +64,7 @@ diff --git a/components/performance_manager/freezing/freezing_policy.cc b/compon
 diff --git a/components/performance_manager/public/features.h b/components/performance_manager/public/features.h
 --- a/components/performance_manager/public/features.h
 +++ b/components/performance_manager/public/features.h
-@@ -160,6 +160,9 @@ BASE_DECLARE_FEATURE(kFreezingOnBatterySaver);
+@@ -157,6 +157,9 @@ BASE_DECLARE_FEATURE(kFreezingOnBatterySaver);
  // - Pretend that all tabs have high CPU usage in background.
  BASE_DECLARE_FEATURE(kFreezingOnBatterySaverForTesting);
  
@@ -99,24 +99,6 @@ diff --git a/components/performance_manager/user_tuning/prefs.cc b/components/pe
    registry->RegisterTimePref(kLastBatteryUseTimestamp, base::Time());
    registry->RegisterBooleanPref(kDiscardRingTreatmentEnabled, true);
    registry->RegisterBooleanPref(kPerformanceInterventionNotificationEnabled,
-diff --git a/content/browser/renderer_host/page_lifecycle_state_manager.cc b/content/browser/renderer_host/page_lifecycle_state_manager.cc
---- a/content/browser/renderer_host/page_lifecycle_state_manager.cc
-+++ b/content/browser/renderer_host/page_lifecycle_state_manager.cc
-@@ -77,6 +77,14 @@ void PageLifecycleStateManager::SetFrameTreeVisibility(
-     return;
- 
-   frame_tree_visibility_ = visibility;
-+  if (visibility == blink::mojom::PageVisibilityState::kVisible) {
-+    // Unset `frozen_explicitly_` when the page is shown, to reflect that the
-+    // Blink page scheduler unfreezes the page in that situation. This ensures
-+    // that the page is frozen if SetIsFrozen(true) is called while the page is
-+    // hidden in the future (SetIsFrozen(true) no-ops if `frozen_explicitly_` is
-+    // true).
-+    is_set_frozen_called_ = false;
-+  }
-   SendUpdatesToRendererIfNeeded(
-       /*page_restore_params=*/nullptr, base::NullCallback());
-   // TODO(yuzus): When a page is frozen and made visible, the page should
 diff --git a/cromite_flags/chrome/browser/about_flags_cc/Enable-freeze-high-cpu-background-usage.inc b/cromite_flags/chrome/browser/about_flags_cc/Enable-freeze-high-cpu-background-usage.inc
 new file mode 100644
 --- /dev/null

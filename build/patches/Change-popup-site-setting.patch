@@ -23,7 +23,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 diff --git a/chrome/browser/ui/blocked_content/tab_under_navigation_throttle.cc b/chrome/browser/ui/blocked_content/tab_under_navigation_throttle.cc
 --- a/chrome/browser/ui/blocked_content/tab_under_navigation_throttle.cc
 +++ b/chrome/browser/ui/blocked_content/tab_under_navigation_throttle.cc
-@@ -72,6 +72,7 @@ void LogTabUnderAttempt(content::NavigationHandle* handle) {
+@@ -65,6 +65,7 @@ void LogTabUnderAttempt(content::NavigationHandle* handle) {
  BASE_FEATURE(kBlockTabUnders,
               "BlockTabUnders",
               base::FEATURE_DISABLED_BY_DEFAULT);

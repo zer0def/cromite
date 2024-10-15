@@ -31,7 +31,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 diff --git a/chrome/renderer/chrome_content_renderer_client.cc b/chrome/renderer/chrome_content_renderer_client.cc
 --- a/chrome/renderer/chrome_content_renderer_client.cc
 +++ b/chrome/renderer/chrome_content_renderer_client.cc
-@@ -1657,7 +1657,7 @@ ChromeContentRendererClient::CreateWorkerContentSettingsClient(
+@@ -1674,7 +1674,7 @@ ChromeContentRendererClient::CreateWorkerContentSettingsClient(
  std::unique_ptr<media::SpeechRecognitionClient>
  ChromeContentRendererClient::CreateSpeechRecognitionClient(
      content::RenderFrame* render_frame) {
@@ -43,8 +43,8 @@ diff --git a/chrome/renderer/chrome_content_renderer_client.cc b/chrome/renderer
 diff --git a/components/content_settings/renderer/content_settings_agent_impl.cc b/components/content_settings/renderer/content_settings_agent_impl.cc
 --- a/components/content_settings/renderer/content_settings_agent_impl.cc
 +++ b/components/content_settings/renderer/content_settings_agent_impl.cc
-@@ -483,6 +483,14 @@ bool ContentSettingsAgentImpl::IsAllowlistedForContentSettingsCromite() const {
-   return false;
+@@ -445,6 +445,14 @@ void ContentSettingsAgentImpl::ClearBlockedContentSettings() {
+   cached_script_permissions_.clear();
  }
  
 +bool ContentSettingsAgentImpl::IsTimezoneChanged() {
@@ -58,7 +58,7 @@ diff --git a/components/content_settings/renderer/content_settings_agent_impl.cc
  bool ContentSettingsAgentImpl::UpdateOverrides() {
    // Evaluate the content setting rules
    ContentSetting setting = CONTENT_SETTING_ALLOW;
-@@ -493,7 +501,6 @@ bool ContentSettingsAgentImpl::UpdateOverrides() {
+@@ -455,7 +463,6 @@ bool ContentSettingsAgentImpl::UpdateOverrides() {
    }
    return UpdateTimeZoneOverride(
        setting, content_setting_rules_->timezone_override_value);
@@ -69,7 +69,7 @@ diff --git a/components/content_settings/renderer/content_settings_agent_impl.cc
 diff --git a/components/content_settings/renderer/content_settings_agent_impl.h b/components/content_settings/renderer/content_settings_agent_impl.h
 --- a/components/content_settings/renderer/content_settings_agent_impl.h
 +++ b/components/content_settings/renderer/content_settings_agent_impl.h
-@@ -123,6 +123,8 @@ class ContentSettingsAgentImpl
+@@ -120,6 +120,8 @@ class ContentSettingsAgentImpl
    void SetRendererContentSettingRulesForTest(
        const RendererContentSettingRules& rules);
  

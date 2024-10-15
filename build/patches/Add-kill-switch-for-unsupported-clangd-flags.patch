@@ -14,7 +14,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 diff --git a/build/config/compiler/BUILD.gn b/build/config/compiler/BUILD.gn
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -1962,7 +1962,6 @@ config("default_warnings") {
+@@ -1967,7 +1967,6 @@ config("default_warnings") {
          # TODO(crbug.com/40284799): Fix and re-enable.
          "-Wno-thread-safety-reference-return",
        ]
@@ -22,7 +22,7 @@ diff --git a/build/config/compiler/BUILD.gn b/build/config/compiler/BUILD.gn
        cflags_cc += [
          # TODO(crbug.com/328490295): Fix and re-enable for C flags.
          "-Wenum-compare-conditional",
-@@ -1980,6 +1979,16 @@ config("default_warnings") {
+@@ -1985,6 +1984,16 @@ config("default_warnings") {
          # TODO(crbug.com/356172342): Fix and re-enable.
          cflags_cc += [ "-Wno-dangling-assignment-gsl" ]
        }

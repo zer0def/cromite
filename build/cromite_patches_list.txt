@@ -217,7 +217,6 @@ Disable-GSA-by-default.patch
 Disallowing-MIDI-permission-by-default.patch
 Disable-Compression-Dictionary-Transport.patch
 Disallow-Android-App-Scheme-as-referrer.patch
-Deprecate-Data-URL-in-SVGUseElement.patch
 Content-settings-infrastructure.patch
 Add-autoplay-site-setting.patch
 Site-setting-for-images.patch

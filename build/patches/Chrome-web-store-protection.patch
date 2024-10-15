@@ -65,7 +65,7 @@ diff --git a/chrome/app/extensions_strings.grdp b/chrome/app/extensions_strings.
 diff --git a/chrome/browser/extensions/api/developer_private/developer_private_api.cc b/chrome/browser/extensions/api/developer_private/developer_private_api.cc
 --- a/chrome/browser/extensions/api/developer_private/developer_private_api.cc
 +++ b/chrome/browser/extensions/api/developer_private/developer_private_api.cc
-@@ -131,6 +131,12 @@
+@@ -132,6 +132,12 @@
  #include "url/gurl.h"
  #include "url/origin.h"
  
@@ -78,7 +78,7 @@ diff --git a/chrome/browser/extensions/api/developer_private/developer_private_a
  namespace extensions {
  
  namespace developer = api::developer_private;
-@@ -476,10 +482,32 @@ std::unique_ptr<developer::ProfileInfo> DeveloperPrivateAPI::CreateProfileInfo(
+@@ -480,10 +486,32 @@ std::unique_ptr<developer::ProfileInfo> DeveloperPrivateAPI::CreateProfileInfo(
    info->is_mv2_deprecation_notice_dismissed =
        ManifestV2ExperimentManager::Get(profile)
            ->DidUserAcknowledgeNoticeGlobally();
@@ -112,7 +112,7 @@ diff --git a/chrome/browser/extensions/api/developer_private/developer_private_a
  template <>
  void BrowserContextKeyedAPIFactory<
      DeveloperPrivateAPI>::DeclareFactoryDependencies() {
-@@ -917,6 +945,7 @@ ExtensionFunction::ResponseAction DeveloperPrivateAutoUpdateFunction::Run() {
+@@ -921,6 +949,7 @@ ExtensionFunction::ResponseAction DeveloperPrivateAutoUpdateFunction::Run() {
      ExtensionUpdater::CheckParams params;
      params.fetch_priority = DownloadFetchPriority::kForeground;
      params.install_immediately = true;
@@ -120,7 +120,7 @@ diff --git a/chrome/browser/extensions/api/developer_private/developer_private_a
      params.callback =
          base::BindOnce(&DeveloperPrivateAutoUpdateFunction::OnComplete, this);
      updater->CheckNow(std::move(params));
-@@ -1057,7 +1086,7 @@ DeveloperPrivateUpdateProfileConfigurationFunction::Run() {
+@@ -1061,7 +1090,7 @@ DeveloperPrivateUpdateProfileConfigurationFunction::Run() {
  
    const developer::ProfileConfigurationUpdate& update = params->update;
  
@@ -129,7 +129,7 @@ diff --git a/chrome/browser/extensions/api/developer_private/developer_private_a
      Profile* profile = Profile::FromBrowserContext(browser_context());
      CHECK(profile);
      if (supervised_user::AreExtensionsPermissionsEnabled(profile)) {
-@@ -1071,6 +1100,11 @@ DeveloperPrivateUpdateProfileConfigurationFunction::Run() {
+@@ -1075,6 +1104,11 @@ DeveloperPrivateUpdateProfileConfigurationFunction::Run() {
          ->MarkNoticeAsAcknowledgedGlobally();
    }
  
@@ -158,8 +158,8 @@ diff --git a/chrome/browser/extensions/api/webstore_private/webstore_private_api
 --- a/chrome/browser/extensions/api/webstore_private/webstore_private_api.cc
 +++ b/chrome/browser/extensions/api/webstore_private/webstore_private_api.cc
 @@ -67,6 +67,7 @@
- #include "extensions/browser/extension_system.h"
  #include "extensions/browser/extension_util.h"
+ #include "extensions/browser/extensions_browser_client.h"
  #include "extensions/common/extension.h"
 +#include "extensions/common/extension_features.h"
  #include "extensions/common/manifest.h"
@@ -633,9 +633,9 @@ diff --git a/chrome/browser/ui/webui/extensions/extensions_ui.cc b/chrome/browse
        {"toolbarLoadUnpacked", IDS_EXTENSIONS_TOOLBAR_LOAD_UNPACKED},
        {"toolbarLoadUnpackedDone", IDS_EXTENSIONS_TOOLBAR_LOAD_UNPACKED_DONE},
        {"toolbarPack", IDS_EXTENSIONS_TOOLBAR_PACK},
-@@ -448,6 +452,10 @@ content::WebUIDataSource* CreateAndAddExtensionsSource(Profile* profile,
-   source->AddString("hostPermissionsLearnMoreLink",
-                     chrome_extension_constants::kRuntimeHostPermissionsHelpURL);
+@@ -449,6 +453,10 @@ content::WebUIDataSource* CreateAndAddExtensionsSource(Profile* profile,
+       "hostPermissionsLearnMoreLink",
+       extension_permissions_constants::kRuntimeHostPermissionsHelpURL);
    source->AddBoolean(kInDevModeKey, in_dev_mode);
 +
 +  source->AddBoolean("isExtUpdateEnabled",
@@ -670,7 +670,7 @@ diff --git a/chrome/browser/update_client/chrome_update_query_params_delegate.cc
 diff --git a/chrome/common/extensions/api/developer_private.idl b/chrome/common/extensions/api/developer_private.idl
 --- a/chrome/common/extensions/api/developer_private.idl
 +++ b/chrome/common/extensions/api/developer_private.idl
-@@ -292,6 +292,7 @@ namespace developerPrivate {
+@@ -293,6 +293,7 @@ namespace developerPrivate {
      boolean isIncognitoAvailable;
      boolean isChildAccount;
      boolean isMv2DeprecationNoticeDismissed;
@@ -678,7 +678,7 @@ diff --git a/chrome/common/extensions/api/developer_private.idl b/chrome/common/
    };
  
    // DEPRECATED: Prefer ExtensionInfo.
-@@ -351,6 +352,7 @@ namespace developerPrivate {
+@@ -352,6 +353,7 @@ namespace developerPrivate {
    dictionary ProfileConfigurationUpdate {
      boolean? inDeveloperMode;
      boolean? isMv2DeprecationNoticeDismissed;
@@ -1136,8 +1136,8 @@ diff --git a/extensions/browser/updater/safe_manifest_parser.cc b/extensions/bro
 diff --git a/extensions/common/extension_features.cc b/extensions/common/extension_features.cc
 --- a/extensions/common/extension_features.cc
 +++ b/extensions/common/extension_features.cc
-@@ -190,4 +190,19 @@ BASE_FEATURE(kUseNewServiceWorkerTaskQueue,
-              "UseNewServiceWorkerTaskQueue",
+@@ -198,4 +198,19 @@ BASE_FEATURE(kDeclarativeNetRequestHeaderSubstitution,
+              "DeclarativeNetRequestHeaderSubstitution",
               base::FEATURE_DISABLED_BY_DEFAULT);
  
 +// Activates the auto update of extensions.
@@ -1159,9 +1159,9 @@ diff --git a/extensions/common/extension_features.cc b/extensions/common/extensi
 diff --git a/extensions/common/extension_features.h b/extensions/common/extension_features.h
 --- a/extensions/common/extension_features.h
 +++ b/extensions/common/extension_features.h
-@@ -224,6 +224,10 @@ BASE_DECLARE_FEATURE(kUseItemSnippetsAPI);
- // If enabled, use the new simpler, more efficient service worker task queue.
- BASE_DECLARE_FEATURE(kUseNewServiceWorkerTaskQueue);
+@@ -232,6 +232,10 @@ BASE_DECLARE_FEATURE(kUseNewServiceWorkerTaskQueue);
+ // type for modifying headers.
+ BASE_DECLARE_FEATURE(kDeclarativeNetRequestHeaderSubstitution);
  
 +BASE_DECLARE_FEATURE(kEnableExtensionAutoupdate);
 +
@@ -1173,7 +1173,7 @@ diff --git a/extensions/common/extension_features.h b/extensions/common/extensio
 diff --git a/tools/typescript/definitions/developer_private.d.ts b/tools/typescript/definitions/developer_private.d.ts
 --- a/tools/typescript/definitions/developer_private.d.ts
 +++ b/tools/typescript/definitions/developer_private.d.ts
-@@ -277,6 +277,7 @@ declare global {
+@@ -278,6 +278,7 @@ declare global {
          isIncognitoAvailable: boolean;
          isChildAccount: boolean;
          isMv2DeprecationNoticeDismissed: boolean;
@@ -1181,7 +1181,7 @@ diff --git a/tools/typescript/definitions/developer_private.d.ts b/tools/typescr
        }
  
        export interface ExtensionConfigurationUpdate {
-@@ -293,6 +294,7 @@ declare global {
+@@ -294,6 +295,7 @@ declare global {
        export interface ProfileConfigurationUpdate {
          inDeveloperMode?: boolean;
          isMv2DeprecationNoticeDismissed?: boolean;

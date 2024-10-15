@@ -56,28 +56,28 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 diff --git a/build/android/java/templates/BuildConfig.template b/build/android/java/templates/BuildConfig.template
 --- a/build/android/java/templates/BuildConfig.template
 +++ b/build/android/java/templates/BuildConfig.template
-@@ -100,6 +100,8 @@ public class BuildConfig {
-     public static MAYBE_FINAL boolean IS_CRONET_BUILD MAYBE_FALSE;
+@@ -83,6 +83,8 @@ public class BuildConfig {
+     public static boolean IS_CRONET_BUILD;
  #endif
  
-+    public static MAYBE_FINAL String BUILD_TARGET_CPU = _BUILD_TARGET_CPU;
++    public static String BUILD_TARGET_CPU = QUOTE(_BUILD_TARGET_CPU);
 +
  #if defined(_WRITE_CLANG_PROFILING_DATA)
-     public static MAYBE_FINAL boolean WRITE_CLANG_PROFILING_DATA = true;
+     public static boolean WRITE_CLANG_PROFILING_DATA = true;
  #else
 diff --git a/build/config/android/rules.gni b/build/config/android/rules.gni
 --- a/build/config/android/rules.gni
 +++ b/build/config/android/rules.gni
-@@ -1900,6 +1900,9 @@ if (!is_robolectric && enable_java_templates) {
+@@ -1951,6 +1951,9 @@ if (!is_robolectric && enable_java_templates) {
        sources = [ "//build/android/java/templates/BuildConfig.template" ]
        defines = []
  
 +      # add arch to org.chromium.build.BuildConfig
-+      defines += [ "_BUILD_TARGET_CPU=\"${target_cpu}\"" ]
++      defines += [ "_BUILD_TARGET_CPU=${target_cpu}" ]
 +
-       # Set these even when !use_final_fields so that they have correct default
-       # values within robolectric_binary(), which ignores jar_excluded_patterns.
        if ((defined(invoker.assertions_implicitly_enabled) &&
+            invoker.assertions_implicitly_enabled) || enable_java_asserts) {
+         defines += [ "_ENABLE_ASSERTS" ]
 diff --git a/chrome/android/chrome_java_sources.gni b/chrome/android/chrome_java_sources.gni
 --- a/chrome/android/chrome_java_sources.gni
 +++ b/chrome/android/chrome_java_sources.gni
@@ -108,7 +108,7 @@ diff --git a/chrome/android/java/res/xml/about_chrome_preferences.xml b/chrome/a
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/about_settings/AboutChromeSettings.java b/chrome/android/java/src/org/chromium/chrome/browser/about_settings/AboutChromeSettings.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/about_settings/AboutChromeSettings.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/about_settings/AboutChromeSettings.java
-@@ -21,12 +21,18 @@ import org.chromium.ui.widget.Toast;
+@@ -24,12 +24,18 @@ import org.chromium.ui.widget.Toast;
  
  import java.util.Calendar;
  
@@ -118,8 +118,8 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/about_settings/
 +
  /** Settings fragment that displays information about Chrome. */
  public class AboutChromeSettings extends PreferenceFragmentCompat
--        implements Preference.OnPreferenceClickListener {
-+        implements Preference.OnPreferenceClickListener,
+-        implements SettingsPage, Preference.OnPreferenceClickListener {
++        implements SettingsPage, Preference.OnPreferenceClickListener,
 +                   Preference.OnPreferenceChangeListener {
      private static final int TAPS_FOR_DEVELOPER_SETTINGS = 7;
  
@@ -128,7 +128,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/about_settings/
      private static final String PREF_OS_VERSION = "os_version";
      private static final String PREF_LEGAL_INFORMATION = "legal_information";
  
-@@ -57,6 +63,13 @@ public class AboutChromeSettings extends PreferenceFragmentCompat
+@@ -61,6 +67,13 @@ public class AboutChromeSettings extends PreferenceFragmentCompat
          p = findPreference(PREF_LEGAL_INFORMATION);
          int currentYear = Calendar.getInstance().get(Calendar.YEAR);
          p.setSummary(getString(R.string.legal_information_summary, currentYear));
@@ -141,8 +141,8 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/about_settings/
 +        allowInlineUpdate.setOnPreferenceChangeListener(this);
      }
  
-     /**
-@@ -121,4 +134,17 @@ public class AboutChromeSettings extends PreferenceFragmentCompat
+     @Override
+@@ -130,4 +143,17 @@ public class AboutChromeSettings extends PreferenceFragmentCompat
          }
          return true;
      }
@@ -672,7 +672,7 @@ new file mode 100644
 diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -2509,6 +2509,12 @@ static_library("browser") {
+@@ -2519,6 +2519,12 @@ static_library("browser") {
    }
  
    if (is_android) {
@@ -1085,7 +1085,7 @@ new file mode 100644
 diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browser/flags/android/chrome_feature_list.cc
 --- a/chrome/browser/flags/android/chrome_feature_list.cc
 +++ b/chrome/browser/flags/android/chrome_feature_list.cc
-@@ -271,6 +271,7 @@ const base::Feature* const kFeaturesExposedToJava[] = {
+@@ -274,6 +274,7 @@ const base::Feature* const kFeaturesExposedToJava[] = {
      &kPriceChangeModule,
      &kPwaRestoreUi,
      &kPwaRestoreUiAtStartup,
@@ -1096,7 +1096,7 @@ diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browse
 diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 --- a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 +++ b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
-@@ -342,6 +342,7 @@ public abstract class ChromeFeatureList {
+@@ -348,6 +348,7 @@ public abstract class ChromeFeatureList {
      public static final String INCOGNITO_REAUTHENTICATION_FOR_ANDROID =
              "IncognitoReauthenticationForAndroid";
      public static final String INCOGNITO_SCREENSHOT = "IncognitoScreenshot";
@@ -1672,7 +1672,7 @@ diff --git a/chrome/browser/safety_hub/android/java/src/org/chromium/chrome/brow
 diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chrome/browser/ui/android/strings/android_chrome_strings.grd
 --- a/chrome/browser/ui/android/strings/android_chrome_strings.grd
 +++ b/chrome/browser/ui/android/strings/android_chrome_strings.grd
-@@ -2328,6 +2328,12 @@ Your Google account may have other forms of browsing history like searches and a
+@@ -2385,6 +2385,12 @@ Your Google account may have other forms of browsing history like searches and a
        <message name="IDS_DEPRECATION_WARNING" desc="Warning about Chrome updates no longer being supported">
          Chrome updates are no longer supported for this version of Android
        </message>
@@ -1685,7 +1685,7 @@ diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chro
  
        <!-- Account management UI strings. -->
        <message name="IDS_ACCOUNT_MANAGEMENT_TITLE" desc="Header title for the account management screen. [CHAR_LIMIT=32]">
-@@ -4226,7 +4232,10 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>delete the Chrome d
+@@ -4315,7 +4321,10 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>delete the Chrome d
  
        <!-- Main menu items -->
        <message name="IDS_MENU_UPDATE" desc="Menu item for updating chrome. [CHAR_LIMIT=24]">
@@ -1697,7 +1697,7 @@ diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chro
        </message>
        <message name="IDS_MENU_UPDATE_SUMMARY_DEFAULT" desc="Summary string for update menu item explaining that a newer version of Chrome is available. [CHAR_LIMIT=30]">
          Newer version is available
-@@ -4237,6 +4246,18 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>delete the Chrome d
+@@ -4326,6 +4335,18 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>delete the Chrome d
        <message name="IDS_MENU_UPDATE_UNSUPPORTED_SUMMARY_DEFAULT" desc="Summary string for update menu item explaining that the Android version on the device is unsupported. [CHAR_LIMIT=30]">
          Android version is unsupported
        </message>

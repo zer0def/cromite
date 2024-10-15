@@ -68,7 +68,7 @@ diff --git a/ui/views/widget/widget.h b/ui/views/widget/widget.h
  
    friend class ButtonTest;
 @@ -1291,11 +1297,6 @@ class VIEWS_EXPORT Widget : public internal::NativeWidgetDelegate,
-   friend class ui_devtools::PageAgentViews;
+   friend class ui_devtools::BubbleLocking;
    friend void DisableActivationChangeHandlingForTests();
  
 -  // Sets/gets the type of disabling widget activation change handling.

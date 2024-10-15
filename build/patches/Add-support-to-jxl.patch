@@ -24,7 +24,7 @@ Enabled by default
  net/base/mime_util_unittest.cc                |   3 +
  third_party/.gitignore                        |   1 +
  .../blink/common/loader/network_utils.cc      |  16 +-
- .../blink/common/mime_util/mime_util.cc       |   7 +
+ .../blink/common/mime_util/mime_util.cc       |   4 +
  .../common/mime_util/mime_util_unittest.cc    |   6 +
  .../devtools_protocol/browser_protocol.pdl    |   1 +
  .../inspector/inspector_emulation_agent.cc    |   7 +-
@@ -58,7 +58,7 @@ Enabled by default
  .../libjxl/gen_headers/jxl/jxl_export.h       |  11 +
  tools/metrics/histograms/enums.xml            |   1 +
  .../histograms/metadata/blink/enums.xml       |   2 +-
- 53 files changed, 1998 insertions(+), 17 deletions(-)
+ 53 files changed, 1995 insertions(+), 17 deletions(-)
  create mode 100644 build/linux/unbundle/libjxl.gn
  create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Add-support-to-jxl.inc
  create mode 100644 cromite_flags/third_party/blink/common/features_cc/Add-support-to-jxl.inc
@@ -84,7 +84,7 @@ Enabled by default
 diff --git a/DEPS b/DEPS
 --- a/DEPS
 +++ b/DEPS
-@@ -498,6 +498,10 @@ vars = {
+@@ -488,6 +488,10 @@ vars = {
    # Three lines of non-changing comments so that
    # the commit queue can handle CLs rolling feed
    # and whatever else without interference from each other.
@@ -95,7 +95,7 @@ diff --git a/DEPS b/DEPS
    'highway_revision': '8295336dd70f1201d42c22ab5b0861de38cf8fbf',
    # Three lines of non-changing comments so that
    # the commit queue can handle CLs rolling ffmpeg
-@@ -1664,6 +1668,9 @@ deps = {
+@@ -1654,6 +1658,9 @@ deps = {
    'src/third_party/dawn':
      Var('dawn_git') + '/dawn.git' + '@' +  Var('dawn_revision'),
  
@@ -195,7 +195,7 @@ diff --git a/cc/paint/paint_image.h b/cc/paint/paint_image.h
 diff --git a/cc/tiles/image_decode_cache.h b/cc/tiles/image_decode_cache.h
 --- a/cc/tiles/image_decode_cache.h
 +++ b/cc/tiles/image_decode_cache.h
-@@ -84,6 +84,8 @@ class CC_EXPORT ImageDecodeCache {
+@@ -79,6 +79,8 @@ class CC_EXPORT ImageDecodeCache {
      using ScopedImageType =
          devtools_instrumentation::ScopedImageDecodeTask::ImageType;
      switch (image_type) {
@@ -375,7 +375,7 @@ diff --git a/net/base/mime_util_unittest.cc b/net/base/mime_util_unittest.cc
 diff --git a/third_party/.gitignore b/third_party/.gitignore
 --- a/third_party/.gitignore
 +++ b/third_party/.gitignore
-@@ -86,6 +86,7 @@
+@@ -80,6 +80,7 @@
  /libgifcodec
  /libjingle/source
  /libupnp
@@ -419,7 +419,7 @@ diff --git a/third_party/blink/common/loader/network_utils.cc b/third_party/blin
 diff --git a/third_party/blink/common/mime_util/mime_util.cc b/third_party/blink/common/mime_util/mime_util.cc
 --- a/third_party/blink/common/mime_util/mime_util.cc
 +++ b/third_party/blink/common/mime_util/mime_util.cc
-@@ -14,6 +14,7 @@
+@@ -15,6 +15,7 @@
  #include "media/media_buildflags.h"
  #include "net/base/mime_util.h"
  #include "third_party/blink/public/common/buildflags.h"
@@ -427,19 +427,16 @@ diff --git a/third_party/blink/common/mime_util/mime_util.cc b/third_party/blink
  
  #if !BUILDFLAG(IS_IOS)
  // iOS doesn't use and must not depend on //media
-@@ -144,6 +145,12 @@ MimeUtil::MimeUtil() {
-     non_image_types_.insert(type);
-   for (const char* type : kSupportedImageTypes)
-     image_types_.insert(type);
+@@ -43,6 +44,9 @@ constexpr auto kSupportedImageTypes = base::MakeFixedFlatSet<std::string_view>({
+ #if BUILDFLAG(ENABLE_AV1_DECODER)
+     "image/avif",
+ #endif
 +#if BUILDFLAG(ENABLE_JXL_DECODER)
-+  // TODO(firsching): Add "image/jxl" to the kSupportedImageTypes array when the
-+  // JXL feature is shipped.
-+  if (base::FeatureList::IsEnabled(features::kJXL))
-+    image_types_.insert("image/jxl");
++    "image/jxl",
 +#endif
-   for (const char* type : kUnsupportedTextTypes)
-     unsupported_text_types_.insert(type);
-   for (const char* type : kSupportedJavascriptTypes) {
+ });
+ 
+ //  Support every script type mentioned in the spec, as it notes that "User
 diff --git a/third_party/blink/common/mime_util/mime_util_unittest.cc b/third_party/blink/common/mime_util/mime_util_unittest.cc
 --- a/third_party/blink/common/mime_util/mime_util_unittest.cc
 +++ b/third_party/blink/common/mime_util/mime_util_unittest.cc
@@ -467,7 +464,7 @@ diff --git a/third_party/blink/common/mime_util/mime_util_unittest.cc b/third_pa
 diff --git a/third_party/blink/public/devtools_protocol/browser_protocol.pdl b/third_party/blink/public/devtools_protocol/browser_protocol.pdl
 --- a/third_party/blink/public/devtools_protocol/browser_protocol.pdl
 +++ b/third_party/blink/public/devtools_protocol/browser_protocol.pdl
-@@ -4523,6 +4523,7 @@ domain Emulation
+@@ -4541,6 +4541,7 @@ domain Emulation
    experimental type DisabledImageType extends string
      enum
        avif
@@ -584,8 +581,8 @@ diff --git a/third_party/blink/renderer/modules/webcodecs/fuzzer_seed_corpus/gen
 diff --git a/third_party/blink/renderer/modules/webcodecs/image_decoder_fuzzer.cc b/third_party/blink/renderer/modules/webcodecs/image_decoder_fuzzer.cc
 --- a/third_party/blink/renderer/modules/webcodecs/image_decoder_fuzzer.cc
 +++ b/third_party/blink/renderer/modules/webcodecs/image_decoder_fuzzer.cc
-@@ -3,8 +3,10 @@
- // found in the LICENSE file.
+@@ -5,8 +5,10 @@
+ #include <string>
  
  #include "base/run_loop.h"
 +#include "base/test/scoped_feature_list.h"
@@ -595,9 +592,9 @@ diff --git a/third_party/blink/renderer/modules/webcodecs/image_decoder_fuzzer.c
  #include "third_party/blink/renderer/bindings/core/v8/to_v8_traits.h"
  #include "third_party/blink/renderer/bindings/core/v8/v8_binding_for_core.h"
  #include "third_party/blink/renderer/bindings/core/v8/v8_union_arraybufferallowshared_arraybufferviewallowshared_readablestream.h"
-@@ -89,6 +91,9 @@ DEFINE_BINARY_PROTO_FUZZER(
-   auto scoped_gc =
-       MakeScopedGarbageCollectionRequest(test_support.GetIsolate());
+@@ -87,6 +89,9 @@ DEFINE_BINARY_PROTO_FUZZER(
+   auto page_holder = std::make_unique<DummyPageHolder>();
+   page_holder->GetFrame().GetSettings()->SetScriptEnabled(true);
  
 +  base::test::ScopedFeatureList scoped_feature_list;
 +  scoped_feature_list.InitAndEnableFeature(features::kJXL);
@@ -608,7 +605,7 @@ diff --git a/third_party/blink/renderer/modules/webcodecs/image_decoder_fuzzer.c
 diff --git a/third_party/blink/renderer/platform/BUILD.gn b/third_party/blink/renderer/platform/BUILD.gn
 --- a/third_party/blink/renderer/platform/BUILD.gn
 +++ b/third_party/blink/renderer/platform/BUILD.gn
-@@ -2369,6 +2369,10 @@ source_set("blink_platform_unittests_sources") {
+@@ -2377,6 +2377,10 @@ source_set("blink_platform_unittests_sources") {
      sources += [ "text/locale_icu_test.cc" ]
    }
  
@@ -619,7 +616,7 @@ diff --git a/third_party/blink/renderer/platform/BUILD.gn b/third_party/blink/re
    sources += [ "testing/run_all_tests.cc" ]
  
    configs += [
-@@ -2415,6 +2419,7 @@ source_set("blink_platform_unittests_sources") {
+@@ -2423,6 +2427,7 @@ source_set("blink_platform_unittests_sources") {
      "//third_party/blink/renderer/platform/wtf",
      "//third_party/dawn/src/dawn/native",
      "//third_party/dawn/src/dawn/wire",
@@ -677,7 +674,7 @@ diff --git a/third_party/blink/renderer/platform/graphics/bitmap_image_metrics.h
 diff --git a/third_party/blink/renderer/platform/image-decoders/BUILD.gn b/third_party/blink/renderer/platform/image-decoders/BUILD.gn
 --- a/third_party/blink/renderer/platform/image-decoders/BUILD.gn
 +++ b/third_party/blink/renderer/platform/image-decoders/BUILD.gn
-@@ -70,6 +70,15 @@ component("image_decoders") {
+@@ -72,6 +72,15 @@ component("image_decoders") {
      "//third_party/libyuv",
    ]
  
@@ -2218,7 +2215,7 @@ diff --git a/third_party/blink/tools/commit_stats/git-dirs.txt b/third_party/bli
 diff --git a/third_party/blink/web_tests/TestExpectations b/third_party/blink/web_tests/TestExpectations
 --- a/third_party/blink/web_tests/TestExpectations
 +++ b/third_party/blink/web_tests/TestExpectations
-@@ -4872,6 +4872,12 @@ crbug.com/1199522 http/tests/devtools/layers/layers-3d-view-hit-testing.js [ Fai
+@@ -4766,6 +4766,12 @@ crbug.com/1199522 http/tests/devtools/layers/layers-3d-view-hit-testing.js [ Fai
  # Started failing after rolling new version of check-layout-th.js
  css3/flexbox/perpendicular-writing-modes-inside-flex-item.html [ Failure ]
  
@@ -2234,7 +2231,7 @@ diff --git a/third_party/blink/web_tests/TestExpectations b/third_party/blink/we
 diff --git a/third_party/blink/web_tests/VirtualTestSuites b/third_party/blink/web_tests/VirtualTestSuites
 --- a/third_party/blink/web_tests/VirtualTestSuites
 +++ b/third_party/blink/web_tests/VirtualTestSuites
-@@ -431,6 +431,15 @@
+@@ -481,6 +481,15 @@
      "args": ["--enable-blink-features=FractionalScrollOffsets"],
      "expires": "Jun 1, 2025"
    },
@@ -2649,7 +2646,7 @@ new file mode 100644
 diff --git a/tools/metrics/histograms/enums.xml b/tools/metrics/histograms/enums.xml
 --- a/tools/metrics/histograms/enums.xml
 +++ b/tools/metrics/histograms/enums.xml
-@@ -20938,6 +20938,7 @@ from previous Chrome versions.
+@@ -20696,6 +20696,7 @@ from previous Chrome versions.
    <int value="188610022" label="NewMessageListView:enabled"/>
    <int value="189728101" label="FasterLocationReload:disabled"/>
    <int value="189777537" label="DisableInitialMostVisitedFadeIn:enabled"/>
@@ -2668,5 +2665,5 @@ diff --git a/tools/metrics/histograms/metadata/blink/enums.xml b/tools/metrics/h
 +  <int value="8" label="kImageJXL"/>
  </enum>
  
- <enum name="DigitalIdentityRequestStatus">
+ <enum name="DigitalIdentityInterstitialClosedReason">
 --
