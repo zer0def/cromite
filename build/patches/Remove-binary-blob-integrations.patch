@@ -1318,7 +1318,7 @@ diff --git a/chrome/test/android/BUILD.gn b/chrome/test/android/BUILD.gn
 diff --git a/components/external_intents/android/java/src/org/chromium/components/external_intents/ExternalNavigationHandler.java b/components/external_intents/android/java/src/org/chromium/components/external_intents/ExternalNavigationHandler.java
 --- a/components/external_intents/android/java/src/org/chromium/components/external_intents/ExternalNavigationHandler.java
 +++ b/components/external_intents/android/java/src/org/chromium/components/external_intents/ExternalNavigationHandler.java
-@@ -2560,14 +2560,6 @@ public class ExternalNavigationHandler {
+@@ -2572,14 +2572,6 @@ public class ExternalNavigationHandler {
       * @return Whether the given intent is going to open an Instant App.
       */
      private static boolean isIntentToInstantApp(Intent intent) {
