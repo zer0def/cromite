@@ -1097,7 +1097,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/compositor/over
          Resources res = context.getResources();
          mUpdateHost = updateHost;
          mLayerTitleCacheSupplier = layerTitleCacheSupplier;
-@@ -538,6 +550,8 @@ public class StripLayoutHelperManager
+@@ -537,6 +549,8 @@ public class StripLayoutHelperManager
                                  !mTabStripObscured
                                          && getStripVisibilityState()
                                                  == StripVisibilityState.VISIBLE);
@@ -1106,7 +1106,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/compositor/over
  
          tabHoverCardViewStub.setOnInflateListener(
                  (viewStub, view) -> {
-@@ -773,6 +787,10 @@ public class StripLayoutHelperManager
+@@ -772,6 +786,10 @@ public class StripLayoutHelperManager
              // layer should be a negative value.
              yOffset -= getHeight();
          }
@@ -1117,7 +1117,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/compositor/over
          mTabStripTreeProvider.pushAndUpdateStrip(
                  this,
                  mLayerTitleCacheSupplier.get(),
-@@ -786,7 +804,9 @@ public class StripLayoutHelperManager
+@@ -785,7 +803,9 @@ public class StripLayoutHelperManager
                  mStripTransitionScrimOpacity,
                  mLeftPadding,
                  mRightPadding,
@@ -1128,7 +1128,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/compositor/over
          return mTabStripTreeProvider;
      }
  
-@@ -845,11 +865,21 @@ public class StripLayoutHelperManager
+@@ -844,11 +864,21 @@ public class StripLayoutHelperManager
                  mLeftPadding,
                  mRightPadding);
  

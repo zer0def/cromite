@@ -272,7 +272,7 @@ diff --git a/chrome/browser/single_tab/android/java/src/org/chromium/chrome/brow
 diff --git a/chrome/browser/single_tab/android/java/src/org/chromium/chrome/browser/single_tab/SingleTabSwitcherOnNtpMediator.java b/chrome/browser/single_tab/android/java/src/org/chromium/chrome/browser/single_tab/SingleTabSwitcherOnNtpMediator.java
 --- a/chrome/browser/single_tab/android/java/src/org/chromium/chrome/browser/single_tab/SingleTabSwitcherOnNtpMediator.java
 +++ b/chrome/browser/single_tab/android/java/src/org/chromium/chrome/browser/single_tab/SingleTabSwitcherOnNtpMediator.java
-@@ -109,6 +109,7 @@ public class SingleTabSwitcherOnNtpMediator {
+@@ -108,6 +108,7 @@ public class SingleTabSwitcherOnNtpMediator {
                          mSingleTabCardClickedCallback = null;
                      }
                  });
@@ -280,7 +280,7 @@ diff --git a/chrome/browser/single_tab/android/java/src/org/chromium/chrome/brow
          mPropertyModel.set(
                  SEE_MORE_LINK_CLICK_LISTENER,
                  () -> {
-@@ -267,14 +268,14 @@ public class SingleTabSwitcherOnNtpMediator {
+@@ -266,14 +267,14 @@ public class SingleTabSwitcherOnNtpMediator {
                          public void onPageLoadFinished(Tab tab, GURL url) {
                              super.onPageLoadFinished(tab, url);
                              mPropertyModel.set(TITLE, tab.getTitle());

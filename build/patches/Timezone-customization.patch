@@ -847,7 +847,7 @@ diff --git a/components/content_settings/renderer/content_settings_agent_impl.cc
  
    blink::WebLocalFrame* frame = render_frame()->GetWebFrame();
    if (frame->Parent())
-@@ -442,4 +445,78 @@ void ContentSettingsAgentImpl::ClearBlockedContentSettings() {
+@@ -470,4 +473,78 @@ void ContentSettingsAgentImpl::ClearBlockedContentSettings() {
    cached_script_permissions_.clear();
  }
  
@@ -941,7 +941,7 @@ diff --git a/components/content_settings/renderer/content_settings_agent_impl.h 
  namespace blink {
  class WebFrame;
  class WebURL;
-@@ -164,6 +169,12 @@ class ContentSettingsAgentImpl
+@@ -166,6 +171,12 @@ class ContentSettingsAgentImpl
    std::unique_ptr<Delegate> delegate_;
  
    mojo::AssociatedReceiverSet<mojom::ContentSettingsAgent> receivers_;
