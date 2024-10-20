@@ -30,7 +30,7 @@ Require: bromite-build-utils.patch
  .../ui/views/page_info/page_info_main_view.cc |  28 +-
  .../views/page_info/page_info_view_factory.cc |  20 +
  .../views/page_info/page_info_view_factory.h  |   5 +
- .../page_info/permission_toggle_row_view.cc   | 163 ++++++-
+ .../page_info/permission_toggle_row_view.cc   | 173 +++++++-
  .../page_info/permission_toggle_row_view.h    |  18 +-
  .../settings_localized_strings_provider.cc    |  54 +++
  .../ui/webui/settings/site_settings_helper.cc |  46 +-
@@ -72,18 +72,18 @@ Require: bromite-build-utils.patch
  .../common/content_settings_mojom_traits.cc   |  12 +-
  .../common/content_settings_mojom_traits.h    |  24 +
  .../core/common/content_settings_types.mojom  |   1 +
- .../renderer/content_settings_agent_impl.cc   |  43 ++
- .../renderer/content_settings_agent_impl.h    |   7 +
+ .../renderer/content_settings_agent_impl.cc   |  68 +++
+ .../renderer/content_settings_agent_impl.h    |   9 +
  .../PageInfoPermissionsController.java        |   9 +
  .../PermissionParamsListBuilder.java          |   1 +
  .../android/page_info_controller_android.cc   |  18 +
  components/page_info/page_info.cc             |  23 +-
- components/page_info/page_info_ui.cc          |  18 +
+ components/page_info/page_info_ui.cc          |  25 ++
  components/site_settings_strings.grdp         |   1 +
  .../platform/web_content_settings_client.h    |   9 +
  .../execution_context/execution_context.cc    |  16 +
  .../execution_context/execution_context.h     |   5 +
- 72 files changed, 1866 insertions(+), 93 deletions(-)
+ 72 files changed, 1910 insertions(+), 93 deletions(-)
  create mode 100644 components/browser_ui/settings/android/java/res/layout/preference_spinner_single_widget.xml
  create mode 100644 components/browser_ui/site_settings/android/java/src/org/chromium/components/browser_ui/site_settings/BromiteCustomContentSetting.java
  create mode 100644 components/browser_ui/site_settings/android/java/src/org/chromium/components/browser_ui/site_settings/BromiteCustomContentSettingImpl.java
@@ -1050,7 +1050,20 @@ diff --git a/chrome/browser/ui/views/page_info/permission_toggle_row_view.cc b/c
      }
    }
  }
-@@ -300,6 +396,33 @@ void PermissionToggleRowView::UpdateUiOnPermissionChanged() {
+@@ -255,6 +351,12 @@ void PermissionToggleRowView::InitForManagedSource(
+ }
+ 
+ void PermissionToggleRowView::UpdateUiOnPermissionChanged() {
++  choose_button_->SetEnabledTextColors(std::nullopt);
++  if (permission_.setting == CONTENT_SETTING_DEFAULT) {
++    choose_button_->SetTextColorId(views::Button::ButtonState::STATE_NORMAL,
++      ui::kColorLabelForeground);
++  }
++
+   if (blocked_on_system_level_label_) {
+     if (permission_.setting == CONTENT_SETTING_DEFAULT) {
+       permission_blocked_on_system_level_ = false;
+@@ -300,6 +402,37 @@ void PermissionToggleRowView::UpdateUiOnPermissionChanged() {
        }
      }
    }
@@ -1080,6 +1093,10 @@ diff --git a/chrome/browser/ui/views/page_info/permission_toggle_row_view.cc b/c
 +      caption = u"Unknown";
 +    }
 +    choose_button_->SetText(caption);
++    if (permission_.setting == CONTENT_SETTING_DEFAULT) {
++      choose_button_->SetTextColorId(views::Button::ButtonState::STATE_NORMAL,
++        ui::kColorLabelForeground);
++    }
 +  }
  }
  
@@ -3139,7 +3156,7 @@ diff --git a/components/content_settings/core/common/content_settings_types.mojo
 diff --git a/components/content_settings/renderer/content_settings_agent_impl.cc b/components/content_settings/renderer/content_settings_agent_impl.cc
 --- a/components/content_settings/renderer/content_settings_agent_impl.cc
 +++ b/components/content_settings/renderer/content_settings_agent_impl.cc
-@@ -200,6 +200,49 @@ void ContentSettingsAgentImpl::SendRendererContentSettingRules(
+@@ -200,6 +200,74 @@ void ContentSettingsAgentImpl::SendRendererContentSettingRules(
        std::move(renderer_settings));
  }
  
@@ -3186,6 +3203,31 @@ diff --git a/components/content_settings/renderer/content_settings_agent_impl.cc
 +  return default_value;
 +}
 +
++bool ContentSettingsAgentImpl::IsAllowlistedForContentSettings() const {
++  const WebDocument& document = render_frame()->GetWebFrame()->GetDocument();
++  WebSecurityOrigin origin = document.GetSecurityOrigin();
++  WebURL document_url = document.Url();
++
++  if (origin.IsNull() || origin.IsOpaque())
++    return false;  // Uninitialized document?
++
++  blink::WebString protocol = origin.Protocol();
++
++  if (protocol == content::kChromeUIScheme)
++    return true;  // Browser UI elements should still work.
++
++  if (protocol == content::kChromeDevToolsScheme)
++    return true;  // DevTools UI elements should still work.
++
++  // If the scheme is file:, an empty file name indicates a directory listing,
++  // which requires JavaScript to function properly.
++  if (protocol == url::kFileScheme &&
++      document_url.ProtocolIs(url::kFileScheme)) {
++    return GURL(document_url).ExtractFileName().empty();
++  }
++  return false;
++}
++
  void ContentSettingsAgentImpl::OnContentSettingsAgentRequest(
      mojo::PendingAssociatedReceiver<mojom::ContentSettingsAgent> receiver) {
    receivers_.Add(this, std::move(receiver));
@@ -3206,6 +3248,15 @@ diff --git a/components/content_settings/renderer/content_settings_agent_impl.h 
    // blink::WebContentSettingsClient:
    void AllowStorageAccess(StorageType storage_type,
                            base::OnceCallback<void(bool)> callback) override;
+@@ -129,6 +136,8 @@ class ContentSettingsAgentImpl
+   // Resets the `content_blocked_` array.
+   void ClearBlockedContentSettings();
+ 
++  bool IsAllowlistedForContentSettings() const;
++
+   // A getter for `content_settings_manager_` that ensures it is bound.
+   mojom::ContentSettingsManager& GetContentSettingsManager();
+ 
 diff --git a/components/page_info/android/java/src/org/chromium/components/page_info/PageInfoPermissionsController.java b/components/page_info/android/java/src/org/chromium/components/page_info/PageInfoPermissionsController.java
 --- a/components/page_info/android/java/src/org/chromium/components/page_info/PageInfoPermissionsController.java
 +++ b/components/page_info/android/java/src/org/chromium/components/page_info/PageInfoPermissionsController.java
@@ -3336,7 +3387,21 @@ diff --git a/components/page_info/page_info_ui.cc b/components/page_info/page_in
  #include "components/page_info/core/features.h"
  #include "components/page_info/page_info.h"
  #include "components/page_info/page_info_ui_delegate.h"
-@@ -625,6 +626,12 @@ PageInfoUI::~PageInfoUI() = default;
+@@ -331,6 +332,13 @@ void CreateOppositeToDefaultSiteException(
+ std::u16string GetPermissionAskStateString(ContentSettingsType type) {
+   int message_id = kInvalidResourceID;
+ 
++  const content_settings::WebsiteSettingsInfo* settingInfo =
++    content_settings::WebsiteSettingsRegistry::GetInstance()->Get(type);
++  if (settingInfo && settingInfo->show_into_info_page()) {
++    if (settingInfo->ask_ui() != 0)
++      return l10n_util::GetStringUTF16(settingInfo->ask_ui());
++  }
++
+   switch (type) {
+     case ContentSettingsType::GEOLOCATION:
+       message_id = IDS_PAGE_INFO_STATE_TEXT_LOCATION_ASK;
+@@ -625,6 +633,12 @@ PageInfoUI::~PageInfoUI() = default;
  
  // static
  std::u16string PageInfoUI::PermissionTypeToUIString(ContentSettingsType type) {
@@ -3349,7 +3414,7 @@ diff --git a/components/page_info/page_info_ui.cc b/components/page_info/page_in
    for (const PermissionUIInfo& info : GetContentSettingsUIInfo()) {
      if (info.type == type)
        return l10n_util::GetStringUTF16(info.string_id);
-@@ -636,6 +643,12 @@ std::u16string PageInfoUI::PermissionTypeToUIString(ContentSettingsType type) {
+@@ -636,6 +650,12 @@ std::u16string PageInfoUI::PermissionTypeToUIString(ContentSettingsType type) {
  // static
  std::u16string PageInfoUI::PermissionTypeToUIStringMidSentence(
      ContentSettingsType type) {
@@ -3362,7 +3427,7 @@ diff --git a/components/page_info/page_info_ui.cc b/components/page_info/page_in
    for (const PermissionUIInfo& info : GetContentSettingsUIInfo()) {
      if (info.type == type)
        return l10n_util::GetStringUTF16(info.string_id_mid_sentence);
-@@ -1081,6 +1094,11 @@ bool PageInfoUI::ContentSettingsTypeInPageInfo(ContentSettingsType type) {
+@@ -1081,6 +1101,11 @@ bool PageInfoUI::ContentSettingsTypeInPageInfo(ContentSettingsType type) {
      if (info.type == type)
        return true;
    }
