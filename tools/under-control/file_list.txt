@@ -42,3 +42,5 @@ testing/variations/fieldtrial_testing_config.json
 
 android_webview/browser/aw_content_browser_client.cc
 android_webview/browser/aw_field_trials.cc
+
+*.yaml;components/policy/resources/templates
