@@ -91,10 +91,11 @@ body:
       multiple: false
       description: What version of Android are you running?
       options:
+        - Android 15
         - Android 14
         - Android 13
         - Android 12.1
-        - Android 12.0
+        - Android 12
         - Android 11
         - Android 10
         - Android 9
