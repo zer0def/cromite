@@ -94,4 +94,21 @@ If you trust the site or have performance needs or need to use WebAssembly, you 
 <br>
 </details>
 
+## Youtube links doesn't open youtube app (Open links in external apps)
+
+Cromite blocks the ability to open apps from the web by default.
+
+The reason for this is that, together with the app to be opened, information may be passed on and cannot be filtered out: for example, youtube links definitely send the url of the video, but not necessarily other data. The other information could link your web browsing with that within the app.
+
+It is however possible to disable this behaviour and allow apps to be opened.
+
+<details>
+<summary>Show me how</summary>
+
+<img src="https://github.com/user-attachments/assets/b852f2da-8560-4431-aa8f-157ceb05c058">
+<br>
+<img src="https://github.com/user-attachments/assets/3926128a-21ab-4df1-a773-a0a9545155ad">
+<br>
+</details>
+
 
