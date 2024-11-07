@@ -7,20 +7,22 @@ Pulling the edge to the right will go backwards, pulling it further forwards.
 
 License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
- .../compositor/CompositorViewHolder.java      |  9 ++++-
+ .../compositor/CompositorViewHolder.java      |  1 +
  .../GestureNavigationProperties.java          |  4 +--
  .../GestureNavigationViewBinder.java          |  6 ++--
  .../HistoryNavigationCoordinator.java         |  4 +++
  .../gesturenav/HistoryNavigationLayout.java   |  6 ++--
  .../browser/gesturenav/NavigationHandler.java | 12 +++++--
  .../browser/gesturenav/SideSlideLayout.java   | 25 +++++++++++---
+ .../tabbed_mode/TabbedRootUiCoordinator.java  |  3 ++
  .../cromite/sUseBrowserNavigationHandler.java | 33 +++++++++++++++++++
  .../Use-browser-navigation-handler.grdp       | 12 +++++++
  .../res/xml/accessibility_preferences.xml     |  9 +++++
+ .../widget/CoordinatorLayoutForPointer.java   | 20 +++++++++++
  .../Use-browser-navigation-handler.inc        | 12 +++++++
  .../Use-browser-navigation-handler.inc        |  3 ++
  .../Use-browser-navigation-handler.inc        |  1 +
- 13 files changed, 119 insertions(+), 17 deletions(-)
+ 15 files changed, 135 insertions(+), 16 deletions(-)
  create mode 100644 chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/cromite/sUseBrowserNavigationHandler.java
  create mode 100644 chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Use-browser-navigation-handler.grdp
  create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Use-browser-navigation-handler.inc
@@ -30,15 +32,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/compositor/CompositorViewHolder.java b/chrome/android/java/src/org/chromium/chrome/browser/compositor/CompositorViewHolder.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/compositor/CompositorViewHolder.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/compositor/CompositorViewHolder.java
-@@ -51,6 +51,7 @@ import org.chromium.chrome.browser.compositor.layouts.LayoutManagerHost;
- import org.chromium.chrome.browser.compositor.layouts.LayoutManagerImpl;
- import org.chromium.chrome.browser.compositor.layouts.LayoutRenderHost;
- import org.chromium.chrome.browser.flags.ChromeFeatureList;
-+import org.chromium.chrome.browser.flags.cromite.sUseBrowserNavigationHandler;
- import org.chromium.chrome.browser.fullscreen.BrowserControlsManager;
- import org.chromium.chrome.browser.fullscreen.FullscreenManager;
- import org.chromium.chrome.browser.layouts.EventFilter.EventType;
-@@ -98,6 +99,7 @@ import org.chromium.ui.resources.dynamics.DynamicResourceLoader;
+@@ -98,6 +98,7 @@ import org.chromium.ui.resources.dynamics.DynamicResourceLoader;
  import org.chromium.url.GURL;
  
  import java.util.ArrayList;
@@ -46,20 +40,6 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/compositor/Comp
  import java.util.HashSet;
  import java.util.List;
  import java.util.Set;
-@@ -1325,7 +1327,12 @@ public class CompositorViewHolder extends FrameLayout
-     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-         if (changed) onViewportChanged();
-         super.onLayout(changed, l, t, r, b);
--
-+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q &&
-+                sUseBrowserNavigationHandler.getInstance().isEnabled()) {
-+            setSystemGestureExclusionRects(
-+                    Collections.singletonList(
-+                            new Rect(0, 0, Math.abs(r - l), Math.abs(t - b))));
-+        }
-         invalidateAccessibilityProvider();
-     }
- 
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/gesturenav/GestureNavigationProperties.java b/chrome/android/java/src/org/chromium/chrome/browser/gesturenav/GestureNavigationProperties.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/gesturenav/GestureNavigationProperties.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/gesturenav/GestureNavigationProperties.java
@@ -239,6 +219,26 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/gesturenav/Side
      }
  
      /**
+diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tabbed_mode/TabbedRootUiCoordinator.java b/chrome/android/java/src/org/chromium/chrome/browser/tabbed_mode/TabbedRootUiCoordinator.java
+--- a/chrome/android/java/src/org/chromium/chrome/browser/tabbed_mode/TabbedRootUiCoordinator.java
++++ b/chrome/android/java/src/org/chromium/chrome/browser/tabbed_mode/TabbedRootUiCoordinator.java
+@@ -54,6 +54,7 @@ import org.chromium.chrome.browser.firstrun.FirstRunStatus;
+ import org.chromium.chrome.browser.flags.ActivityType;
+ import org.chromium.chrome.browser.flags.ChromeFeatureList;
+ import org.chromium.chrome.browser.flags.ChromeSwitches;
++import org.chromium.chrome.browser.flags.cromite.sUseBrowserNavigationHandler;
+ import org.chromium.chrome.browser.fullscreen.BrowserControlsManager;
+ import org.chromium.chrome.browser.fullscreen.FullscreenManager;
+ import org.chromium.chrome.browser.gesturenav.BackActionDelegate;
+@@ -614,6 +615,8 @@ public class TabbedRootUiCoordinator extends RootUiCoordinator {
+     @Override
+     public void onInflationComplete() {
+         mCoordinator = mActivity.findViewById(R.id.coordinator);
++        ((CoordinatorLayoutForPointer)mCoordinator).setUseBrowserNavigationHandler(
++            sUseBrowserNavigationHandler.getInstance().isEnabled());
+         super.onInflationComplete();
+     }
+ 
 diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/cromite/sUseBrowserNavigationHandler.java b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/cromite/sUseBrowserNavigationHandler.java
 new file mode 100644
 --- /dev/null
@@ -311,6 +311,43 @@ diff --git a/components/browser_ui/accessibility/android/java/res/xml/accessibil
 +        app:featureName="UseBrowserNavigationHandler"
 +        app:needRestart="true" />
  </PreferenceScreen>
+diff --git a/components/browser_ui/widget/android/java/src/org/chromium/components/browser_ui/widget/CoordinatorLayoutForPointer.java b/components/browser_ui/widget/android/java/src/org/chromium/components/browser_ui/widget/CoordinatorLayoutForPointer.java
+--- a/components/browser_ui/widget/android/java/src/org/chromium/components/browser_ui/widget/CoordinatorLayoutForPointer.java
++++ b/components/browser_ui/widget/android/java/src/org/chromium/components/browser_ui/widget/CoordinatorLayoutForPointer.java
+@@ -14,6 +14,10 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout;
+ 
+ import org.chromium.base.ObserverList;
+ 
++import android.graphics.Rect;
++import android.os.Build;
++import java.util.Collections;
++
+ /**
+  * This class overrides {@link onResolvePointerIcon} method to correctly determine the pointer icon
+  * from a mouse motion event. This is needed because the default android impl does not consider view
+@@ -34,6 +38,22 @@ public class CoordinatorLayoutForPointer extends CoordinatorLayout implements To
+                 && (y >= view.getTop() && y <= view.getBottom()));
+     }
+ 
++    private boolean useBrowserNavigationHandler = false;
++
++    public void setUseBrowserNavigationHandler(boolean enabled) {
++        useBrowserNavigationHandler = enabled;
++    }
++
++    @Override
++    protected void onLayout(boolean changed, int l, int t, int r, int b) {
++        super.onLayout(changed, l, t, r, b);
++        if (useBrowserNavigationHandler && Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
++            setSystemGestureExclusionRects(
++                Collections.singletonList(
++                    new Rect(0, 0, Math.abs(r - l), Math.abs(t - b))));
++        }
++    }
++
+     @Override
+     public PointerIcon onResolvePointerIcon(MotionEvent event, int pointerIndex) {
+         final int x = (int) event.getX(pointerIndex);
 diff --git a/cromite_flags/chrome/browser/about_flags_cc/Use-browser-navigation-handler.inc b/cromite_flags/chrome/browser/about_flags_cc/Use-browser-navigation-handler.inc
 new file mode 100644
 --- /dev/null
