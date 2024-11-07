@@ -25,7 +25,7 @@ Require: bromite-build-utils.patch
  .../site_settings/site_settings_mixin.ts      |  18 +
  .../site_settings_page/site_settings_page.ts  |  30 +-
  .../site_settings_page_util.ts                |  55 +++
- chrome/browser/ui/BUILD.gn                    |   1 +
+ chrome/browser/ui/BUILD.gn                    |   2 +
  .../controls/rich_controls_container_view.h   |   7 +
  .../ui/views/page_info/page_info_main_view.cc |  28 +-
  .../views/page_info/page_info_view_factory.cc |  20 +
@@ -72,7 +72,7 @@ Require: bromite-build-utils.patch
  .../common/content_settings_mojom_traits.cc   |  12 +-
  .../common/content_settings_mojom_traits.h    |  24 +
  .../core/common/content_settings_types.mojom  |   1 +
- .../renderer/content_settings_agent_impl.cc   |  68 +++
+ .../renderer/content_settings_agent_impl.cc   |  71 +++
  .../renderer/content_settings_agent_impl.h    |   9 +
  .../PageInfoPermissionsController.java        |   9 +
  .../PermissionParamsListBuilder.java          |   1 +
@@ -83,7 +83,7 @@ Require: bromite-build-utils.patch
  .../platform/web_content_settings_client.h    |   9 +
  .../execution_context/execution_context.cc    |  16 +
  .../execution_context/execution_context.h     |   5 +
- 72 files changed, 1910 insertions(+), 93 deletions(-)
+ 72 files changed, 1914 insertions(+), 93 deletions(-)
  create mode 100644 components/browser_ui/settings/android/java/res/layout/preference_spinner_single_widget.xml
  create mode 100644 components/browser_ui/site_settings/android/java/src/org/chromium/components/browser_ui/site_settings/BromiteCustomContentSetting.java
  create mode 100644 components/browser_ui/site_settings/android/java/src/org/chromium/components/browser_ui/site_settings/BromiteCustomContentSettingImpl.java
@@ -717,6 +717,14 @@ diff --git a/chrome/browser/ui/BUILD.gn b/chrome/browser/ui/BUILD.gn
        "//components/enterprise/common:files_scan_data",
        "//components/feedback/proto",
        "//components/headless/policy",
+@@ -5274,6 +5275,7 @@ static_library("ui") {
+       "//components/power_bookmarks/storage",
+       "//components/reading_list/features:flags",
+       "//components/segmentation_platform/embedder/default_model:default_model",
++      "//components/strings:components_strings_grit",
+       "//components/services/app_service",
+       "//components/soda",
+       "//components/soda:constants",
 diff --git a/chrome/browser/ui/views/controls/rich_controls_container_view.h b/chrome/browser/ui/views/controls/rich_controls_container_view.h
 --- a/chrome/browser/ui/views/controls/rich_controls_container_view.h
 +++ b/chrome/browser/ui/views/controls/rich_controls_container_view.h
@@ -3156,7 +3164,7 @@ diff --git a/components/content_settings/core/common/content_settings_types.mojo
 diff --git a/components/content_settings/renderer/content_settings_agent_impl.cc b/components/content_settings/renderer/content_settings_agent_impl.cc
 --- a/components/content_settings/renderer/content_settings_agent_impl.cc
 +++ b/components/content_settings/renderer/content_settings_agent_impl.cc
-@@ -200,6 +200,74 @@ void ContentSettingsAgentImpl::SendRendererContentSettingRules(
+@@ -200,6 +200,77 @@ void ContentSettingsAgentImpl::SendRendererContentSettingRules(
        std::move(renderer_settings));
  }
  
@@ -3218,6 +3226,9 @@ diff --git a/components/content_settings/renderer/content_settings_agent_impl.cc
 +
 +  if (protocol == content::kChromeDevToolsScheme)
 +    return true;  // DevTools UI elements should still work.
++
++  if (document_url.ProtocolIs("chrome-extension"))
++    return true;  // Extension pages should still work.
 +
 +  // If the scheme is file:, an empty file name indicates a directory listing,
 +  // which requires JavaScript to function properly.
