@@ -8,10 +8,9 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../browser/bookmarks/BookmarkSearchBoxRowViewBinder.java     | 2 ++
  .../chromium/chrome/browser/bookmarks/BookmarkUiPrefs.java    | 2 +-
  .../org/chromium/chrome/browser/bookmarks/BookmarkUtils.java  | 3 ++-
- .../org/chromium/chrome/browser/flags/ChromeFeatureList.java  | 2 +-
  components/bookmarks/browser/bookmark_node.cc                 | 3 +--
  .../Enable-ImprovedBookmarks-by-default.inc                   | 1 +
- 7 files changed, 10 insertions(+), 7 deletions(-)
+ 6 files changed, 9 insertions(+), 6 deletions(-)
  create mode 100644 cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Enable-ImprovedBookmarks-by-default.inc
 
 diff --git a/chrome/android/java/res/layout/bookmark_search_box_row.xml b/chrome/android/java/res/layout/bookmark_search_box_row.xml
@@ -75,22 +74,10 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/bookmarks/Bookm
          }
  
 -        if (DeviceFormFactor.isNonMultiDisplayContextOnTablet(context)) {
-+        if (BookmarkFeatures.isAndroidImprovedBookmarksEnabled() || DeviceFormFactor.isNonMultiDisplayContextOnTablet(context)) {
++        if ((true)) {
              showBookmarkManagerOnTablet(
                      context,
                      activity == null ? null : activity.getComponentName(),
-diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
---- a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
-+++ b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
-@@ -887,7 +887,7 @@ public abstract class ChromeFeatureList {
-     public static final MutableFlagWithSafeDefault sAdaptiveButtonInTopToolbarCustomizationV2 =
-             newMutableFlagWithSafeDefault(ADAPTIVE_BUTTON_IN_TOP_TOOLBAR_CUSTOMIZATION_V2, false);
-     public static final MutableFlagWithSafeDefault sAndroidImprovedBookmarks =
--            newMutableFlagWithSafeDefault(ANDROID_IMPROVED_BOOKMARKS, false);
-+            newMutableFlagWithSafeDefault(ANDROID_IMPROVED_BOOKMARKS, true);
-     public static final MutableFlagWithSafeDefault sAndroidTabDeclutter =
-             newMutableFlagWithSafeDefault(ANDROID_TAB_DECLUTTER, false);
-     public static final MutableFlagWithSafeDefault sAndroidTabDeclutterArchiveAllButActiveTab =
 diff --git a/components/bookmarks/browser/bookmark_node.cc b/components/bookmarks/browser/bookmark_node.cc
 --- a/components/bookmarks/browser/bookmark_node.cc
 +++ b/components/bookmarks/browser/bookmark_node.cc
