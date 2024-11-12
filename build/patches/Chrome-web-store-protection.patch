@@ -27,7 +27,8 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../browser/resources/extensions/manager.html |  1 +
  .../browser/resources/extensions/manager.ts   |  7 +++
  .../browser/resources/extensions/service.ts   |  5 ++
- .../browser/resources/extensions/toolbar.html | 12 ++++
+ .../browser/resources/extensions/toolbar.css  |  5 ++
+ .../browser/resources/extensions/toolbar.html |  7 +++
  .../browser/resources/extensions/toolbar.ts   | 20 +++++++
  .../resources/webstore_app/manifest.json      |  7 +--
  .../ui/webui/extensions/extensions_ui.cc      |  8 +++
@@ -41,9 +42,9 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../browser/updater/manifest_fetch_data.cc    |  8 +--
  .../browser/updater/safe_manifest_parser.cc   |  1 +
  extensions/common/extension_features.cc       | 15 +++++
- extensions/common/extension_features.h        |  4 ++
+ extensions/common/extension_features.h        |  5 ++
  .../definitions/developer_private.d.ts        |  2 +
- 30 files changed, 256 insertions(+), 103 deletions(-)
+ 31 files changed, 257 insertions(+), 103 deletions(-)
  create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Webstore-protection.inc
 
 diff --git a/chrome/app/extensions_strings.grdp b/chrome/app/extensions_strings.grdp
@@ -112,7 +113,7 @@ diff --git a/chrome/browser/extensions/api/developer_private/developer_private_a
  template <>
  void BrowserContextKeyedAPIFactory<
      DeveloperPrivateAPI>::DeclareFactoryDependencies() {
-@@ -921,6 +949,7 @@ ExtensionFunction::ResponseAction DeveloperPrivateAutoUpdateFunction::Run() {
+@@ -925,6 +953,7 @@ ExtensionFunction::ResponseAction DeveloperPrivateAutoUpdateFunction::Run() {
      ExtensionUpdater::CheckParams params;
      params.fetch_priority = DownloadFetchPriority::kForeground;
      params.install_immediately = true;
@@ -120,7 +121,7 @@ diff --git a/chrome/browser/extensions/api/developer_private/developer_private_a
      params.callback =
          base::BindOnce(&DeveloperPrivateAutoUpdateFunction::OnComplete, this);
      updater->CheckNow(std::move(params));
-@@ -1061,7 +1090,7 @@ DeveloperPrivateUpdateProfileConfigurationFunction::Run() {
+@@ -1065,7 +1094,7 @@ DeveloperPrivateUpdateProfileConfigurationFunction::Run() {
  
    const developer::ProfileConfigurationUpdate& update = params->update;
  
@@ -129,7 +130,7 @@ diff --git a/chrome/browser/extensions/api/developer_private/developer_private_a
      Profile* profile = Profile::FromBrowserContext(browser_context());
      CHECK(profile);
      if (supervised_user::AreExtensionsPermissionsEnabled(profile)) {
-@@ -1075,6 +1104,11 @@ DeveloperPrivateUpdateProfileConfigurationFunction::Run() {
+@@ -1079,6 +1108,11 @@ DeveloperPrivateUpdateProfileConfigurationFunction::Run() {
          ->MarkNoticeAsAcknowledgedGlobally();
    }
  
@@ -157,7 +158,7 @@ diff --git a/chrome/browser/extensions/api/developer_private/developer_private_a
 diff --git a/chrome/browser/extensions/api/webstore_private/webstore_private_api.cc b/chrome/browser/extensions/api/webstore_private/webstore_private_api.cc
 --- a/chrome/browser/extensions/api/webstore_private/webstore_private_api.cc
 +++ b/chrome/browser/extensions/api/webstore_private/webstore_private_api.cc
-@@ -67,6 +67,7 @@
+@@ -66,6 +66,7 @@
  #include "extensions/browser/extension_util.h"
  #include "extensions/browser/extensions_browser_client.h"
  #include "extensions/common/extension.h"
@@ -165,7 +166,7 @@ diff --git a/chrome/browser/extensions/api/webstore_private/webstore_private_api
  #include "extensions/common/manifest.h"
  #include "extensions/common/manifest_constants.h"
  #include "extensions/common/manifest_handlers/permissions_parser.h"
-@@ -227,6 +228,8 @@ WebstorePrivateApi::Delegate* test_delegate = nullptr;
+@@ -220,6 +221,8 @@ WebstorePrivateApi::Delegate* test_delegate = nullptr;
  // there was previously stored data, or an empty string otherwise. The Set will
  // overwrite any previous login.
  std::string GetWebstoreLogin(Profile* profile) {
@@ -174,7 +175,7 @@ diff --git a/chrome/browser/extensions/api/webstore_private/webstore_private_api
    if (profile->GetPrefs()->HasPrefPath(kWebstoreLogin)) {
      return profile->GetPrefs()->GetString(kWebstoreLogin);
    }
-@@ -234,6 +237,8 @@ std::string GetWebstoreLogin(Profile* profile) {
+@@ -227,11 +230,15 @@ std::string GetWebstoreLogin(Profile* profile) {
  }
  
  void SetWebstoreLogin(Profile* profile, const std::string& login) {
@@ -183,8 +184,6 @@ diff --git a/chrome/browser/extensions/api/webstore_private/webstore_private_api
    profile->GetPrefs()->SetString(kWebstoreLogin, login);
  }
  
-@@ -243,6 +248,8 @@ void RecordWebstoreExtensionInstallResult(bool success) {
- 
  api::webstore_private::ExtensionInstallStatus
  ConvertExtensionInstallStatusForAPI(ExtensionInstallStatus status) {
 +  if (!base::FeatureList::IsEnabled(extensions_features::kEnableExtensionManagementToChromeStore))
@@ -192,7 +191,7 @@ diff --git a/chrome/browser/extensions/api/webstore_private/webstore_private_api
    switch (status) {
      case kCanRequest:
        return api::webstore_private::ExtensionInstallStatus::kCanRequest;
-@@ -1174,7 +1181,8 @@ ExtensionFunction::ResponseAction
+@@ -1152,7 +1159,8 @@ ExtensionFunction::ResponseAction
  WebstorePrivateIsInIncognitoModeFunction::Run() {
    Profile* profile = Profile::FromBrowserContext(browser_context());
    return RespondNow(ArgumentList(IsInIncognitoMode::Results::Create(
@@ -202,7 +201,7 @@ diff --git a/chrome/browser/extensions/api/webstore_private/webstore_private_api
  }
  
  WebstorePrivateIsPendingCustodianApprovalFunction::
-@@ -1269,11 +1277,14 @@ WebstorePrivateGetReferrerChainFunction::Run() {
+@@ -1247,11 +1255,14 @@ WebstorePrivateGetReferrerChainFunction::Run() {
    request.mutable_referrer_chain_options()->set_recent_navigations_to_collect(
        recent_navigations_to_collect);
  
@@ -509,23 +508,26 @@ diff --git a/chrome/browser/resources/extensions/service.ts b/chrome/browser/res
    loadUnpacked(): Promise<boolean> {
      return this.loadUnpackedHelper_();
    }
+diff --git a/chrome/browser/resources/extensions/toolbar.css b/chrome/browser/resources/extensions/toolbar.css
+--- a/chrome/browser/resources/extensions/toolbar.css
++++ b/chrome/browser/resources/extensions/toolbar.css
+@@ -73,6 +73,11 @@ cr-tooltip-icon {
+   margin-inline-end: 16px;
+ }
+ 
++#need-update {
++  color: red;
++  margin-inline: 0px;
++}
++
+ cr-toolbar {
+   --cr-toolbar-center-basis: 680px;
+   --cr-toolbar-field-max-width: var(--cr-toolbar-center-basis);
 diff --git a/chrome/browser/resources/extensions/toolbar.html b/chrome/browser/resources/extensions/toolbar.html
 --- a/chrome/browser/resources/extensions/toolbar.html
 +++ b/chrome/browser/resources/extensions/toolbar.html
-@@ -63,6 +63,11 @@
-     margin-inline-end: 16px;
-   }
- 
-+  #need-update {
-+    color: red;
-+    margin-inline: 0px;
-+  }
-+
-   cr-toolbar {
-     --cr-toolbar-center-basis: 680px;
-     --cr-toolbar-field-max-width: var(--cr-toolbar-center-basis);
-@@ -88,6 +93,13 @@
-         checked="[[inDevMode]]" aria-labelledby="devModeLabel">
+@@ -15,6 +15,13 @@
+         ?checked="${this.inDevMode}" aria-labelledby="devModeLabel">
      </cr-toggle>
    </div>
 +  <div class="more-actions">
@@ -536,8 +538,8 @@ diff --git a/chrome/browser/resources/extensions/toolbar.html b/chrome/browser/r
 +    </cr-toggle>
 +  </div>
  </cr-toolbar>
- <template is="dom-if" if="[[showPackDialog_]]" restamp>
-   <extensions-pack-dialog delegate="[[delegate]]"
+ ${this.showPackDialog_ ? html`
+   <extensions-pack-dialog .delegate="${this.delegate}"
 diff --git a/chrome/browser/resources/extensions/toolbar.ts b/chrome/browser/resources/extensions/toolbar.ts
 --- a/chrome/browser/resources/extensions/toolbar.ts
 +++ b/chrome/browser/resources/extensions/toolbar.ts
@@ -550,8 +552,8 @@ diff --git a/chrome/browser/resources/extensions/toolbar.ts b/chrome/browser/res
    /** Opens the dialog to load unpacked extensions. */
    loadUnpacked(): Promise<boolean>;
  
-@@ -67,6 +69,13 @@ export class ExtensionsToolbarElement extends ExtensionsToolbarElementBase {
-         reflectToAttribute: true,
+@@ -79,6 +81,13 @@ export class ExtensionsToolbarElement extends ExtensionsToolbarElementBase {
+         reflect: true,
        },
  
 +      isExtUpdateEnabled: {
@@ -561,27 +563,27 @@ diff --git a/chrome/browser/resources/extensions/toolbar.ts b/chrome/browser/res
 +        reflectToAttribute: true,
 +      },
 +
-       devModeControlledByPolicy: Boolean,
-       isChildAccount: Boolean,
+       devModeControlledByPolicy: {type: Boolean},
+       isChildAccount: {type: Boolean},
  
-@@ -79,6 +88,7 @@ export class ExtensionsToolbarElement extends ExtensionsToolbarElementBase {
+@@ -91,6 +100,7 @@ export class ExtensionsToolbarElement extends ExtensionsToolbarElementBase {
  
-       expanded_: Boolean,
-       showPackDialog_: Boolean,
+       expanded_: {type: Boolean},
+       showPackDialog_: {type: Boolean},
 +      shouldShowRelaunchDialog: Boolean,
  
        /**
         * Prevents initiating update while update is in progress.
-@@ -90,6 +100,8 @@ export class ExtensionsToolbarElement extends ExtensionsToolbarElementBase {
-   extensions: chrome.developerPrivate.ExtensionInfo[];
-   delegate: ToolbarDelegate;
-   inDevMode: boolean;
+@@ -102,6 +112,8 @@ export class ExtensionsToolbarElement extends ExtensionsToolbarElementBase {
+   extensions: chrome.developerPrivate.ExtensionInfo[] = [];
+   delegate: ToolbarDelegate = new DummyToolbarDelegate();
+   inDevMode: boolean = false;
 +  isExtUpdateEnabled: boolean;
 +  shouldShowRelaunchDialog: boolean = false;
-   devModeControlledByPolicy: boolean;
-   isChildAccount: boolean;
+   devModeControlledByPolicy: boolean = false;
+   isChildAccount: boolean = false;
  
-@@ -138,6 +150,14 @@ export class ExtensionsToolbarElement extends ExtensionsToolbarElementBase {
+@@ -154,6 +166,14 @@ export class ExtensionsToolbarElement extends ExtensionsToolbarElementBase {
          'Options_ToggleDeveloperMode_' + (e.detail ? 'Enabled' : 'Disabled'));
    }
  
@@ -1136,8 +1138,8 @@ diff --git a/extensions/browser/updater/safe_manifest_parser.cc b/extensions/bro
 diff --git a/extensions/common/extension_features.cc b/extensions/common/extension_features.cc
 --- a/extensions/common/extension_features.cc
 +++ b/extensions/common/extension_features.cc
-@@ -198,4 +198,19 @@ BASE_FEATURE(kDeclarativeNetRequestHeaderSubstitution,
-              "DeclarativeNetRequestHeaderSubstitution",
+@@ -198,4 +198,19 @@ BASE_FEATURE(kSilentDebuggerExtensionAPI,
+              "SilentDebuggerExtensionAPI",
               base::FEATURE_DISABLED_BY_DEFAULT);
  
 +// Activates the auto update of extensions.
@@ -1159,10 +1161,11 @@ diff --git a/extensions/common/extension_features.cc b/extensions/common/extensi
 diff --git a/extensions/common/extension_features.h b/extensions/common/extension_features.h
 --- a/extensions/common/extension_features.h
 +++ b/extensions/common/extension_features.h
-@@ -232,6 +232,10 @@ BASE_DECLARE_FEATURE(kUseNewServiceWorkerTaskQueue);
- // type for modifying headers.
- BASE_DECLARE_FEATURE(kDeclarativeNetRequestHeaderSubstitution);
+@@ -235,6 +235,11 @@ BASE_DECLARE_FEATURE(kDeclarativeNetRequestHeaderSubstitution);
  
+ // Show no warning banner when an extension uses CDP's `chrome.debugger`.
+ BASE_DECLARE_FEATURE(kSilentDebuggerExtensionAPI);
++
 +BASE_DECLARE_FEATURE(kEnableExtensionAutoupdate);
 +
 +BASE_DECLARE_FEATURE(kEnableExtensionManagementToChromeStore);

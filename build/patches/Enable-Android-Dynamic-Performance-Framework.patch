@@ -33,7 +33,7 @@ diff --git a/chrome/version.gni b/chrome/version.gni
 diff --git a/components/viz/common/features.cc b/components/viz/common/features.cc
 --- a/components/viz/common/features.cc
 +++ b/components/viz/common/features.cc
-@@ -311,9 +311,11 @@ const base::FeatureParam<base::TimeDelta> kADPFBoostTimeout{
+@@ -330,9 +330,11 @@ const base::FeatureParam<base::TimeDelta> kADPFBoostTimeout{
  
  // If enabled, Chrome includes the Renderer Main thread(s) into the
  // ADPF(Android Dynamic Performance Framework) hint session.
@@ -43,13 +43,13 @@ diff --git a/components/viz/common/features.cc b/components/viz/common/features.
               base::FEATURE_ENABLED_BY_DEFAULT);
 +SET_CROMITE_FEATURE_ENABLED(kEnableADPFRendererMain);
  
- // If enabled, Chrome includes the Compositor GPU Thread into the
- // ADPF(Android Dynamic Performance Framework) hint session, instead
+ // If enabled, Chrome includes only main frame's Renderer Main thread(s) into
+ // the ADPF(Android Dynamic Performance Framework) hint session.
 diff --git a/components/viz/service/performance_hint/hint_session.cc b/components/viz/service/performance_hint/hint_session.cc
 --- a/components/viz/service/performance_hint/hint_session.cc
 +++ b/components/viz/service/performance_hint/hint_session.cc
-@@ -230,6 +230,9 @@ void HintSessionFactoryImpl::WakeUp() {
-   (*hint_sessions_.begin())->WakeUp();
+@@ -267,6 +267,9 @@ bool IsAdpfEnabled() {
+   return base::Contains(allowlist, soc);
  }
  
 +// Notify me when this is introduced

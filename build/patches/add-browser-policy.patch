@@ -51,7 +51,7 @@ diff --git a/base/win/win_util.cc b/base/win/win_util.cc
  }
  
  bool* GetRegisteredWithManagementStateStorage() {
--  static bool state = []() {
+-  static bool state = [] {
 -    // Mitigate the issues caused by loading DLLs on a background thread
 -    // (http://crbug/973868).
 -    SCOPED_MAY_LOAD_LIBRARY_AT_BACKGROUND_PRIORITY();
@@ -82,7 +82,7 @@ diff --git a/base/win/win_util.cc b/base/win/win_util.cc
  
  // TODO (crbug/1300219): return a DSREG_JOIN_TYPE* instead of bool*.
  bool* GetAzureADJoinStateStorage() {
--  static bool state = []() {
+-  static bool state = [] {
 -    base::ElapsedTimer timer;
 -
 -    // Mitigate the issues caused by loading DLLs on a background thread
@@ -124,7 +124,7 @@ diff --git a/base/win/win_util.cc b/base/win/win_util.cc
 diff --git a/chrome/android/java/AndroidManifest.xml b/chrome/android/java/AndroidManifest.xml
 --- a/chrome/android/java/AndroidManifest.xml
 +++ b/chrome/android/java/AndroidManifest.xml
-@@ -73,9 +73,7 @@ by a child template that "extends" this file.
+@@ -77,9 +77,7 @@ by a child template that "extends" this file.
      <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" tools:ignore="SystemPermissionTypo" />
      <uses-permission android:name="android.permission.RUN_USER_INITIATED_JOBS" />
  
@@ -134,7 +134,7 @@ diff --git a/chrome/android/java/AndroidManifest.xml b/chrome/android/java/Andro
      <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
      <uses-permission android:name="android.permission.NFC"/>
      <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-@@ -86,7 +84,6 @@ by a child template that "extends" this file.
+@@ -90,7 +88,6 @@ by a child template that "extends" this file.
      <uses-permission-sdk-23 android:name="android.permission.READ_MEDIA_VIDEO"/>
      <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
      <uses-permission android:name="android.permission.RECORD_AUDIO"/>
@@ -142,7 +142,7 @@ diff --git a/chrome/android/java/AndroidManifest.xml b/chrome/android/java/Andro
      <uses-permission-sdk-23 android:name="android.permission.USE_BIOMETRIC"/>
      <uses-permission-sdk-23 android:name="android.permission.USE_FINGERPRINT"/>
      <uses-permission android:name="android.permission.VIBRATE"/>
-@@ -133,7 +130,6 @@ by a child template that "extends" this file.
+@@ -137,7 +134,6 @@ by a child template that "extends" this file.
      <uses-permission android:name="com.chrome.permission.DEVICE_EXTRAS" />
      <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT"/>
  
@@ -222,7 +222,7 @@ diff --git a/chrome/browser/policy/chrome_browser_policy_connector.cc b/chrome/b
 diff --git a/chrome/browser/policy/configuration_policy_handler_list_factory.cc b/chrome/browser/policy/configuration_policy_handler_list_factory.cc
 --- a/chrome/browser/policy/configuration_policy_handler_list_factory.cc
 +++ b/chrome/browser/policy/configuration_policy_handler_list_factory.cc
-@@ -2311,9 +2311,9 @@ bool AreFuturePoliciesEnabledByDefault() {
+@@ -2327,9 +2327,9 @@ bool AreFuturePoliciesEnabledByDefault() {
    if (base::CommandLine::ForCurrentProcess()->HasSwitch(switches::kTestType)) {
      return true;
    }
@@ -238,7 +238,7 @@ diff --git a/chrome/browser/policy/configuration_policy_handler_list_factory.cc 
 diff --git a/chrome/browser/signin/account_consistency_mode_manager.cc b/chrome/browser/signin/account_consistency_mode_manager.cc
 --- a/chrome/browser/signin/account_consistency_mode_manager.cc
 +++ b/chrome/browser/signin/account_consistency_mode_manager.cc
-@@ -172,7 +172,7 @@ void AccountConsistencyModeManager::SetIgnoreMissingOAuthClientForTesting() {
+@@ -166,7 +166,7 @@ void AccountConsistencyModeManager::SetIgnoreMissingOAuthClientForTesting() {
  // static
  bool AccountConsistencyModeManager::ShouldBuildServiceForProfile(
      Profile* profile) {
@@ -247,7 +247,7 @@ diff --git a/chrome/browser/signin/account_consistency_mode_manager.cc b/chrome/
  }
  
  AccountConsistencyMethod
-@@ -210,7 +210,8 @@ AccountConsistencyModeManager::ComputeAccountConsistencyMethod(
+@@ -204,7 +204,8 @@ AccountConsistencyModeManager::ComputeAccountConsistencyMethod(
  #endif
  
  #if BUILDFLAG(ENABLE_MIRROR)
@@ -257,7 +257,7 @@ diff --git a/chrome/browser/signin/account_consistency_mode_manager.cc b/chrome/
  #endif
  
  #if BUILDFLAG(ENABLE_DICE_SUPPORT)
-@@ -220,7 +221,7 @@ AccountConsistencyModeManager::ComputeAccountConsistencyMethod(
+@@ -214,7 +215,7 @@ AccountConsistencyModeManager::ComputeAccountConsistencyMethod(
      return AccountConsistencyMethod::kDisabled;
    }
  
@@ -320,7 +320,7 @@ diff --git a/chrome/browser/signin/bound_session_credentials/throttled_gaia_auth
 diff --git a/chrome/browser/signin/chrome_signin_client.cc b/chrome/browser/signin/chrome_signin_client.cc
 --- a/chrome/browser/signin/chrome_signin_client.cc
 +++ b/chrome/browser/signin/chrome_signin_client.cc
-@@ -231,7 +231,9 @@ void ChromeSigninClient::DoFinalInit() {
+@@ -236,7 +236,9 @@ void ChromeSigninClient::DoFinalInit() {
  bool ChromeSigninClient::ProfileAllowsSigninCookies(Profile* profile) {
    scoped_refptr<content_settings::CookieSettings> cookie_settings =
        CookieSettingsFactory::GetForProfile(profile);
@@ -331,7 +331,7 @@ diff --git a/chrome/browser/signin/chrome_signin_client.cc b/chrome/browser/sign
  }
  
  PrefService* ChromeSigninClient::GetPrefs() {
-@@ -354,6 +356,9 @@ bool ChromeSigninClient::AreNetworkCallsDelayed() {
+@@ -359,6 +361,9 @@ bool ChromeSigninClient::AreNetworkCallsDelayed() {
  }
  
  void ChromeSigninClient::DelayNetworkCall(base::OnceClosure callback) {
@@ -344,7 +344,7 @@ diff --git a/chrome/browser/signin/chrome_signin_client.cc b/chrome/browser/sign
 diff --git a/chrome/browser/signin/dice_response_handler.cc b/chrome/browser/signin/dice_response_handler.cc
 --- a/chrome/browser/signin/dice_response_handler.cc
 +++ b/chrome/browser/signin/dice_response_handler.cc
-@@ -64,7 +64,7 @@ namespace {
+@@ -57,7 +57,7 @@ namespace {
  // The UMA histograms that logs events related to Dice responses.
  const char kDiceResponseHeaderHistogram[] = "Signin.DiceResponseHeader";
  const char kDiceTokenFetchResultHistogram[] = "Signin.DiceTokenFetchResult";
@@ -353,7 +353,7 @@ diff --git a/chrome/browser/signin/dice_response_handler.cc b/chrome/browser/sig
      "Signin.DiceTokenBindingOutcome";
  
  // Used for UMA. Do not reorder, append new values at the end.
-@@ -526,8 +526,10 @@ void DiceResponseHandler::ProcessDiceSignoutHeader(
+@@ -442,8 +442,10 @@ void DiceResponseHandler::ProcessDiceSignoutHeader(
    // - If there is a policy restriction on removing the primary account.
    bool invalidate_only_primary_account =
        identity_manager_->HasPrimaryAccount(signin::ConsentLevel::kSync) ||
@@ -367,7 +367,7 @@ diff --git a/chrome/browser/signin/dice_response_handler.cc b/chrome/browser/sig
 diff --git a/chrome/browser/ui/webui/policy/policy_ui_handler.cc b/chrome/browser/ui/webui/policy/policy_ui_handler.cc
 --- a/chrome/browser/ui/webui/policy/policy_ui_handler.cc
 +++ b/chrome/browser/ui/webui/policy/policy_ui_handler.cc
-@@ -24,6 +24,7 @@
+@@ -25,6 +25,7 @@
  #include "base/memory/raw_ptr.h"
  #include "base/memory/weak_ptr.h"
  #include "base/notreached.h"
@@ -375,7 +375,7 @@ diff --git a/chrome/browser/ui/webui/policy/policy_ui_handler.cc b/chrome/browse
  #include "base/strings/utf_string_conversions.h"
  #include "base/task/task_traits.h"
  #include "base/task/thread_pool.h"
-@@ -68,6 +69,7 @@
+@@ -72,6 +73,7 @@
  #include "components/policy/core/common/policy_details.h"
  #include "components/policy/core/common/policy_logger.h"
  #include "components/policy/core/common/policy_pref_names.h"
@@ -383,7 +383,7 @@ diff --git a/chrome/browser/ui/webui/policy/policy_ui_handler.cc b/chrome/browse
  #include "components/policy/core/common/policy_scheduler.h"
  #include "components/policy/core/common/policy_types.h"
  #include "components/policy/core/common/policy_utils.h"
-@@ -196,6 +198,10 @@ void PolicyUIHandler::RegisterMessages() {
+@@ -200,6 +202,10 @@ void PolicyUIHandler::RegisterMessages() {
        "exportPoliciesJSON",
        base::BindRepeating(&PolicyUIHandler::HandleExportPoliciesJson,
                            base::Unretained(this)));
@@ -394,7 +394,7 @@ diff --git a/chrome/browser/ui/webui/policy/policy_ui_handler.cc b/chrome/browse
    web_ui()->RegisterMessageCallback(
        "listenPoliciesUpdates",
        base::BindRepeating(&PolicyUIHandler::HandleListenPoliciesUpdates,
-@@ -464,8 +470,102 @@ void PolicyUIHandler::SendPolicies() {
+@@ -477,8 +483,102 @@ void PolicyUIHandler::SendPolicies() {
        "policies-updated",
        base::Value(
            policy_value_and_status_aggregator_->GetAggregatedPolicyNames()),
@@ -583,7 +583,7 @@ diff --git a/components/commerce/core/commerce_feature_list.cc b/components/comm
  }  // namespace
  
  namespace switches {
-@@ -363,6 +313,16 @@ const char kParcelTrackingTestDataParamDelivered[] = "Delivered";
+@@ -375,6 +325,16 @@ const char kParcelTrackingTestDataParamDelivered[] = "Delivered";
  const char kParcelTrackingTestDataParamInProgress[] = "InProgress";
  const char kParcelTrackingTestDataParamOutForDelivery[] = "OutForDelivery";
  
@@ -600,7 +600,7 @@ diff --git a/components/commerce/core/commerce_feature_list.cc b/components/comm
  // Params for Discount Consent V2 in the NTP Cart module.
  const char kNtpChromeCartModuleDiscountConsentNtpVariationParam[] =
      "discount-consent-ntp-variation";
-@@ -505,11 +465,11 @@ bool IsPartnerMerchant(const GURL& url) {
+@@ -517,11 +477,11 @@ bool IsPartnerMerchant(const GURL& url) {
  }
  
  bool IsRuleDiscountPartnerMerchant(const GURL& url) {
@@ -614,7 +614,7 @@ diff --git a/components/commerce/core/commerce_feature_list.cc b/components/comm
  }
  
  bool IsCartDiscountFeatureEnabled() {
-@@ -589,6 +549,7 @@ base::TimeDelta GetDiscountFetchDelay() {
+@@ -601,6 +561,7 @@ base::TimeDelta GetDiscountFetchDelay() {
  }
  
  bool IsNoDiscountMerchant(const GURL& url) {
@@ -967,7 +967,7 @@ diff --git a/components/signin/features.gni b/components/signin/features.gni
 diff --git a/components/signin/internal/identity_manager/gaia_cookie_manager_service.cc b/components/signin/internal/identity_manager/gaia_cookie_manager_service.cc
 --- a/components/signin/internal/identity_manager/gaia_cookie_manager_service.cc
 +++ b/components/signin/internal/identity_manager/gaia_cookie_manager_service.cc
-@@ -470,6 +470,8 @@ void GaiaCookieManagerService::RegisterPrefs(PrefRegistrySimple* registry) {
+@@ -469,6 +469,8 @@ void GaiaCookieManagerService::RegisterPrefs(PrefRegistrySimple* registry) {
  }
  
  void GaiaCookieManagerService::InitCookieListener() {
@@ -976,7 +976,7 @@ diff --git a/components/signin/internal/identity_manager/gaia_cookie_manager_ser
    DCHECK(!cookie_listener_receiver_.is_bound());
  
    network::mojom::CookieManager* cookie_manager =
-@@ -881,6 +883,8 @@ void GaiaCookieManagerService::OnSetAccountsFinished(
+@@ -866,6 +868,8 @@ void GaiaCookieManagerService::OnSetAccountsFinished(
  }
  
  void GaiaCookieManagerService::HandleNextRequest() {
@@ -988,7 +988,7 @@ diff --git a/components/signin/internal/identity_manager/gaia_cookie_manager_ser
 diff --git a/google_apis/gaia/gaia_auth_fetcher.cc b/google_apis/gaia/gaia_auth_fetcher.cc
 --- a/google_apis/gaia/gaia_auth_fetcher.cc
 +++ b/google_apis/gaia/gaia_auth_fetcher.cc
-@@ -496,6 +496,7 @@ void GaiaAuthFetcher::StartListAccounts() {
+@@ -526,6 +526,7 @@ void GaiaAuthFetcher::StartListAccounts() {
              }
            }
          })");

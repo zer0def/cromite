@@ -31,7 +31,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 diff --git a/chrome/renderer/chrome_content_renderer_client.cc b/chrome/renderer/chrome_content_renderer_client.cc
 --- a/chrome/renderer/chrome_content_renderer_client.cc
 +++ b/chrome/renderer/chrome_content_renderer_client.cc
-@@ -1674,7 +1674,7 @@ ChromeContentRendererClient::CreateWorkerContentSettingsClient(
+@@ -1693,7 +1693,7 @@ ChromeContentRendererClient::CreateWorkerContentSettingsClient(
  std::unique_ptr<media::SpeechRecognitionClient>
  ChromeContentRendererClient::CreateSpeechRecognitionClient(
      content::RenderFrame* render_frame) {
@@ -139,15 +139,15 @@ new file mode 100644
 diff --git a/third_party/blink/public/platform/web_content_settings_client.h b/third_party/blink/public/platform/web_content_settings_client.h
 --- a/third_party/blink/public/platform/web_content_settings_client.h
 +++ b/third_party/blink/public/platform/web_content_settings_client.h
-@@ -115,6 +115,8 @@ class WebContentSettingsClient {
+@@ -106,6 +106,8 @@ class WebContentSettingsClient {
    // frame.
    virtual bool ShouldAutoupgradeMixedContent() { return true; }
  
 +  virtual bool IsTimezoneChanged() { return false; }
 +
-   // Controls whether the ViewTransition callback needs to be larger than
-   // default.
-   virtual bool IncreaseViewTransitionCallbackTimeout() const { return false; }
+   virtual ~WebContentSettingsClient() = default;
+ };
+ 
 diff --git a/third_party/blink/renderer/modules/speech/speech_synthesis.cc b/third_party/blink/renderer/modules/speech/speech_synthesis.cc
 --- a/third_party/blink/renderer/modules/speech/speech_synthesis.cc
 +++ b/third_party/blink/renderer/modules/speech/speech_synthesis.cc

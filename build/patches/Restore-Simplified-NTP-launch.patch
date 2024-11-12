@@ -43,7 +43,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 diff --git a/chrome/android/chrome_java_resources.gni b/chrome/android/chrome_java_resources.gni
 --- a/chrome/android/chrome_java_resources.gni
 +++ b/chrome/android/chrome_java_resources.gni
-@@ -544,6 +544,7 @@ chrome_java_resources = [
+@@ -537,6 +537,7 @@ chrome_java_resources = [
    "java/res/layout/new_tab_page_layout.xml",
    "java/res/layout/new_tab_page_tile_grid_placeholder.xml",
    "java/res/layout/open_full_chrome_history_header.xml",
@@ -54,7 +54,7 @@ diff --git a/chrome/android/chrome_java_resources.gni b/chrome/android/chrome_ja
 diff --git a/chrome/android/chrome_java_sources.gni b/chrome/android/chrome_java_sources.gni
 --- a/chrome/android/chrome_java_sources.gni
 +++ b/chrome/android/chrome_java_sources.gni
-@@ -626,6 +626,7 @@ chrome_java_sources = [
+@@ -631,6 +631,7 @@ chrome_java_sources = [
    "java/src/org/chromium/chrome/browser/feedback/FeedFeedbackCollector.java",
    "java/src/org/chromium/chrome/browser/feedback/HelpAndFeedbackLauncherImpl.java",
    "java/src/org/chromium/chrome/browser/feedback/ScreenshotTask.java",
@@ -62,7 +62,7 @@ diff --git a/chrome/android/chrome_java_sources.gni b/chrome/android/chrome_java
    "java/src/org/chromium/chrome/browser/findinpage/FindToolbar.java",
    "java/src/org/chromium/chrome/browser/findinpage/FindToolbarManager.java",
    "java/src/org/chromium/chrome/browser/findinpage/FindToolbarObserver.java",
-@@ -1045,6 +1046,7 @@ chrome_java_sources = [
+@@ -1051,6 +1052,7 @@ chrome_java_sources = [
    "java/src/org/chromium/chrome/browser/suggestions/mostvisited/MostVisitedSitesMetadataUtils.java",
    "java/src/org/chromium/chrome/browser/suggestions/tile/MostVisitedTilesCoordinator.java",
    "java/src/org/chromium/chrome/browser/suggestions/tile/MostVisitedTilesLayout.java",
@@ -352,7 +352,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ntp/NewTabPageL
  import org.chromium.chrome.browser.lens.LensMetrics;
  import org.chromium.chrome.browser.lifecycle.ActivityLifecycleDispatcher;
  import org.chromium.chrome.browser.logo.LogoBridge.Logo;
-@@ -88,6 +90,8 @@ public class NewTabPageLayout extends LinearLayout {
+@@ -85,6 +87,8 @@ public class NewTabPageLayout extends LinearLayout {
      private @Nullable DisplayStyleObserver mDisplayStyleObserver;
      private CallbackController mCallbackController = new CallbackController();
  
@@ -361,7 +361,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ntp/NewTabPageL
      /**
       * Whether the tiles shown in the layout have finished loading.
       * With {@link #mHasShownView}, it's one of the 2 flags used to track initialisation progress.
-@@ -100,7 +104,7 @@ public class NewTabPageLayout extends LinearLayout {
+@@ -97,7 +101,7 @@ public class NewTabPageLayout extends LinearLayout {
       */
      private boolean mHasShownView;
  
@@ -370,7 +370,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ntp/NewTabPageL
      private boolean mSearchProviderIsGoogle;
      private boolean mShowingNonStandardGoogleLogo;
  
-@@ -258,6 +262,7 @@ public class NewTabPageLayout extends LinearLayout {
+@@ -250,6 +254,7 @@ public class NewTabPageLayout extends LinearLayout {
          initializeLogoCoordinator(searchProviderHasLogo, searchProviderIsGoogle);
          initializeMostVisitedTilesCoordinator(
                  mProfile, lifecycleDispatcher, tileGroupDelegate, touchEnabledDelegate);
@@ -378,7 +378,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ntp/NewTabPageL
          initializeSearchBoxTextView();
          initializeVoiceSearchButton();
          initializeLensButton();
-@@ -597,7 +602,7 @@ public class NewTabPageLayout extends LinearLayout {
+@@ -589,7 +594,7 @@ public class NewTabPageLayout extends LinearLayout {
                  && mInitialized) {
              return;
          }
@@ -387,7 +387,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ntp/NewTabPageL
          mSearchProviderIsGoogle = isGoogle;
  
          if (!mSearchProviderIsGoogle) {
-@@ -932,6 +937,22 @@ public class NewTabPageLayout extends LinearLayout {
+@@ -924,6 +929,22 @@ public class NewTabPageLayout extends LinearLayout {
          return mMostVisitedTilesCoordinator;
      }
  
@@ -741,8 +741,8 @@ diff --git a/chrome/browser/engagement/important_sites_util.cc b/chrome/browser/
 diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browser/flags/android/chrome_feature_list.cc
 --- a/chrome/browser/flags/android/chrome_feature_list.cc
 +++ b/chrome/browser/flags/android/chrome_feature_list.cc
-@@ -257,6 +257,7 @@ const base::Feature* const kFeaturesExposedToJava[] = {
-     &kGtsCloseTabAnimation,
+@@ -264,6 +264,7 @@ const base::Feature* const kFeaturesExposedToJava[] = {
+     &kLockBackPressHandlerAtStart,
      &kIncognitoReauthenticationForAndroid,
      &kIncognitoScreenshot,
 +    &kSimplifiedNTP,
@@ -752,7 +752,7 @@ diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browse
 diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 --- a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 +++ b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
-@@ -366,6 +366,7 @@ public abstract class ChromeFeatureList {
+@@ -384,6 +384,7 @@ public abstract class ChromeFeatureList {
      public static final String MAYLAUNCHURL_USES_SEPARATE_STORAGE_PARTITION =
              "MayLaunchUrlUsesSeparateStoragePartition";
      public static final String MESSAGES_FOR_ANDROID_ADS_BLOCKED = "MessagesForAndroidAdsBlocked";
@@ -760,7 +760,7 @@ diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/f
      public static final String SEARCH_READY_OMNIBOX = "SearchReadyOmnibox";
      public static final String MOST_VISITED_TILES_RESELECT = "MostVisitedTilesReselect";
      public static final String MUlTI_INSTANCE_APPLICATION_STATUS_CLEANUP =
-@@ -658,7 +659,7 @@ public abstract class ChromeFeatureList {
+@@ -693,7 +694,7 @@ public abstract class ChromeFeatureList {
      public static final CachedFlag sLogoPolish = newCachedFlag(LOGO_POLISH, true);
      public static final CachedFlag sLogoPolishAnimationKillSwitch =
              newCachedFlag(LOGO_POLISH_ANIMATION_KILL_SWITCH, true);

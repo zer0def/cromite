@@ -7,7 +7,7 @@ The desktop ui is accessible via a button in the android ui.
 
 License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
- .../settings/SettingsLauncherImpl.java        |  10 +
+ .../settings/SettingsNavigationImpl.java      |  10 +
  chrome/app/generated_resources.grd            |   7 +-
  chrome/app/settings_strings.grdp              |   3 +
  chrome/app/settings_strings_android.grdp      | 260 ++++++++++++++++++
@@ -36,7 +36,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../keyword_editor_controller.h               |   6 +-
  .../template_url_table_model.cc               |   9 +-
  .../search_engines/template_url_table_model.h |   6 +-
- .../webui/chrome_web_ui_controller_factory.cc |   6 +
+ .../webui/chrome_web_ui_controller_factory.cc |   7 +
  chrome/browser/ui/webui/favicon_source.cc     |  18 ++
  chrome/browser/ui/webui/favicon_source.h      |   2 +
  .../webui/settings/search_engines_handler.cc  |  28 +-
@@ -48,7 +48,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../ui/webui/settings/settings_ui_android.cc  | 126 +++++++++
  .../ui/webui/settings/settings_ui_android.h   | 103 +++++++
  chrome/chrome_paks.gni                        |  11 +
- .../browser_ui/settings/SettingsLauncher.java |   2 +
+ .../settings/SettingsNavigation.java          |   2 +
  .../search_engine_desktop_ui.grdp             |   6 +
  .../android/template_url_service_android.cc   |   2 +-
  .../search_engines/search_engines_switches.cc |   1 +
@@ -68,10 +68,9 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../resources/cr_elements/cr_shared_vars.css  |   4 +
  ui/webui/resources/css/BUILD.gn               |   2 +-
  ui/webui/resources/images/BUILD.gn            |   2 +-
- ui/webui/resources/include_polymer.gni        |   2 +-
  ui/webui/resources/js/BUILD.gn                |   2 +-
  ui/webui/resources/js/load_time_data.ts       |  17 +-
- 64 files changed, 1095 insertions(+), 63 deletions(-)
+ 63 files changed, 1095 insertions(+), 62 deletions(-)
  create mode 100644 chrome/app/settings_strings_android.grdp
  create mode 100644 chrome/browser/search_engines/android/java/res/layout/search_engine_layout.xml
  create mode 100644 chrome/browser/ui/webui/settings/settings_localized_strings_provider_android.cc
@@ -80,10 +79,10 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  create mode 100644 chrome/browser/ui/webui/settings/settings_ui_android.h
  create mode 100644 components/browser_ui/strings/bromite_content_settings/search_engine_desktop_ui.grdp
 
-diff --git a/chrome/android/java/src/org/chromium/chrome/browser/settings/SettingsLauncherImpl.java b/chrome/android/java/src/org/chromium/chrome/browser/settings/SettingsLauncherImpl.java
---- a/chrome/android/java/src/org/chromium/chrome/browser/settings/SettingsLauncherImpl.java
-+++ b/chrome/android/java/src/org/chromium/chrome/browser/settings/SettingsLauncherImpl.java
-@@ -11,6 +11,9 @@ import android.os.Bundle;
+diff --git a/chrome/android/java/src/org/chromium/chrome/browser/settings/SettingsNavigationImpl.java b/chrome/android/java/src/org/chromium/chrome/browser/settings/SettingsNavigationImpl.java
+--- a/chrome/android/java/src/org/chromium/chrome/browser/settings/SettingsNavigationImpl.java
++++ b/chrome/android/java/src/org/chromium/chrome/browser/settings/SettingsNavigationImpl.java
+@@ -12,6 +12,9 @@ import android.os.Bundle;
  import androidx.annotation.Nullable;
  import androidx.fragment.app.Fragment;
  
@@ -93,9 +92,9 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/settings/Settin
  import org.chromium.base.IntentUtils;
  import org.chromium.chrome.browser.accessibility.settings.AccessibilitySettings;
  import org.chromium.chrome.browser.autofill.settings.AutofillPaymentMethodsFragment;
-@@ -31,6 +34,13 @@ public class SettingsLauncherImpl implements SettingsLauncher {
-     /** Instantiated through SettingsLauncherFactory. */
-     SettingsLauncherImpl() {}
+@@ -32,6 +35,13 @@ public class SettingsNavigationImpl implements SettingsNavigation {
+     /** Instantiated through SettingsNavigationFactory. */
+     SettingsNavigationImpl() {}
  
 +    @Override
 +    public void launchUrlInCustomTab(Context context, String url) {
@@ -105,8 +104,8 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/settings/Settin
 +    }
 +
      @Override
-     public void launchSettingsActivity(Context context) {
-         launchSettingsActivity(context, SettingsFragment.MAIN);
+     public void startSettings(Context context) {
+         startSettings(context, SettingsFragment.MAIN);
 diff --git a/chrome/app/generated_resources.grd b/chrome/app/generated_resources.grd
 --- a/chrome/app/generated_resources.grd
 +++ b/chrome/app/generated_resources.grd
@@ -134,7 +133,7 @@ diff --git a/chrome/app/generated_resources.grd b/chrome/app/generated_resources
 diff --git a/chrome/app/settings_strings.grdp b/chrome/app/settings_strings.grdp
 --- a/chrome/app/settings_strings.grdp
 +++ b/chrome/app/settings_strings.grdp
-@@ -2496,6 +2496,9 @@
+@@ -2502,6 +2502,9 @@
    <message name="IDS_SETTINGS_SEARCH_ENGINES_QUERY_URL_EXPLANATION" desc="Label for explaining the format of the URL that should be entered by the user in the add/edit search engine dialog.">
      URL with <ph name="SPECIAL_SYMBOL">%s</ph> in place of query
    </message>
@@ -412,7 +411,7 @@ new file mode 100644
 diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -3491,6 +3491,9 @@ static_library("browser") {
+@@ -3498,6 +3498,9 @@ static_library("browser") {
          "//components/user_scripts/android",
        ]
      }
@@ -425,7 +424,7 @@ diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 diff --git a/chrome/browser/chrome_browser_interface_binders.cc b/chrome/browser/chrome_browser_interface_binders.cc
 --- a/chrome/browser/chrome_browser_interface_binders.cc
 +++ b/chrome/browser/chrome_browser_interface_binders.cc
-@@ -139,6 +139,9 @@
+@@ -141,6 +141,9 @@
  #endif
  
  #if BUILDFLAG(IS_ANDROID)
@@ -435,8 +434,8 @@ diff --git a/chrome/browser/chrome_browser_interface_binders.cc b/chrome/browser
  #include "chrome/browser/android/dom_distiller/distiller_ui_handle_android.h"
  #include "chrome/browser/facilitated_payments/payment_link_handler_binder.h"
  #include "chrome/browser/offline_pages/android/offline_page_auto_fetcher.h"
-@@ -1195,6 +1198,15 @@ void PopulateChromeWebUIFrameBinders(
-       app_management::mojom::PageHandlerFactory, WebAppSettingsUI>(map);
+@@ -1188,6 +1191,15 @@ void PopulateChromeWebUIFrameBinders(
+       OnDeviceTranslationInternalsUI>(map);
  #endif
  
 +#if BUILDFLAG(IS_ANDROID)
@@ -584,7 +583,7 @@ diff --git a/chrome/browser/resources/settings/search_engines_page/search_engine
    urlLocked: boolean;
  }
  
-@@ -99,7 +100,7 @@ export interface SearchEnginesBrowserProxy {
+@@ -100,7 +101,7 @@ export interface SearchEnginesBrowserProxy {
    searchEngineEditCancelled(): void;
  
    searchEngineEditCompleted(
@@ -593,7 +592,7 @@ diff --git a/chrome/browser/resources/settings/search_engines_page/search_engine
  
    getSearchEnginesList(): Promise<SearchEnginesInfo>;
  
-@@ -141,11 +142,12 @@ export class SearchEnginesBrowserProxyImpl implements
+@@ -147,11 +148,12 @@ export class SearchEnginesBrowserProxyImpl implements
    }
  
    searchEngineEditCompleted(
@@ -607,7 +606,7 @@ diff --git a/chrome/browser/resources/settings/search_engines_page/search_engine
      ]);
    }
  
-@@ -158,7 +160,7 @@ export class SearchEnginesBrowserProxyImpl implements
+@@ -168,7 +170,7 @@ export class SearchEnginesBrowserProxyImpl implements
    }
  
    recordSearchEnginesPageHistogram(interaction: SearchEnginesInteractions) {
@@ -830,7 +829,7 @@ diff --git a/chrome/browser/search_engines/android/java/src/org/chromium/chrome/
  import org.chromium.chrome.browser.settings.ProfileDependentSetting;
 +import org.chromium.chrome.browser.settings.SettingsLauncherFactory;
 +import org.chromium.components.browser_ui.settings.SettingsLauncher;
- import org.chromium.components.browser_ui.settings.SettingsPage;
+ import org.chromium.components.browser_ui.settings.EmbeddableSettingsPage;
  import org.chromium.components.search_engines.TemplateUrlService;
  
 @@ -57,6 +63,20 @@ public class SearchEngineSettings extends ListFragment
@@ -857,7 +856,7 @@ diff --git a/chrome/browser/search_engines/android/java/src/org/chromium/chrome/
 diff --git a/chrome/browser/ui/BUILD.gn b/chrome/browser/ui/BUILD.gn
 --- a/chrome/browser/ui/BUILD.gn
 +++ b/chrome/browser/ui/BUILD.gn
-@@ -712,6 +712,12 @@ static_library("ui") {
+@@ -689,6 +689,12 @@ static_library("ui") {
      "//v8:v8_version",
    ]
  
@@ -870,7 +869,7 @@ diff --git a/chrome/browser/ui/BUILD.gn b/chrome/browser/ui/BUILD.gn
    if (is_chrome_branded) {
      deps += [ "//components/plus_addresses/resources:vector_icons" ]
    }
-@@ -1003,6 +1009,18 @@ static_library("ui") {
+@@ -984,6 +990,18 @@ static_library("ui") {
      # TODO(b/335257259): Resolve circular deps.
      # Any circular includes must depend on the target "//chrome/browser:browser_public_dependencies".
      allow_circular_includes_from += [ "//chrome/browser/facilitated_payments" ]
@@ -1072,26 +1071,27 @@ diff --git a/chrome/browser/ui/search_engines/template_url_table_model.h b/chrom
 diff --git a/chrome/browser/ui/webui/chrome_web_ui_controller_factory.cc b/chrome/browser/ui/webui/chrome_web_ui_controller_factory.cc
 --- a/chrome/browser/ui/webui/chrome_web_ui_controller_factory.cc
 +++ b/chrome/browser/ui/webui/chrome_web_ui_controller_factory.cc
-@@ -110,6 +110,8 @@
- #include "chrome/browser/ui/webui/offline/offline_internals_ui.h"
- #include "chrome/browser/ui/webui/webapks/webapks_ui.h"
+@@ -79,6 +79,8 @@
+ 
+ #if BUILDFLAG(IS_ANDROID)
  #include "components/feed/feed_feature_list.h"
 +#include "chrome/browser/ui/webui/settings/settings_ui_android.h"
 +#include "chrome/browser/ui/webui/settings/settings_utils.h"
  #else  // BUILDFLAG(IS_ANDROID)
  #include "chrome/browser/media/router/discovery/access_code/access_code_cast_feature.h"
- #include "chrome/browser/media/router/media_router_feature.h"
-@@ -501,6 +503,10 @@ WebUIFactoryFunction GetWebUIFactoryFunction(WebUI* web_ui,
-     return &NewWebUI<WebAppInternalsUI>;
-   }
- #endif  // !BUILDFLAG(IS_ANDROID)
+ #include "chrome/browser/ui/ui_features.h"
+@@ -522,6 +524,11 @@ base::RefCountedMemory* ChromeWebUIControllerFactory::GetFaviconResourceBytes(
+     return settings_utils::GetFaviconResourceBytes(scale_factor);
+ #endif  // BUILDFLAG(IS_CHROMEOS_ASH)
+ 
 +#if BUILDFLAG(IS_ANDROID)
 +  if (url.host_piece() == chrome::kChromeUISettingsHost)
 +    return &NewWebUI<settings::SettingsUI>;
 +#endif  // BUILDFLAG(IS_ANDROID)
- #if BUILDFLAG(IS_WIN)
-   if (url.host_piece() == chrome::kChromeUIConflictsHost)
-     return &NewWebUI<ConflictsUI>;
++
+   return nullptr;
+ }
+ 
 diff --git a/chrome/browser/ui/webui/favicon_source.cc b/chrome/browser/ui/webui/favicon_source.cc
 --- a/chrome/browser/ui/webui/favicon_source.cc
 +++ b/chrome/browser/ui/webui/favicon_source.cc
@@ -1152,7 +1152,7 @@ diff --git a/chrome/browser/ui/webui/favicon_source.cc b/chrome/browser/ui/webui
      return;
    }
    int icon_size = std::ceil(parsed.size_in_dip * parsed.device_scale_factor);
-@@ -260,7 +272,11 @@ void FaviconSource::SendDefaultResponse(
+@@ -261,7 +273,11 @@ void FaviconSource::SendDefaultResponse(
    SendDefaultResponse(std::move(callback), 16, 1.0f,
                        force_light_mode
                            ? false
@@ -1164,7 +1164,7 @@ diff --git a/chrome/browser/ui/webui/favicon_source.cc b/chrome/browser/ui/webui
  }
  
  void FaviconSource::SendDefaultResponse(
-@@ -270,6 +286,7 @@ void FaviconSource::SendDefaultResponse(
+@@ -271,6 +287,7 @@ void FaviconSource::SendDefaultResponse(
      bool dark_mode) {
    int resource_id;
    switch (size_in_dip) {
@@ -1172,7 +1172,7 @@ diff --git a/chrome/browser/ui/webui/favicon_source.cc b/chrome/browser/ui/webui
      case 64:
        resource_id =
            dark_mode ? IDR_DEFAULT_FAVICON_DARK_64 : IDR_DEFAULT_FAVICON_64;
-@@ -278,6 +295,7 @@ void FaviconSource::SendDefaultResponse(
+@@ -279,6 +296,7 @@ void FaviconSource::SendDefaultResponse(
        resource_id =
            dark_mode ? IDR_DEFAULT_FAVICON_DARK_32 : IDR_DEFAULT_FAVICON_32;
        break;
@@ -1219,7 +1219,7 @@ diff --git a/chrome/browser/ui/webui/settings/search_engines_handler.cc b/chrome
  
  // Dummy number used for indicating that a new search engine is added.
  const int kNewSearchEngineIndex = -1;
-@@ -219,15 +222,18 @@ base::Value::Dict SearchEnginesHandler::CreateDictionaryForEngine(
+@@ -223,15 +226,18 @@ base::Value::Dict SearchEnginesHandler::CreateDictionaryForEngine(
             table_model->GetText(index,
                                  IDS_SEARCH_ENGINES_EDITOR_DESCRIPTION_COLUMN));
    dict.Set("keyword", table_model->GetKeywordToDisplay(index));
@@ -1239,7 +1239,7 @@ diff --git a/chrome/browser/ui/webui/settings/search_engines_handler.cc b/chrome
    // The icons that are used for search engines in the EEA region are bundled
    // with Chrome. We use the favicon service for countries outside the EEA
    // region to guarantee having icons for all search engines.
-@@ -246,6 +252,7 @@ base::Value::Dict SearchEnginesHandler::CreateDictionaryForEngine(
+@@ -250,6 +256,7 @@ base::Value::Dict SearchEnginesHandler::CreateDictionaryForEngine(
        dict.Set("iconPath", base::StrCat({icon_path, "@2x"}));
      }
    }
@@ -1247,7 +1247,7 @@ diff --git a/chrome/browser/ui/webui/settings/search_engines_handler.cc b/chrome
  
    dict.Set("modelIndex", base::checked_cast<int>(index));
  
-@@ -262,6 +269,7 @@ base::Value::Dict SearchEnginesHandler::CreateDictionaryForEngine(
+@@ -266,6 +273,7 @@ base::Value::Dict SearchEnginesHandler::CreateDictionaryForEngine(
    dict.Set("isOmniboxExtension", type == TemplateURL::OMNIBOX_API_EXTENSION);
    dict.Set("isPrepopulated", template_url->prepopulate_id() > 0);
    dict.Set("isStarterPack", template_url->starter_pack_id() > 0);
@@ -1255,7 +1255,7 @@ diff --git a/chrome/browser/ui/webui/settings/search_engines_handler.cc b/chrome
    if (type == TemplateURL::NORMAL_CONTROLLED_BY_EXTENSION ||
        type == TemplateURL::OMNIBOX_API_EXTENSION) {
      const extensions::Extension* extension =
-@@ -278,6 +286,7 @@ base::Value::Dict SearchEnginesHandler::CreateDictionaryForEngine(
+@@ -282,6 +290,7 @@ base::Value::Dict SearchEnginesHandler::CreateDictionaryForEngine(
        dict.Set("extension", std::move(ext_info));
      }
    }
@@ -1263,7 +1263,7 @@ diff --git a/chrome/browser/ui/webui/settings/search_engines_handler.cc b/chrome
    return dict;
  }
  
-@@ -358,12 +367,13 @@ void SearchEnginesHandler::HandleSearchEngineEditStarted(
+@@ -400,12 +409,13 @@ void SearchEnginesHandler::HandleSearchEngineEditStarted(
  void SearchEnginesHandler::OnEditedKeyword(TemplateURL* template_url,
                                             const std::u16string& title,
                                             const std::u16string& keyword,
@@ -1280,7 +1280,7 @@ diff --git a/chrome/browser/ui/webui/settings/search_engines_handler.cc b/chrome
  
    edit_controller_.reset();
  }
-@@ -391,6 +401,8 @@ bool SearchEnginesHandler::CheckFieldValidity(const std::string& field_name,
+@@ -433,6 +443,8 @@ bool SearchEnginesHandler::CheckFieldValidity(const std::string& field_name,
      is_valid = edit_controller_->IsKeywordValid(base::UTF8ToUTF16(field_value));
    else if (field_name.compare(kQueryUrlField) == 0)
      is_valid = edit_controller_->IsURLValid(field_value);
@@ -1289,7 +1289,7 @@ diff --git a/chrome/browser/ui/webui/settings/search_engines_handler.cc b/chrome
    else
      NOTREACHED_IN_MIGRATION();
  
-@@ -410,18 +422,20 @@ void SearchEnginesHandler::HandleSearchEngineEditCompleted(
+@@ -452,18 +464,20 @@ void SearchEnginesHandler::HandleSearchEngineEditCompleted(
    if (!edit_controller_.get())
      return;
  
@@ -1329,7 +1329,7 @@ diff --git a/chrome/browser/ui/webui/settings/search_engines_handler.h b/chrome/
 diff --git a/chrome/browser/ui/webui/settings/settings_localized_strings_provider.cc b/chrome/browser/ui/webui/settings/settings_localized_strings_provider.cc
 --- a/chrome/browser/ui/webui/settings/settings_localized_strings_provider.cc
 +++ b/chrome/browser/ui/webui/settings/settings_localized_strings_provider.cc
-@@ -2342,6 +2342,8 @@ void AddSearchEnginesStrings(content::WebUIDataSource* html_source) {
+@@ -2466,6 +2466,8 @@ void AddSearchEnginesStrings(content::WebUIDataSource* html_source) {
        {"searchEnginesQueryURL", IDS_SETTINGS_SEARCH_ENGINES_QUERY_URL},
        {"searchEnginesQueryURLExplanation",
         IDS_SETTINGS_SEARCH_ENGINES_QUERY_URL_EXPLANATION},
@@ -1338,7 +1338,7 @@ diff --git a/chrome/browser/ui/webui/settings/settings_localized_strings_provide
        {"searchEnginesMakeDefault", IDS_SETTINGS_SEARCH_ENGINES_MAKE_DEFAULT},
        {"searchEnginesActivate", IDS_SETTINGS_SEARCH_ENGINES_ACTIVATE},
        {"searchEnginesDeactivate", IDS_SETTINGS_SEARCH_ENGINES_DEACTIVATE},
-@@ -3690,6 +3692,12 @@ void AddLocalizedStrings(content::WebUIDataSource* html_source,
+@@ -3805,6 +3807,12 @@ void AddLocalizedStrings(content::WebUIDataSource* html_source,
    AddSystemStrings(html_source);
  #endif
  
@@ -1581,7 +1581,7 @@ new file mode 100644
 diff --git a/chrome/browser/ui/webui/settings/settings_ui.cc b/chrome/browser/ui/webui/settings/settings_ui.cc
 --- a/chrome/browser/ui/webui/settings/settings_ui.cc
 +++ b/chrome/browser/ui/webui/settings/settings_ui.cc
-@@ -460,12 +460,12 @@ SettingsUI::SettingsUI(content::WebUI* web_ui)
+@@ -471,12 +471,12 @@ SettingsUI::SettingsUI(content::WebUI* web_ui)
    web_ui->AddMessageHandler(std::make_unique<MetricsHandler>());
  
    webui::SetupWebUIDataSource(
@@ -1838,7 +1838,7 @@ new file mode 100644
 diff --git a/chrome/chrome_paks.gni b/chrome/chrome_paks.gni
 --- a/chrome/chrome_paks.gni
 +++ b/chrome/chrome_paks.gni
-@@ -156,6 +156,17 @@ template("chrome_extra_paks") {
+@@ -158,6 +158,17 @@ template("chrome_extra_paks") {
        sources += invoker.additional_paks
      }
  
@@ -1856,17 +1856,17 @@ diff --git a/chrome/chrome_paks.gni b/chrome/chrome_paks.gni
      if (!is_android) {
        # New paks should be added here by default.
        sources += [
-diff --git a/components/browser_ui/settings/android/java/src/org/chromium/components/browser_ui/settings/SettingsLauncher.java b/components/browser_ui/settings/android/java/src/org/chromium/components/browser_ui/settings/SettingsLauncher.java
---- a/components/browser_ui/settings/android/java/src/org/chromium/components/browser_ui/settings/SettingsLauncher.java
-+++ b/components/browser_ui/settings/android/java/src/org/chromium/components/browser_ui/settings/SettingsLauncher.java
-@@ -56,6 +56,8 @@ public interface SettingsLauncher {
+diff --git a/components/browser_ui/settings/android/java/src/org/chromium/components/browser_ui/settings/SettingsNavigation.java b/components/browser_ui/settings/android/java/src/org/chromium/components/browser_ui/settings/SettingsNavigation.java
+--- a/components/browser_ui/settings/android/java/src/org/chromium/components/browser_ui/settings/SettingsNavigation.java
++++ b/components/browser_ui/settings/android/java/src/org/chromium/components/browser_ui/settings/SettingsNavigation.java
+@@ -56,6 +56,8 @@ public interface SettingsNavigation {
          int FINANCIAL_ACCOUNTS = 10;
      }
  
 +    void launchUrlInCustomTab(Context context, String url);
 +
      /**
-      * Launches a Settings Activity with the default (top-level) fragment.
+      * Starts settings with the default (top-level) fragment.
       *
 diff --git a/components/browser_ui/strings/bromite_content_settings/search_engine_desktop_ui.grdp b/components/browser_ui/strings/bromite_content_settings/search_engine_desktop_ui.grdp
 new file mode 100644
@@ -1943,7 +1943,7 @@ diff --git a/components/search_engines/template_url_service.cc b/components/sear
 diff --git a/components/search_engines/template_url_service.h b/components/search_engines/template_url_service.h
 --- a/components/search_engines/template_url_service.h
 +++ b/components/search_engines/template_url_service.h
-@@ -250,7 +250,8 @@ class TemplateURLService final : public WebDataServiceConsumer,
+@@ -254,7 +254,8 @@ class TemplateURLService final : public WebDataServiceConsumer,
    TemplateURL* AddWithOverrides(std::unique_ptr<TemplateURL> template_url,
                                  const std::u16string& short_name,
                                  const std::u16string& keyword,
@@ -1953,7 +1953,7 @@ diff --git a/components/search_engines/template_url_service.h b/components/searc
  
    // Removes the keyword from the model. This deletes the supplied TemplateURL.
    // This fails if the supplied template_url is the default search provider.
-@@ -314,7 +315,8 @@ class TemplateURLService final : public WebDataServiceConsumer,
+@@ -318,7 +319,8 @@ class TemplateURLService final : public WebDataServiceConsumer,
    void ResetTemplateURL(TemplateURL* url,
                          const std::u16string& title,
                          const std::u16string& keyword,
@@ -1966,7 +1966,7 @@ diff --git a/components/search_engines/template_url_service.h b/components/searc
 diff --git a/content/browser/webui/web_ui_impl.cc b/content/browser/webui/web_ui_impl.cc
 --- a/content/browser/webui/web_ui_impl.cc
 +++ b/content/browser/webui/web_ui_impl.cc
-@@ -238,6 +238,10 @@ void WebUIImpl::RegisterMessageCallback(std::string_view message,
+@@ -279,6 +279,10 @@ void WebUIImpl::RegisterMessageCallback(std::string_view message,
    message_callbacks_.emplace(message, std::move(callback));
  }
  
@@ -1977,7 +1977,7 @@ diff --git a/content/browser/webui/web_ui_impl.cc b/content/browser/webui/web_ui
  void WebUIImpl::ProcessWebUIMessage(const GURL& source_url,
                                      const std::string& message,
                                      base::Value::List args) {
-@@ -251,8 +255,14 @@ void WebUIImpl::ProcessWebUIMessage(const GURL& source_url,
+@@ -292,8 +296,14 @@ void WebUIImpl::ProcessWebUIMessage(const GURL& source_url,
      return;
    }
  
@@ -1997,7 +1997,7 @@ diff --git a/content/browser/webui/web_ui_impl.cc b/content/browser/webui/web_ui
 diff --git a/content/browser/webui/web_ui_impl.h b/content/browser/webui/web_ui_impl.h
 --- a/content/browser/webui/web_ui_impl.h
 +++ b/content/browser/webui/web_ui_impl.h
-@@ -81,6 +81,7 @@ class CONTENT_EXPORT WebUIImpl : public WebUI, public mojom::WebUIHost {
+@@ -83,6 +83,7 @@ class CONTENT_EXPORT WebUIImpl : public WebUI, public mojom::WebUIHost {
    void ProcessWebUIMessage(const GURL& source_url,
                             const std::string& message,
                             base::Value::List args) override;
@@ -2005,7 +2005,7 @@ diff --git a/content/browser/webui/web_ui_impl.h b/content/browser/webui/web_ui_
    bool CanCallJavascript() override;
    void CallJavascriptFunctionUnsafe(
        std::string_view function_name,
-@@ -153,6 +154,8 @@ class CONTENT_EXPORT WebUIImpl : public WebUI, public mojom::WebUIHost {
+@@ -160,6 +161,8 @@ class CONTENT_EXPORT WebUIImpl : public WebUI, public mojom::WebUIHost {
  
    std::unique_ptr<WebUIController> controller_;
  
@@ -2028,7 +2028,7 @@ diff --git a/content/public/browser/web_ui.h b/content/public/browser/web_ui.h
 diff --git a/third_party/polymer/v3_0/BUILD.gn b/third_party/polymer/v3_0/BUILD.gn
 --- a/third_party/polymer/v3_0/BUILD.gn
 +++ b/third_party/polymer/v3_0/BUILD.gn
-@@ -34,6 +34,12 @@ js_files = [
+@@ -31,6 +31,12 @@ js_files = [
    "paper-spinner/paper-spinner-styles.js",
  ]
  
@@ -2101,7 +2101,7 @@ diff --git a/ui/webui/BUILD.gn b/ui/webui/BUILD.gn
 diff --git a/ui/webui/resources/BUILD.gn b/ui/webui/resources/BUILD.gn
 --- a/ui/webui/resources/BUILD.gn
 +++ b/ui/webui/resources/BUILD.gn
-@@ -77,6 +77,16 @@ generate_grd("build_grd") {
+@@ -76,6 +76,16 @@ generate_grd("build_grd") {
        "$target_gen_dir/cr_components/managed_footnote/resources.grdp",
        "$target_gen_dir/cr_components/most_visited/resources.grdp",
      ]
@@ -2204,15 +2204,6 @@ diff --git a/ui/webui/resources/images/BUILD.gn b/ui/webui/resources/images/BUIL
      input_files += [
        "arrow_down.svg",
        "arrow_right.svg",
-diff --git a/ui/webui/resources/include_polymer.gni b/ui/webui/resources/include_polymer.gni
---- a/ui/webui/resources/include_polymer.gni
-+++ b/ui/webui/resources/include_polymer.gni
-@@ -2,4 +2,4 @@
- # Use of this source code is governed by a BSD-style license that can be
- # found in the LICENSE file.
- 
--include_polymer = !is_android && !is_ios
-+include_polymer = !is_ios
 diff --git a/ui/webui/resources/js/BUILD.gn b/ui/webui/resources/js/BUILD.gn
 --- a/ui/webui/resources/js/BUILD.gn
 +++ b/ui/webui/resources/js/BUILD.gn

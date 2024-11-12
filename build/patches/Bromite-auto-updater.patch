@@ -81,7 +81,7 @@ diff --git a/build/config/android/rules.gni b/build/config/android/rules.gni
 diff --git a/chrome/android/chrome_java_sources.gni b/chrome/android/chrome_java_sources.gni
 --- a/chrome/android/chrome_java_sources.gni
 +++ b/chrome/android/chrome_java_sources.gni
-@@ -864,6 +864,8 @@ chrome_java_sources = [
+@@ -869,6 +869,8 @@ chrome_java_sources = [
    "java/src/org/chromium/chrome/browser/omaha/OmahaBase.java",
    "java/src/org/chromium/chrome/browser/omaha/OmahaDelegate.java",
    "java/src/org/chromium/chrome/browser/omaha/OmahaDelegateBase.java",
@@ -118,8 +118,8 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/about_settings/
 +
  /** Settings fragment that displays information about Chrome. */
  public class AboutChromeSettings extends PreferenceFragmentCompat
--        implements SettingsPage, Preference.OnPreferenceClickListener {
-+        implements SettingsPage, Preference.OnPreferenceClickListener,
+-        implements EmbeddableSettingsPage, Preference.OnPreferenceClickListener {
++        implements EmbeddableSettingsPage, Preference.OnPreferenceClickListener,
 +                   Preference.OnPreferenceChangeListener {
      private static final int TAPS_FOR_DEVELOPER_SETTINGS = 7;
  
@@ -210,7 +210,7 @@ new file mode 100644
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/omaha/OmahaBase.java b/chrome/android/java/src/org/chromium/chrome/browser/omaha/OmahaBase.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/omaha/OmahaBase.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/omaha/OmahaBase.java
-@@ -145,7 +145,8 @@ public class OmahaBase {
+@@ -140,7 +140,8 @@ public class OmahaBase {
      }
  
      static boolean isDisabled() {
@@ -220,7 +220,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/omaha/OmahaBase
      }
  
      /**
-@@ -585,6 +586,10 @@ public class OmahaBase {
+@@ -580,6 +581,10 @@ public class OmahaBase {
      /** Sends the request to the server and returns the response. */
      static String sendRequestToServer(HttpURLConnection urlConnection, String request)
              throws RequestFailureException {
@@ -672,7 +672,7 @@ new file mode 100644
 diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -2519,6 +2519,12 @@ static_library("browser") {
+@@ -2517,6 +2517,12 @@ static_library("browser") {
    }
  
    if (is_android) {
@@ -1085,7 +1085,7 @@ new file mode 100644
 diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browser/flags/android/chrome_feature_list.cc
 --- a/chrome/browser/flags/android/chrome_feature_list.cc
 +++ b/chrome/browser/flags/android/chrome_feature_list.cc
-@@ -274,6 +274,7 @@ const base::Feature* const kFeaturesExposedToJava[] = {
+@@ -282,6 +282,7 @@ const base::Feature* const kFeaturesExposedToJava[] = {
      &kPriceChangeModule,
      &kPwaRestoreUi,
      &kPwaRestoreUiAtStartup,
@@ -1096,7 +1096,7 @@ diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browse
 diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 --- a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 +++ b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
-@@ -348,6 +348,7 @@ public abstract class ChromeFeatureList {
+@@ -366,6 +366,7 @@ public abstract class ChromeFeatureList {
      public static final String INCOGNITO_REAUTHENTICATION_FOR_ANDROID =
              "IncognitoReauthenticationForAndroid";
      public static final String INCOGNITO_SCREENSHOT = "IncognitoScreenshot";
@@ -1116,7 +1116,7 @@ diff --git a/chrome/browser/omaha/android/BUILD.gn b/chrome/browser/omaha/androi
 +  ]
    deps = [
      ":update_proto_java",
-     "//base:base_cached_flags_java",
+     "//base:base_java",
 diff --git a/chrome/browser/omaha/android/java/src/org/chromium/chrome/browser/omaha/OmahaPrefUtils.java b/chrome/browser/omaha/android/java/src/org/chromium/chrome/browser/omaha/OmahaPrefUtils.java
 --- a/chrome/browser/omaha/android/java/src/org/chromium/chrome/browser/omaha/OmahaPrefUtils.java
 +++ b/chrome/browser/omaha/android/java/src/org/chromium/chrome/browser/omaha/OmahaPrefUtils.java
@@ -1672,7 +1672,7 @@ diff --git a/chrome/browser/safety_hub/android/java/src/org/chromium/chrome/brow
 diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chrome/browser/ui/android/strings/android_chrome_strings.grd
 --- a/chrome/browser/ui/android/strings/android_chrome_strings.grd
 +++ b/chrome/browser/ui/android/strings/android_chrome_strings.grd
-@@ -2385,6 +2385,12 @@ Your Google account may have other forms of browsing history like searches and a
+@@ -2406,6 +2406,12 @@ Your Google account may have other forms of browsing history like searches and a
        <message name="IDS_DEPRECATION_WARNING" desc="Warning about Chrome updates no longer being supported">
          Chrome updates are no longer supported for this version of Android
        </message>
@@ -1685,7 +1685,7 @@ diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chro
  
        <!-- Account management UI strings. -->
        <message name="IDS_ACCOUNT_MANAGEMENT_TITLE" desc="Header title for the account management screen. [CHAR_LIMIT=32]">
-@@ -4315,7 +4321,10 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>delete the Chrome d
+@@ -4360,7 +4366,10 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>delete the Chrome d
  
        <!-- Main menu items -->
        <message name="IDS_MENU_UPDATE" desc="Menu item for updating chrome. [CHAR_LIMIT=24]">
@@ -1697,7 +1697,7 @@ diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chro
        </message>
        <message name="IDS_MENU_UPDATE_SUMMARY_DEFAULT" desc="Summary string for update menu item explaining that a newer version of Chrome is available. [CHAR_LIMIT=30]">
          Newer version is available
-@@ -4326,6 +4335,18 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>delete the Chrome d
+@@ -4371,6 +4380,18 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>delete the Chrome d
        <message name="IDS_MENU_UPDATE_UNSUPPORTED_SUMMARY_DEFAULT" desc="Summary string for update menu item explaining that the Android version on the device is unsupported. [CHAR_LIMIT=30]">
          Android version is unsupported
        </message>

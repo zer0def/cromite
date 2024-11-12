@@ -166,7 +166,7 @@ diff --git a/components/content_settings/renderer/content_settings_agent_impl.h 
 diff --git a/third_party/blink/public/platform/web_content_settings_client.h b/third_party/blink/public/platform/web_content_settings_client.h
 --- a/third_party/blink/public/platform/web_content_settings_client.h
 +++ b/third_party/blink/public/platform/web_content_settings_client.h
-@@ -60,6 +60,18 @@ class WebContentSettingsClient {
+@@ -61,6 +61,18 @@ class WebContentSettingsClient {
      return enabled_per_settings;
    }
  
@@ -196,7 +196,7 @@ diff --git a/third_party/blink/renderer/core/frame/local_dom_window.cc b/third_p
  #include "third_party/blink/renderer/bindings/core/v8/binding_security.h"
  #include "third_party/blink/renderer/bindings/core/v8/capture_source_location.h"
  #include "third_party/blink/renderer/bindings/core/v8/isolated_world_csp.h"
-@@ -487,7 +488,10 @@ bool LocalDOMWindow::CanExecuteScripts(
+@@ -486,7 +487,10 @@ bool LocalDOMWindow::CanExecuteScripts(
      }
      return false;
    }

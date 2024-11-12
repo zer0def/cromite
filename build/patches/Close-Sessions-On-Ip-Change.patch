@@ -22,7 +22,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 diff --git a/components/network_session_configurator/browser/network_session_configurator.cc b/components/network_session_configurator/browser/network_session_configurator.cc
 --- a/components/network_session_configurator/browser/network_session_configurator.cc
 +++ b/components/network_session_configurator/browser/network_session_configurator.cc
-@@ -219,9 +219,8 @@ quic::QuicTagVector GetQuicClientConnectionOptions(
+@@ -220,9 +220,8 @@ quic::QuicTagVector GetQuicClientConnectionOptions(
  
  bool ShouldQuicCloseSessionsOnIpChange(
      const VariationParameters& quic_trial_params) {
@@ -34,7 +34,7 @@ diff --git a/components/network_session_configurator/browser/network_session_con
  }
  
  bool ShouldQuicGoAwaySessionsOnIpChange(
-@@ -302,10 +301,8 @@ bool ShouldQuicEstimateInitialRtt(
+@@ -303,10 +302,8 @@ bool ShouldQuicEstimateInitialRtt(
  
  bool ShouldQuicMigrateSessionsOnNetworkChangeV2(
      const VariationParameters& quic_trial_params) {

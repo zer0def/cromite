@@ -84,7 +84,7 @@ Enabled by default
 diff --git a/DEPS b/DEPS
 --- a/DEPS
 +++ b/DEPS
-@@ -488,6 +488,10 @@ vars = {
+@@ -482,6 +482,10 @@ vars = {
    # Three lines of non-changing comments so that
    # the commit queue can handle CLs rolling feed
    # and whatever else without interference from each other.
@@ -95,7 +95,7 @@ diff --git a/DEPS b/DEPS
    'highway_revision': '8295336dd70f1201d42c22ab5b0861de38cf8fbf',
    # Three lines of non-changing comments so that
    # the commit queue can handle CLs rolling ffmpeg
-@@ -1654,6 +1658,9 @@ deps = {
+@@ -1659,6 +1663,9 @@ deps = {
    'src/third_party/dawn':
      Var('dawn_git') + '/dawn.git' + '@' +  Var('dawn_revision'),
  
@@ -183,7 +183,7 @@ diff --git a/cc/base/devtools_instrumentation.h b/cc/base/devtools_instrumentati
 diff --git a/cc/paint/paint_image.h b/cc/paint/paint_image.h
 --- a/cc/paint/paint_image.h
 +++ b/cc/paint/paint_image.h
-@@ -40,7 +40,7 @@ class PaintImageGenerator;
+@@ -41,7 +41,7 @@ class PaintImageGenerator;
  class PaintWorkletInput;
  class TextureBacking;
  
@@ -195,7 +195,7 @@ diff --git a/cc/paint/paint_image.h b/cc/paint/paint_image.h
 diff --git a/cc/tiles/image_decode_cache.h b/cc/tiles/image_decode_cache.h
 --- a/cc/tiles/image_decode_cache.h
 +++ b/cc/tiles/image_decode_cache.h
-@@ -79,6 +79,8 @@ class CC_EXPORT ImageDecodeCache {
+@@ -78,6 +78,8 @@ class CC_EXPORT ImageDecodeCache {
      using ScopedImageType =
          devtools_instrumentation::ScopedImageDecodeTask::ImageType;
      switch (image_type) {
@@ -337,7 +337,7 @@ diff --git a/net/base/mime_util.cc b/net/base/mime_util.cc
      {"image/png", "png"},
      {"image/apng", "png,apng"},
      {"image/svg+xml", "svg,svgz"},
-@@ -660,6 +661,7 @@ static const char* const kStandardImageTypes[] = {"image/avif",
+@@ -661,6 +662,7 @@ static const char* const kStandardImageTypes[] = {"image/avif",
                                                    "image/gif",
                                                    "image/ief",
                                                    "image/jpeg",
@@ -375,7 +375,7 @@ diff --git a/net/base/mime_util_unittest.cc b/net/base/mime_util_unittest.cc
 diff --git a/third_party/.gitignore b/third_party/.gitignore
 --- a/third_party/.gitignore
 +++ b/third_party/.gitignore
-@@ -80,6 +80,7 @@
+@@ -82,6 +82,7 @@
  /libgifcodec
  /libjingle/source
  /libupnp
@@ -464,7 +464,7 @@ diff --git a/third_party/blink/common/mime_util/mime_util_unittest.cc b/third_pa
 diff --git a/third_party/blink/public/devtools_protocol/browser_protocol.pdl b/third_party/blink/public/devtools_protocol/browser_protocol.pdl
 --- a/third_party/blink/public/devtools_protocol/browser_protocol.pdl
 +++ b/third_party/blink/public/devtools_protocol/browser_protocol.pdl
-@@ -4541,6 +4541,7 @@ domain Emulation
+@@ -4542,6 +4542,7 @@ domain Emulation
    experimental type DisabledImageType extends string
      enum
        avif
@@ -605,7 +605,7 @@ diff --git a/third_party/blink/renderer/modules/webcodecs/image_decoder_fuzzer.c
 diff --git a/third_party/blink/renderer/platform/BUILD.gn b/third_party/blink/renderer/platform/BUILD.gn
 --- a/third_party/blink/renderer/platform/BUILD.gn
 +++ b/third_party/blink/renderer/platform/BUILD.gn
-@@ -2377,6 +2377,10 @@ source_set("blink_platform_unittests_sources") {
+@@ -2380,6 +2380,10 @@ source_set("blink_platform_unittests_sources") {
      sources += [ "text/locale_icu_test.cc" ]
    }
  
@@ -616,7 +616,7 @@ diff --git a/third_party/blink/renderer/platform/BUILD.gn b/third_party/blink/re
    sources += [ "testing/run_all_tests.cc" ]
  
    configs += [
-@@ -2423,6 +2427,7 @@ source_set("blink_platform_unittests_sources") {
+@@ -2426,6 +2430,7 @@ source_set("blink_platform_unittests_sources") {
      "//third_party/blink/renderer/platform/wtf",
      "//third_party/dawn/src/dawn/native",
      "//third_party/dawn/src/dawn/wire",
@@ -2215,7 +2215,7 @@ diff --git a/third_party/blink/tools/commit_stats/git-dirs.txt b/third_party/bli
 diff --git a/third_party/blink/web_tests/TestExpectations b/third_party/blink/web_tests/TestExpectations
 --- a/third_party/blink/web_tests/TestExpectations
 +++ b/third_party/blink/web_tests/TestExpectations
-@@ -4766,6 +4766,12 @@ crbug.com/1199522 http/tests/devtools/layers/layers-3d-view-hit-testing.js [ Fai
+@@ -4837,6 +4837,12 @@ crbug.com/1199522 http/tests/devtools/layers/layers-3d-view-hit-testing.js [ Fai
  # Started failing after rolling new version of check-layout-th.js
  css3/flexbox/perpendicular-writing-modes-inside-flex-item.html [ Failure ]
  
@@ -2231,7 +2231,7 @@ diff --git a/third_party/blink/web_tests/TestExpectations b/third_party/blink/we
 diff --git a/third_party/blink/web_tests/VirtualTestSuites b/third_party/blink/web_tests/VirtualTestSuites
 --- a/third_party/blink/web_tests/VirtualTestSuites
 +++ b/third_party/blink/web_tests/VirtualTestSuites
-@@ -481,6 +481,15 @@
+@@ -471,6 +471,15 @@
      "args": ["--enable-blink-features=FractionalScrollOffsets"],
      "expires": "Jun 1, 2025"
    },
@@ -2646,7 +2646,7 @@ new file mode 100644
 diff --git a/tools/metrics/histograms/enums.xml b/tools/metrics/histograms/enums.xml
 --- a/tools/metrics/histograms/enums.xml
 +++ b/tools/metrics/histograms/enums.xml
-@@ -20696,6 +20696,7 @@ from previous Chrome versions.
+@@ -20744,6 +20744,7 @@ from previous Chrome versions.
    <int value="188610022" label="NewMessageListView:enabled"/>
    <int value="189728101" label="FasterLocationReload:disabled"/>
    <int value="189777537" label="DisableInitialMostVisitedFadeIn:enabled"/>

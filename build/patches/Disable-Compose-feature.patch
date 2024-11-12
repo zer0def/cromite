@@ -11,8 +11,8 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 diff --git a/components/compose/core/browser/compose_features.cc b/components/compose/core/browser/compose_features.cc
 --- a/components/compose/core/browser/compose_features.cc
 +++ b/components/compose/core/browser/compose_features.cc
-@@ -108,4 +108,6 @@ BASE_FEATURE(kComposeAllowOnDeviceExecution,
-              "ComposeAllowOnDeviceExecution",
+@@ -108,4 +108,6 @@ BASE_FEATURE(kComposeUpfrontInputModes,
+              "ComposeUpfrontInputModes",
               base::FEATURE_DISABLED_BY_DEFAULT);
  
 +SET_CROMITE_FEATURE_DISABLED(kEnableCompose);

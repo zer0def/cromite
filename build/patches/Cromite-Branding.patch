@@ -94,7 +94,7 @@ diff --git a/build/config/BUILDCONFIG.gn b/build/config/BUILDCONFIG.gn
 diff --git a/chrome/android/java/AndroidManifest.xml b/chrome/android/java/AndroidManifest.xml
 --- a/chrome/android/java/AndroidManifest.xml
 +++ b/chrome/android/java/AndroidManifest.xml
-@@ -174,7 +174,7 @@ by a child template that "extends" this file.
+@@ -178,7 +178,7 @@ by a child template that "extends" this file.
        <application android:name="{% block application_name %}org.chromium.chrome.browser.base.SplitChromeApplication{% endblock %}"
          android:icon="@drawable/ic_launcher"
          android:roundIcon="@drawable/ic_launcher_round"
@@ -126,8 +126,8 @@ diff --git a/chrome/android/java/res/xml/legal_information_preferences.xml b/chr
 diff --git a/chrome/android/java/res/xml/main_preferences.xml b/chrome/android/java/res/xml/main_preferences.xml
 --- a/chrome/android/java/res/xml/main_preferences.xml
 +++ b/chrome/android/java/res/xml/main_preferences.xml
-@@ -18,20 +18,20 @@ for the previous order (main_preferences_legacy). -->
-         android:order="0"/>
+@@ -16,20 +16,20 @@ for the previous order (main_preferences_legacy). -->
+ <!-- TODO(crbug.com/364906215): Move SettingsPromoCardPreference here once SyncPromoPreference is removed -->
      <PreferenceCategory
          android:key="account_and_google_services_section"
 -        android:order="1"
@@ -9199,7 +9199,7 @@ diff --git a/chrome/app/extensions_strings.grdp b/chrome/app/extensions_strings.
 diff --git a/chrome/app/settings_strings.grdp b/chrome/app/settings_strings.grdp
 --- a/chrome/app/settings_strings.grdp
 +++ b/chrome/app/settings_strings.grdp
-@@ -285,7 +285,7 @@
+@@ -288,7 +288,7 @@
      Change
    </message>
    <message name="IDS_SETTINGS_WEB_STORE" desc="Sub-label about choosing something from the Chrome Web Store.">
@@ -13153,7 +13153,7 @@ e)fqMZZ`3a)Ds&5H<cfp<0000<MNUMnLSTYHt&Yn8
 diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -1880,6 +1880,7 @@ static_library("browser") {
+@@ -1849,6 +1849,7 @@ static_library("browser") {
      "//build:chromeos_buildflags",
      "//build/config/chromebox_for_meetings:buildflags",
      "//build/config/compiler:compiler_buildflags",
@@ -13184,7 +13184,7 @@ diff --git a/chrome/browser/prefs/chrome_pref_service_factory.cc b/chrome/browse
  #include "chrome/browser/browser_process.h"
  #include "chrome/browser/enterprise/signin/enterprise_signin_prefs.h"
  #include "chrome/browser/policy/chrome_browser_policy_connector.h"
-@@ -290,10 +291,7 @@ std::unique_ptr<ProfilePrefStoreManager> CreateProfilePrefStoreManager(
+@@ -294,10 +295,7 @@ std::unique_ptr<ProfilePrefStoreManager> CreateProfilePrefStoreManager(
  #endif
    std::string seed;
    CHECK(ui::ResourceBundle::HasSharedInstance());
@@ -13230,7 +13230,7 @@ diff --git a/chrome/browser/resources/settings/settings_menu/settings_menu.html 
        #menu {
          color: var(--google-grey-700);
          display: flex;
-@@ -164,7 +176,7 @@
+@@ -165,7 +177,7 @@
          </a>
          <a role="menuitem" id="about-menu" href="/help"
              class="cr-nav-menu-item">
@@ -13242,7 +13242,7 @@ diff --git a/chrome/browser/resources/settings/settings_menu/settings_menu.html 
 diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chrome/browser/ui/android/strings/android_chrome_strings.grd
 --- a/chrome/browser/ui/android/strings/android_chrome_strings.grd
 +++ b/chrome/browser/ui/android/strings/android_chrome_strings.grd
-@@ -2450,7 +2450,7 @@ Your Google account may have other forms of browsing history like searches and a
+@@ -2471,7 +2471,7 @@ Your Google account may have other forms of browsing history like searches and a
          About Chrome
        </message>
        <message name="IDS_LEGAL_INFORMATION_SUMMARY" desc="Summary for legal information" meaning="Android">
@@ -13287,7 +13287,7 @@ diff --git a/chrome/install_static/chromium_install_modes.cc b/chrome/install_st
 diff --git a/components/browser_ui/strings/android/browser_ui_strings.grd b/components/browser_ui/strings/android/browser_ui_strings.grd
 --- a/components/browser_ui/strings/android/browser_ui_strings.grd
 +++ b/components/browser_ui/strings/android/browser_ui_strings.grd
-@@ -983,7 +983,7 @@
+@@ -986,7 +986,7 @@
  
        <!-- Accessibility preferences -->
        <message name="IDS_PREFS_ACCESSIBILITY" desc="Title of Accessibility settings, which allows the user to change webpage font sizes. [CHAR_LIMIT=32]">
@@ -18924,7 +18924,7 @@ diff --git a/components/version_ui/resources/about_version_mobile.css b/componen
 diff --git a/content/child/runtime_features.cc b/content/child/runtime_features.cc
 --- a/content/child/runtime_features.cc
 +++ b/content/child/runtime_features.cc
-@@ -622,7 +622,7 @@ void ResolveInvalidConfigurations() {
+@@ -610,7 +610,7 @@ void ResolveInvalidConfigurations() {
         base::FeatureList::IsEnabled(
             features::kPrivacySandboxAdsAPIsM1Override)) &&
        !base::FeatureList::IsEnabled(blink::features::kFencedFrames)) {
@@ -18933,7 +18933,7 @@ diff --git a/content/child/runtime_features.cc b/content/child/runtime_features.
          << "Fenced frames cannot be enabled in this configuration. Use --"
          << switches::kEnableFeatures << "="
          << blink::features::kFencedFrames.name << " instead.";
-@@ -632,9 +632,8 @@ void ResolveInvalidConfigurations() {
+@@ -620,9 +620,8 @@ void ResolveInvalidConfigurations() {
    if (!base::FeatureList::IsEnabled(blink::features::kFencedFrames) &&
        base::FeatureList::IsEnabled(
            blink::features::kFencedFramesLocalUnpartitionedDataAccess)) {
@@ -18945,7 +18945,7 @@ diff --git a/content/child/runtime_features.cc b/content/child/runtime_features.
          << "Fenced frames must be enabled in order to enable local "
             "unpartitioned "
          << "data access. Use --" << switches::kEnableFeatures << "="
-@@ -647,7 +646,7 @@ void ResolveInvalidConfigurations() {
+@@ -635,7 +634,7 @@ void ResolveInvalidConfigurations() {
    // The Document API should be additionally gated by the
    // `kBrowsingTopicsDocumentAPI` feature.
    if (!base::FeatureList::IsEnabled(blink::features::kBrowsingTopics)) {
@@ -18954,7 +18954,7 @@ diff --git a/content/child/runtime_features.cc b/content/child/runtime_features.
          << "Topics cannot be enabled in this configuration. Use --"
          << switches::kEnableFeatures << "="
          << blink::features::kBrowsingTopics.name << " in addition.";
-@@ -667,7 +666,7 @@ void ResolveInvalidConfigurations() {
+@@ -655,7 +654,7 @@ void ResolveInvalidConfigurations() {
    }
  
    if (!base::FeatureList::IsEnabled(blink::features::kSharedStorageAPI)) {
@@ -18963,7 +18963,7 @@ diff --git a/content/child/runtime_features.cc b/content/child/runtime_features.
          << "SharedStorage cannot be enabled in this "
             "configuration. Use --"
          << switches::kEnableFeatures << "="
-@@ -677,7 +676,7 @@ void ResolveInvalidConfigurations() {
+@@ -665,7 +664,7 @@ void ResolveInvalidConfigurations() {
  
    if (!base::FeatureList::IsEnabled(blink::features::kSharedStorageAPIM118) ||
        !base::FeatureList::IsEnabled(blink::features::kSharedStorageAPI)) {
@@ -18972,7 +18972,7 @@ diff --git a/content/child/runtime_features.cc b/content/child/runtime_features.
          << "SharedStorage for M118+ cannot be enabled in this "
             "configuration. Use --"
          << switches::kEnableFeatures << "="
-@@ -688,7 +687,7 @@ void ResolveInvalidConfigurations() {
+@@ -676,7 +675,7 @@ void ResolveInvalidConfigurations() {
  
    if (!base::FeatureList::IsEnabled(blink::features::kSharedStorageAPIM125) ||
        !base::FeatureList::IsEnabled(blink::features::kSharedStorageAPI)) {
@@ -18981,7 +18981,7 @@ diff --git a/content/child/runtime_features.cc b/content/child/runtime_features.
          << "SharedStorage for M125+ cannot be enabled in this "
             "configuration. Use --"
          << switches::kEnableFeatures << "="
-@@ -699,7 +698,7 @@ void ResolveInvalidConfigurations() {
+@@ -687,7 +686,7 @@ void ResolveInvalidConfigurations() {
  
    if (!base::FeatureList::IsEnabled(
            attribution_reporting::features::kConversionMeasurement)) {
@@ -18990,7 +18990,7 @@ diff --git a/content/child/runtime_features.cc b/content/child/runtime_features.
          << "AttributionReporting cannot be enabled in this "
             "configuration. Use --"
          << switches::kEnableFeatures << "="
-@@ -712,8 +711,8 @@ void ResolveInvalidConfigurations() {
+@@ -700,8 +699,8 @@ void ResolveInvalidConfigurations() {
            attribution_reporting::features::kConversionMeasurement) ||
        !base::FeatureList::IsEnabled(
            network::features::kAttributionReportingCrossAppWeb)) {
@@ -19001,7 +19001,7 @@ diff --git a/content/child/runtime_features.cc b/content/child/runtime_features.
          << "AttributionReportingCrossAppWeb cannot be enabled in this "
             "configuration. Use --"
          << switches::kEnableFeatures << "="
-@@ -724,7 +723,7 @@ void ResolveInvalidConfigurations() {
+@@ -712,7 +711,7 @@ void ResolveInvalidConfigurations() {
    }
  
    if (!base::FeatureList::IsEnabled(blink::features::kInterestGroupStorage)) {

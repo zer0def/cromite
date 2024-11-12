@@ -94,7 +94,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ChromeInactivit
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java b/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java
-@@ -2259,6 +2259,8 @@ public class ChromeTabbedActivity extends ChromeActivity<ChromeActivityComponent
+@@ -2258,6 +2258,8 @@ public class ChromeTabbedActivity extends ChromeActivity<ChromeActivityComponent
          mInactivityTracker =
                  new ChromeInactivityTracker(
                          ChromePreferenceKeys.TABBED_ACTIVITY_LAST_BACKGROUNDED_TIME_MS_PREF);
@@ -106,8 +106,8 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedAct
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tasks/ReturnToChromeUtil.java b/chrome/android/java/src/org/chromium/chrome/browser/tasks/ReturnToChromeUtil.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/tasks/ReturnToChromeUtil.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/tasks/ReturnToChromeUtil.java
-@@ -19,9 +19,11 @@ import org.chromium.base.IntentUtils;
- import org.chromium.base.cached_flags.IntCachedFieldTrialParameter;
+@@ -18,9 +18,11 @@ import androidx.annotation.Nullable;
+ import org.chromium.base.IntentUtils;
  import org.chromium.base.metrics.RecordHistogram;
  import org.chromium.chrome.R;
 +import org.chromium.chrome.browser.BrowserRestartActivity;
@@ -149,7 +149,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tasks/ReturnToC
 diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browser/flags/android/chrome_feature_list.cc
 --- a/chrome/browser/flags/android/chrome_feature_list.cc
 +++ b/chrome/browser/flags/android/chrome_feature_list.cc
-@@ -307,6 +307,7 @@ const base::Feature* const kFeaturesExposedToJava[] = {
+@@ -315,6 +315,7 @@ const base::Feature* const kFeaturesExposedToJava[] = {
      &kSearchInCCT,
      &kSearchInCCTAlternateTapHandling,
      &kSearchResumptionModuleAndroid,
@@ -198,7 +198,7 @@ new file mode 100644
 diff --git a/chrome/browser/preferences/android/java/src/org/chromium/chrome/browser/preferences/ChromePreferenceKeys.java b/chrome/browser/preferences/android/java/src/org/chromium/chrome/browser/preferences/ChromePreferenceKeys.java
 --- a/chrome/browser/preferences/android/java/src/org/chromium/chrome/browser/preferences/ChromePreferenceKeys.java
 +++ b/chrome/browser/preferences/android/java/src/org/chromium/chrome/browser/preferences/ChromePreferenceKeys.java
-@@ -788,6 +788,8 @@ public final class ChromePreferenceKeys {
+@@ -787,6 +787,8 @@ public final class ChromePreferenceKeys {
  
      public static final String TABBED_ACTIVITY_LAST_BACKGROUNDED_TIME_MS_PREF =
              "ChromeTabbedActivity.BackgroundTimeMs";

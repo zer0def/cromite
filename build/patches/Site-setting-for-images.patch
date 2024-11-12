@@ -262,7 +262,7 @@ diff --git a/components/content_settings/core/browser/content_settings_registry.
 @@ -101,7 +101,7 @@ void ContentSettingsRegistry::Init() {
              kChromeUIUntrustedScheme},
             /*valid_settings=*/{CONTENT_SETTING_ALLOW, CONTENT_SETTING_BLOCK},
-            WebsiteSettingsInfo::TOP_ORIGIN_WITH_RESOURCE_EXCEPTIONS_SCOPE,
+            WebsiteSettingsInfo::TOP_ORIGIN_ONLY_SCOPE,
 -           WebsiteSettingsRegistry::DESKTOP,
 +           WebsiteSettingsRegistry::DESKTOP | WebsiteSettingsRegistry::PLATFORM_ANDROID,
             ContentSettingsInfo::INHERIT_IN_INCOGNITO,
@@ -308,7 +308,7 @@ diff --git a/components/content_settings/renderer/content_settings_agent_impl.h 
 diff --git a/third_party/blink/public/platform/web_content_settings_client.h b/third_party/blink/public/platform/web_content_settings_client.h
 --- a/third_party/blink/public/platform/web_content_settings_client.h
 +++ b/third_party/blink/public/platform/web_content_settings_client.h
-@@ -55,6 +55,11 @@ class WebContentSettingsClient {
+@@ -56,6 +56,11 @@ class WebContentSettingsClient {
      return enabled_per_settings;
    }
  
@@ -424,7 +424,7 @@ diff --git a/third_party/blink/renderer/core/loader/frame_fetch_context.h b/thir
 diff --git a/third_party/blink/renderer/core/page/page.cc b/third_party/blink/renderer/core/page/page.cc
 --- a/third_party/blink/renderer/core/page/page.cc
 +++ b/third_party/blink/renderer/core/page/page.cc
-@@ -1030,9 +1030,8 @@ void Page::SettingsChanged(ChangeType change_type) {
+@@ -1039,9 +1039,8 @@ void Page::SettingsChanged(ChangeType change_type) {
        for (Frame* frame = MainFrame(); frame;
             frame = frame->Tree().TraverseNext()) {
          if (auto* local_frame = DynamicTo<LocalFrame>(frame)) {

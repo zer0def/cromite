@@ -71,8 +71,8 @@ diff --git a/ui/views/win/pen_id_handler.cc b/ui/views/win/pen_id_handler.cc
  #include "base/no_destructor.h"
  #include "base/strings/utf_string_conversions.h"
  #include "base/task/thread_pool.h"
-@@ -78,6 +79,10 @@ class PenIdStatics {
- bool PenIdStatics::skip_initialization_ = false;
+@@ -57,6 +58,10 @@ class PenIdStatics {
+ };
  
  bool PenDeviceApiSupported() {
 +  if (!base::FeatureList::IsEnabled(
