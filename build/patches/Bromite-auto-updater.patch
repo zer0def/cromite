@@ -672,7 +672,7 @@ new file mode 100644
 diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -2517,6 +2517,12 @@ static_library("browser") {
+@@ -2520,6 +2520,12 @@ static_library("browser") {
    }
  
    if (is_android) {

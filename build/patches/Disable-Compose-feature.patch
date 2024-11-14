@@ -13,7 +13,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -8386,6 +8386,12 @@ static_library("browser") {
+@@ -8389,6 +8389,12 @@ static_library("browser") {
      deps += [ "//components/segmentation_platform/internal:optimization_guide_segmentation_handler" ]
    }
  
@@ -26,7 +26,7 @@ diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
    if (enable_compose) {
      sources += [
        "compose/chrome_compose_client.cc",
-@@ -8401,7 +8407,6 @@ static_library("browser") {
+@@ -8404,7 +8410,6 @@ static_library("browser") {
      ]
  
      deps += [
@@ -34,7 +34,7 @@ diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
        "//chrome/common/compose",
        "//chrome/common/compose:mojo_bindings",
        "//components/autofill/content/browser:browser",
-@@ -8842,7 +8847,7 @@ source_set("font_pref") {
+@@ -8845,7 +8850,7 @@ source_set("font_pref") {
    deps = [ "//chrome/common" ]
  }
  

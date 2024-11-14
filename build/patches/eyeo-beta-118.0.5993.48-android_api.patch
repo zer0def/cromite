@@ -132,7 +132,7 @@ diff --git a/chrome/android/BUILD.gn b/chrome/android/BUILD.gn
 diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -2553,6 +2553,18 @@ static_library("browser") {
+@@ -2556,6 +2556,18 @@ static_library("browser") {
    }
  
    if (is_android) {

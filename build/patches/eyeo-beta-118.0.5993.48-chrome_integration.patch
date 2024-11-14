@@ -159,7 +159,7 @@ diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
      "after_startup_task_utils.cc",
      "after_startup_task_utils.h",
      "app_mode/app_mode_utils.cc",
-@@ -1994,6 +2017,9 @@ static_library("browser") {
+@@ -1997,6 +2020,9 @@ static_library("browser") {
      "//chrome/common/notifications",
      "//chrome/installer/util:with_no_strings",
      "//chrome/services/speech/buildflags",

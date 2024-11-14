@@ -371,7 +371,7 @@ diff --git a/chrome/browser/autofill/android/java/src/org/chromium/chrome/browse
 diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descriptions.cc
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -795,12 +795,6 @@ const char kAutofillVcnEnrollRequestTimeoutDescription[] =
+@@ -805,12 +805,6 @@ const char kAutofillVcnEnrollRequestTimeoutDescription[] =
      "VCN enrollment request. Upon timeout, the client will terminate the VCN "
      "enrollment UI, but the request may still succeed server-side.";
  
@@ -387,7 +387,7 @@ diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descripti
 diff --git a/chrome/browser/flag_descriptions.h b/chrome/browser/flag_descriptions.h
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -454,9 +454,6 @@ extern const char kAutofillUpstreamUpdatedUiDescription[];
+@@ -457,9 +457,6 @@ extern const char kAutofillUpstreamUpdatedUiDescription[];
  extern const char kAutofillVcnEnrollRequestTimeoutName[];
  extern const char kAutofillVcnEnrollRequestTimeoutDescription[];
  

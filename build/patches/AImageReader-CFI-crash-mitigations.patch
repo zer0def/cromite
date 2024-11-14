@@ -90,7 +90,7 @@ diff --git a/base/android/android_image_reader_compat.h b/base/android/android_i
 diff --git a/chrome/browser/flag-metadata.json b/chrome/browser/flag-metadata.json
 --- a/chrome/browser/flag-metadata.json
 +++ b/chrome/browser/flag-metadata.json
-@@ -3401,6 +3401,10 @@
+@@ -3408,6 +3408,10 @@
      "name": "enable-identity-in-auth-error",
      "owners": [ "jlebel@chromium.org", "chrome-signin-team@google.com" ],
      "expiry_milestone": 135

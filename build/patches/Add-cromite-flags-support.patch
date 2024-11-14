@@ -1911,7 +1911,7 @@ diff --git a/net/base/features.h b/net/base/features.h
 diff --git a/services/network/public/cpp/features.cc b/services/network/public/cpp/features.cc
 --- a/services/network/public/cpp/features.cc
 +++ b/services/network/public/cpp/features.cc
-@@ -489,4 +489,5 @@ BASE_FEATURE(kStorageAccessHeadersTrial,
+@@ -515,4 +515,5 @@ BASE_FEATURE(kStorageAccessHeadersTrial,
               "StorageAccessHeadersTrial",
               base::FEATURE_ENABLED_BY_DEFAULT);
  
@@ -1920,7 +1920,7 @@ diff --git a/services/network/public/cpp/features.cc b/services/network/public/c
 diff --git a/services/network/public/cpp/features.h b/services/network/public/cpp/features.h
 --- a/services/network/public/cpp/features.h
 +++ b/services/network/public/cpp/features.h
-@@ -195,6 +195,7 @@ COMPONENT_EXPORT(NETWORK_CPP) BASE_DECLARE_FEATURE(kStorageAccessHeaders);
+@@ -204,6 +204,7 @@ COMPONENT_EXPORT(NETWORK_CPP) BASE_DECLARE_FEATURE(kStorageAccessHeaders);
  // Enables the Storage Access Headers Origin Trial.
  COMPONENT_EXPORT(NETWORK_CPP) BASE_DECLARE_FEATURE(kStorageAccessHeadersTrial);
  

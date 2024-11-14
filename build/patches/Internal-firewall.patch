@@ -59,7 +59,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -2423,6 +2423,7 @@ static_library("browser") {
+@@ -2426,6 +2426,7 @@ static_library("browser") {
      "//third_party/ungoogled:switches",
      "//services/device/public/mojom",
      "//services/device/public/mojom:usb",
@@ -289,7 +289,7 @@ new file mode 100644
 diff --git a/net/BUILD.gn b/net/BUILD.gn
 --- a/net/BUILD.gn
 +++ b/net/BUILD.gn
-@@ -1101,6 +1101,7 @@ component("net") {
+@@ -1103,6 +1103,7 @@ component("net") {
      "//components/miracle_parameter/common",
      "//components/network_time/time_tracker",
      "//net/http:transport_security_state_generated_files",
