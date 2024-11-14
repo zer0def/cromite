@@ -17,13 +17,14 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../core/html/parser/html_srcset_parser.cc    |  2 +-
  .../core/inspector/inspector_network_agent.cc |  2 +-
  .../core/inspector/inspector_page_agent.cc    |  4 +-
+ .../core/loader/frame_fetch_context.cc        |  2 +
  .../renderer/core/loader/image_loader.cc      |  3 +-
  .../core/loader/worker_fetch_context.cc       |  3 ++
  .../platform/loader/fetch/memory_cache.cc     |  8 +---
  .../platform/loader/fetch/memory_cache.h      |  5 +--
  .../platform/loader/fetch/resource_fetcher.cc | 41 ++++++++++++++++---
  .../platform/loader/fetch/resource_fetcher.h  |  7 +++-
- 9 files changed, 54 insertions(+), 21 deletions(-)
+ 10 files changed, 56 insertions(+), 21 deletions(-)
 
 diff --git a/third_party/blink/renderer/core/html/parser/html_srcset_parser.cc b/third_party/blink/renderer/core/html/parser/html_srcset_parser.cc
 --- a/third_party/blink/renderer/core/html/parser/html_srcset_parser.cc
@@ -64,6 +65,18 @@ diff --git a/third_party/blink/renderer/core/inspector/inspector_page_agent.cc b
    }
    if (!cached_resource)
      cached_resource = loader->ResourceForURL(url);
+diff --git a/third_party/blink/renderer/core/loader/frame_fetch_context.cc b/third_party/blink/renderer/core/loader/frame_fetch_context.cc
+--- a/third_party/blink/renderer/core/loader/frame_fetch_context.cc
++++ b/third_party/blink/renderer/core/loader/frame_fetch_context.cc
+@@ -852,6 +852,8 @@ void FrameFetchContext::PopulateResourceRequestBeforeCacheAccess(
+   if (document_loader_->ForceFetchCacheMode()) {
+     request.SetCacheMode(*document_loader_->ForceFetchCacheMode());
+   }
++  if (!request.TopFrameOrigin())
++    request.SetTopFrameOrigin(GetTopFrameOrigin());
+   // ResourceFetcher::DidLoadResourceFromMemoryCache() may call out in such a
+   // way that the AttributionSupport is needed.
+   if (const AttributionSrcLoader* attribution_src_loader =
 diff --git a/third_party/blink/renderer/core/loader/image_loader.cc b/third_party/blink/renderer/core/loader/image_loader.cc
 --- a/third_party/blink/renderer/core/loader/image_loader.cc
 +++ b/third_party/blink/renderer/core/loader/image_loader.cc

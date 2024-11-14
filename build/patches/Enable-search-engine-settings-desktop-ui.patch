@@ -28,7 +28,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  chrome/browser/search/background/BUILD.gn     |   4 +-
  .../browser/search_engines/android/BUILD.gn   |   2 +
  .../java/res/layout/search_engine_layout.xml  |  25 ++
- .../settings/SearchEngineSettings.java        |  20 ++
+ .../settings/SearchEngineSettings.java        |  21 ++
  chrome/browser/ui/BUILD.gn                    |  18 ++
  .../edit_search_engine_controller.cc          |   8 +-
  .../edit_search_engine_controller.h           |   6 +-
@@ -36,7 +36,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../keyword_editor_controller.h               |   6 +-
  .../template_url_table_model.cc               |   9 +-
  .../search_engines/template_url_table_model.h |   6 +-
- .../webui/chrome_web_ui_controller_factory.cc |   7 +
+ .../webui/chrome_web_ui_controller_factory.cc |   7 +-
  chrome/browser/ui/webui/favicon_source.cc     |  18 ++
  chrome/browser/ui/webui/favicon_source.h      |   2 +
  .../webui/settings/search_engines_handler.cc  |  28 +-
@@ -57,20 +57,24 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  content/browser/webui/web_ui_impl.cc          |  14 +-
  content/browser/webui/web_ui_impl.h           |   3 +
  content/public/browser/web_ui.h               |   1 +
- third_party/polymer/v3_0/BUILD.gn             |   6 +
+ third_party/polymer/v3_0/BUILD.gn             |  15 +-
  ui/base/template_expressions.cc               |  21 +-
  ui/webui/BUILD.gn                             |   7 +
- ui/webui/resources/BUILD.gn                   |  10 +
+ ui/webui/resources/BUILD.gn                   |  20 ++
  .../customize_color_scheme_mode/BUILD.gn      |   2 +-
  .../cr_components/help_bubble/BUILD.gn        |   2 +-
+ .../cr_components/localized_link/BUILD.gn     |   2 +-
+ .../cr_components/managed_dialog/BUILD.gn     |   2 +-
+ .../cr_components/managed_footnote/BUILD.gn   |   2 +-
  .../cr_components/theme_color_picker/BUILD.gn |   2 +-
+ ui/webui/resources/cr_elements/BUILD.gn       |   4 +-
  .../cr_elements/cr_dialog/cr_dialog.css       |   2 +-
  .../resources/cr_elements/cr_shared_vars.css  |   4 +
  ui/webui/resources/css/BUILD.gn               |   2 +-
  ui/webui/resources/images/BUILD.gn            |   2 +-
  ui/webui/resources/js/BUILD.gn                |   2 +-
  ui/webui/resources/js/load_time_data.ts       |  17 +-
- 63 files changed, 1095 insertions(+), 62 deletions(-)
+ 67 files changed, 1118 insertions(+), 69 deletions(-)
  create mode 100644 chrome/app/settings_strings_android.grdp
  create mode 100644 chrome/browser/search_engines/android/java/res/layout/search_engine_layout.xml
  create mode 100644 chrome/browser/ui/webui/settings/settings_localized_strings_provider_android.cc
@@ -827,12 +831,12 @@ diff --git a/chrome/browser/search_engines/android/java/src/org/chromium/chrome/
  import org.chromium.chrome.browser.search_engines.R;
  import org.chromium.chrome.browser.search_engines.TemplateUrlServiceFactory;
  import org.chromium.chrome.browser.settings.ProfileDependentSetting;
-+import org.chromium.chrome.browser.settings.SettingsLauncherFactory;
-+import org.chromium.components.browser_ui.settings.SettingsLauncher;
++import org.chromium.chrome.browser.settings.SettingsNavigationFactory;
++import org.chromium.components.browser_ui.settings.SettingsNavigation;
  import org.chromium.components.browser_ui.settings.EmbeddableSettingsPage;
  import org.chromium.components.search_engines.TemplateUrlService;
  
-@@ -57,6 +63,20 @@ public class SearchEngineSettings extends ListFragment
+@@ -57,6 +63,21 @@ public class SearchEngineSettings extends ListFragment
          return mPageTitle;
      }
  
@@ -843,8 +847,9 @@ diff --git a/chrome/browser/search_engines/android/java/src/org/chromium/chrome/
 +
 +        TextView selectButton = (TextView) v.findViewById(R.id.open_desktop_ui);
 +        selectButton.setOnClickListener(view -> {
-+            SettingsLauncher settingsLauncher = SettingsLauncherFactory.createSettingsLauncher();
-+            settingsLauncher.launchUrlInCustomTab(getContext(),
++            SettingsNavigation settingsNavigation =
++                    SettingsNavigationFactory.createSettingsNavigation();
++            settingsNavigation.launchUrlInCustomTab(getContext(),
 +                "chrome://settings/searchEngines");
 +        });
 +        return v;
@@ -1080,18 +1085,18 @@ diff --git a/chrome/browser/ui/webui/chrome_web_ui_controller_factory.cc b/chrom
  #else  // BUILDFLAG(IS_ANDROID)
  #include "chrome/browser/media/router/discovery/access_code/access_code_cast_feature.h"
  #include "chrome/browser/ui/ui_features.h"
-@@ -522,6 +524,11 @@ base::RefCountedMemory* ChromeWebUIControllerFactory::GetFaviconResourceBytes(
-     return settings_utils::GetFaviconResourceBytes(scale_factor);
- #endif  // BUILDFLAG(IS_CHROMEOS_ASH)
- 
+@@ -270,7 +272,10 @@ WebUIFactoryFunction GetWebUIFactoryFunction(WebUI* web_ui,
+   if (url.host_piece() == user_scripts::kChromeUIUserScriptsHost)
+     return &NewWebUI<user_scripts::UserScriptsUI>;
+ #endif
+-
 +#if BUILDFLAG(IS_ANDROID)
 +  if (url.host_piece() == chrome::kChromeUISettingsHost)
 +    return &NewWebUI<settings::SettingsUI>;
 +#endif  // BUILDFLAG(IS_ANDROID)
-+
-   return nullptr;
- }
- 
+ #if !BUILDFLAG(IS_ANDROID)
+   if (url.host_piece() == chrome::kChromeUINewTabHost) {
+     // The URL chrome://newtab/ can be either a virtual or a real URL,
 diff --git a/chrome/browser/ui/webui/favicon_source.cc b/chrome/browser/ui/webui/favicon_source.cc
 --- a/chrome/browser/ui/webui/favicon_source.cc
 +++ b/chrome/browser/ui/webui/favicon_source.cc
@@ -2028,7 +2033,16 @@ diff --git a/content/public/browser/web_ui.h b/content/public/browser/web_ui.h
 diff --git a/third_party/polymer/v3_0/BUILD.gn b/third_party/polymer/v3_0/BUILD.gn
 --- a/third_party/polymer/v3_0/BUILD.gn
 +++ b/third_party/polymer/v3_0/BUILD.gn
-@@ -31,6 +31,12 @@ js_files = [
+@@ -8,7 +8,7 @@ import("//tools/typescript/ts_library.gni")
+ import("//ui/webui/resources/tools/generate_grd.gni")
+ import("//ui/webui/resources/tools/minify_js.gni")
+ 
+-assert(!is_android && !is_ios)
++#assert(!is_android && !is_ios)
+ 
+ js_files = [
+   "iron-a11y-keys-behavior/iron-a11y-keys-behavior.js",
+@@ -31,12 +31,25 @@ js_files = [
    "paper-spinner/paper-spinner-styles.js",
  ]
  
@@ -2041,6 +2055,19 @@ diff --git a/third_party/polymer/v3_0/BUILD.gn b/third_party/polymer/v3_0/BUILD.
  # Also needed on LaCros for Print Preview. Remove once CrOS Print Preview
  # launches.
  if (is_chromeos) {
+   js_files += [ "iron-fit-behavior/iron-fit-behavior.js" ]
+ }
+ 
++if (is_android) {
++  js_files += [
++    "iron-icon/iron-icon.js",
++    "iron-iconset-svg/iron-iconset-svg.js",
++  ]
++}
++
+ if (is_chromeos_ash) {
+   js_files += [
+     "iron-a11y-announcer/iron-a11y-announcer.js",
 diff --git a/ui/base/template_expressions.cc b/ui/base/template_expressions.cc
 --- a/ui/base/template_expressions.cc
 +++ b/ui/base/template_expressions.cc
@@ -2101,23 +2128,33 @@ diff --git a/ui/webui/BUILD.gn b/ui/webui/BUILD.gn
 diff --git a/ui/webui/resources/BUILD.gn b/ui/webui/resources/BUILD.gn
 --- a/ui/webui/resources/BUILD.gn
 +++ b/ui/webui/resources/BUILD.gn
-@@ -76,6 +76,16 @@ generate_grd("build_grd") {
-       "$target_gen_dir/cr_components/managed_footnote/resources.grdp",
-       "$target_gen_dir/cr_components/most_visited/resources.grdp",
-     ]
-+    if (is_android) {
-+      public_deps -= [
-+        "cr_components/app_management:build_grdp",
-+        "cr_components/most_visited:build_grdp",
-+      ]
-+      grdp_files -= [
-+        "$target_gen_dir/cr_components/app_management/resources.grdp",
-+        "$target_gen_dir/cr_components/most_visited/resources.grdp",
-+      ]
-+    }
+@@ -51,6 +51,26 @@ generate_grd("build_grd") {
+     "$target_gen_dir/mojo/resources.grdp",
+   ]
  
-     if (use_blink) {
-       if (use_nss_certs || chrome_root_store_cert_management_ui) {
++  if (is_android) {
++    public_deps += [
++      "cr_components/customize_color_scheme_mode:build_grdp",
++      "cr_components/help_bubble:build_grdp",
++      "cr_components/localized_link:build_grdp",
++      "cr_components/managed_dialog:build_grdp",
++      "cr_components/managed_footnote:build_grdp",
++      "cr_components/theme_color_picker:build_grdp",
++      "//third_party/polymer/v3_0:build_grdp",
++    ]
++    grdp_files += [
++      "$target_gen_dir/cr_components/customize_color_scheme_mode/resources.grdp",
++      "$target_gen_dir/cr_components/help_bubble/resources.grdp",
++      "$target_gen_dir/cr_components/localized_link/resources.grdp",
++      "$target_gen_dir/cr_components/managed_dialog/resources.grdp",
++      "$target_gen_dir/cr_components/managed_footnote/resources.grdp",
++      "$target_gen_dir/cr_components/theme_color_picker/resources.grdp",
++      "$root_gen_dir/third_party/polymer/v3_0/polymer_3_0_resources.grdp",
++    ]
++  }
+   if (!is_android && !is_ios) {
+     public_deps += [
+       "cr_components/app_management:build_grdp",
 diff --git a/ui/webui/resources/cr_components/customize_color_scheme_mode/BUILD.gn b/ui/webui/resources/cr_components/customize_color_scheme_mode/BUILD.gn
 --- a/ui/webui/resources/cr_components/customize_color_scheme_mode/BUILD.gn
 +++ b/ui/webui/resources/cr_components/customize_color_scheme_mode/BUILD.gn
@@ -2142,6 +2179,42 @@ diff --git a/ui/webui/resources/cr_components/help_bubble/BUILD.gn b/ui/webui/re
  
  mojom("mojo_bindings") {
    sources = [ "help_bubble.mojom" ]
+diff --git a/ui/webui/resources/cr_components/localized_link/BUILD.gn b/ui/webui/resources/cr_components/localized_link/BUILD.gn
+--- a/ui/webui/resources/cr_components/localized_link/BUILD.gn
++++ b/ui/webui/resources/cr_components/localized_link/BUILD.gn
+@@ -4,7 +4,7 @@
+ 
+ import("//ui/webui/resources/tools/build_webui.gni")
+ 
+-assert(!is_android && !is_ios)
++#assert(!is_android && !is_ios)
+ 
+ build_webui("build") {
+   grd_prefix = "cr_components_localized_link"
+diff --git a/ui/webui/resources/cr_components/managed_dialog/BUILD.gn b/ui/webui/resources/cr_components/managed_dialog/BUILD.gn
+--- a/ui/webui/resources/cr_components/managed_dialog/BUILD.gn
++++ b/ui/webui/resources/cr_components/managed_dialog/BUILD.gn
+@@ -4,7 +4,7 @@
+ 
+ import("//ui/webui/resources/tools/build_webui.gni")
+ 
+-assert(!is_android && !is_ios)
++#assert(!is_android && !is_ios)
+ 
+ build_webui("build") {
+   grd_prefix = "cr_components_managed_dialog"
+diff --git a/ui/webui/resources/cr_components/managed_footnote/BUILD.gn b/ui/webui/resources/cr_components/managed_footnote/BUILD.gn
+--- a/ui/webui/resources/cr_components/managed_footnote/BUILD.gn
++++ b/ui/webui/resources/cr_components/managed_footnote/BUILD.gn
+@@ -4,7 +4,7 @@
+ 
+ import("//ui/webui/resources/tools/build_webui.gni")
+ 
+-assert(!is_android && !is_ios)
++#assert(!is_android && !is_ios)
+ 
+ build_webui("build") {
+   grd_prefix = "cr_components_managed_footnote"
 diff --git a/ui/webui/resources/cr_components/theme_color_picker/BUILD.gn b/ui/webui/resources/cr_components/theme_color_picker/BUILD.gn
 --- a/ui/webui/resources/cr_components/theme_color_picker/BUILD.gn
 +++ b/ui/webui/resources/cr_components/theme_color_picker/BUILD.gn
@@ -2154,6 +2227,27 @@ diff --git a/ui/webui/resources/cr_components/theme_color_picker/BUILD.gn b/ui/w
  
  mojom("mojom") {
    sources = [ "theme_color_picker.mojom" ]
+diff --git a/ui/webui/resources/cr_elements/BUILD.gn b/ui/webui/resources/cr_elements/BUILD.gn
+--- a/ui/webui/resources/cr_elements/BUILD.gn
++++ b/ui/webui/resources/cr_elements/BUILD.gn
+@@ -37,7 +37,7 @@ build_webui("build") {
+     "cr_tabs/cr_tabs.css",
+   ]
+ 
+-  if (!is_android && !is_ios) {
++  if (!is_ios) {
+     web_component_files += [ "cr_a11y_announcer/cr_a11y_announcer.ts" ]
+ 
+     icons_html_files = [
+@@ -233,7 +233,7 @@ build_webui("build") {
+     "../js:build_ts",
+     "//third_party/lit/v3_0:build_ts",
+   ]
+-  if (!is_android && !is_ios) {
++  if (!is_ios) {
+     ts_deps += [ "//third_party/polymer/v3_0:library" ]
+   }
+   ts_definitions = [
 diff --git a/ui/webui/resources/cr_elements/cr_dialog/cr_dialog.css b/ui/webui/resources/cr_elements/cr_dialog/cr_dialog.css
 --- a/ui/webui/resources/cr_elements/cr_dialog/cr_dialog.css
 +++ b/ui/webui/resources/cr_elements/cr_dialog/cr_dialog.css

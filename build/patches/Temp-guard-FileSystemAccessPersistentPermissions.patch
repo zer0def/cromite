@@ -4,8 +4,8 @@ Subject: Temp guard FileSystemAccessPersistentPermissions
 
 ---
  .../chrome_file_system_access_permission_context.cc           | 4 ++--
- .../browser/file_system_access/file_system_access_features.cc | 4 ++++
- 2 files changed, 6 insertions(+), 2 deletions(-)
+ .../browser/file_system_access/file_system_access_features.cc | 1 +
+ 2 files changed, 3 insertions(+), 2 deletions(-)
 
 diff --git a/chrome/browser/file_system_access/chrome_file_system_access_permission_context.cc b/chrome/browser/file_system_access/chrome_file_system_access_permission_context.cc
 --- a/chrome/browser/file_system_access/chrome_file_system_access_permission_context.cc
@@ -31,13 +31,10 @@ diff --git a/chrome/browser/file_system_access/chrome_file_system_access_permiss
 diff --git a/chrome/browser/file_system_access/file_system_access_features.cc b/chrome/browser/file_system_access/file_system_access_features.cc
 --- a/chrome/browser/file_system_access/file_system_access_features.cc
 +++ b/chrome/browser/file_system_access/file_system_access_features.cc
-@@ -23,4 +23,8 @@ BASE_FEATURE(kFileSystemAccessSymbolicLinkCheck,
+@@ -23,4 +23,5 @@ BASE_FEATURE(kFileSystemAccessSymbolicLinkCheck,
               "FileSystemAccessSymbolicLinkCheck",
               base::FEATURE_ENABLED_BY_DEFAULT);
  
-+#if BUILDFLAG(IS_WIN)
-+SET_CROMITE_FEATURE_ENABLED(kFileSystemAccessLocalUNCPathBlock);
-+#endif
 +SET_CROMITE_FEATURE_DISABLED(kFileSystemAccessPersistentPermissions);
  }  // namespace features
 --

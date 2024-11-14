@@ -40,7 +40,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  chrome/browser/profiles/profile_manager.cc    |  11 +
  chrome/browser/profiles/renderer_updater.cc   |  19 +-
  chrome/browser/profiles/renderer_updater.h    |   3 +
- .../webui/chrome_web_ui_controller_factory.cc |   5 +
+ .../webui/chrome_web_ui_controller_factory.cc |   6 +
  chrome/chrome_paks.gni                        |   2 +
  chrome/common/renderer_configuration.mojom    |   1 +
  chrome/renderer/BUILD.gn                      |   6 +
@@ -74,7 +74,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../user-script-ui/user-scripts-ui.js         |   9 +
  .../browser/ui/user_scripts_ui.cc             | 146 ++++
  .../user_scripts/browser/ui/user_scripts_ui.h |  37 +
- .../browser/user_script_loader.cc             | 704 +++++++++++++++
+ .../browser/user_script_loader.cc             | 702 +++++++++++++++
  .../user_scripts/browser/user_script_loader.h | 168 ++++
  .../browser/user_script_pref_info.cc          |  34 +
  .../browser/user_script_pref_info.h           |  72 ++
@@ -135,7 +135,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../Experimental-user-scripts-support.inc     |  13 +
  ipc/ipc_message_start.h                       |   1 +
  tools/gritsettings/resource_ids.spec          |   6 +
- 108 files changed, 9483 insertions(+), 2 deletions(-)
+ 108 files changed, 9482 insertions(+), 2 deletions(-)
  create mode 100644 components/user_scripts/README.md
  create mode 100755 components/user_scripts/android/BUILD.gn
  create mode 100644 components/user_scripts/android/java/res/layout/accept_script_item.xml
@@ -509,17 +509,18 @@ diff --git a/chrome/browser/ui/webui/chrome_web_ui_controller_factory.cc b/chrom
  #include "content/public/browser/web_contents.h"
  #include "content/public/browser/web_ui.h"
  #include "content/public/common/content_client.h"
-@@ -262,6 +263,10 @@ WebUIFactoryFunction GetWebUIFactoryFunction(WebUI* web_ui,
-       history_clusters_internals::kChromeUIHistoryClustersInternalsHost) {
-     return &NewWebUI<HistoryClustersInternalsUI>;
+@@ -265,6 +266,11 @@ WebUIFactoryFunction GetWebUIFactoryFunction(WebUI* web_ui,
+   if (url.host_piece() == chrome::kChromeUIProxyConfigHost) {
+     return &NewWebUI<ProxyConfigUI>;
    }
 +#if BUILDFLAG(IS_ANDROID)
 +  if (url.host_piece() == user_scripts::kChromeUIUserScriptsHost)
 +    return &NewWebUI<user_scripts::UserScriptsUI>;
 +#endif
- 
++
  #if !BUILDFLAG(IS_ANDROID)
    if (url.host_piece() == chrome::kChromeUINewTabHost) {
+     // The URL chrome://newtab/ can be either a virtual or a real URL,
 diff --git a/chrome/chrome_paks.gni b/chrome/chrome_paks.gni
 --- a/chrome/chrome_paks.gni
 +++ b/chrome/chrome_paks.gni
@@ -1262,9 +1263,8 @@ new file mode 100755
 +import org.chromium.base.IntentUtils;
 +
 +import org.chromium.chrome.browser.IntentHandler;
-+import org.chromium.chrome.browser.settings.SettingsLauncherFactory;
-+import org.chromium.chrome.browser.settings.SettingsLauncherImpl;
-+import org.chromium.components.browser_ui.settings.SettingsLauncher;
++import org.chromium.chrome.browser.settings.SettingsNavigationFactory;
++import org.chromium.components.browser_ui.settings.SettingsNavigation;
 +
 +import org.chromium.components.user_scripts.UserScriptsPreferences;
 +import org.chromium.components.user_scripts.UserScriptsBridge;
@@ -1300,8 +1300,9 @@ new file mode 100755
 +
 +        if (visibleName.toUpperCase().endsWith(".USER.JS") == false) return false;
 +
-+        SettingsLauncher settingsLauncher = SettingsLauncherFactory.createSettingsLauncher();
-+        Intent intent = settingsLauncher.createSettingsActivityIntent(
++        SettingsNavigation settingsNavigation =
++                    SettingsNavigationFactory.createSettingsNavigation();
++        Intent intent = settingsNavigation.createSettingsIntent(
 +                context, UserScriptsPreferences.class,
 +                UserScriptsPreferences.createFragmentArgsForInstall(filePath));
 +        IntentUtils.safeStartActivity(context, intent);
@@ -2834,7 +2835,7 @@ diff --git a/components/user_scripts/browser/user_script_loader.cc b/components/
 new file mode 100755
 --- /dev/null
 +++ b/components/user_scripts/browser/user_script_loader.cc
-@@ -0,0 +1,704 @@
+@@ -0,0 +1,702 @@
 +/*
 +    This file is part of Bromite.
 +
@@ -3048,13 +3049,11 @@ new file mode 100755
 +
 +    base::File infile;
 +    if (user_script_path.IsContentUri()) {
-+      if (base::FeatureList::IsEnabled(features::kEnableLoggingUserScripts))
++      if (base::FeatureList::IsEnabled(features::kEnableLoggingUserScripts)) {
 +        LOG(INFO) << "UserScriptLoader: path " << user_script_path << " is a content uri";
-+
-+      infile = OpenContentUri(user_script_path, base::File::FLAG_OPEN | base::File::FLAG_READ);
-+    } else {
-+      infile = base::File(user_script_path, base::File::FLAG_OPEN | base::File::FLAG_READ);
++      }
 +    }
++    infile = base::File(user_script_path, base::File::FLAG_OPEN | base::File::FLAG_READ);
 +
 +    if (!infile.IsValid()) {
 +      base::File::Error out_error = infile.error_details();

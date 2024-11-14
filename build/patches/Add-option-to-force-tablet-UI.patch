@@ -17,7 +17,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../strip/StripLayoutHelperManager.java       |  5 +++-
  .../init/ChromeBrowserInitializer.java        |  2 ++
  .../tabbed_mode/TabbedRootUiCoordinator.java  |  4 +++-
- .../chrome/browser/ui/RootUiCoordinator.java  |  5 +++-
+ .../chrome/browser/ui/RootUiCoordinator.java  |  6 ++++-
  chrome/browser/preferences/BUILD.gn           |  1 +
  .../preferences/ChromePreferenceKeys.java     |  1 +
  .../preferences/ChromeSharedPreferences.java  | 12 ++++++++++
@@ -37,7 +37,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../res/xml/accessibility_preferences.xml     |  5 ++++
  .../AccessibilitySettingsDelegate.java        | 11 +++++++++
  .../chromium/ui/base/DeviceFormFactor.java    | 14 +++++++++++
- 33 files changed, 175 insertions(+), 27 deletions(-)
+ 33 files changed, 176 insertions(+), 27 deletions(-)
 
 diff --git a/chrome/android/java/res/layout/custom_tabs_control_container.xml b/chrome/android/java/res/layout/custom_tabs_control_container.xml
 --- a/chrome/android/java/res/layout/custom_tabs_control_container.xml
@@ -302,15 +302,16 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tabbed_mode/Tab
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ui/RootUiCoordinator.java b/chrome/android/java/src/org/chromium/chrome/browser/ui/RootUiCoordinator.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/ui/RootUiCoordinator.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/ui/RootUiCoordinator.java
-@@ -102,6 +102,7 @@ import org.chromium.chrome.browser.paint_preview.DemoPaintPreview;
+@@ -102,6 +102,8 @@ import org.chromium.chrome.browser.paint_preview.DemoPaintPreview;
  import org.chromium.chrome.browser.password_manager.ManagePasswordsReferrer;
  import org.chromium.chrome.browser.password_manager.PasswordManagerLauncher;
  import org.chromium.chrome.browser.pdf.PdfPage;
 +import org.chromium.chrome.browser.preferences.ChromePreferenceKeys;
++import org.chromium.chrome.browser.preferences.ChromeSharedPreferences;
  import org.chromium.chrome.browser.price_insights.PriceInsightsButtonController;
  import org.chromium.chrome.browser.price_tracking.CurrentTabPriceTrackingStateSupplier;
  import org.chromium.chrome.browser.price_tracking.PriceTrackingButtonController;
-@@ -1758,7 +1759,9 @@ public class RootUiCoordinator
+@@ -1758,7 +1760,9 @@ public class RootUiCoordinator
          if (!mSupportsFindInPageSupplier.getAsBoolean()) return;
  
          int stubId = R.id.find_toolbar_stub;

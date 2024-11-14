@@ -215,7 +215,7 @@ new file mode 100644
 +
 +content::BrowserContext* AdblockJNIFactory::GetBrowserContextToUse(
 +    content::BrowserContext* context) const {
-+  return chrome::GetBrowserContextRedirectedInIncognito(context);
++  return GetBrowserContextRedirectedInIncognito(context);
 +}
 +
 +bool AdblockJNIFactory::ServiceIsCreatedWithBrowserContext() const {
@@ -349,7 +349,7 @@ new file mode 100644
 +content::BrowserContext*
 +FilteringConfigurationBindingsFactory::GetBrowserContextToUse(
 +    content::BrowserContext* context) const {
-+  return chrome::GetBrowserContextRedirectedInIncognito(context);
++  return GetBrowserContextRedirectedInIncognito(context);
 +}
 +
 +bool FilteringConfigurationBindingsFactory::ServiceIsCreatedWithBrowserContext()
@@ -574,7 +574,7 @@ new file mode 100644
 +content::BrowserContext*
 +ResourceClassificationNotifierBindingsFactory::GetBrowserContextToUse(
 +    content::BrowserContext* context) const {
-+  return chrome::GetBrowserContextRedirectedInIncognito(context);
++  return GetBrowserContextRedirectedInIncognito(context);
 +}
 +
 +bool ResourceClassificationNotifierBindingsFactory::

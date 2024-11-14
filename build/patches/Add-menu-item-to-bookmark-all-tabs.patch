@@ -10,8 +10,10 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../bookmarks/android/bookmark_bridge.cc      | 44 +++++++++++-
  .../bookmarks/android/bookmark_bridge.h       |  8 +++
  .../browser/bookmarks/bookmark_html_writer.cc | 11 ++-
+ .../bookmark_merged_surface_service.cc        |  2 +
  .../dialogs/DownloadLocationCustomView.java   |  4 +-
  .../strings/android_chrome_strings.grd        |  3 +
+ .../views/bookmarks/bookmark_menu_delegate.cc |  2 +
  components/bookmark_bar_strings.grdp          |  6 ++
  .../bookmarks/browser/bookmark_codec.cc       | 20 +++++-
  components/bookmarks/browser/bookmark_codec.h |  7 +-
@@ -26,7 +28,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  components/bookmarks/browser/bookmark_uuids.h |  1 +
  components/bookmarks/browser/model_loader.cc  |  8 ++-
  .../bookmark_specifics_conversions.cc         |  1 +
- 22 files changed, 241 insertions(+), 15 deletions(-)
+ 24 files changed, 245 insertions(+), 15 deletions(-)
 
 diff --git a/chrome/android/java/res/menu/main_menu.xml b/chrome/android/java/res/menu/main_menu.xml
 --- a/chrome/android/java/res/menu/main_menu.xml
@@ -281,7 +283,7 @@ diff --git a/chrome/browser/bookmarks/android/bookmark_bridge.cc b/chrome/browse
    const BookmarkNode* reading_list_node =
        local_or_syncable_reading_list_manager_->GetRoot();
    if (IsPermanentFolderVisible(ignore_visibility, reading_list_node)) {
-@@ -1266,6 +1297,17 @@ void BookmarkBridge::GetBookmarksOfType(
+@@ -1261,6 +1292,17 @@ void BookmarkBridge::GetBookmarksOfType(
    AddBookmarkNodesToBookmarkIdList(env, j_list, results);
  }
  
@@ -358,7 +360,7 @@ diff --git a/chrome/browser/bookmarks/bookmark_html_writer.cc b/chrome/browser/b
        NotifyOnFinish(BookmarksExportObserver::Result::kCouldNotWriteNodes);
        return;
      }
-@@ -472,6 +477,8 @@ void BookmarkFaviconFetcher::ExportBookmarks() {
+@@ -464,6 +469,8 @@ void BookmarkFaviconFetcher::ExportBookmarks() {
        BookmarkModelFactory::GetForBrowserContext(profile_)->other_node());
    ExtractUrls(
        BookmarkModelFactory::GetForBrowserContext(profile_)->mobile_node());
@@ -367,6 +369,18 @@ diff --git a/chrome/browser/bookmarks/bookmark_html_writer.cc b/chrome/browser/b
    if (!bookmark_urls_.empty())
      FetchNextFavicon();
    else
+diff --git a/chrome/browser/bookmarks/bookmark_merged_surface_service.cc b/chrome/browser/bookmarks/bookmark_merged_surface_service.cc
+--- a/chrome/browser/bookmarks/bookmark_merged_surface_service.cc
++++ b/chrome/browser/bookmarks/bookmark_merged_surface_service.cc
+@@ -42,6 +42,8 @@ std::optional<PermanentFolderType> GetIfPermanentFolderType(
+ 
+     case BookmarkNode::Type::URL:
+       NOTREACHED();
++    case BookmarkNode::Type::TABS_COLLECTION:
++      NOTREACHED();
+   }
+   NOTREACHED();
+ }
 diff --git a/chrome/browser/download/android/java/src/org/chromium/chrome/browser/download/dialogs/DownloadLocationCustomView.java b/chrome/browser/download/android/java/src/org/chromium/chrome/browser/download/dialogs/DownloadLocationCustomView.java
 --- a/chrome/browser/download/android/java/src/org/chromium/chrome/browser/download/dialogs/DownloadLocationCustomView.java
 +++ b/chrome/browser/download/android/java/src/org/chromium/chrome/browser/download/dialogs/DownloadLocationCustomView.java
@@ -401,6 +415,18 @@ diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chro
        <message name="IDS_MENU_GET_IMAGE_DESCRIPTIONS" desc="Menu item to start getting alt text accessibility image labels/descriptions [CHAR_LIMIT=27]">
          Get image descriptions
        </message>
+diff --git a/chrome/browser/ui/views/bookmarks/bookmark_menu_delegate.cc b/chrome/browser/ui/views/bookmarks/bookmark_menu_delegate.cc
+--- a/chrome/browser/ui/views/bookmarks/bookmark_menu_delegate.cc
++++ b/chrome/browser/ui/views/bookmarks/bookmark_menu_delegate.cc
+@@ -157,6 +157,8 @@ BookmarkParentFolder GetBookmarkParentFolderForNode(
+       return BookmarkParentFolder::OtherFolder();
+     case bookmarks::BookmarkNode::MOBILE:
+       return BookmarkParentFolder::MobileFolder();
++    case bookmarks::BookmarkNode::TABS_COLLECTION:
++      NOTREACHED();
+   }
+   NOTREACHED();
+ }
 diff --git a/components/bookmark_bar_strings.grdp b/components/bookmark_bar_strings.grdp
 --- a/components/bookmark_bar_strings.grdp
 +++ b/components/bookmark_bar_strings.grdp

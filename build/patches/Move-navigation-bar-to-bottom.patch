@@ -1287,7 +1287,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/fullscreen/Brow
 +        if (ChromeFeatureList.sMoveTopToolbarToBottom.isEnabled())
 +            return 0;
 +        else
-+            return mTopControlContainerHeight;
++            return mTopControlsHeight;
 +    }
 +
      @Override
@@ -1647,7 +1647,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/toolbar/Toolbar
 +                ChromeFeatureList.sMoveTopToolbarToBottom.isEnabled()) {
 +            // move up the container view of the ui
 +            // below there is the toolbar
-+            mBottomRoot.setTranslationY(-mBrowserControlsVisibilityManager.getTopControlsHeight());
++            mBottomRoot.setTranslationY(-mBrowserControlsSizer.getTopControlsHeight());
 +        }
 +    }
 +

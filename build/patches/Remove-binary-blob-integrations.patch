@@ -47,7 +47,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../browser/password_manager/android/BUILD.gn |   5 -
  .../password_manager/GmsUpdateLauncher.java   |  28 -
  .../PasswordManagerAndroidBackendUtil.java    |  38 +-
- .../PasswordManagerHelper.java                |   2 -
+ .../PasswordManagerHelper.java                |   9 -
  ...swordSyncControllerDelegateBridgeImpl.java |   7 -
  .../push_messaging_service_factory.cc         |   8 +-
  chrome/browser/resources/settings/route.ts    |   2 -
@@ -55,6 +55,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  chrome/browser/ui/android/omnibox/BUILD.gn    |   4 -
  .../FullscreenSigninMediator.java             |  12 +-
  chrome/browser/ui/webauthn/sheet_models.cc    |   9 +-
+ .../browser/ui/webui/chrome_web_ui_configs.cc |   1 -
  chrome/browser/webauthn/android/BUILD.gn      |   1 -
  .../CableAuthenticatorModuleProvider.java     |  35 +-
  chrome/browser/webauthn/cablev2_devices.cc    |   3 +
@@ -90,9 +91,9 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  components/signin/public/android/BUILD.gn     |   3 -
  .../signin/AccountRenameChecker.java          |  16 -
  components/webauthn/android/BUILD.gn          |  14 +-
- .../webauthn/AuthenticatorImpl.java           |  67 --
+ .../webauthn/AuthenticatorImpl.java           |  81 +-
  .../webauthn/ConditionalUiState.java          |  15 +
- .../components/webauthn/GmsCoreUtils.java     |  21 +-
+ .../components/webauthn/GmsCoreUtils.java     |  25 +-
  .../webauthn/WebauthnModeProvider.java        |  15 -
  .../webauthn/cred_man/CredManHelper.java      |  16 +-
  .../cred_man/CredManMetricsHelper.java        |   2 +-
@@ -108,7 +109,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../preconditions/javatests/BUILD.gn          |   1 -
  .../gms/ChromiumPlayServicesAvailability.java |  10 +-
  third_party/cardboard/BUILD.gn                |   4 -
- 84 files changed, 115 insertions(+), 2295 deletions(-)
+ 85 files changed, 116 insertions(+), 2320 deletions(-)
  create mode 100644 components/webauthn/android/java/src/org/chromium/components/webauthn/ConditionalUiState.java
 
 diff --git a/android_webview/expectations/system_webview_bundle.AndroidManifest.expected b/android_webview/expectations/system_webview_bundle.AndroidManifest.expected
@@ -1045,6 +1046,20 @@ diff --git a/chrome/browser/password_manager/android/java/src/org/chromium/chrom
  import org.jni_zero.JniType;
  import org.jni_zero.NativeMethods;
  
+@@ -517,13 +515,6 @@ public class PasswordManagerHelper {
+         // If the exception is not a Chrome-defined one, it means that the call failed at the
+         // API call level. It could have either failed with a known ApiException or because of a
+         // different error (e.g. a different exception thrown by the implementation of the API).
+-        if (!(exception instanceof ApiException)) {
+-            RecordHistogram.recordEnumeratedHistogram(
+-                    kGetIntentErrorHistogram,
+-                    CredentialManagerError.OTHER_API_ERROR,
+-                    CredentialManagerError.COUNT);
+-            return;
+-        }
+ 
+         RecordHistogram.recordEnumeratedHistogram(
+                 kGetIntentErrorHistogram,
 diff --git a/chrome/browser/password_manager/android/java/src/org/chromium/chrome/browser/password_manager/PasswordSyncControllerDelegateBridgeImpl.java b/chrome/browser/password_manager/android/java/src/org/chromium/chrome/browser/password_manager/PasswordSyncControllerDelegateBridgeImpl.java
 --- a/chrome/browser/password_manager/android/java/src/org/chromium/chrome/browser/password_manager/PasswordSyncControllerDelegateBridgeImpl.java
 +++ b/chrome/browser/password_manager/android/java/src/org/chromium/chrome/browser/password_manager/PasswordSyncControllerDelegateBridgeImpl.java
@@ -1190,6 +1205,17 @@ diff --git a/chrome/browser/ui/webauthn/sheet_models.cc b/chrome/browser/ui/weba
  }
  
  void AuthenticatorMultiSourcePickerSheetModel::OnManageDevices() {
+diff --git a/chrome/browser/ui/webui/chrome_web_ui_configs.cc b/chrome/browser/ui/webui/chrome_web_ui_configs.cc
+--- a/chrome/browser/ui/webui/chrome_web_ui_configs.cc
++++ b/chrome/browser/ui/webui/chrome_web_ui_configs.cc
+@@ -220,7 +220,6 @@ void RegisterChromeWebUIConfigs() {
+   map.AddWebUIConfig(std::make_unique<DownloadInternalsUIConfig>());
+   map.AddWebUIConfig(std::make_unique<FamilyLinkUserInternalsUIConfig>());
+   map.AddWebUIConfig(std::make_unique<FlagsUIConfig>());
+-  map.AddWebUIConfig(std::make_unique<GCMInternalsUIConfig>());
+   map.AddWebUIConfig(std::make_unique<InternalsUIConfig>());
+   map.AddWebUIConfig(std::make_unique<InterstitialUIConfig>());
+   map.AddWebUIConfig(std::make_unique<LocalStateUIConfig>());
 diff --git a/chrome/browser/webauthn/android/BUILD.gn b/chrome/browser/webauthn/android/BUILD.gn
 --- a/chrome/browser/webauthn/android/BUILD.gn
 +++ b/chrome/browser/webauthn/android/BUILD.gn
@@ -3297,7 +3323,28 @@ diff --git a/components/webauthn/android/java/src/org/chromium/components/webaut
      }
  
      @Override
-@@ -327,14 +281,6 @@ public final class AuthenticatorImpl implements Authenticator, AuthenticationCon
+@@ -285,19 +239,7 @@ public final class AuthenticatorImpl implements Authenticator, AuthenticationCon
+             return;
+         }
+ 
+-        getFido2CredentialRequest()
+-                .handleIsUserVerifyingPlatformAuthenticatorAvailableRequest(
+-                        isUvpaa -> {
+-                            capabilities.add(
+-                                    createWebAuthnClientCapability(
+-                                            AuthenticatorConstants.CAPABILITY_CONDITIONAL_GET,
+-                                            couldSupportConditionalMediation() && isUvpaa));
+-                            capabilities.add(
+-                                    createWebAuthnClientCapability(
+-                                            AuthenticatorConstants.CAPABILITY_UVPAA,
+-                                            couldSupportUvpaa() && isUvpaa));
+-                            callback.call(capabilities.toArray(new WebAuthnClientCapability[0]));
+-                        });
++        callback.call(capabilities.toArray(new WebAuthnClientCapability[0]));
+     }
+ 
+     // Helper function to create WebAuthnClientCapability instances
+@@ -327,14 +269,6 @@ public final class AuthenticatorImpl implements Authenticator, AuthenticationCon
              callback.onResponse(new ArrayList<byte[]>());
              return;
          }
@@ -3312,7 +3359,7 @@ diff --git a/components/webauthn/android/java/src/org/chromium/components/webaut
      }
  
      @Override
-@@ -344,13 +290,6 @@ public final class AuthenticatorImpl implements Authenticator, AuthenticationCon
+@@ -344,13 +278,6 @@ public final class AuthenticatorImpl implements Authenticator, AuthenticationCon
              callback.call(false);
              return;
          }
@@ -3326,7 +3373,7 @@ diff --git a/components/webauthn/android/java/src/org/chromium/components/webaut
      }
  
      @Override
-@@ -362,8 +301,6 @@ public final class AuthenticatorImpl implements Authenticator, AuthenticationCon
+@@ -362,8 +289,6 @@ public final class AuthenticatorImpl implements Authenticator, AuthenticationCon
          if (!mIsOperationPending || mGetAssertionCallback == null) {
              return;
          }
@@ -3335,7 +3382,7 @@ diff --git a/components/webauthn/android/java/src/org/chromium/components/webaut
      }
  
      /** Callbacks for receiving responses from the internal handlers. */
-@@ -398,7 +335,6 @@ public final class AuthenticatorImpl implements Authenticator, AuthenticationCon
+@@ -398,7 +323,6 @@ public final class AuthenticatorImpl implements Authenticator, AuthenticationCon
          } else if (mGetAssertionCallback != null) {
              mGetAssertionCallback.call(status, null, null);
          }
@@ -3343,7 +3390,7 @@ diff --git a/components/webauthn/android/java/src/org/chromium/components/webaut
          cleanupRequest();
      }
  
-@@ -439,13 +375,10 @@ public final class AuthenticatorImpl implements Authenticator, AuthenticationCon
+@@ -439,13 +363,10 @@ public final class AuthenticatorImpl implements Authenticator, AuthenticationCon
          mIsOperationPending = false;
          mMakeCredentialCallback = null;
          mGetAssertionCallback = null;
@@ -3407,7 +3454,7 @@ diff --git a/components/webauthn/android/java/src/org/chromium/components/webaut
      }
  
      /**
-@@ -33,17 +22,17 @@ public class GmsCoreUtils {
+@@ -33,20 +22,16 @@ public class GmsCoreUtils {
       * version.
       */
      public static boolean isGetMatchingCredentialIdsSupported() {
@@ -3424,10 +3471,13 @@ diff --git a/components/webauthn/android/java/src/org/chromium/components/webaut
      /** Returns whether makeCredential / getAssertion APIs support responding via ResultReceiver. */
      static boolean isResultReceiverSupported() {
 -        return getGmsCoreVersion() >= GMSCORE_MIN_VERSION_RESULT_RECEIVER;
+-    }
+-
+-    public static void setGmsCoreVersionForTesting(int version) {
+-        sGmsCorePackageVersion = version;
 +        return false;
      }
- 
-     public static void setGmsCoreVersionForTesting(int version) {
+ }
 diff --git a/components/webauthn/android/java/src/org/chromium/components/webauthn/WebauthnModeProvider.java b/components/webauthn/android/java/src/org/chromium/components/webauthn/WebauthnModeProvider.java
 --- a/components/webauthn/android/java/src/org/chromium/components/webauthn/WebauthnModeProvider.java
 +++ b/components/webauthn/android/java/src/org/chromium/components/webauthn/WebauthnModeProvider.java

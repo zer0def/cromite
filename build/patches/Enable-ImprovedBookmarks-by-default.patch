@@ -7,11 +7,9 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  chrome/android/java/res/layout/bookmark_search_box_row.xml    | 4 ++--
  .../browser/bookmarks/BookmarkSearchBoxRowViewBinder.java     | 2 ++
  .../chromium/chrome/browser/bookmarks/BookmarkUiPrefs.java    | 2 +-
- .../org/chromium/chrome/browser/bookmarks/BookmarkUtils.java  | 3 ++-
+ .../org/chromium/chrome/browser/bookmarks/BookmarkUtils.java  | 2 +-
  components/bookmarks/browser/bookmark_node.cc                 | 3 +--
- .../Enable-ImprovedBookmarks-by-default.inc                   | 1 +
- 6 files changed, 9 insertions(+), 6 deletions(-)
- create mode 100644 cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Enable-ImprovedBookmarks-by-default.inc
+ 5 files changed, 7 insertions(+), 6 deletions(-)
 
 diff --git a/chrome/android/java/res/layout/bookmark_search_box_row.xml b/chrome/android/java/res/layout/bookmark_search_box_row.xml
 --- a/chrome/android/java/res/layout/bookmark_search_box_row.xml
@@ -61,15 +59,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/bookmarks/Bookm
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/bookmarks/BookmarkUtils.java b/chrome/android/java/src/org/chromium/chrome/browser/bookmarks/BookmarkUtils.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/bookmarks/BookmarkUtils.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/bookmarks/BookmarkUtils.java
-@@ -39,6 +39,7 @@ import org.chromium.chrome.browser.IntentHandler;
- import org.chromium.chrome.browser.app.bookmarks.BookmarkActivity;
- import org.chromium.chrome.browser.app.bookmarks.BookmarkEditActivity;
- import org.chromium.chrome.browser.app.bookmarks.BookmarkFolderPickerActivity;
-+import org.chromium.chrome.browser.bookmarks.BookmarkFeatures;
- import org.chromium.chrome.browser.bookmarks.BookmarkUiPrefs.BookmarkRowDisplayPref;
- import org.chromium.chrome.browser.commerce.ShoppingServiceFactory;
- import org.chromium.chrome.browser.document.ChromeLauncherActivity;
-@@ -562,7 +563,7 @@ public class BookmarkUtils {
+@@ -562,7 +562,7 @@ public class BookmarkUtils {
              RecordUserAction.record("MobileBookmarkManagerReopenBookmarksInSameSession");
          }
  
@@ -91,10 +81,4 @@ diff --git a/components/bookmarks/browser/bookmark_node.cc b/components/bookmark
      case BookmarkNode::MOBILE:
        // Either MOBILE or OTHER_NODE is visible when empty, but never both.
        return !IsTypeVisibleWhenEmpty(BookmarkNode::OTHER_NODE);
-diff --git a/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Enable-ImprovedBookmarks-by-default.inc b/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Enable-ImprovedBookmarks-by-default.inc
-new file mode 100644
---- /dev/null
-+++ b/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Enable-ImprovedBookmarks-by-default.inc
-@@ -0,0 +1 @@
-+SET_CROMITE_FEATURE_ENABLED(kAndroidImprovedBookmarks);
 --

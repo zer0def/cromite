@@ -325,7 +325,7 @@ diff --git a/v8/src/runtime/runtime-debug.cc b/v8/src/runtime/runtime-debug.cc
 +    Handle<JSMessageObject> message =
 +        MessageHandler::MakeMessageObject(
 +            isolate, MessageTemplate::kDebuggerStatementSuppressed, location,
-+            isolate->factory()->null_value(), Handle<i::FixedArray>::null());
++            isolate->factory()->null_value(), DirectHandle<StackTraceInfo>::null());
 +    message->set_error_level(v8::Isolate::kMessageWarning);
 +    MessageHandler::ReportMessage(isolate, location, message);
 +  }

@@ -6,8 +6,8 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
  chrome/version.gni                                      | 4 ++--
  components/viz/common/features.cc                       | 2 ++
- components/viz/service/performance_hint/hint_session.cc | 3 +++
- 3 files changed, 7 insertions(+), 2 deletions(-)
+ components/viz/service/performance_hint/hint_session.cc | 5 +----
+ 3 files changed, 5 insertions(+), 6 deletions(-)
 
 diff --git a/chrome/version.gni b/chrome/version.gni
 --- a/chrome/version.gni
@@ -48,14 +48,22 @@ diff --git a/components/viz/common/features.cc b/components/viz/common/features.
 diff --git a/components/viz/service/performance_hint/hint_session.cc b/components/viz/service/performance_hint/hint_session.cc
 --- a/components/viz/service/performance_hint/hint_session.cc
 +++ b/components/viz/service/performance_hint/hint_session.cc
-@@ -267,6 +267,9 @@ bool IsAdpfEnabled() {
-   return base::Contains(allowlist, soc);
- }
+@@ -240,16 +240,13 @@ bool IsAdpfEnabled() {
+           switches::kDisableAdpf)) {
+     return false;
+   }
+-  if (base::android::BuildInfo::GetInstance()->sdk_int() <
+-      base::android::SDK_VERSION_S) {
+-    return false;
+-  }
+   if (!AdpfMethods::Get().supported) {
+     return false;
+   }
+   if (!base::FeatureList::IsEnabled(features::kAdpf)) {
+     return false;
+   }
++  if ((true)) return true;
  
-+// Notify me when this is introduced
-+[[maybe_unused]] void IsAdpfEnabled() {}
-+
- }  // namespace
- 
- // static
+   std::string allowlist_param = features::kADPFSocManufacturerAllowlist.Get();
+   std::vector<std::string_view> allowlist = base::SplitStringPiece(
 --

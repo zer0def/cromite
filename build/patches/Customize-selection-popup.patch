@@ -53,7 +53,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedAct
 +                            if (!showToast && !selectionPopupTabsForeground) {
 +                                showToast = !DeviceClassManager.enableAnimations() &&
 +                                    (type == TabLaunchType.FROM_LONGPRESS_BACKGROUND
-+                                    || (type == TabLaunchType.FROM_LONGPRESS_BACKGROUND_IN_GROUP);
++                                    || type == TabLaunchType.FROM_LONGPRESS_BACKGROUND_IN_GROUP);
 +                            }
 +                            if (showToast) {
                                  Toast.makeText(
@@ -138,7 +138,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ui/RootUiCoordi
  import org.chromium.base.TraceEvent;
  import org.chromium.base.lifetime.Destroyable;
  import org.chromium.base.metrics.RecordUserAction;
-@@ -823,11 +824,16 @@ public class RootUiCoordinator
+@@ -824,11 +825,16 @@ public class RootUiCoordinator
                      TrackerFactory.getTrackerForProfile(tab.getProfile())
                              .notifyEvent(EventConstants.WEB_SEARCH_PERFORMED);
  

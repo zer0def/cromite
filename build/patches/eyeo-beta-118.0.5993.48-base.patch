@@ -222,8 +222,8 @@ Based on Chromium 118.0.5993.48
  tools/eyeo/generate_interdiffs.sh             |  150 ++
  tools/eyeo/generate_modules.sh                |  209 +++
  tools/eyeo/snippets_deps.py                   |   61 +
- tools/gritsettings/resource_ids.spec          |    9 +
- 219 files changed, 22050 insertions(+), 3 deletions(-)
+ tools/gritsettings/resource_ids.spec          |   11 +-
+ 219 files changed, 22051 insertions(+), 4 deletions(-)
  create mode 100644 components/adblock/CHANGELOG.md
  create mode 100644 components/adblock/LICENSE
  create mode 100644 components/adblock/README.md
@@ -53109,16 +53109,18 @@ diff --git a/tools/gritsettings/resource_ids.spec b/tools/gritsettings/resource_
  # This file is used to assign starting resource ids for resources and strings
  # used by Chromium.  This is done to ensure that resource ids are unique
  # across all the grd files.  If you are adding a new grd file, please add
-@@ -1384,6 +1388,11 @@
+@@ -1382,7 +1386,12 @@
+   "<(SHARED_INTERMEDIATE_DIR)/third_party/blink/public/strings/permission_element_generated_strings.grd": {
+     "META": {"sizes": {"messages": [2000],}},
      "messages": [10080],
-   }
- 
+-  }
++  },
++
 +  "<(SHARED_INTERMEDIATE_DIR)/chrome/browser/resources/adblock_internals/resources.grd": {
 +    "META": {"sizes": {"includes": [10]}},
 +    "includes": [10100],
 +  },
-+
+ 
    # END "everything else" section.
    # Everything but chrome/, components/, content/, and ios/
- 
 --

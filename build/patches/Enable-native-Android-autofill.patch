@@ -824,7 +824,7 @@ diff --git a/components/autofill/content/renderer/autofill_agent.cc b/components
      }
  
      // Password field elements should only have suggestions shown by the
-@@ -1294,12 +1298,14 @@ void AutofillAgent::ShowSuggestions(
+@@ -1294,11 +1298,13 @@ void AutofillAgent::ShowSuggestions(
      // `FormControlTypeForAutofill()` because we are interested in whether the
      // field is *currently* a password field, not whether it has ever been a
      // password field.
@@ -834,11 +834,10 @@ diff --git a/components/autofill/content/renderer/autofill_agent.cc b/components
          !config_.query_password_suggestions) {
        return;
      }
-   }
 +#endif
+   }
  
    QueryAutofillSuggestions(element, trigger_source);
- }
 diff --git a/components/autofill/content/renderer/password_autofill_agent.cc b/components/autofill/content/renderer/password_autofill_agent.cc
 --- a/components/autofill/content/renderer/password_autofill_agent.cc
 +++ b/components/autofill/content/renderer/password_autofill_agent.cc

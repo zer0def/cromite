@@ -29,7 +29,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../browser/resources/extensions/service.ts   |  5 ++
  .../browser/resources/extensions/toolbar.css  |  5 ++
  .../browser/resources/extensions/toolbar.html |  7 +++
- .../browser/resources/extensions/toolbar.ts   | 20 +++++++
+ .../browser/resources/extensions/toolbar.ts   | 21 +++++++
  .../resources/webstore_app/manifest.json      |  7 +--
  .../ui/webui/extensions/extensions_ui.cc      |  8 +++
  .../chrome_update_query_params_delegate.cc    | 13 ++--
@@ -44,7 +44,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  extensions/common/extension_features.cc       | 15 +++++
  extensions/common/extension_features.h        |  5 ++
  .../definitions/developer_private.d.ts        |  2 +
- 31 files changed, 257 insertions(+), 103 deletions(-)
+ 31 files changed, 258 insertions(+), 103 deletions(-)
  create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Webstore-protection.inc
 
 diff --git a/chrome/app/extensions_strings.grdp b/chrome/app/extensions_strings.grdp
@@ -552,7 +552,15 @@ diff --git a/chrome/browser/resources/extensions/toolbar.ts b/chrome/browser/res
    /** Opens the dialog to load unpacked extensions. */
    loadUnpacked(): Promise<boolean>;
  
-@@ -79,6 +81,13 @@ export class ExtensionsToolbarElement extends ExtensionsToolbarElementBase {
+@@ -41,6 +43,7 @@ class DummyToolbarDelegate {
+   updateAllExtensions(_extensions: chrome.developerPrivate.ExtensionInfo[]) {
+     return Promise.resolve();
+   }
++  setExtUpdateEnabled(_enabled: boolean) {}
+ }
+ 
+ export interface ExtensionsToolbarElement {
+@@ -79,6 +82,13 @@ export class ExtensionsToolbarElement extends ExtensionsToolbarElementBase {
          reflect: true,
        },
  
@@ -566,15 +574,15 @@ diff --git a/chrome/browser/resources/extensions/toolbar.ts b/chrome/browser/res
        devModeControlledByPolicy: {type: Boolean},
        isChildAccount: {type: Boolean},
  
-@@ -91,6 +100,7 @@ export class ExtensionsToolbarElement extends ExtensionsToolbarElementBase {
+@@ -91,6 +101,7 @@ export class ExtensionsToolbarElement extends ExtensionsToolbarElementBase {
  
        expanded_: {type: Boolean},
        showPackDialog_: {type: Boolean},
-+      shouldShowRelaunchDialog: Boolean,
++      shouldShowRelaunchDialog: {type: Boolean},
  
        /**
         * Prevents initiating update while update is in progress.
-@@ -102,6 +112,8 @@ export class ExtensionsToolbarElement extends ExtensionsToolbarElementBase {
+@@ -102,6 +113,8 @@ export class ExtensionsToolbarElement extends ExtensionsToolbarElementBase {
    extensions: chrome.developerPrivate.ExtensionInfo[] = [];
    delegate: ToolbarDelegate = new DummyToolbarDelegate();
    inDevMode: boolean = false;
@@ -583,7 +591,7 @@ diff --git a/chrome/browser/resources/extensions/toolbar.ts b/chrome/browser/res
    devModeControlledByPolicy: boolean = false;
    isChildAccount: boolean = false;
  
-@@ -154,6 +166,14 @@ export class ExtensionsToolbarElement extends ExtensionsToolbarElementBase {
+@@ -154,6 +167,14 @@ export class ExtensionsToolbarElement extends ExtensionsToolbarElementBase {
          'Options_ToggleDeveloperMode_' + (e.detail ? 'Enabled' : 'Disabled'));
    }
  

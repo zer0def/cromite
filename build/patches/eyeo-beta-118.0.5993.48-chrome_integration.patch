@@ -50,11 +50,11 @@ Pre-requisites: eyeo Browser Ad filtering Solution: Base Module
  .../adblock_internals_page_handler_impl.h     |  51 +++
  .../adblock_internals/adblock_internals_ui.cc |  47 +++
  .../adblock_internals/adblock_internals_ui.h  |  48 +++
- .../webui/chrome_web_ui_controller_factory.cc |   9 +-
+ .../webui/chrome_web_ui_controller_factory.cc |   8 +
  chrome/common/BUILD.gn                        |   3 +
  chrome/common/webui_url_constants.cc          |   4 +
  chrome/common/webui_url_constants.h           |   5 +
- 48 files changed, 2288 insertions(+), 3 deletions(-)
+ 48 files changed, 2288 insertions(+), 2 deletions(-)
  create mode 100644 chrome/browser/adblock/README.md
  create mode 100644 chrome/browser/adblock/adblock_content_browser_client.cc
  create mode 100644 chrome/browser/adblock/adblock_content_browser_client.h
@@ -883,7 +883,7 @@ new file mode 100644
 +
 +content::BrowserContext* AdblockControllerFactory::GetBrowserContextToUse(
 +    content::BrowserContext* context) const {
-+  return chrome::GetBrowserContextRedirectedInIncognito(context);
++  return GetBrowserContextRedirectedInIncognito(context);
 +}
 +
 +}  // namespace adblock
@@ -1005,7 +1005,7 @@ new file mode 100644
 +
 +content::BrowserContext* AdblockTelemetryServiceFactory::GetBrowserContextToUse(
 +    content::BrowserContext* context) const {
-+  return chrome::GetBrowserContextRedirectedInIncognito(context);
++  return GetBrowserContextRedirectedInIncognito(context);
 +}
 +
 +}  // namespace adblock
@@ -1208,7 +1208,7 @@ new file mode 100644
 +content::BrowserContext*
 +ContentSecurityPolicyInjectorFactory::GetBrowserContextToUse(
 +    content::BrowserContext* context) const {
-+  return chrome::GetBrowserContextRedirectedInIncognito(context);
++  return GetBrowserContextRedirectedInIncognito(context);
 +}
 +
 +}  // namespace adblock
@@ -1330,7 +1330,7 @@ new file mode 100644
 +
 +content::BrowserContext* ElementHiderFactory::GetBrowserContextToUse(
 +    content::BrowserContext* context) const {
-+  return chrome::GetBrowserContextRedirectedInIncognito(context);
++  return GetBrowserContextRedirectedInIncognito(context);
 +}
 +
 +}  // namespace adblock
@@ -1458,7 +1458,7 @@ new file mode 100644
 +content::BrowserContext*
 +ResourceClassificationRunnerFactory::GetBrowserContextToUse(
 +    content::BrowserContext* context) const {
-+  return chrome::GetBrowserContextRedirectedInIncognito(context);
++  return GetBrowserContextRedirectedInIncognito(context);
 +}
 +
 +}  // namespace adblock
@@ -1581,7 +1581,7 @@ new file mode 100644
 +
 +content::BrowserContext* SessionStatsFactory::GetBrowserContextToUse(
 +    content::BrowserContext* context) const {
-+  return chrome::GetBrowserContextRedirectedInIncognito(context);
++  return GetBrowserContextRedirectedInIncognito(context);
 +}
 +
 +}  // namespace adblock
@@ -1697,7 +1697,7 @@ new file mode 100644
 +
 +content::BrowserContext* SitekeyStorageFactory::GetBrowserContextToUse(
 +    content::BrowserContext* context) const {
-+  return chrome::GetBrowserContextRedirectedInIncognito(context);
++  return GetBrowserContextRedirectedInIncognito(context);
 +}
 +
 +}  // namespace adblock
@@ -1817,7 +1817,7 @@ new file mode 100644
 +content::BrowserContext*
 +SubscriptionPersistentMetadataFactory::GetBrowserContextToUse(
 +    content::BrowserContext* context) const {
-+  return chrome::GetBrowserContextRedirectedInIncognito(context);
++  return GetBrowserContextRedirectedInIncognito(context);
 +}
 +
 +}  // namespace adblock
@@ -1942,7 +1942,7 @@ new file mode 100644
 +
 +content::BrowserContext* SubscriptionServiceFactory::GetBrowserContextToUse(
 +    content::BrowserContext* context) const {
-+  return chrome::GetBrowserContextRedirectedInIncognito(context);
++  return GetBrowserContextRedirectedInIncognito(context);
 +}
 +
 +}  // namespace adblock
@@ -2830,11 +2830,10 @@ diff --git a/chrome/browser/ui/webui/chrome_web_ui_controller_factory.cc b/chrom
  #include "chrome/browser/ui/webui/components/components_ui.h"
  #include "chrome/browser/ui/webui/crashes_ui.h"
  #include "chrome/browser/ui/webui/proxy_config_ui.h"
-@@ -269,7 +274,9 @@ WebUIFactoryFunction GetWebUIFactoryFunction(WebUI* web_ui,
-   if (url.host_piece() == user_scripts::kChromeUIUserScriptsHost)
-     return &NewWebUI<user_scripts::UserScriptsUI>;
- #endif
--
+@@ -276,6 +281,9 @@ WebUIFactoryFunction GetWebUIFactoryFunction(WebUI* web_ui,
+   if (url.host_piece() == chrome::kChromeUISettingsHost)
+     return &NewWebUI<settings::SettingsUI>;
+ #endif  // BUILDFLAG(IS_ANDROID)
 +  if (url.host_piece() == chrome::kChromeUIAdblockInternalsHost) {
 +    return &NewWebUI<AdblockInternalsUI>;
 +  }

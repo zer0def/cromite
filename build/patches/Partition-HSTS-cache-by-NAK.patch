@@ -234,7 +234,7 @@ diff --git a/net/http/transport_security_state.cc b/net/http/transport_security_
  }
  
 +std::vector<uint8_t> CanonicalizeHost(const NetworkAnonymizationKey& nak,
-+                                      const std::string& host) {
++                                      std::string_view host) {
 +  std::vector<uint8_t> hostname = CanonicalizeHostWithoutNak(host);
 +  if (hostname.empty()) {
 +    return hostname;
@@ -245,7 +245,7 @@ diff --git a/net/http/transport_security_state.cc b/net/http/transport_security_
 +    return std::vector<uint8_t>();
 +
 +  std::string lowered_host = base::ToLowerASCII(
-+    nak.ToDebugString() + " " + host);
++    nak.ToDebugString() + " " + std::string(host));
 +  std::vector<uint8_t> vector =
 +    std::vector<uint8_t>(lowered_host.begin(), lowered_host.end());
 +  if (vector.size() > 254)
