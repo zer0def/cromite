@@ -46,7 +46,7 @@ diff --git a/android_webview/java/src/org/chromium/android_webview/contextmenu/A
  import org.chromium.content_public.browser.WebContents;
  import org.chromium.ui.base.Clipboard;
  import org.chromium.url.GURL;
-@@ -54,6 +55,9 @@ public class AwContextMenuItemDelegate implements ContextMenuItemDelegate {
+@@ -52,6 +53,9 @@ public class AwContextMenuItemDelegate implements ContextMenuItemDelegate {
          IntentUtils.safeStartActivity(mActivity, intent);
      }
  
@@ -70,7 +70,7 @@ diff --git a/chrome/android/java/res/values/ids.xml b/chrome/android/java/res/va
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/AccessibilitySettings.java b/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/AccessibilitySettings.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/AccessibilitySettings.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/AccessibilitySettings.java
-@@ -59,6 +59,9 @@ public class AccessibilitySettings extends ChromeBaseSettingsFragment
+@@ -60,6 +60,9 @@ public class AccessibilitySettings extends ChromeBaseSettingsFragment
      private BooleanPreferenceDelegate mMoveTopToolbarToBottomDelegate;
      private BooleanPreferenceDelegate mDisableToolbarSwipeUpDelegate;
  
@@ -80,7 +80,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/accessibility/s
      private TextScalePreference mTextScalePref;
      private PageZoomPreference mPageZoomDefaultZoomPref;
      private ChromeSwitchPreference mPageZoomIncludeOSAdjustment;
-@@ -182,6 +185,12 @@ public class AccessibilitySettings extends ChromeBaseSettingsFragment
+@@ -184,6 +187,12 @@ public class AccessibilitySettings extends ChromeBaseSettingsFragment
          mDisableToolbarSwipeUpPref.setChecked(mDisableToolbarSwipeUpDelegate.isEnabled());
          mDisableToolbarSwipeUpPref.setOnPreferenceChangeListener(this);
  
@@ -93,7 +93,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/accessibility/s
          Preference captions = findPreference(PREF_CAPTIONS);
          captions.setOnPreferenceClickListener(
                  preference -> {
-@@ -271,6 +280,9 @@ public class AccessibilitySettings extends ChromeBaseSettingsFragment
+@@ -279,6 +288,9 @@ public class AccessibilitySettings extends ChromeBaseSettingsFragment
              mDelegate.requestRestart(getActivity());
          } else if (PREF_DISABLE_TOOLBAR_SWIPE_UP.equals(preference.getKey())) {
              mDisableToolbarSwipeUpDelegate.setEnabled((Boolean) newValue);
@@ -102,7 +102,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/accessibility/s
 +            mDelegate.requestRestart(getActivity());
          } else if (PREF_PAGE_ZOOM_INCLUDE_OS_ADJUSTMENT.equals(preference.getKey())) {
              // TODO(mschillaci): Implement the override behavior for OS level.
-         }
+         } else if (OmniboxFeatures.KEY_JUMP_START_OMNIBOX.equals(preference.getKey())) {
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/ChromeAccessibilitySettingsDelegate.java b/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/ChromeAccessibilitySettingsDelegate.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/ChromeAccessibilitySettingsDelegate.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/ChromeAccessibilitySettingsDelegate.java
@@ -164,7 +164,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/contextmenu/Chr
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/contextmenu/ChromeContextMenuPopulator.java b/chrome/android/java/src/org/chromium/chrome/browser/contextmenu/ChromeContextMenuPopulator.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/contextmenu/ChromeContextMenuPopulator.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/contextmenu/ChromeContextMenuPopulator.java
-@@ -275,6 +275,9 @@ public class ChromeContextMenuPopulator implements ContextMenuPopulator {
+@@ -279,6 +279,9 @@ public class ChromeContextMenuPopulator implements ContextMenuPopulator {
  
          if (mParams.isAnchor()) {
              ModelList linkGroup = new ModelList();
@@ -174,7 +174,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/contextmenu/Chr
              if (FirstRunStatus.getFirstRunFlowComplete()
                      && !isEmptyUrl(mParams.getUrl())
                      && UrlUtilities.isAcceptedScheme(mParams.getUrl())) {
-@@ -652,6 +655,8 @@ public class ChromeContextMenuPopulator implements ContextMenuPopulator {
+@@ -661,6 +664,8 @@ public class ChromeContextMenuPopulator implements ContextMenuPopulator {
                                  getProfile(),
                                  false);
                      });
@@ -186,7 +186,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/contextmenu/Chr
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tab/TabContextMenuItemDelegate.java b/chrome/android/java/src/org/chromium/chrome/browser/tab/TabContextMenuItemDelegate.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/tab/TabContextMenuItemDelegate.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/tab/TabContextMenuItemDelegate.java
-@@ -328,6 +328,14 @@ public class TabContextMenuItemDelegate implements ContextMenuItemDelegate {
+@@ -327,6 +327,14 @@ public class TabContextMenuItemDelegate implements ContextMenuItemDelegate {
          mTab.loadUrl(loadUrlParams);
      }
  
@@ -204,7 +204,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tab/TabContextM
 diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browser/flags/android/chrome_feature_list.cc
 --- a/chrome/browser/flags/android/chrome_feature_list.cc
 +++ b/chrome/browser/flags/android/chrome_feature_list.cc
-@@ -317,6 +317,7 @@ const base::Feature* const kFeaturesExposedToJava[] = {
+@@ -325,6 +325,7 @@ const base::Feature* const kFeaturesExposedToJava[] = {
      &kTabGroupCreationDialogAndroid,
      &kTabGroupParityAndroid,
      &kTabletTabSwitcherLongPressMenu,
@@ -215,7 +215,7 @@ diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browse
 diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 --- a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 +++ b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
-@@ -384,6 +384,8 @@ public abstract class ChromeFeatureList {
+@@ -402,6 +402,8 @@ public abstract class ChromeFeatureList {
              "DisableToolbarSwipeUp";
      public static final String MOVE_TOP_TOOLBAR_TO_BOTTOM =
              "MoveTopToolbarToBottom";
@@ -224,7 +224,7 @@ diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/f
      public static final String NOTIFICATION_PERMISSION_VARIANT = "NotificationPermissionVariant";
      public static final String NOTIFICATION_PERMISSION_BOTTOM_SHEET =
              "NotificationPermissionBottomSheet";
-@@ -688,6 +690,8 @@ public abstract class ChromeFeatureList {
+@@ -725,6 +727,8 @@ public abstract class ChromeFeatureList {
              newCachedFlag(DISABLE_TOOLBAR_SWIPE_UP, false);
      public static final CachedFlag sMoveTopToolbarToBottom =
              newCachedFlag(MOVE_TOP_TOOLBAR_TO_BOTTOM, false);
@@ -233,18 +233,18 @@ diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/f
      public static final CachedFlag sPrivacyGuidePreloadAndroid =
              newCachedFlag(PRIVACY_GUIDE_PRELOAD_ANDROID, false);
      public static final CachedFlag sOptimizationGuidePushNotifications =
-@@ -853,6 +857,7 @@ public abstract class ChromeFeatureList {
+@@ -892,6 +896,7 @@ public abstract class ChromeFeatureList {
                      sTabWindowManagerReportIndicesMismatch,
                      sTraceBinderIpc,
                      sUseChimeAndroidSdk,
 +                    sShowAlwaysContextMenuOnLinks,
                      sUseLibunwindstackNativeUnwinderAndroid,
-                     sVerticalAutomotiveBackButtonToolbar,
                      sWebApkMinShellApkVersion);
+ 
 diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chrome/browser/ui/android/strings/android_chrome_strings.grd
 --- a/chrome/browser/ui/android/strings/android_chrome_strings.grd
 +++ b/chrome/browser/ui/android/strings/android_chrome_strings.grd
-@@ -1786,6 +1786,12 @@ Your Google account may have other forms of browsing history like searches and a
+@@ -1807,6 +1807,12 @@ Your Google account may have other forms of browsing history like searches and a
        <message name="IDS_DISABLE_TOOLBAR_SWIPE_UP" desc="Summary of the preference that allows the user to disable toolbar swipeup.">
          Disable toolbar swipe up
        </message>
@@ -257,7 +257,7 @@ diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chro
  
        <!-- Safety check -->
        <message name="IDS_PREFS_SAFETY_CHECK" desc="Title of the Safety check element in settings, allowing the user to check multiple areas of browser safety. [CHAR_LIMIT=32]">
-@@ -3257,6 +3263,9 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>delete the Chrome d
+@@ -3293,6 +3299,9 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>delete the Chrome d
        <message name="IDS_CONTEXTMENU_OPEN_IN_NEW_CHROME_TAB" desc="Context sensitive menu item to open the selected link in a new Chrome tab from Chrome Custom Tab. [CHAR_LIMIT=30]">
          Open in new Chrome tab
        </message>
@@ -285,7 +285,7 @@ diff --git a/components/browser_ui/accessibility/android/java/res/xml/accessibil
 diff --git a/components/browser_ui/accessibility/android/java/src/org/chromium/components/browser_ui/accessibility/AccessibilitySettingsDelegate.java b/components/browser_ui/accessibility/android/java/src/org/chromium/components/browser_ui/accessibility/AccessibilitySettingsDelegate.java
 --- a/components/browser_ui/accessibility/android/java/src/org/chromium/components/browser_ui/accessibility/AccessibilitySettingsDelegate.java
 +++ b/components/browser_ui/accessibility/android/java/src/org/chromium/components/browser_ui/accessibility/AccessibilitySettingsDelegate.java
-@@ -39,6 +39,8 @@ public interface AccessibilitySettingsDelegate {
+@@ -38,6 +38,8 @@ public interface AccessibilitySettingsDelegate {
      BooleanPreferenceDelegate getMoveTopToolbarToBottomDelegate();
      BooleanPreferenceDelegate getDisableToolbarSwipeUpDelegate();
  
@@ -352,16 +352,16 @@ diff --git a/third_party/blink/renderer/core/html/html_anchor_element.cc b/third
  #include "third_party/blink/renderer/core/page/page.h"
  #include "third_party/blink/renderer/core/speculation_rules/document_speculation_rules.h"
  #include "third_party/blink/renderer/platform/heap/garbage_collected.h"
-@@ -502,6 +503,17 @@ void HTMLAnchorElement::NavigateToHyperlink(ResourceRequest request,
-                                             bool is_trusted,
-                                             base::TimeTicks platform_time_stamp,
-                                             KURL completed_url) {
+@@ -502,6 +503,17 @@ void HTMLAnchorElementBase::NavigateToHyperlink(
+     bool is_trusted,
+     base::TimeTicks platform_time_stamp,
+     KURL completed_url) {
 +  UIEvent& event = *UIEvent::Create();
 +  NavigateToHyperlink2(std::move(request), navigation_policy, is_trusted, platform_time_stamp,
 +    std::move(completed_url), event, true);
 +}
 +
-+void HTMLAnchorElement::NavigateToHyperlink2(ResourceRequest request,
++void HTMLAnchorElementBase::NavigateToHyperlink2(ResourceRequest request,
 +                                            NavigationPolicy navigation_policy,
 +                                            bool is_trusted,
 +                                            base::TimeTicks platform_time_stamp,
@@ -370,7 +370,7 @@ diff --git a/third_party/blink/renderer/core/html/html_anchor_element.cc b/third
    LocalDOMWindow* window = GetDocument().domWindow();
    if (!window) {
      return;
-@@ -568,6 +580,15 @@ void HTMLAnchorElement::NavigateToHyperlink(ResourceRequest request,
+@@ -568,6 +580,15 @@ void HTMLAnchorElementBase::NavigateToHyperlink(
              request.GetReferrerPolicy()));
    }
  
@@ -386,39 +386,39 @@ diff --git a/third_party/blink/renderer/core/html/html_anchor_element.cc b/third
    Frame* target_frame =
        frame->Tree().FindOrCreateFrameForNavigation(frame_request, target).frame;
  
-@@ -622,7 +643,7 @@ AtomicString HTMLAnchorElement::interestAction() const {
+@@ -622,7 +643,7 @@ AtomicString HTMLAnchorElementBase::interestAction() const {
    return g_empty_atom;
  }
  
--void HTMLAnchorElement::HandleClick(MouseEvent& event) {
-+void HTMLAnchorElement::HandleClick(MouseEvent& event, bool do_not_show_context_menu) {
+-void HTMLAnchorElementBase::HandleClick(MouseEvent& event) {
++void HTMLAnchorElementBase::HandleClick(MouseEvent& event, bool do_not_show_context_menu) {
    event.SetDefaultHandled();
  
    LocalDOMWindow* window = GetDocument().domWindow();
-@@ -718,13 +739,12 @@ void HTMLAnchorElement::HandleClick(MouseEvent& event) {
+@@ -718,13 +739,12 @@ void HTMLAnchorElementBase::HandleClick(MouseEvent& event) {
      return;
    }
  
 -  base::OnceClosure navigate_closure = WTF::BindOnce(
--      &HTMLAnchorElement::NavigateToHyperlink, WrapWeakPersistent(this),
+-      &HTMLAnchorElementBase::NavigateToHyperlink, WrapWeakPersistent(this),
 -      std::move(request), navigation_policy, event.isTrusted(),
 -      event.PlatformTimeStamp(), std::move(completed_url));
 -
    if (navigation_policy == kNavigationPolicyDownload ||
        navigation_policy == kNavigationPolicyLinkPreview) {
 +    base::OnceClosure navigate_closure = WTF::BindOnce(
-+        &HTMLAnchorElement::NavigateToHyperlink, WrapWeakPersistent(this),
++        &HTMLAnchorElementBase::NavigateToHyperlink, WrapWeakPersistent(this),
 +        std::move(request), navigation_policy, event.isTrusted(),
 +        event.PlatformTimeStamp(), std::move(completed_url));
      // We distinguish single/double click with some modifiers.
      // See the comment of `EventHandler.delayed_navigation_task_handle_`.
      auto task_handle = PostDelayedCancellableTask(
-@@ -734,7 +754,9 @@ void HTMLAnchorElement::HandleClick(MouseEvent& event) {
+@@ -734,7 +754,9 @@ void HTMLAnchorElementBase::HandleClick(MouseEvent& event) {
      frame->GetEventHandler().SetDelayedNavigationTaskHandle(
          std::move(task_handle));
    } else {
 -    std::move(navigate_closure).Run();
-+    HTMLAnchorElement::NavigateToHyperlink2(std::move(request), navigation_policy,
++    HTMLAnchorElementBase::NavigateToHyperlink2(std::move(request), navigation_policy,
 +      event.isTrusted(), event.PlatformTimeStamp(), std::move(completed_url),
 +      event, do_not_show_context_menu);
    }
@@ -427,15 +427,15 @@ diff --git a/third_party/blink/renderer/core/html/html_anchor_element.cc b/third
 diff --git a/third_party/blink/renderer/core/html/html_anchor_element.h b/third_party/blink/renderer/core/html/html_anchor_element.h
 --- a/third_party/blink/renderer/core/html/html_anchor_element.h
 +++ b/third_party/blink/renderer/core/html/html_anchor_element.h
-@@ -116,6 +116,7 @@ class CORE_EXPORT HTMLAnchorElement : public HTMLElement, public DOMURLUtils {
+@@ -117,6 +117,7 @@ class CORE_EXPORT HTMLAnchorElementBase : public HTMLElement,
    AtomicString interestAction() const override;
  
    void Trace(Visitor*) const override;
 +  void HandleClick(MouseEvent&, bool do_not_show_context_menu = false);
  
   protected:
-   void ParseAttribute(const AttributeModificationParams&) override;
-@@ -146,7 +147,11 @@ class CORE_EXPORT HTMLAnchorElement : public HTMLElement, public DOMURLUtils {
+   HTMLAnchorElementBase(const QualifiedName& tag_name, Document&);
+@@ -148,7 +149,11 @@ class CORE_EXPORT HTMLAnchorElementBase : public HTMLElement,
                             bool is_trusted,
                             base::TimeTicks platform_time_stamp,
                             KURL);
@@ -551,7 +551,7 @@ diff --git a/third_party/blink/renderer/core/page/context_menu_controller.cc b/t
    // Clear any previously set cached results if we are resetting the hit test
    // result.
    image_selection_cached_result_ = nullptr;
-@@ -835,11 +848,13 @@ bool ContextMenuController::ShowContextMenu(LocalFrame* frame,
+@@ -836,11 +849,13 @@ bool ContextMenuController::ShowContextMenu(LocalFrame* frame,
    SetAutofillData(result.InnerNode(), data);
    SetPasswordManagerData(result.InnerElement(), data);
  

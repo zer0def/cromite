@@ -75,7 +75,7 @@ diff --git a/chrome/android/java/res/xml/homepage_preferences.xml b/chrome/andro
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/net/connectivitydetector/ConnectivityDetector.java b/chrome/android/java/src/org/chromium/chrome/browser/net/connectivitydetector/ConnectivityDetector.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/net/connectivitydetector/ConnectivityDetector.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/net/connectivitydetector/ConnectivityDetector.java
-@@ -476,7 +476,6 @@ public class ConnectivityDetector implements NetworkChangeNotifier.ConnectionTyp
+@@ -468,7 +468,6 @@ public class ConnectivityDetector implements NetworkChangeNotifier.ConnectionTyp
      @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
      public void setConnectionState(@ConnectionState int connectionState) {
          Log.i(TAG, "setConnectionState connectionState=" + connectionState);
@@ -281,7 +281,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/offlinepages/in
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tabbed_mode/TabbedRootUiCoordinator.java b/chrome/android/java/src/org/chromium/chrome/browser/tabbed_mode/TabbedRootUiCoordinator.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/tabbed_mode/TabbedRootUiCoordinator.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/tabbed_mode/TabbedRootUiCoordinator.java
-@@ -1141,7 +1141,10 @@ public class TabbedRootUiCoordinator extends RootUiCoordinator {
+@@ -1169,7 +1169,10 @@ public class TabbedRootUiCoordinator extends RootUiCoordinator {
                          mActivity,
                          mStatusIndicatorCoordinator,
                          isUrlBarFocusedSupplier,
@@ -296,7 +296,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tabbed_mode/Tab
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tabmodel/TabModelSelectorBase.java b/chrome/android/java/src/org/chromium/chrome/browser/tabmodel/TabModelSelectorBase.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/tabmodel/TabModelSelectorBase.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/tabmodel/TabModelSelectorBase.java
-@@ -326,6 +326,13 @@ public abstract class TabModelSelectorBase
+@@ -337,6 +337,13 @@ public abstract class TabModelSelectorBase
          return null;
      }
  
@@ -334,7 +334,7 @@ new file mode 100644
 +
 +package org.chromium.chrome.browser.flags.cromite;
 +
-+import org.chromium.base.cached_flags.CachedFlag;
++import org.chromium.components.cached_flags.CachedFlag;
 +import org.chromium.chrome.browser.flags.ChromeFeatureMap;
 +
 +public class sAskForRestartOnConnectionChange {
@@ -350,7 +350,7 @@ new file mode 100644
 diff --git a/chrome/browser/tabmodel/android/java/src/org/chromium/chrome/browser/tabmodel/TabModelSelector.java b/chrome/browser/tabmodel/android/java/src/org/chromium/chrome/browser/tabmodel/TabModelSelector.java
 --- a/chrome/browser/tabmodel/android/java/src/org/chromium/chrome/browser/tabmodel/TabModelSelector.java
 +++ b/chrome/browser/tabmodel/android/java/src/org/chromium/chrome/browser/tabmodel/TabModelSelector.java
-@@ -138,6 +138,8 @@ public interface TabModelSelector {
+@@ -140,6 +140,8 @@ public interface TabModelSelector {
      /** Close all tabs across all tab models */
      void closeAllTabs();
  
@@ -362,7 +362,7 @@ diff --git a/chrome/browser/tabmodel/android/java/src/org/chromium/chrome/browse
 diff --git a/chrome/browser/tabmodel/android/java/src/org/chromium/chrome/browser/tabmodel/TabModelUtils.java b/chrome/browser/tabmodel/android/java/src/org/chromium/chrome/browser/tabmodel/TabModelUtils.java
 --- a/chrome/browser/tabmodel/android/java/src/org/chromium/chrome/browser/tabmodel/TabModelUtils.java
 +++ b/chrome/browser/tabmodel/android/java/src/org/chromium/chrome/browser/tabmodel/TabModelUtils.java
-@@ -12,10 +12,14 @@ import org.chromium.base.supplier.ObservableSupplier;
+@@ -17,10 +17,14 @@ import org.chromium.base.supplier.SupplierUtils;
  import org.chromium.chrome.browser.tab.Tab;
  import org.chromium.chrome.browser.tab.TabSelectionType;
  import org.chromium.content_public.browser.WebContents;
@@ -377,7 +377,7 @@ diff --git a/chrome/browser/tabmodel/android/java/src/org/chromium/chrome/browse
  
  /**
   * A set of convenience methods used for interacting with {@link TabList}s and {@link TabModel}s.
-@@ -79,6 +83,20 @@ public class TabModelUtils {
+@@ -89,6 +93,20 @@ public class TabModelUtils {
          return TabModel.INVALID_TAB_INDEX;
      }
  
@@ -560,7 +560,7 @@ diff --git a/chrome/browser/ui/messages/android/java/src/org/chromium/chrome/bro
          mProfileImageView = (ImageView) mContainerView.findViewById(R.id.snackbar_profile_image);
          mEdgeToEdgeSupplier = edgeToEdgeSupplier;
          mEdgeToEdgePadAdjuster =
-@@ -372,6 +377,12 @@ public class SnackbarView implements InsetObserver.WindowInsetObserver {
+@@ -376,6 +381,12 @@ public class SnackbarView implements InsetObserver.WindowInsetObserver {
              mActionButtonView.setVisibility(View.VISIBLE);
              mActionButtonView.setContentDescription(snackbar.getActionText());
              setViewText(mActionButtonView, snackbar.getActionText(), animate);
@@ -576,7 +576,7 @@ diff --git a/chrome/browser/ui/messages/android/java/src/org/chromium/chrome/bro
 diff --git a/content/browser/web_contents/web_contents_android.cc b/content/browser/web_contents/web_contents_android.cc
 --- a/content/browser/web_contents/web_contents_android.cc
 +++ b/content/browser/web_contents/web_contents_android.cc
-@@ -910,6 +910,22 @@ void WebContentsAndroid::SetFocus(JNIEnv* env, jboolean focused) {
+@@ -904,6 +904,22 @@ void WebContentsAndroid::SetFocus(JNIEnv* env, jboolean focused) {
    view->SetFocus(focused);
  }
  
@@ -602,7 +602,7 @@ diff --git a/content/browser/web_contents/web_contents_android.cc b/content/brow
 diff --git a/content/browser/web_contents/web_contents_android.h b/content/browser/web_contents/web_contents_android.h
 --- a/content/browser/web_contents/web_contents_android.h
 +++ b/content/browser/web_contents/web_contents_android.h
-@@ -199,6 +199,7 @@ class CONTENT_EXPORT WebContentsAndroid {
+@@ -197,6 +197,7 @@ class CONTENT_EXPORT WebContentsAndroid {
  
    void OnScaleFactorChanged(JNIEnv* env);
    void SetFocus(JNIEnv* env, jboolean focused);
@@ -613,7 +613,7 @@ diff --git a/content/browser/web_contents/web_contents_android.h b/content/brows
 diff --git a/content/browser/web_contents/web_contents_impl.cc b/content/browser/web_contents/web_contents_impl.cc
 --- a/content/browser/web_contents/web_contents_impl.cc
 +++ b/content/browser/web_contents/web_contents_impl.cc
-@@ -3593,8 +3593,10 @@ void WebContentsImpl::Stop() {
+@@ -3574,8 +3574,10 @@ void WebContentsImpl::Stop() {
  void WebContentsImpl::SetPageFrozen(bool frozen) {
    TRACE_EVENT1("content", "WebContentsImpl::SetPageFrozen", "frozen", frozen);
  
@@ -627,7 +627,7 @@ diff --git a/content/browser/web_contents/web_contents_impl.cc b/content/browser
 diff --git a/content/public/android/java/src/org/chromium/content/browser/webcontents/WebContentsImpl.java b/content/public/android/java/src/org/chromium/content/browser/webcontents/WebContentsImpl.java
 --- a/content/public/android/java/src/org/chromium/content/browser/webcontents/WebContentsImpl.java
 +++ b/content/public/android/java/src/org/chromium/content/browser/webcontents/WebContentsImpl.java
-@@ -1164,6 +1164,12 @@ public class WebContentsImpl implements WebContents, RenderFrameHostDelegate, Wi
+@@ -1156,6 +1156,12 @@ public class WebContentsImpl implements WebContents, RenderFrameHostDelegate, Wi
          WebContentsImplJni.get().setFocus(mNativeWebContentsAndroid, hasFocus);
      }
  
@@ -640,7 +640,7 @@ diff --git a/content/public/android/java/src/org/chromium/content/browser/webcon
      @Override
      public void setDisplayCutoutSafeArea(Rect insets) {
          if (mNativeWebContentsAndroid == 0) return;
-@@ -1450,6 +1456,8 @@ public class WebContentsImpl implements WebContents, RenderFrameHostDelegate, Wi
+@@ -1438,6 +1444,8 @@ public class WebContentsImpl implements WebContents, RenderFrameHostDelegate, Wi
  
          void setFocus(long nativeWebContentsAndroid, boolean focused);
  
@@ -652,7 +652,7 @@ diff --git a/content/public/android/java/src/org/chromium/content/browser/webcon
 diff --git a/content/public/android/java/src/org/chromium/content_public/browser/WebContents.java b/content/public/android/java/src/org/chromium/content_public/browser/WebContents.java
 --- a/content/public/android/java/src/org/chromium/content_public/browser/WebContents.java
 +++ b/content/public/android/java/src/org/chromium/content_public/browser/WebContents.java
-@@ -288,6 +288,8 @@ public interface WebContents extends Parcelable {
+@@ -283,6 +283,8 @@ public interface WebContents extends Parcelable {
       */
      void setFocus(boolean hasFocus);
  
@@ -664,7 +664,7 @@ diff --git a/content/public/android/java/src/org/chromium/content_public/browser
 diff --git a/content/public/test/android/javatests/src/org/chromium/content_public/browser/test/mock/MockWebContents.java b/content/public/test/android/javatests/src/org/chromium/content_public/browser/test/mock/MockWebContents.java
 --- a/content/public/test/android/javatests/src/org/chromium/content_public/browser/test/mock/MockWebContents.java
 +++ b/content/public/test/android/javatests/src/org/chromium/content_public/browser/test/mock/MockWebContents.java
-@@ -193,6 +193,9 @@ public class MockWebContents implements WebContents {
+@@ -187,6 +187,9 @@ public class MockWebContents implements WebContents {
      @Override
      public void setFocus(boolean hasFocus) {}
  
@@ -709,7 +709,7 @@ new file mode 100644
 diff --git a/third_party/blink/renderer/core/dom/document.cc b/third_party/blink/renderer/core/dom/document.cc
 --- a/third_party/blink/renderer/core/dom/document.cc
 +++ b/third_party/blink/renderer/core/dom/document.cc
-@@ -4266,6 +4266,7 @@ void Document::DispatchUnloadEvents(UnloadEventTimingInfo* unload_timing_info) {
+@@ -4250,6 +4250,7 @@ void Document::DispatchUnloadEvents(UnloadEventTimingInfo* unload_timing_info) {
  }
  
  void Document::DispatchFreezeEvent() {

@@ -70,7 +70,7 @@ diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -219,6 +219,7 @@
+@@ -220,6 +220,7 @@
  #include "sandbox/policy/features.h"
  #include "sandbox/policy/switches.h"
  #include "services/device/public/cpp/device_features.h"
@@ -81,7 +81,7 @@ diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 diff --git a/chrome/browser/download/android/download_controller.cc b/chrome/browser/download/android/download_controller.cc
 --- a/chrome/browser/download/android/download_controller.cc
 +++ b/chrome/browser/download/android/download_controller.cc
-@@ -291,6 +291,36 @@ void LogAppVerificationPromptToPrefs(download::DownloadItem* item) {
+@@ -228,6 +228,36 @@ void LogAppVerificationPromptToPrefs(download::DownloadItem* item) {
    update->Append(base::TimeToValue(base::Time::Now()));
  }
  
@@ -118,7 +118,7 @@ diff --git a/chrome/browser/download/android/download_controller.cc b/chrome/bro
  }  // namespace
  
  static void JNI_DownloadController_OnAcquirePermissionResult(
-@@ -346,7 +376,7 @@ static void JNI_DownloadController_DownloadUrl(
+@@ -283,7 +313,7 @@ static void JNI_DownloadController_DownloadUrl(
      std::unique_ptr<download::DownloadUrlParameters> dl_params =
          content::DownloadRequestUtils::CreateDownloadForWebContentsMainFrame(
              web_contents, GURL(url),
@@ -289,7 +289,7 @@ new file mode 100644
 diff --git a/net/BUILD.gn b/net/BUILD.gn
 --- a/net/BUILD.gn
 +++ b/net/BUILD.gn
-@@ -1098,6 +1098,7 @@ component("net") {
+@@ -1103,6 +1103,7 @@ component("net") {
      "//components/miracle_parameter/common",
      "//components/network_time/time_tracker",
      "//net/http:transport_security_state_generated_files",
@@ -314,7 +314,7 @@ diff --git a/net/traffic_annotation/network_traffic_annotation.h b/net/traffic_a
 diff --git a/net/url_request/url_request_http_job.cc b/net/url_request/url_request_http_job.cc
 --- a/net/url_request/url_request_http_job.cc
 +++ b/net/url_request/url_request_http_job.cc
-@@ -422,6 +422,9 @@ URLRequestHttpJob::URLRequestHttpJob(
+@@ -414,6 +414,9 @@ URLRequestHttpJob::URLRequestHttpJob(
      : URLRequestJob(request),
        http_user_agent_settings_(http_user_agent_settings) {
    ResetTimer();
@@ -324,7 +324,7 @@ diff --git a/net/url_request/url_request_http_job.cc b/net/url_request/url_reque
  }
  
  URLRequestHttpJob::~URLRequestHttpJob() {
-@@ -743,6 +746,18 @@ void URLRequestHttpJob::MaybeStartTransactionInternal(int result) {
+@@ -712,6 +715,18 @@ void URLRequestHttpJob::MaybeStartTransactionInternal(int result) {
  void URLRequestHttpJob::StartTransactionInternal() {
    DCHECK(!override_response_headers_);
  
@@ -354,7 +354,7 @@ diff --git a/net/url_request/url_request_http_job.h b/net/url_request/url_reques
  
  namespace net {
  
-@@ -81,6 +82,8 @@ class NET_EXPORT_PRIVATE URLRequestHttpJob : public URLRequestJob {
+@@ -94,6 +95,8 @@ class NET_EXPORT_PRIVATE URLRequestHttpJob : public URLRequestJob {
      return priority_;
    }
  
@@ -1647,7 +1647,7 @@ new file mode 100644
 diff --git a/services/network/network_context.cc b/services/network/network_context.cc
 --- a/services/network/network_context.cc
 +++ b/services/network/network_context.cc
-@@ -97,6 +97,7 @@
+@@ -99,6 +99,7 @@
  #include "net/url_request/url_request.h"
  #include "net/url_request/url_request_context.h"
  #include "net/url_request/url_request_context_builder.h"
@@ -1655,7 +1655,7 @@ diff --git a/services/network/network_context.cc b/services/network/network_cont
  #include "services/network/brokered_client_socket_factory.h"
  #include "services/network/cookie_manager.h"
  #include "services/network/data_remover_util.h"
-@@ -1742,6 +1743,9 @@ void NetworkContext::OnNewSCTAuditingReportSent() {
+@@ -1751,6 +1752,9 @@ void NetworkContext::OnNewSCTAuditingReportSent() {
  void NetworkContext::CreateUDPSocket(
      mojo::PendingReceiver<mojom::UDPSocket> receiver,
      mojo::PendingRemote<mojom::UDPSocketListener> listener) {
@@ -1665,7 +1665,7 @@ diff --git a/services/network/network_context.cc b/services/network/network_cont
    socket_factory_->CreateUDPSocket(std::move(receiver), std::move(listener));
  }
  
-@@ -1754,6 +1758,17 @@ void NetworkContext::CreateRestrictedUDPSocket(
+@@ -1763,6 +1767,17 @@ void NetworkContext::CreateRestrictedUDPSocket(
      mojo::PendingRemote<mojom::UDPSocketListener> listener,
      CreateRestrictedUDPSocketCallback callback) {
    // SimpleHostResolver is transitively owned by |this|.
@@ -1683,7 +1683,7 @@ diff --git a/services/network/network_context.cc b/services/network/network_cont
    socket_factory_->CreateRestrictedUDPSocket(
        addr, mode, traffic_annotation, std::move(params), std::move(receiver),
        std::move(listener), SimpleHostResolver::Create(this),
-@@ -1766,6 +1781,17 @@ void NetworkContext::CreateTCPServerSocket(
+@@ -1775,6 +1790,17 @@ void NetworkContext::CreateTCPServerSocket(
      const net::MutableNetworkTrafficAnnotationTag& traffic_annotation,
      mojo::PendingReceiver<mojom::TCPServerSocket> receiver,
      CreateTCPServerSocketCallback callback) {
@@ -1701,7 +1701,7 @@ diff --git a/services/network/network_context.cc b/services/network/network_cont
    socket_factory_->CreateTCPServerSocket(
        local_addr, std::move(options),
        static_cast<net::NetworkTrafficAnnotationTag>(traffic_annotation),
-@@ -1780,6 +1806,21 @@ void NetworkContext::CreateTCPConnectedSocket(
+@@ -1789,6 +1815,21 @@ void NetworkContext::CreateTCPConnectedSocket(
      mojo::PendingReceiver<mojom::TCPConnectedSocket> receiver,
      mojo::PendingRemote<mojom::SocketObserver> observer,
      CreateTCPConnectedSocketCallback callback) {
@@ -1723,7 +1723,7 @@ diff --git a/services/network/network_context.cc b/services/network/network_cont
    socket_factory_->CreateTCPConnectedSocket(
        local_addr, remote_addr_list, std::move(tcp_connected_socket_options),
        static_cast<net::NetworkTrafficAnnotationTag>(traffic_annotation),
-@@ -1791,6 +1832,20 @@ void NetworkContext::CreateTCPBoundSocket(
+@@ -1800,6 +1841,20 @@ void NetworkContext::CreateTCPBoundSocket(
      const net::MutableNetworkTrafficAnnotationTag& traffic_annotation,
      mojo::PendingReceiver<mojom::TCPBoundSocket> receiver,
      CreateTCPBoundSocketCallback callback) {
@@ -1744,7 +1744,7 @@ diff --git a/services/network/network_context.cc b/services/network/network_cont
    socket_factory_->CreateTCPBoundSocket(
        local_addr,
        static_cast<net::NetworkTrafficAnnotationTag>(traffic_annotation),
-@@ -1857,6 +1912,24 @@ void NetworkContext::CreateWebSocket(
+@@ -1866,6 +1921,24 @@ void NetworkContext::CreateWebSocket(
      mojo::PendingRemote<mojom::WebSocketAuthenticationHandler> auth_handler,
      mojo::PendingRemote<mojom::TrustedHeaderClient> header_client,
      const std::optional<base::UnguessableToken>& throttling_profile_id) {

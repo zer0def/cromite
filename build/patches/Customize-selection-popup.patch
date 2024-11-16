@@ -23,7 +23,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ChromeActionModeHandler.java b/chrome/android/java/src/org/chromium/chrome/browser/ChromeActionModeHandler.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/ChromeActionModeHandler.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/ChromeActionModeHandler.java
-@@ -154,9 +154,7 @@ public class ChromeActionModeHandler {
+@@ -158,9 +158,7 @@ public class ChromeActionModeHandler {
                              | ActionModeCallbackHelper.MENU_ITEM_SHARE;
              // Disable options that expose additional Chrome functionality prior to the FRE being
              // completed (i.e. creation of a new tab).
@@ -37,14 +37,14 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ChromeActionMod
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java b/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java
-@@ -753,10 +753,17 @@ public class ChromeTabbedActivity extends ChromeActivity<ChromeActivityComponent
+@@ -752,10 +752,17 @@ public class ChromeTabbedActivity extends ChromeActivity<ChromeActivityComponent
                                  @TabLaunchType int type,
                                  @TabCreationState int creationState,
                                  boolean markedForSelection) {
 -                            if (type == TabLaunchType.FROM_LONGPRESS_BACKGROUND
 -                                    || type == TabLaunchType.FROM_LONGPRESS_BACKGROUND_IN_GROUP
--                                    || type == TabLaunchType.FROM_RECENT_TABS
--                                            && !DeviceClassManager.enableAnimations()) {
+-                                    || (type == TabLaunchType.FROM_RECENT_TABS
+-                                            && !DeviceClassManager.enableAnimations())) {
 +                            boolean selectionPopupTabsForeground =
 +                                ContextUtils.getAppSharedPreferences().getBoolean(
 +                                    "selection_popup_tabs_foreground", false);
@@ -62,7 +62,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedAct
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/app/tab_activity_glue/ActivityTabWebContentsDelegateAndroid.java b/chrome/android/java/src/org/chromium/chrome/browser/app/tab_activity_glue/ActivityTabWebContentsDelegateAndroid.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/app/tab_activity_glue/ActivityTabWebContentsDelegateAndroid.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/app/tab_activity_glue/ActivityTabWebContentsDelegateAndroid.java
-@@ -190,12 +190,20 @@ public class ActivityTabWebContentsDelegateAndroid extends TabWebContentsDelegat
+@@ -191,12 +191,20 @@ public class ActivityTabWebContentsDelegateAndroid extends TabWebContentsDelegat
          // Skip opening a new Tab if it doesn't make sense.
          if (mTab.isClosing()) return false;
  
@@ -95,9 +95,9 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/compositor/layo
  import org.chromium.base.ObserverList;
  import org.chromium.base.TraceEvent;
  import org.chromium.base.supplier.ObservableSupplier;
-@@ -232,6 +233,13 @@ public class LayoutManagerImpl
-                                         && launchType != TabLaunchType.FROM_RESTORE_TABS_UI
-                                         && launchType != TabLaunchType.FROM_SYNC_BACKGROUND
+@@ -235,6 +236,13 @@ public class LayoutManagerImpl
+                                                 != TabLaunchType
+                                                         .FROM_COLLABORATION_BACKGROUND_IN_GROUP)
                                  || (!getTabModelSelector().isIncognitoSelected() && incognito);
 +                boolean selectionPopupTabsForeground =
 +                            ContextUtils.getAppSharedPreferences().getBoolean(
@@ -112,7 +112,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/compositor/layo
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tab/TabContextMenuItemDelegate.java b/chrome/android/java/src/org/chromium/chrome/browser/tab/TabContextMenuItemDelegate.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/tab/TabContextMenuItemDelegate.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/tab/TabContextMenuItemDelegate.java
-@@ -344,8 +344,13 @@ public class TabContextMenuItemDelegate implements ContextMenuItemDelegate {
+@@ -343,8 +343,13 @@ public class TabContextMenuItemDelegate implements ContextMenuItemDelegate {
      public void onOpenImageInNewTab(GURL url, Referrer referrer) {
          LoadUrlParams loadUrlParams = new LoadUrlParams(url.getSpec());
          loadUrlParams.setReferrer(referrer);
@@ -130,7 +130,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tab/TabContextM
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ui/RootUiCoordinator.java b/chrome/android/java/src/org/chromium/chrome/browser/ui/RootUiCoordinator.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/ui/RootUiCoordinator.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/ui/RootUiCoordinator.java
-@@ -27,6 +27,7 @@ import androidx.appcompat.content.res.AppCompatResources;
+@@ -26,6 +26,7 @@ import androidx.appcompat.content.res.AppCompatResources;
  
  import org.chromium.base.Callback;
  import org.chromium.base.CallbackController;
@@ -138,24 +138,24 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ui/RootUiCoordi
  import org.chromium.base.TraceEvent;
  import org.chromium.base.lifetime.Destroyable;
  import org.chromium.base.metrics.RecordUserAction;
-@@ -834,11 +835,16 @@ public class RootUiCoordinator
-                             TrackerFactory.getTrackerForProfile(tab.getProfile())
-                                     .notifyEvent(EventConstants.WEB_SEARCH_PERFORMED);
+@@ -824,11 +825,16 @@ public class RootUiCoordinator
+                     TrackerFactory.getTrackerForProfile(tab.getProfile())
+                             .notifyEvent(EventConstants.WEB_SEARCH_PERFORMED);
  
-+                            boolean selection_popup_web_search_to_group =
-+                                ContextUtils.getAppSharedPreferences().getBoolean(
-+                                    "selection_popup_web_search_to_group", false);
++                    boolean selection_popup_web_search_to_group =
++                        ContextUtils.getAppSharedPreferences().getBoolean(
++                            "selection_popup_web_search_to_group", false);
 +
-                             mTabModelSelectorSupplier
-                                     .get()
-                                     .openNewTab(
-                                             generateUrlParamsForSearch(tab, query),
--                                            TabLaunchType.FROM_LONGPRESS_FOREGROUND,
-+                                            selection_popup_web_search_to_group ? TabLaunchType.FROM_LONGPRESS_BACKGROUND_IN_GROUP
-+                                                                                : TabLaunchType.FROM_LONGPRESS_FOREGROUND,
-                                             tab,
-                                             tab.isIncognito());
-                         },
+                     mTabModelSelectorSupplier
+                             .get()
+                             .openNewTab(
+                                     generateUrlParamsForSearch(tab, query),
+-                                    TabLaunchType.FROM_LONGPRESS_FOREGROUND,
++                                    selection_popup_web_search_to_group ? TabLaunchType.FROM_LONGPRESS_BACKGROUND_IN_GROUP
++                                                                        : TabLaunchType.FROM_LONGPRESS_FOREGROUND,
+                                     tab,
+                                     tab.isIncognito());
+                 },
 diff --git a/chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Customize-selection-popup.grdp b/chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Customize-selection-popup.grdp
 new file mode 100644
 --- /dev/null
@@ -198,7 +198,7 @@ new file mode 100644
 diff --git a/components/browser_ui/accessibility/android/java/res/xml/accessibility_preferences.xml b/components/browser_ui/accessibility/android/java/res/xml/accessibility_preferences.xml
 --- a/components/browser_ui/accessibility/android/java/res/xml/accessibility_preferences.xml
 +++ b/components/browser_ui/accessibility/android/java/res/xml/accessibility_preferences.xml
-@@ -73,4 +73,28 @@ found in the LICENSE file.
+@@ -78,4 +78,28 @@ found in the LICENSE file.
          android:key="disable_toolbar_swipeup"
          android:title="@string/disable_toolbar_swipe_up" />
  

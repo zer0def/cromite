@@ -181,7 +181,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/feedback/Connec
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/net/connectivitydetector/ConnectivityDetector.java b/chrome/android/java/src/org/chromium/chrome/browser/net/connectivitydetector/ConnectivityDetector.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/net/connectivitydetector/ConnectivityDetector.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/net/connectivitydetector/ConnectivityDetector.java
-@@ -406,69 +406,6 @@ public class ConnectivityDetector implements NetworkChangeNotifier.ConnectionTyp
+@@ -399,69 +399,6 @@ public class ConnectivityDetector implements NetworkChangeNotifier.ConnectionTyp
          new AsyncTask<Integer>() {
              @Override
              protected Integer doInBackground() {
@@ -254,7 +254,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/net/connectivit
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/omaha/OmahaBase.java b/chrome/android/java/src/org/chromium/chrome/browser/omaha/OmahaBase.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/omaha/OmahaBase.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/omaha/OmahaBase.java
-@@ -462,8 +462,7 @@ public class OmahaBase {
+@@ -457,8 +457,7 @@ public class OmahaBase {
                  }""");
          try {
              URL url = new URL(getRequestGenerator().getServerUrl());
@@ -298,7 +298,7 @@ diff --git a/components/variations/android/java/src/org/chromium/components/vari
      @VisibleForTesting
      protected List<String> getAvailableInstanceManipulations() {
          List<String> compressions = new ArrayList<String>();
-@@ -535,24 +527,8 @@ public class VariationsSeedFetcher {
+@@ -530,24 +522,8 @@ public class VariationsSeedFetcher {
          HttpURLConnection connection = null;
          try {
              long startTimeMillis = SystemClock.elapsedRealtime();
@@ -328,7 +328,7 @@ diff --git a/net/android/java/src/org/chromium/net/ChromiumNetworkAdapter.java b
 --- a/net/android/java/src/org/chromium/net/ChromiumNetworkAdapter.java
 +++ b/net/android/java/src/org/chromium/net/ChromiumNetworkAdapter.java
 @@ -23,10 +23,6 @@ public final class ChromiumNetworkAdapter {
-      *     what data gets sent, what triggers it, etc.
+      *     data gets sent, what triggers it, etc.
       * @return a URLConnection linking to the URL.
       */
 -    public static URLConnection openConnection(
@@ -339,7 +339,7 @@ diff --git a/net/android/java/src/org/chromium/net/ChromiumNetworkAdapter.java b
      /**
       * Wrapper around URL#openConnection(Proxy), with an extra argument for static analysis/privacy
 @@ -38,11 +34,6 @@ public final class ChromiumNetworkAdapter {
-      *     what data gets sent, what triggers it, etc.
+      *     data gets sent, what triggers it, etc.
       * @return a URLConnection linking to the URL.
       */
 -    public static URLConnection openConnection(
@@ -349,9 +349,9 @@ diff --git a/net/android/java/src/org/chromium/net/ChromiumNetworkAdapter.java b
 -    }
  
      /**
-      * Wrapper around URL#openStream(), with an extra argument for static analysis/privacy
-@@ -53,8 +44,4 @@ public final class ChromiumNetworkAdapter {
-      *     what data gets sent, what triggers it, etc.
+      * Wrapper around URL#openStream(), with an extra argument for static analysis/privacy auditing.
+@@ -52,8 +43,4 @@ public final class ChromiumNetworkAdapter {
+      *     data gets sent, what triggers it, etc.
       * @return an InputStream linking to the URL.
       */
 -    public static InputStream openStream(URL url, NetworkTrafficAnnotationTag trafficAnnotation)

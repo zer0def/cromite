@@ -23,7 +23,7 @@ diff --git a/components/installedapp/android/java/src/org/chromium/components/in
 +        assert false;
          GURL url = mRenderFrameHost.getLastCommittedURL();
          final GURL frameUrl = url == null ? GURL.emptyGURL() : url;
-         int delayMillis = 0;
+         int numTasks = Math.min(relatedApps.length, MAX_ALLOWED_RELATED_APPS);
 diff --git a/content/browser/installedapp/installed_app_provider_impl.cc b/content/browser/installedapp/installed_app_provider_impl.cc
 --- a/content/browser/installedapp/installed_app_provider_impl.cc
 +++ b/content/browser/installedapp/installed_app_provider_impl.cc
@@ -58,7 +58,7 @@ new file mode 100644
 diff --git a/third_party/blink/renderer/platform/runtime_enabled_features.json5 b/third_party/blink/renderer/platform/runtime_enabled_features.json5
 --- a/third_party/blink/renderer/platform/runtime_enabled_features.json5
 +++ b/third_party/blink/renderer/platform/runtime_enabled_features.json5
-@@ -2423,9 +2423,9 @@
+@@ -2455,9 +2455,9 @@
        status: {"Android": "test", "default": "stable"},
      },
      {

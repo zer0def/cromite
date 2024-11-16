@@ -23,9 +23,9 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tab/TabContextM
  import org.chromium.chrome.browser.offlinepages.RequestCoordinatorBridge;
  import org.chromium.chrome.browser.profiles.Profile;
 +import org.chromium.chrome.browser.tab.TabBrowserControlsConstraintsHelper;
+ import org.chromium.chrome.browser.tabmodel.TabGroupModelFilter;
  import org.chromium.chrome.browser.tabmodel.TabModelSelector;
  import org.chromium.chrome.browser.tabmodel.document.ChromeAsyncTabLauncher;
- import org.chromium.chrome.browser.tasks.tab_groups.TabGroupModelFilter;
 @@ -250,6 +252,7 @@ public class TabContextMenuItemDelegate implements ContextMenuItemDelegate {
              Referrer referrer,
              boolean navigateToTab,

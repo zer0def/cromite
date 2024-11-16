@@ -18,9 +18,9 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 diff --git a/chrome/android/chrome_java_resources.gni b/chrome/android/chrome_java_resources.gni
 --- a/chrome/android/chrome_java_resources.gni
 +++ b/chrome/android/chrome_java_resources.gni
-@@ -643,7 +643,7 @@ chrome_java_resources = [
+@@ -633,7 +633,7 @@ chrome_java_resources = [
+   "java/res/xml/manage_sync_preferences.xml",
    "java/res/xml/personalize_google_services_preferences.xml",
-   "java/res/xml/phone_as_a_security_key_accessory_filter.xml",
    "java/res/xml/incognito_preferences.xml",
 -  "java/res/xml/privacy_preferences.xml",
 +  "java/res/xml/privacy_preferences.xml", "java/res/xml/privacy_preferences_cromite.xml",
@@ -30,16 +30,16 @@ diff --git a/chrome/android/chrome_java_resources.gni b/chrome/android/chrome_ja
 diff --git a/chrome/android/java/res/xml/main_preferences.xml b/chrome/android/java/res/xml/main_preferences.xml
 --- a/chrome/android/java/res/xml/main_preferences.xml
 +++ b/chrome/android/java/res/xml/main_preferences.xml
-@@ -17,7 +17,7 @@ for the previous order (main_preferences_legacy). -->
-         android:key="sync_promo"
-         android:order="0"/>
+@@ -15,7 +15,7 @@ for the previous order (main_preferences_legacy). -->
+ <!-- `order=0` is reserved and it will be added in code.  -->
+ <!-- TODO(crbug.com/364906215): Move SettingsPromoCardPreference here once SyncPromoPreference is removed -->
      <PreferenceCategory
 -        android:key="account_and_google_services_section"
 +        android:key="account_and_google_services_section" app:isPreferenceVisible="false"
          android:order="1001"
          android:title="@string/prefs_section_account_and_google_services"/>
      <org.chromium.chrome.browser.sync.settings.SignInPreference
-@@ -30,7 +30,7 @@ for the previous order (main_preferences_legacy). -->
+@@ -28,7 +28,7 @@ for the previous order (main_preferences_legacy). -->
          android:layout="@layout/account_management_account_row"
          android:title="@string/sync_category_title"/>
      <org.chromium.components.browser_ui.settings.ChromeBasePreference
@@ -245,7 +245,7 @@ new file mode 100644
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/PrivacySettings.java b/chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/PrivacySettings.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/PrivacySettings.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/PrivacySettings.java
-@@ -142,7 +142,7 @@ public class PrivacySettings extends ChromeBaseSettingsFragment
+@@ -143,7 +143,7 @@ public class PrivacySettings extends ChromeBaseSettingsFragment
      public void onCreatePreferencesCromite(Bundle savedInstanceState, String rootKey) {
          mPageTitle.set(getString(R.string.prefs_privacy_security));
  

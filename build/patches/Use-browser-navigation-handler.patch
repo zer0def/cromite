@@ -94,7 +94,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/gesturenav/Hist
  import org.chromium.chrome.browser.lifecycle.ActivityLifecycleDispatcher;
  import org.chromium.chrome.browser.lifecycle.PauseResumeWithNativeObserver;
  import org.chromium.chrome.browser.tab.CurrentTabObserver;
-@@ -159,6 +160,9 @@ public class HistoryNavigationCoordinator
+@@ -155,6 +156,9 @@ public class HistoryNavigationCoordinator
       * @return {@code} true if the feature is enabled.
       */
      private boolean isFeatureEnabled() {
@@ -107,9 +107,9 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/gesturenav/Hist
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/gesturenav/HistoryNavigationLayout.java b/chrome/android/java/src/org/chromium/chrome/browser/gesturenav/HistoryNavigationLayout.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/gesturenav/HistoryNavigationLayout.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/gesturenav/HistoryNavigationLayout.java
-@@ -68,8 +68,8 @@ class HistoryNavigationLayout extends FrameLayout implements ViewGroup.OnHierarc
+@@ -67,8 +67,8 @@ class HistoryNavigationLayout extends FrameLayout implements ViewGroup.OnHierarc
+      * @param forward {@code true} for forward navigation, or {@code false} for back.
       * @param initiatingEdge Which edge of the screen the gesture is navigating from.
-      * @param closeIndicator
       */
 -    void showBubble(
 -            boolean forward,
@@ -118,7 +118,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/gesturenav/Hist
              @BackGestureEventSwipeEdge int initiatingEdge,
              @CloseTarget int closeIndicator) {
          if (mSideSlideLayout == null) {
-@@ -87,7 +87,7 @@ class HistoryNavigationLayout extends FrameLayout implements ViewGroup.OnHierarc
+@@ -86,7 +86,7 @@ class HistoryNavigationLayout extends FrameLayout implements ViewGroup.OnHierarc
                      });
          }
          mSideSlideLayout.setEnabled(true);
@@ -139,10 +139,23 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/gesturenav/Navi
  import static org.chromium.chrome.browser.gesturenav.GestureNavigationProperties.EDGE;
  
  import android.app.Activity;
-@@ -233,15 +233,21 @@ class NavigationHandler implements TouchEventObserver {
+@@ -276,7 +276,11 @@ class NavigationHandler implements TouchEventObserver {
  
-         mInitiatingEdge = initiatingEdge;
+         boolean forward = isForward();
  
+-        mModel.set(DIRECTION, forward);
++        if (mInitiatingEdge == BackGestureEventSwipeEdge.RIGHT && canNavigate(true)) {
++            mModel.set(CANFORWARD, true);
++        } else {
++            mModel.set(CANFORWARD, false);
++        }
+         mModel.set(EDGE, mInitiatingEdge);
+         if (canNavigate(forward)) {
+             if (mState != GestureState.STARTED) mModel.set(ACTION, GestureAction.RESET_BUBBLE);
+@@ -483,12 +487,14 @@ class NavigationHandler implements TouchEventObserver {
+     }
+ 
+     private boolean isForward() {
 -        boolean forward = mInitiatingEdge == BackGestureEventSwipeEdge.RIGHT;
 +        boolean forward = false;
 +        @BackGestureEventSwipeEdge int edge = BackGestureEventSwipeEdge.RIGHT;
@@ -153,20 +166,12 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/gesturenav/Navi
              forward = !forward;
 +            edge = BackGestureEventSwipeEdge.LEFT;
          }
- 
--        mModel.set(DIRECTION, forward);
-+        if (mInitiatingEdge == edge && canNavigate(true)) {
-+            mModel.set(CANFORWARD, true);
-+        } else {
-+            mModel.set(CANFORWARD, false);
-+        }
-         mModel.set(EDGE, mInitiatingEdge);
-         if (canNavigate(forward)) {
-             if (mState != GestureState.STARTED) mModel.set(ACTION, GestureAction.RESET_BUBBLE);
+         return forward;
+     }
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/gesturenav/SideSlideLayout.java b/chrome/android/java/src/org/chromium/chrome/browser/gesturenav/SideSlideLayout.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/gesturenav/SideSlideLayout.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/gesturenav/SideSlideLayout.java
-@@ -106,6 +106,7 @@ public class SideSlideLayout extends ViewGroup {
+@@ -105,6 +105,7 @@ public class SideSlideLayout extends ViewGroup {
      private int mAnimationViewWidth;
  
      private boolean mIsForward;
@@ -174,7 +179,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/gesturenav/Side
      private @CloseTarget int mCloseIndicator;
  
      private @BackGestureEventSwipeEdge int mInitiatingEdge;
-@@ -223,10 +224,10 @@ public class SideSlideLayout extends ViewGroup {
+@@ -220,10 +221,10 @@ public class SideSlideLayout extends ViewGroup {
       * Set the direction used for sliding gesture.
       * @param forward {@code true} if direction is forward.
       */
@@ -189,7 +194,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/gesturenav/Side
      }
  
      public void setInitiatingEdge(@BackGestureEventSwipeEdge int edge) {
-@@ -332,7 +333,7 @@ public class SideSlideLayout extends ViewGroup {
+@@ -329,7 +330,7 @@ public class SideSlideLayout extends ViewGroup {
          mWillNavigate = navigating;
  
          if (mCloseIndicator != CloseTarget.NONE) {
@@ -198,7 +203,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/gesturenav/Side
                  mArrowView.showCaption(mCloseIndicator);
                  mArrowViewWidth = mArrowView.getMeasuredWidth();
              } else {
-@@ -348,6 +349,20 @@ public class SideSlideLayout extends ViewGroup {
+@@ -345,6 +346,20 @@ public class SideSlideLayout extends ViewGroup {
                                  ? -targetDiff
                                  : targetDiff);
          setTargetOffsetLeftAndRight(targetX - mCurrentTargetOffset);
@@ -222,7 +227,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/gesturenav/Side
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tabbed_mode/TabbedRootUiCoordinator.java b/chrome/android/java/src/org/chromium/chrome/browser/tabbed_mode/TabbedRootUiCoordinator.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/tabbed_mode/TabbedRootUiCoordinator.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/tabbed_mode/TabbedRootUiCoordinator.java
-@@ -54,6 +54,7 @@ import org.chromium.chrome.browser.firstrun.FirstRunStatus;
+@@ -57,6 +57,7 @@ import org.chromium.chrome.browser.firstrun.FirstRunStatus;
  import org.chromium.chrome.browser.flags.ActivityType;
  import org.chromium.chrome.browser.flags.ChromeFeatureList;
  import org.chromium.chrome.browser.flags.ChromeSwitches;
@@ -230,7 +235,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tabbed_mode/Tab
  import org.chromium.chrome.browser.fullscreen.BrowserControlsManager;
  import org.chromium.chrome.browser.fullscreen.FullscreenManager;
  import org.chromium.chrome.browser.gesturenav.BackActionDelegate;
-@@ -614,6 +615,8 @@ public class TabbedRootUiCoordinator extends RootUiCoordinator {
+@@ -628,6 +629,8 @@ public class TabbedRootUiCoordinator extends RootUiCoordinator {
      @Override
      public void onInflationComplete() {
          mCoordinator = mActivity.findViewById(R.id.coordinator);
@@ -263,7 +268,7 @@ new file mode 100644
 +
 +package org.chromium.chrome.browser.flags.cromite;
 +
-+import org.chromium.base.cached_flags.CachedFlag;
++import org.chromium.components.cached_flags.CachedFlag;
 +import org.chromium.chrome.browser.flags.ChromeFeatureMap;
 +
 +public class sUseBrowserNavigationHandler {
@@ -297,7 +302,7 @@ new file mode 100644
 diff --git a/components/browser_ui/accessibility/android/java/res/xml/accessibility_preferences.xml b/components/browser_ui/accessibility/android/java/res/xml/accessibility_preferences.xml
 --- a/components/browser_ui/accessibility/android/java/res/xml/accessibility_preferences.xml
 +++ b/components/browser_ui/accessibility/android/java/res/xml/accessibility_preferences.xml
-@@ -103,4 +103,13 @@ found in the LICENSE file.
+@@ -108,4 +108,13 @@ found in the LICENSE file.
          android:summary="@string/selection_popup_smart_text_summary"
          android:title="@string/selection_popup_smart_text_title" />
  

@@ -24,12 +24,12 @@ diff --git a/components/performance_manager/features.cc b/components/performance
 @@ -143,6 +143,7 @@ BASE_FEATURE(kUrgentPageDiscarding,
  BASE_FEATURE(kCPUMeasurementInFreezingPolicy,
               "CPUMeasurementInFreezingPolicy",
-              base::FEATURE_DISABLED_BY_DEFAULT);
+              base::FEATURE_ENABLED_BY_DEFAULT);
 +SET_CROMITE_FEATURE_ENABLED(kCPUMeasurementInFreezingPolicy);
  
- // Note: This param is associated with `kCPUMeasurementInFreezingPolicy` instead
- // of `kFreezingOnBatterySaver`, to allow retrieving the value without
-@@ -159,9 +160,14 @@ BASE_FEATURE(kFreezingOnBatterySaverForTesting,
+ // Note: These params are associated with `kCPUMeasurementInFreezingPolicy`
+ // instead of `kFreezingOnBatterySaver`, to allow retrieving the value without
+@@ -171,9 +172,14 @@ BASE_FEATURE(kFreezingOnBatterySaverForTesting,
               "FreezingOnBatterySaverForTesting",
               base::FEATURE_DISABLED_BY_DEFAULT);
  
@@ -39,7 +39,7 @@ diff --git a/components/performance_manager/features.cc b/components/performance
 +
  BASE_FEATURE(kResourceAttributionIncludeOrigins,
               "ResourceAttributionIncludeOrigins",
-              base::FEATURE_DISABLED_BY_DEFAULT);
+              base::FEATURE_ENABLED_BY_DEFAULT);
 +SET_CROMITE_FEATURE_ENABLED(kResourceAttributionIncludeOrigins);
  
  BASE_FEATURE(kSeamlessRenderFrameSwap,
@@ -47,7 +47,7 @@ diff --git a/components/performance_manager/features.cc b/components/performance
 diff --git a/components/performance_manager/freezing/freezing_policy.cc b/components/performance_manager/freezing/freezing_policy.cc
 --- a/components/performance_manager/freezing/freezing_policy.cc
 +++ b/components/performance_manager/freezing/freezing_policy.cc
-@@ -193,11 +193,11 @@ void FreezingPolicy::UpdateFrozenState(
+@@ -207,11 +207,11 @@ void FreezingPolicy::UpdateFrozenState(
        const BrowsingInstanceState& browsing_instance_state = it->second;
  
        if (browsing_instance_state.cpu_intensive_in_background &&
@@ -64,7 +64,7 @@ diff --git a/components/performance_manager/freezing/freezing_policy.cc b/compon
 diff --git a/components/performance_manager/public/features.h b/components/performance_manager/public/features.h
 --- a/components/performance_manager/public/features.h
 +++ b/components/performance_manager/public/features.h
-@@ -157,6 +157,9 @@ BASE_DECLARE_FEATURE(kFreezingOnBatterySaver);
+@@ -162,6 +162,9 @@ BASE_DECLARE_FEATURE(kFreezingOnBatterySaver);
  // - Pretend that all tabs have high CPU usage in background.
  BASE_DECLARE_FEATURE(kFreezingOnBatterySaverForTesting);
  
