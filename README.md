@@ -27,7 +27,7 @@ In addition, Cromite would like to promote greater integration with other non-pr
 
 # Privacy limitations
 
-Cromite's privacy features, including anti-fingerprinting mitigations (which are not comprehensive), **are not to be considered useful for journalists and people living in countries with freedom limitations**, please look at [Tor Browser](https://www.torproject.org/download/) in such cases.
+Cromite's privacy features, including anti-fingerprinting mitigations (which are not comprehensive), **are not to be considered useful for journalists and people living in countries with freedom limitations**, please look at [Tor Browser](https://www.torproject.org/download/) in such cases (better to use the desktop version).
 Please note that this project is not free of bugs and that changing the behaviour of a browser can be risky and not without problems.
 
 # Docs
