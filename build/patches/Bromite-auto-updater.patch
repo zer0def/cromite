@@ -35,11 +35,11 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../omaha/inline/InlineUpdateController.java  |  57 ++++
  .../safety_hub/SafetyHubFetchService.java     |   5 -
  .../strings/android_chrome_strings.grd        |  23 +-
- .../endpoint_fetcher/endpoint_fetcher.cc      | 122 ++++++--
+ .../endpoint_fetcher/endpoint_fetcher.cc      | 125 ++++++--
  .../endpoint_fetcher/endpoint_fetcher.h       |  23 +-
  .../Bromite-auto-updater.inc                  |   3 +
  .../Bromite-auto-updater.inc                  |   1 +
- 31 files changed, 1226 insertions(+), 95 deletions(-)
+ 31 files changed, 1226 insertions(+), 98 deletions(-)
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/omaha/CromiteUpdateStatusProvider.java
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/omaha/inline/BromiteInlineUpdateController.java
  create mode 100644 chrome/browser/endpoint_fetcher/BUILD.gn
@@ -1085,7 +1085,7 @@ new file mode 100644
 diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browser/flags/android/chrome_feature_list.cc
 --- a/chrome/browser/flags/android/chrome_feature_list.cc
 +++ b/chrome/browser/flags/android/chrome_feature_list.cc
-@@ -282,6 +282,7 @@ const base::Feature* const kFeaturesExposedToJava[] = {
+@@ -283,6 +283,7 @@ const base::Feature* const kFeaturesExposedToJava[] = {
      &kPriceChangeModule,
      &kPwaRestoreUi,
      &kPwaRestoreUiAtStartup,
@@ -1096,7 +1096,7 @@ diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browse
 diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 --- a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 +++ b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
-@@ -366,6 +366,7 @@ public abstract class ChromeFeatureList {
+@@ -367,6 +367,7 @@ public abstract class ChromeFeatureList {
      public static final String INCOGNITO_REAUTHENTICATION_FOR_ANDROID =
              "IncognitoReauthenticationForAndroid";
      public static final String INCOGNITO_SCREENSHOT = "IncognitoScreenshot";
@@ -1793,11 +1793,14 @@ diff --git a/components/endpoint_fetcher/endpoint_fetcher.cc b/components/endpoi
  EndpointFetcher::~EndpointFetcher() = default;
  
  void EndpointFetcher::Fetch(EndpointFetcherCallback endpoint_fetcher_callback) {
-@@ -224,8 +251,9 @@ void EndpointFetcher::PerformRequest(
+@@ -224,11 +251,9 @@ void EndpointFetcher::PerformRequest(
    auto resource_request = std::make_unique<network::ResourceRequest>();
    resource_request->method = http_method_;
    resource_request->url = url_;
 -  resource_request->credentials_mode = GetCredentialsMode();
+-  if (GetSetSiteForCookies()) {
+-    resource_request->site_for_cookies = net::SiteForCookies::FromUrl(url_);
+-  }
 -
 +  resource_request->credentials_mode = network::mojom::CredentialsMode::kOmit;
 +  resource_request->load_flags = net::LOAD_BYPASS_CACHE | net::LOAD_DISABLE_CACHE
@@ -1805,7 +1808,7 @@ diff --git a/components/endpoint_fetcher/endpoint_fetcher.cc b/components/endpoi
    if (base::EqualsCaseInsensitiveASCII(http_method_, "POST")) {
      resource_request->headers.SetHeader(kContentTypeKey, content_type_);
    }
-@@ -253,25 +281,50 @@ void EndpointFetcher::PerformRequest(
+@@ -256,25 +281,50 @@ void EndpointFetcher::PerformRequest(
      default:
        break;
    }
@@ -1862,7 +1865,7 @@ diff --git a/components/endpoint_fetcher/endpoint_fetcher.cc b/components/endpoi
  }
  
  void EndpointFetcher::OnResponseFetched(
-@@ -349,24 +402,6 @@ void EndpointFetcher::OnSanitizationResult(
+@@ -352,24 +402,6 @@ void EndpointFetcher::OnSanitizationResult(
    std::move(endpoint_fetcher_callback).Run(std::move(response));
  }
  
@@ -1887,7 +1890,7 @@ diff --git a/components/endpoint_fetcher/endpoint_fetcher.cc b/components/endpoi
  int EndpointFetcher::GetMaxRetries() {
    if (!request_params_.has_value()) {
      return kNumRetries;
-@@ -380,3 +415,38 @@ int EndpointFetcher::GetMaxRetries() {
+@@ -393,3 +425,38 @@ bool EndpointFetcher::GetSetSiteForCookies() {
  std::string EndpointFetcher::GetUrlForTesting() {
    return url_.spec();
  }
@@ -1947,7 +1950,7 @@ diff --git a/components/endpoint_fetcher/endpoint_fetcher.h b/components/endpoin
    int http_status_code{-1};
    std::optional<FetchErrorType> error_type;
  };
-@@ -153,6 +157,14 @@ class EndpointFetcher {
+@@ -159,6 +163,14 @@ class EndpointFetcher {
        const GURL& url,
        const net::NetworkTrafficAnnotationTag& annotation_tag);
  
@@ -1962,7 +1965,7 @@ diff --git a/components/endpoint_fetcher/endpoint_fetcher.h b/components/endpoin
    // Used for tests. Can be used if caller constructs their own
    // url_loader_factory and identity_manager.
    EndpointFetcher(
-@@ -209,6 +221,11 @@ class EndpointFetcher {
+@@ -215,6 +227,11 @@ class EndpointFetcher {
    void OnSanitizationResult(std::unique_ptr<EndpointResponse> response,
                              EndpointFetcherCallback endpoint_fetcher_callback,
                              data_decoder::JsonSanitizer::Result result);
@@ -1974,7 +1977,7 @@ diff --git a/components/endpoint_fetcher/endpoint_fetcher.h b/components/endpoin
  
    network::mojom::CredentialsMode GetCredentialsMode();
    int GetMaxRetries();
-@@ -219,10 +236,11 @@ class EndpointFetcher {
+@@ -226,10 +243,11 @@ class EndpointFetcher {
    // Members set in constructor to be passed to network::ResourceRequest or
    // network::SimpleURLLoader.
    const std::string oauth_consumer_name_;
@@ -1987,7 +1990,7 @@ diff --git a/components/endpoint_fetcher/endpoint_fetcher.h b/components/endpoin
    const std::string post_data_;
    const std::vector<std::string> headers_;
    const std::vector<std::string> cors_exempt_headers_;
-@@ -248,6 +266,9 @@ class EndpointFetcher {
+@@ -255,6 +273,9 @@ class EndpointFetcher {
        access_token_fetcher_;
    std::unique_ptr<network::SimpleURLLoader> simple_url_loader_;
  

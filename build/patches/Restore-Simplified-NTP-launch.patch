@@ -741,7 +741,7 @@ diff --git a/chrome/browser/engagement/important_sites_util.cc b/chrome/browser/
 diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browser/flags/android/chrome_feature_list.cc
 --- a/chrome/browser/flags/android/chrome_feature_list.cc
 +++ b/chrome/browser/flags/android/chrome_feature_list.cc
-@@ -264,6 +264,7 @@ const base::Feature* const kFeaturesExposedToJava[] = {
+@@ -265,6 +265,7 @@ const base::Feature* const kFeaturesExposedToJava[] = {
      &kLockBackPressHandlerAtStart,
      &kIncognitoReauthenticationForAndroid,
      &kIncognitoScreenshot,
@@ -752,7 +752,7 @@ diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browse
 diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 --- a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 +++ b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
-@@ -384,6 +384,7 @@ public abstract class ChromeFeatureList {
+@@ -385,6 +385,7 @@ public abstract class ChromeFeatureList {
      public static final String MAYLAUNCHURL_USES_SEPARATE_STORAGE_PARTITION =
              "MayLaunchUrlUsesSeparateStoragePartition";
      public static final String MESSAGES_FOR_ANDROID_ADS_BLOCKED = "MessagesForAndroidAdsBlocked";
@@ -760,7 +760,7 @@ diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/f
      public static final String SEARCH_READY_OMNIBOX = "SearchReadyOmnibox";
      public static final String MOST_VISITED_TILES_RESELECT = "MostVisitedTilesReselect";
      public static final String MUlTI_INSTANCE_APPLICATION_STATUS_CLEANUP =
-@@ -693,7 +694,7 @@ public abstract class ChromeFeatureList {
+@@ -694,7 +695,7 @@ public abstract class ChromeFeatureList {
      public static final CachedFlag sLogoPolish = newCachedFlag(LOGO_POLISH, true);
      public static final CachedFlag sLogoPolishAnimationKillSwitch =
              newCachedFlag(LOGO_POLISH_ANIMATION_KILL_SWITCH, true);

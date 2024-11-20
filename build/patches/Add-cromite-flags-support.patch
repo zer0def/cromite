@@ -713,7 +713,7 @@ diff --git a/chrome/browser/flags/BUILD.gn b/chrome/browser/flags/BUILD.gn
 diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browser/flags/android/chrome_feature_list.cc
 --- a/chrome/browser/flags/android/chrome_feature_list.cc
 +++ b/chrome/browser/flags/android/chrome_feature_list.cc
-@@ -1095,5 +1095,6 @@ BASE_FEATURE(kWebApkAllowIconUpdate,
+@@ -1096,5 +1096,6 @@ BASE_FEATURE(kWebApkAllowIconUpdate,
               "WebApkAllowIconUpdate",
               base::FEATURE_DISABLED_BY_DEFAULT);
  
@@ -745,7 +745,7 @@ diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/f
  import java.util.List;
  import java.util.Map;
  
-@@ -765,7 +769,7 @@ public abstract class ChromeFeatureList {
+@@ -766,7 +770,7 @@ public abstract class ChromeFeatureList {
      public static final CachedFlag sWebApkMinShellApkVersion =
              newCachedFlag(WEB_APK_MIN_SHELL_APK_VERSION, true);
  
@@ -754,7 +754,7 @@ diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/f
              List.of(
                      sAccountReauthenticationRecentTimeWindow,
                      sAndroidAppIntegration,
-@@ -866,6 +870,13 @@ public abstract class ChromeFeatureList {
+@@ -867,6 +871,13 @@ public abstract class ChromeFeatureList {
                      sUseLibunwindstackNativeUnwinderAndroid,
                      sWebApkMinShellApkVersion);
  

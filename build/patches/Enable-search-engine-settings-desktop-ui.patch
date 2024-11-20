@@ -1334,7 +1334,7 @@ diff --git a/chrome/browser/ui/webui/settings/search_engines_handler.h b/chrome/
 diff --git a/chrome/browser/ui/webui/settings/settings_localized_strings_provider.cc b/chrome/browser/ui/webui/settings/settings_localized_strings_provider.cc
 --- a/chrome/browser/ui/webui/settings/settings_localized_strings_provider.cc
 +++ b/chrome/browser/ui/webui/settings/settings_localized_strings_provider.cc
-@@ -2466,6 +2466,8 @@ void AddSearchEnginesStrings(content::WebUIDataSource* html_source) {
+@@ -2467,6 +2467,8 @@ void AddSearchEnginesStrings(content::WebUIDataSource* html_source) {
        {"searchEnginesQueryURL", IDS_SETTINGS_SEARCH_ENGINES_QUERY_URL},
        {"searchEnginesQueryURLExplanation",
         IDS_SETTINGS_SEARCH_ENGINES_QUERY_URL_EXPLANATION},
@@ -1343,7 +1343,7 @@ diff --git a/chrome/browser/ui/webui/settings/settings_localized_strings_provide
        {"searchEnginesMakeDefault", IDS_SETTINGS_SEARCH_ENGINES_MAKE_DEFAULT},
        {"searchEnginesActivate", IDS_SETTINGS_SEARCH_ENGINES_ACTIVATE},
        {"searchEnginesDeactivate", IDS_SETTINGS_SEARCH_ENGINES_DEACTIVATE},
-@@ -3805,6 +3807,12 @@ void AddLocalizedStrings(content::WebUIDataSource* html_source,
+@@ -3806,6 +3808,12 @@ void AddLocalizedStrings(content::WebUIDataSource* html_source,
    AddSystemStrings(html_source);
  #endif
  

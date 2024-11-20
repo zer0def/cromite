@@ -555,7 +555,7 @@ diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chro
 diff --git a/chrome/browser/ui/webui/settings/settings_localized_strings_provider.cc b/chrome/browser/ui/webui/settings/settings_localized_strings_provider.cc
 --- a/chrome/browser/ui/webui/settings/settings_localized_strings_provider.cc
 +++ b/chrome/browser/ui/webui/settings/settings_localized_strings_provider.cc
-@@ -1860,6 +1860,7 @@ void AddPrivacyStrings(content::WebUIDataSource* html_source,
+@@ -1861,6 +1861,7 @@ void AddPrivacyStrings(content::WebUIDataSource* html_source,
        {"clearedData", IDS_SETTINGS_CLEARED_DATA},
        {"clearBrowsingData", IDS_SETTINGS_CLEAR_BROWSING_DATA},
        {"clearBrowsingDataDescription", IDS_SETTINGS_CLEAR_DATA_DESCRIPTION},

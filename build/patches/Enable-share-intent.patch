@@ -468,7 +468,7 @@ new file mode 100644
 diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browser/flags/android/chrome_feature_list.cc
 --- a/chrome/browser/flags/android/chrome_feature_list.cc
 +++ b/chrome/browser/flags/android/chrome_feature_list.cc
-@@ -306,6 +306,7 @@ const base::Feature* const kFeaturesExposedToJava[] = {
+@@ -307,6 +307,7 @@ const base::Feature* const kFeaturesExposedToJava[] = {
      &kSearchReadyOmniboxFeature,
      &kRelatedSearchesAllLanguage,
      &kRelatedSearchesSwitch,
@@ -479,7 +479,7 @@ diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browse
 diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 --- a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 +++ b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
-@@ -468,6 +468,7 @@ public abstract class ChromeFeatureList {
+@@ -469,6 +469,7 @@ public abstract class ChromeFeatureList {
      public static final String READER_MODE_IN_CCT = "ReaderModeInCCT";
      public static final String READING_LIST_ENABLE_SYNC_TRANSPORT_MODE_UPON_SIGNIN =
              "ReadingListEnableSyncTransportModeUponSignIn";
