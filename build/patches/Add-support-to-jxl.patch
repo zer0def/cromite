@@ -605,7 +605,7 @@ diff --git a/third_party/blink/renderer/modules/webcodecs/image_decoder_fuzzer.c
 diff --git a/third_party/blink/renderer/platform/BUILD.gn b/third_party/blink/renderer/platform/BUILD.gn
 --- a/third_party/blink/renderer/platform/BUILD.gn
 +++ b/third_party/blink/renderer/platform/BUILD.gn
-@@ -2380,6 +2380,10 @@ source_set("blink_platform_unittests_sources") {
+@@ -2383,6 +2383,10 @@ source_set("blink_platform_unittests_sources") {
      sources += [ "text/locale_icu_test.cc" ]
    }
  
@@ -616,7 +616,7 @@ diff --git a/third_party/blink/renderer/platform/BUILD.gn b/third_party/blink/re
    sources += [ "testing/run_all_tests.cc" ]
  
    configs += [
-@@ -2426,6 +2430,7 @@ source_set("blink_platform_unittests_sources") {
+@@ -2429,6 +2433,7 @@ source_set("blink_platform_unittests_sources") {
      "//third_party/blink/renderer/platform/wtf",
      "//third_party/dawn/src/dawn/native",
      "//third_party/dawn/src/dawn/wire",
