@@ -7,13 +7,13 @@ user choice in desktop platforms.
 
 License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
- .../browser/chrome_content_browser_client.cc  |  3 +-
+ .../browser/chrome_content_browser_client.cc  |  2 +-
  ...eInsecurePrivateNetworkContentSetting.java | 93 +++++++++++++++++++
  .../insecure_private_network.grdp             | 18 ++++
  .../insecure_private_network.inc              | 16 ++++
  services/network/cors/cors_url_loader.cc      |  8 +-
  .../network/private_network_access_checker.cc | 16 +++-
- 6 files changed, 144 insertions(+), 10 deletions(-)
+ 6 files changed, 144 insertions(+), 9 deletions(-)
  create mode 100644 components/browser_ui/site_settings/android/java/src/org/chromium/components/browser_ui/site_settings/impl/BromiteInsecurePrivateNetworkContentSetting.java
  create mode 100644 components/browser_ui/strings/bromite_content_settings/insecure_private_network.grdp
  create mode 100644 components/content_settings/core/browser/bromite_content_settings/insecure_private_network.inc
@@ -21,13 +21,12 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 diff --git a/chrome/browser/chrome_content_browser_client.cc b/chrome/browser/chrome_content_browser_client.cc
 --- a/chrome/browser/chrome_content_browser_client.cc
 +++ b/chrome/browser/chrome_content_browser_client.cc
-@@ -7950,8 +7950,7 @@ ChromeContentBrowserClient::ShouldOverridePrivateNetworkRequestPolicy(
+@@ -7945,7 +7945,7 @@ ChromeContentBrowserClient::ShouldOverridePrivateNetworkRequestPolicy(
+   }
  
  #if BUILDFLAG(IS_ANDROID)
-   if (base::FeatureList::IsEnabled(
--          kPrivateNetworkAccessRestrictionsForAutomotive) &&
--      base::android::BuildInfo::GetInstance()->is_automotive()) {
-+          kPrivateNetworkAccessRestrictionsForAutomotive)) {
+-  if (base::android::BuildInfo::GetInstance()->is_automotive()) {
++  if ((true)) {
      return content::ContentBrowserClient::PrivateNetworkRequestPolicyOverride::
          kBlockInsteadOfWarn;
    }
@@ -176,7 +175,7 @@ new file mode 100644
 diff --git a/services/network/cors/cors_url_loader.cc b/services/network/cors/cors_url_loader.cc
 --- a/services/network/cors/cors_url_loader.cc
 +++ b/services/network/cors/cors_url_loader.cc
-@@ -1068,7 +1068,7 @@ std::optional<URLLoaderCompletionStatus> CorsURLLoader::ConvertPreflightResult(
+@@ -1065,7 +1065,7 @@ std::optional<URLLoaderCompletionStatus> CorsURLLoader::ConvertPreflightResult(
    }
  
    // Private Network Access warning: ignore net and CORS errors.
@@ -185,7 +184,7 @@ diff --git a/services/network/cors/cors_url_loader.cc b/services/network/cors/co
      CHECK(ShouldIgnorePrivateNetworkAccessErrors(
          request_.required_ip_address_space));
      CHECK_EQ(*reason, PreflightRequiredReason::kPrivateNetworkAccess);
-@@ -1392,12 +1392,6 @@ bool CorsURLLoader::ShouldIgnorePrivateNetworkAccessErrors(
+@@ -1389,12 +1389,6 @@ bool CorsURLLoader::ShouldIgnorePrivateNetworkAccessErrors(
    if (!state) {
      return false;
    }
@@ -223,7 +222,7 @@ diff --git a/services/network/private_network_access_checker.cc b/services/netwo
  using Result = PrivateNetworkAccessCheckResult;
  using Policy = mojom::PrivateNetworkRequestPolicy;
  
-@@ -292,11 +300,17 @@ bool PrivateNetworkAccessChecker::NeedPermission(
+@@ -290,11 +298,17 @@ bool PrivateNetworkAccessChecker::NeedPermission(
      const GURL& url,
      bool is_web_secure_context,
      mojom::IPAddressSpace target_address_space) {

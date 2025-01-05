@@ -245,7 +245,7 @@ new file mode 100644
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/PrivacySettings.java b/chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/PrivacySettings.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/PrivacySettings.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/PrivacySettings.java
-@@ -143,7 +143,7 @@ public class PrivacySettings extends ChromeBaseSettingsFragment
+@@ -144,7 +144,7 @@ public class PrivacySettings extends ChromeBaseSettingsFragment
      public void onCreatePreferencesCromite(Bundle savedInstanceState, String rootKey) {
          mPageTitle.set(getString(R.string.prefs_privacy_security));
  
@@ -253,7 +253,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/privacy/setting
 +        SettingsUtils.addPreferencesFromResource(this, R.xml.privacy_preferences_cromite);
  
          Preference fpProtectionPreference = findPreference(PREF_FP_PROTECTION);
-         fpProtectionPreference.setVisible(shouldShowFpProtectionUI());
+         fpProtectionPreference.setVisible(shouldShowFpProtectionUi());
 diff --git a/chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Cromite-settings-ui.grdp b/chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Cromite-settings-ui.grdp
 new file mode 100644
 --- /dev/null

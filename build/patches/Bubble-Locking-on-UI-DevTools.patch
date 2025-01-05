@@ -15,7 +15,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 diff --git a/chrome/browser/ui/views/toolbar/reload_button.cc b/chrome/browser/ui/views/toolbar/reload_button.cc
 --- a/chrome/browser/ui/views/toolbar/reload_button.cc
 +++ b/chrome/browser/ui/views/toolbar/reload_button.cc
-@@ -224,6 +224,14 @@ void ReloadButton::ButtonPressed(const ui::Event& event) {
+@@ -220,6 +220,14 @@ void ReloadButton::ButtonPressed(const ui::Event& event) {
        command = IDC_RELOAD;
      }
  
@@ -34,8 +34,8 @@ diff --git a/ui/views/widget/widget.h b/ui/views/widget/widget.h
 --- a/ui/views/widget/widget.h
 +++ b/ui/views/widget/widget.h
 @@ -1235,6 +1235,19 @@ class VIEWS_EXPORT Widget : public internal::NativeWidgetDelegate,
-   void SetAllowScreenshots(bool allow);
-   bool AreScreenshotsAllowed();
+   void OnChildAdded(Widget* child_widget);
+   void OnChildRemoved(Widget* child_widget);
  
 +  // Type of ways to ignore activation changes.
 +  enum class DisableActivationChangeHandlingType {

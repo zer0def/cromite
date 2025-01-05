@@ -118,7 +118,7 @@ diff --git a/chrome/browser/ui/android/toolbar/java/src/org/chromium/chrome/brow
  import org.chromium.chrome.browser.omnibox.LocationBar;
  import org.chromium.chrome.browser.omnibox.LocationBarCoordinator;
  import org.chromium.chrome.browser.omnibox.NewTabPageDelegate;
-@@ -1854,7 +1855,7 @@ public class ToolbarPhone extends ToolbarLayout
+@@ -1886,7 +1887,7 @@ public class ToolbarPhone extends ToolbarLayout
          // On entering the tab switcher, set the focusability of the url bar to be false. This will
          // occur at the start of the enter event, and will later be reset to true upon finishing the
          // exit event.
@@ -127,7 +127,7 @@ diff --git a/chrome/browser/ui/android/toolbar/java/src/org/chromium/chrome/brow
              mLocationBar.setUrlBarFocusable(false);
          }
  
-@@ -2052,7 +2053,8 @@ public class ToolbarPhone extends ToolbarLayout
+@@ -2088,7 +2089,8 @@ public class ToolbarPhone extends ToolbarLayout
  
          updateLocationBarForNtp(mVisualState, urlHasFocus());
  

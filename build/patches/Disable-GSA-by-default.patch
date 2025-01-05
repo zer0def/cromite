@@ -15,7 +15,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/IntentHandler.java b/chrome/android/java/src/org/chromium/chrome/browser/IntentHandler.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/IntentHandler.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/IntentHandler.java
-@@ -41,7 +41,6 @@ import org.chromium.chrome.browser.document.ChromeLauncherActivity;
+@@ -44,7 +44,6 @@ import org.chromium.chrome.browser.document.ChromeLauncherActivity;
  import org.chromium.chrome.browser.externalnav.IntentWithRequestMetadataHandler;
  import org.chromium.chrome.browser.externalnav.IntentWithRequestMetadataHandler.RequestMetadata;
  import org.chromium.chrome.browser.flags.ChromeFeatureList;
@@ -23,9 +23,9 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/IntentHandler.j
  import org.chromium.chrome.browser.omnibox.suggestions.AutocompleteCoordinator;
  import org.chromium.chrome.browser.profiles.Profile;
  import org.chromium.chrome.browser.profiles.ProfileManager;
-@@ -256,9 +255,6 @@ public class IntentHandler {
-     public static final String EXTRA_APP_SPECIFIC_HISTORY =
-             "org.chromium.chrome.browser.app_specific_history";
+@@ -262,9 +261,6 @@ public class IntentHandler {
+     public static final String EXTRA_SKIP_PRECONNECT =
+             "org.chromium.chrome.browser.skip_preconnect";
  
 -    /** The package name for the Google Search App. */
 -    public static final String PACKAGE_GSA = GSAUtils.GSA_PACKAGE_NAME;
@@ -33,7 +33,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/IntentHandler.j
      private static Pair<Integer, String> sPendingReferrer;
      private static int sReferrerId;
      private static String sPendingIncognitoUrl;
-@@ -524,8 +520,6 @@ public class IntentHandler {
+@@ -526,8 +522,6 @@ public class IntentHandler {
              return ExternalAppId.LINE;
          } else if (packageName.equals(PACKAGE_WHATSAPP)) {
              return ExternalAppId.WHATSAPP;
@@ -66,15 +66,15 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/share/LensUtils
          }
      }
  
-@@ -93,15 +87,11 @@ public class LensUtils {
+@@ -92,15 +86,11 @@ public class LensUtils {
       * @return Whether the package is valid.
       */
-     public static boolean isValidAgsaPackage(final ExternalAuthUtils externalAuthUtils) {
+     public static boolean isValidAgsaPackage() {
 -        if (sFakePassableLensEnvironmentForTesting) {
 -            return true;
 -        }
 -
--        return externalAuthUtils.isGoogleSigned(IntentHandler.PACKAGE_GSA);
+-        return ExternalAuthUtils.getInstance().isGoogleSigned(IntentHandler.PACKAGE_GSA);
 +        return false;
      }
  

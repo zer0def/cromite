@@ -115,7 +115,7 @@ diff --git a/skia/ext/skia_utils_win.h b/skia/ext/skia_utils_win.h
 diff --git a/third_party/blink/public/common/features.h b/third_party/blink/public/common/features.h
 --- a/third_party/blink/public/common/features.h
 +++ b/third_party/blink/public/common/features.h
-@@ -296,6 +296,9 @@ BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE_PARAM(int,
+@@ -263,6 +263,9 @@ BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE_PARAM(int,
                                                 kMaxDiskDataAllocatorCapacityMB);
  BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE(kLessAggressiveParkableString);
  

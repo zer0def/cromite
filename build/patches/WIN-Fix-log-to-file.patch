@@ -40,7 +40,7 @@ diff --git a/chrome/common/logging_chrome.cc b/chrome/common/logging_chrome.cc
  
  #if BUILDFLAG(IS_CHROMEOS_ASH)
  base::FilePath SetUpSymlinkIfNeeded(const base::FilePath& symlink_path,
-@@ -456,6 +456,9 @@ void InitChromeLogging(const base::CommandLine& command_line,
+@@ -457,6 +457,9 @@ void InitChromeLogging(const base::CommandLine& command_line,
        // since that will remove the newly created link instead.
        delete_old_log_file = APPEND_TO_OLD_LOG_FILE;
  #endif  // BUILDFLAG(IS_CHROMEOS_ASH)
@@ -50,7 +50,7 @@ diff --git a/chrome/common/logging_chrome.cc b/chrome/common/logging_chrome.cc
      }
    } else {
      log_locking_state = DONT_LOCK_LOG_FILE;
-@@ -620,7 +623,7 @@ bool DialogsAreSuppressed() {
+@@ -621,7 +624,7 @@ bool DialogsAreSuppressed() {
    return dialogs_are_suppressed_;
  }
  

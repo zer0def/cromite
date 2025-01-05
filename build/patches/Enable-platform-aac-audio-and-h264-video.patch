@@ -36,7 +36,7 @@ diff --git a/media/BUILD.gn b/media/BUILD.gn
 diff --git a/media/base/android/java/src/org/chromium/media/AudioManagerAndroid.java b/media/base/android/java/src/org/chromium/media/AudioManagerAndroid.java
 --- a/media/base/android/java/src/org/chromium/media/AudioManagerAndroid.java
 +++ b/media/base/android/java/src/org/chromium/media/AudioManagerAndroid.java
-@@ -562,6 +562,8 @@ class AudioManagerAndroid {
+@@ -567,6 +567,8 @@ class AudioManagerAndroid {
                              break;
                      }
                  }
@@ -77,7 +77,7 @@ diff --git a/media/base/win/mf_helpers.cc b/media/base/win/mf_helpers.cc
  #include "media/base/audio_codecs.h"
  #include "media/base/audio_decoder_config.h"
  #include "media/base/channel_layout.h"
-@@ -472,7 +473,11 @@ HRESULT GetAacAudioType(const AudioDecoderConfig& decoder_config,
+@@ -471,7 +472,11 @@ HRESULT GetAacAudioType(const AudioDecoderConfig& decoder_config,
  
    size_t extra_size = wave_format_size - sizeof(WAVEFORMATEX);
    aac_wave_format->wfx.cbSize = static_cast<WORD>(extra_size);
@@ -112,7 +112,7 @@ diff --git a/media/filters/ffmpeg_audio_decoder.cc b/media/filters/ffmpeg_audio_
 diff --git a/media/filters/ffmpeg_demuxer.cc b/media/filters/ffmpeg_demuxer.cc
 --- a/media/filters/ffmpeg_demuxer.cc
 +++ b/media/filters/ffmpeg_demuxer.cc
-@@ -799,6 +799,7 @@ void FFmpegDemuxerStream::InitBitstreamConverter() {
+@@ -806,6 +806,7 @@ void FFmpegDemuxerStream::InitBitstreamConverter() {
        // FFmpeg doesn't understand xHE-AAC profiles yet, which can't be put in
        // ADTS anyways, so skip bitstream conversion when the profile is
        // unknown.
@@ -146,7 +146,7 @@ diff --git a/media/filters/ffmpeg_video_decoder.cc b/media/filters/ffmpeg_video_
 +  }
 +#endif
    // We only build support for H.264.
-   return codec == VideoCodec::kH264 && IsBuiltInVideoCodec(codec);
+   return codec == VideoCodec::kH264 && IsDecoderBuiltInVideoCodec(codec);
  }
 diff --git a/media/filters/win/media_foundation_audio_decoder.cc b/media/filters/win/media_foundation_audio_decoder.cc
 --- a/media/filters/win/media_foundation_audio_decoder.cc

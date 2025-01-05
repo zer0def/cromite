@@ -44,7 +44,7 @@ diff --git a/chrome/android/java/res/menu/main_menu.xml b/chrome/android/java/re
          <item android:id="@+id/recent_tabs_menu_id"
              android:title="@string/menu_recent_tabs"
              android:icon="@drawable/devices_black_24dp" />
-@@ -180,6 +184,9 @@ found in the LICENSE file.
+@@ -183,6 +187,9 @@ found in the LICENSE file.
          <item android:id="@id/tinker_tank_menu_id"
              android:title="@string/menu_tinker_tank"
              android:icon="@drawable/ic_add_box_rounded_corner" />
@@ -57,7 +57,7 @@ diff --git a/chrome/android/java/res/menu/main_menu.xml b/chrome/android/java/re
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java b/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java
-@@ -97,6 +97,7 @@ import org.chromium.chrome.browser.base.ColdStartTracker;
+@@ -95,6 +95,7 @@ import org.chromium.chrome.browser.base.ColdStartTracker;
  import org.chromium.chrome.browser.bookmarks.BookmarkUtils;
  import org.chromium.chrome.browser.browserservices.intents.WebappConstants;
  import org.chromium.chrome.browser.compositor.CompositorViewHolder;
@@ -65,7 +65,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedAct
  import org.chromium.chrome.browser.compositor.layouts.Layout;
  import org.chromium.chrome.browser.compositor.layouts.LayoutManagerChrome;
  import org.chromium.chrome.browser.compositor.layouts.LayoutManagerChromePhone;
-@@ -2858,6 +2859,8 @@ public class ChromeTabbedActivity extends ChromeActivity<ChromeActivityComponent
+@@ -2919,6 +2920,8 @@ public class ChromeTabbedActivity extends ChromeActivity<ChromeActivityComponent
                      getTabModelSelectorSupplier().get(),
                      closeAllTabsRunnable);
              RecordUserAction.record("MobileMenuCloseAllTabs");
@@ -74,7 +74,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedAct
          } else if (id == R.id.close_all_incognito_tabs_menu_id) {
              // Close only incognito tabs
              Runnable closeAllTabsRunnable =
-@@ -2944,6 +2947,27 @@ public class ChromeTabbedActivity extends ChromeActivity<ChromeActivityComponent
+@@ -3005,6 +3008,27 @@ public class ChromeTabbedActivity extends ChromeActivity<ChromeActivityComponent
          getTabModalLifetimeHandler().onOmniboxFocusChanged(hasFocus);
      }
  
@@ -360,7 +360,7 @@ diff --git a/chrome/browser/bookmarks/bookmark_html_writer.cc b/chrome/browser/b
        NotifyOnFinish(BookmarksExportObserver::Result::kCouldNotWriteNodes);
        return;
      }
-@@ -464,6 +469,8 @@ void BookmarkFaviconFetcher::ExportBookmarks() {
+@@ -460,6 +465,8 @@ void BookmarkFaviconFetcher::ExportBookmarks() {
        BookmarkModelFactory::GetForBrowserContext(profile_)->other_node());
    ExtractUrls(
        BookmarkModelFactory::GetForBrowserContext(profile_)->mobile_node());
@@ -372,7 +372,7 @@ diff --git a/chrome/browser/bookmarks/bookmark_html_writer.cc b/chrome/browser/b
 diff --git a/chrome/browser/bookmarks/bookmark_merged_surface_service.cc b/chrome/browser/bookmarks/bookmark_merged_surface_service.cc
 --- a/chrome/browser/bookmarks/bookmark_merged_surface_service.cc
 +++ b/chrome/browser/bookmarks/bookmark_merged_surface_service.cc
-@@ -42,6 +42,8 @@ std::optional<PermanentFolderType> GetIfPermanentFolderType(
+@@ -43,6 +43,8 @@ std::optional<PermanentFolderType> GetIfPermanentFolderType(
  
      case BookmarkNode::Type::URL:
        NOTREACHED();
@@ -405,7 +405,7 @@ diff --git a/chrome/browser/download/android/java/src/org/chromium/chrome/browse
 diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chrome/browser/ui/android/strings/android_chrome_strings.grd
 --- a/chrome/browser/ui/android/strings/android_chrome_strings.grd
 +++ b/chrome/browser/ui/android/strings/android_chrome_strings.grd
-@@ -4506,6 +4506,9 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>delete the Chrome d
+@@ -4512,6 +4512,9 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>delete the Chrome d
        <message name="IDS_MENU_SELECT_TABS" desc="Menu item for bulk editing tabs. [CHAR_LIMIT=27]">
          Select tabs
        </message>
@@ -418,7 +418,7 @@ diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chro
 diff --git a/chrome/browser/ui/views/bookmarks/bookmark_menu_delegate.cc b/chrome/browser/ui/views/bookmarks/bookmark_menu_delegate.cc
 --- a/chrome/browser/ui/views/bookmarks/bookmark_menu_delegate.cc
 +++ b/chrome/browser/ui/views/bookmarks/bookmark_menu_delegate.cc
-@@ -157,6 +157,8 @@ BookmarkParentFolder GetBookmarkParentFolderForNode(
+@@ -103,6 +103,8 @@ BookmarkParentFolder GetBookmarkParentFolderForNode(
        return BookmarkParentFolder::OtherFolder();
      case bookmarks::BookmarkNode::MOBILE:
        return BookmarkParentFolder::MobileFolder();
