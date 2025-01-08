@@ -594,7 +594,7 @@ new file mode 100755
 @@ -0,0 +1,46 @@
 +package org.chromium.chrome.browser.flags;
 +
-+import org.chromium.base.cached_flags.CachedFlagsSharedPreferences;
++import org.chromium.components.cached_flags.CachedFlagsSharedPreferences;
 +import org.chromium.components.cached_flags.CachedFlag;
 +import org.chromium.chrome.browser.flags.ChromeFeatureList;
 +
@@ -654,7 +654,7 @@ diff --git a/mojo/public/tools/mojom/mojom_parser.py b/mojo/public/tools/mojom/m
    return allowed_imports
  
 +def _ResolveInclude(mojom_abspath, input_root_paths):
-+  mojom_abspath = _ResolveRelativeImportPath(mojom_abspath, input_root_paths)
++  mojom_abspath = _ResolveRelativeImportPath(mojom_abspath, mojom_abspath, input_root_paths)
 +  with codecs.open(mojom_abspath, encoding='utf-8') as f:
 +    src = f.read()
 +

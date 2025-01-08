@@ -36,11 +36,11 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  services/network/network_context.cc           |  73 +++
  .../network/public/cpp/simple_url_loader.cc   |  18 +
  .../network/public/cpp/simple_url_loader.h    |   3 +
- .../platform/loader/fetch/fetch_utils.cc      | 194 ++++++-
+ .../platform/loader/fetch/fetch_utils.cc      | 193 ++++++-
  .../loader/fetch/url_loader/url_loader.cc     |   4 +-
  .../scripts/auditor/auditor.py                |   1 +
  .../scripts/auditor/util.py                   |   1 +
- 31 files changed, 1649 insertions(+), 22 deletions(-)
+ 31 files changed, 1648 insertions(+), 22 deletions(-)
  create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Internal-firewall.inc
  create mode 100644 services/firewall/public/BUILD.gn
  create mode 100644 services/firewall/public/firewall_features.cc
@@ -59,7 +59,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -2422,6 +2422,7 @@ static_library("browser") {
+@@ -2421,6 +2421,7 @@ static_library("browser") {
      "//third_party/ungoogled:switches",
      "//services/device/public/mojom",
      "//services/device/public/mojom:usb",
@@ -1827,11 +1827,10 @@ diff --git a/services/network/public/cpp/simple_url_loader.h b/services/network/
 diff --git a/third_party/blink/renderer/platform/loader/fetch/fetch_utils.cc b/third_party/blink/renderer/platform/loader/fetch/fetch_utils.cc
 --- a/third_party/blink/renderer/platform/loader/fetch/fetch_utils.cc
 +++ b/third_party/blink/renderer/platform/loader/fetch/fetch_utils.cc
-@@ -122,27 +122,197 @@ net::NetworkTrafficAnnotationTag FetchUtils::GetTrafficAnnotationTag(
+@@ -122,27 +122,196 @@ net::NetworkTrafficAnnotationTag FetchUtils::GetTrafficAnnotationTag(
      case network::mojom::RequestDestination::kWebIdentity:
      case network::mojom::RequestDestination::kSharedStorageWorklet:
        NOTREACHED();
-+      [[fallthrough]];
 +
 +    case network::mojom::RequestDestination::kServiceWorker:
 +    case network::mojom::RequestDestination::kSharedWorker:
@@ -2036,7 +2035,7 @@ diff --git a/third_party/blink/renderer/platform/loader/fetch/fetch_utils.cc b/t
        semantics {
          sender: "Blink Resource Loader"
          description:
-@@ -166,7 +336,7 @@ net::NetworkTrafficAnnotationTag FetchUtils::GetTrafficAnnotationTag(
+@@ -166,7 +335,7 @@ net::NetworkTrafficAnnotationTag FetchUtils::GetTrafficAnnotationTag(
      case network::mojom::RequestDestination::kEmbed:
      case network::mojom::RequestDestination::kObject:
        return net::DefineNetworkTrafficAnnotation(

@@ -53118,7 +53118,7 @@ diff --git a/tools/gritsettings/resource_ids.spec b/tools/gritsettings/resource_
 +
 +  "<(SHARED_INTERMEDIATE_DIR)/chrome/browser/resources/adblock_internals/resources.grd": {
 +    "META": {"sizes": {"includes": [10]}},
-+    "includes": [10100],
++    "includes": [12100],
 +  },
  
    # END "everything else" section.

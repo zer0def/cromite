@@ -30,7 +30,7 @@ Require: bromite-build-utils.patch
  .../ui/views/page_info/page_info_main_view.cc |  28 +-
  .../views/page_info/page_info_view_factory.cc |  20 +
  .../views/page_info/page_info_view_factory.h  |   5 +
- .../page_info/permission_toggle_row_view.cc   | 176 +++++++-
+ .../page_info/permission_toggle_row_view.cc   | 179 +++++++-
  .../page_info/permission_toggle_row_view.h    |  18 +-
  .../settings_localized_strings_provider.cc    |  54 +++
  .../ui/webui/settings/site_settings_helper.cc |  46 +-
@@ -44,7 +44,7 @@ Require: bromite-build-utils.patch
  ...tomTriStateSiteSettingsPreferenceImpl.java |  24 +
  .../ContentSettingsResources.java             |  16 +-
  .../site_settings/SingleCategorySettings.java |  55 ++-
- .../site_settings/SingleWebsiteSettings.java  |  56 ++-
+ .../site_settings/SingleWebsiteSettings.java  |  58 ++-
  .../site_settings/SiteSettings.java           |  31 +-
  .../site_settings/SiteSettingsCategory.java   |  18 +-
  .../site_settings/SiteSettingsDelegate.java   |   2 +
@@ -75,7 +75,7 @@ Require: bromite-build-utils.patch
  .../renderer/content_settings_agent_impl.cc   |  71 +++
  .../renderer/content_settings_agent_impl.h    |   9 +
  .../PageInfoPermissionsController.java        |   9 +
- .../PermissionParamsListBuilder.java          |   1 +
+ .../PermissionParamsListBuilder.java          |   8 +-
  .../android/page_info_controller_android.cc   |  18 +
  components/page_info/page_info.cc             |  23 +-
  components/page_info/page_info_ui.cc          |  25 ++
@@ -83,7 +83,7 @@ Require: bromite-build-utils.patch
  .../platform/web_content_settings_client.h    |  13 +
  .../execution_context/execution_context.cc    |  16 +
  .../execution_context/execution_context.h     |   5 +
- 72 files changed, 1920 insertions(+), 102 deletions(-)
+ 72 files changed, 1931 insertions(+), 103 deletions(-)
  create mode 100644 components/browser_ui/settings/android/java/res/layout/preference_spinner_single_widget.xml
  create mode 100644 components/browser_ui/site_settings/android/java/src/org/chromium/components/browser_ui/site_settings/BromiteCustomContentSetting.java
  create mode 100644 components/browser_ui/site_settings/android/java/src/org/chromium/components/browser_ui/site_settings/BromiteCustomContentSettingImpl.java
@@ -876,11 +876,12 @@ diff --git a/chrome/browser/ui/views/page_info/page_info_view_factory.h b/chrome
 diff --git a/chrome/browser/ui/views/page_info/permission_toggle_row_view.cc b/chrome/browser/ui/views/page_info/permission_toggle_row_view.cc
 --- a/chrome/browser/ui/views/page_info/permission_toggle_row_view.cc
 +++ b/chrome/browser/ui/views/page_info/permission_toggle_row_view.cc
-@@ -39,6 +39,30 @@
+@@ -39,6 +39,31 @@
  #include "ui/views/controls/styled_label.h"
  #include "ui/views/style/typography.h"
  #include "ui/views/view_class_properties.h"
 +#include "components/content_settings/core/browser/content_settings_registry.h"
++#include "ui/base/mojom/menu_source_type.mojom.h"
 +
 +namespace {
 +  bool IsAllowed(const PageInfo::PermissionInfo& permission) {
@@ -907,7 +908,7 @@ diff --git a/chrome/browser/ui/views/page_info/permission_toggle_row_view.cc b/c
  
  DEFINE_CLASS_ELEMENT_IDENTIFIER_VALUE(PermissionToggleRowView,
                                        kRowSubTitleCameraElementId);
-@@ -62,16 +86,12 @@ PermissionToggleRowView::PermissionToggleRowView(
+@@ -62,16 +87,12 @@ PermissionToggleRowView::PermissionToggleRowView(
    // instead of adding it as the only child.
    SetUseDefaultFillLayout(true);
    row_view_ = AddChildView(std::make_unique<RichControlsContainerView>());
@@ -925,7 +926,7 @@ diff --git a/chrome/browser/ui/views/page_info/permission_toggle_row_view.cc b/c
    if (permission.requesting_origin.has_value()) {
      std::u16string requesting_origin_string;
      switch (permission.type) {
-@@ -168,6 +188,90 @@ void PermissionToggleRowView::UpdatePermission(
+@@ -168,6 +189,90 @@ void PermissionToggleRowView::UpdatePermission(
    UpdateUiOnPermissionChanged();
  }
  
@@ -979,7 +980,7 @@ diff --git a/chrome/browser/ui/views/page_info/permission_toggle_row_view.cc b/c
 +  sources_menu_runner_->RunMenuAt(
 +      choose_button_->GetWidget(), nullptr,
 +      choose_button_->GetAnchorBoundsInScreen(),
-+      views::MenuAnchorPosition::kTopLeft, ui::MENU_SOURCE_MOUSE);
++      views::MenuAnchorPosition::kTopLeft, ui::mojom::MenuSourceType::kMouse);
 +}
 +
 +bool PermissionToggleRowView::IsCommandIdChecked(int command_id) const {
@@ -1016,7 +1017,7 @@ diff --git a/chrome/browser/ui/views/page_info/permission_toggle_row_view.cc b/c
  void PermissionToggleRowView::OnToggleButtonPressed() {
    PageInfoUI::ToggleBetweenAllowAndBlock(permission_);
    PermissionChanged();
-@@ -176,27 +280,19 @@ void PermissionToggleRowView::OnToggleButtonPressed() {
+@@ -176,27 +281,19 @@ void PermissionToggleRowView::OnToggleButtonPressed() {
  void PermissionToggleRowView::AddToggleButton(
      const std::u16string& toggle_accessible_name,
      int icon_label_spacing) {
@@ -1051,7 +1052,7 @@ diff --git a/chrome/browser/ui/views/page_info/permission_toggle_row_view.cc b/c
  }
  
  void PermissionToggleRowView::InitForUserSource(
-@@ -238,9 +334,6 @@ void PermissionToggleRowView::InitForUserSource(
+@@ -238,9 +335,6 @@ void PermissionToggleRowView::InitForUserSource(
        auto spacer_view = std::make_unique<views::View>();
        spacer_view->SetPreferredSize(gfx::Size(icon_size, icon_size));
        spacer_view_ = row_view_->AddControl(std::move(spacer_view));
@@ -1061,20 +1062,22 @@ diff --git a/chrome/browser/ui/views/page_info/permission_toggle_row_view.cc b/c
      }
    }
  }
-@@ -267,6 +360,12 @@ void PermissionToggleRowView::InitForManagedSource(
+@@ -267,6 +361,14 @@ void PermissionToggleRowView::InitForManagedSource(
  }
  
  void PermissionToggleRowView::UpdateUiOnPermissionChanged() {
-+  choose_button_->SetEnabledTextColors(std::nullopt);
-+  if (permission_.setting == CONTENT_SETTING_DEFAULT) {
-+    choose_button_->SetTextColorId(views::Button::ButtonState::STATE_NORMAL,
-+      ui::kColorLabelForeground);
++  if (choose_button_) {
++    choose_button_->SetEnabledTextColors(std::nullopt);
++    if (permission_.setting == CONTENT_SETTING_DEFAULT) {
++      choose_button_->SetTextColorId(views::Button::ButtonState::STATE_NORMAL,
++        ui::kColorLabelForeground);
++    }
 +  }
 +
    if (blocked_on_system_level_label_) {
      if (permission_.setting == CONTENT_SETTING_DEFAULT) {
        permission_blocked_on_system_level_ = false;
-@@ -312,6 +411,37 @@ void PermissionToggleRowView::UpdateUiOnPermissionChanged() {
+@@ -312,6 +414,37 @@ void PermissionToggleRowView::UpdateUiOnPermissionChanged() {
        }
      }
    }
@@ -1120,7 +1123,7 @@ diff --git a/chrome/browser/ui/views/page_info/permission_toggle_row_view.h b/ch
  #include "ui/views/view.h"
  
 +#include "components/content_settings/core/browser/website_settings_registry.h"
-+#include "ui/base/models/simple_menu_model.h"
++#include "ui/menus/simple_menu_model.h"
 +#include "ui/views/controls/menu/menu_runner.h"
 +#include "ui/views/controls/button/md_text_button_with_down_arrow.h"
 +
@@ -2409,7 +2412,7 @@ diff --git a/components/browser_ui/site_settings/android/java/src/org/chromium/c
              preference.setKey(getPreferenceKey(type));
  
              if (type == ContentSettingsType.ADS) {
-@@ -1142,20 +1156,30 @@ public class SingleWebsiteSettings extends BaseSiteSettingsFragment
+@@ -1142,20 +1156,32 @@ public class SingleWebsiteSettings extends BaseSiteSettingsFragment
              @ContentSettingValues @Nullable Integer value,
              boolean isEmbargoed,
              boolean isOneTime) {
@@ -2443,12 +2446,14 @@ diff --git a/components/browser_ui/site_settings/android/java/src/org/chromium/c
          switchPreference.setOnPreferenceChangeListener(this);
 -        if (contentType == mHighlightedPermission) {
 -            switchPreference.setBackgroundColor(
++        @ContentSettingsType.EnumType
++        int contentType = getContentSettingsTypeFromPreferenceKey(preference.getKey());
 +        if (preference instanceof ChromeSwitchPreference && contentType == mHighlightedPermission) {
 +            ((ChromeSwitchPreference)switchPreference).setBackgroundColor(
                      AppCompatResources.getColorStateList(getContext(), mHighlightColor)
                              .getDefaultColor());
          }
-@@ -1376,14 +1400,20 @@ public class SingleWebsiteSettings extends BaseSiteSettingsFragment
+@@ -1376,14 +1402,20 @@ public class SingleWebsiteSettings extends BaseSiteSettingsFragment
          if (newValue instanceof Boolean) {
              permission = (Boolean) newValue ? getEnabledValue(type) : ContentSettingValues.BLOCK;
          } else {
@@ -3300,7 +3305,11 @@ diff --git a/components/page_info/android/java/src/org/chromium/components/page_
 diff --git a/components/page_info/android/java/src/org/chromium/components/page_info/PermissionParamsListBuilder.java b/components/page_info/android/java/src/org/chromium/components/page_info/PermissionParamsListBuilder.java
 --- a/components/page_info/android/java/src/org/chromium/components/page_info/PermissionParamsListBuilder.java
 +++ b/components/page_info/android/java/src/org/chromium/components/page_info/PermissionParamsListBuilder.java
-@@ -110,6 +110,7 @@ public class PermissionParamsListBuilder {
+@@ -106,10 +106,10 @@ public class PermissionParamsListBuilder {
+ 
+         switch (permission.setting) {
+             case ContentSettingValues.ALLOW:
+-            case ContentSettingValues.ASK:
                  permissionParams.allowed = true;
                  break;
              case ContentSettingValues.BLOCK:
@@ -3308,6 +3317,19 @@ diff --git a/components/page_info/android/java/src/org/chromium/components/page_
                  permissionParams.allowed = false;
                  break;
              default:
+@@ -120,6 +120,12 @@ public class PermissionParamsListBuilder {
+                                 + permission.type;
+         }
+ 
++        if (permission.type == ContentSettingsType.FILE_SYSTEM_WRITE_GUARD
++                && permission.setting == ContentSettingValues.ASK) {
++            // see https://source.chromium.org/chromium/chromium/src/+/e3e48613de29440ae1cf11b0ff7fa7c613d9f416
++            permissionParams.allowed = true;
++        }
++
+         return permissionParams;
+     }
+ 
 diff --git a/components/page_info/android/page_info_controller_android.cc b/components/page_info/android/page_info_controller_android.cc
 --- a/components/page_info/android/page_info_controller_android.cc
 +++ b/components/page_info/android/page_info_controller_android.cc

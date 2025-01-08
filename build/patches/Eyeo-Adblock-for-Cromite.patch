@@ -32,7 +32,7 @@ deactivation of all pop-ups (default disabled)
  chrome/browser/resources/settings/settings.ts |    1 +
  .../settings/settings_menu/settings_menu.html |    5 +
  chrome/browser/ui/tab_helpers.cc              |    6 +-
- .../adblock_internals_page_handler_impl.cc    |   23 +-
+ .../adblock_internals_page_handler_impl.cc    |   21 +-
  .../adblock_internals/adblock_internals_ui.cc |    3 +-
  .../common/extensions/api/_api_features.json  |    4 +-
  .../extensions/api/_permission_features.json  |    8 -
@@ -52,7 +52,7 @@ deactivation of all pop-ups (default disabled)
  .../settings/AdblockSettingsFragment.java     |   51 +-
  components/adblock/content/browser/BUILD.gn   |   18 +-
  .../adblock_controller_factory_base.cc        |    5 +-
- .../browser/adblock_url_loader_factory.cc     |   68 +-
+ .../browser/adblock_url_loader_factory.cc     |   66 +-
  .../browser/adblock_url_loader_factory.h      |    7 +-
  .../browser/adblock_webcontents_observer.cc   |   25 +-
  .../browser/adblock_webcontents_observer.h    |    5 +-
@@ -130,7 +130,7 @@ deactivation of all pop-ups (default disabled)
  .../blink/renderer/core/css/style_engine.h    |    1 +
  .../renderer/core/exported/web_document.cc    |   15 +-
  .../definitions/adblock_private.d.ts          |   14 +
- 120 files changed, 6731 insertions(+), 1315 deletions(-)
+ 120 files changed, 6729 insertions(+), 1313 deletions(-)
  create mode 100644 chrome/browser/resources/settings/adblock_page/adblock_page.html
  create mode 100644 chrome/browser/resources/settings/adblock_page/adblock_page.ts
  rename components/adblock/android/java/res/xml/{adblock_preferences.xml => eyeo_adblock_preferences.xml} (56%)
@@ -626,7 +626,7 @@ diff --git a/chrome/browser/adblock/adblock_content_browser_client.cc b/chrome/b
 diff --git a/chrome/browser/adblock/adblock_content_browser_client.h b/chrome/browser/adblock/adblock_content_browser_client.h
 --- a/chrome/browser/adblock/adblock_content_browser_client.h
 +++ b/chrome/browser/adblock/adblock_content_browser_client.h
-@@ -44,25 +44,37 @@ class AdblockContentBrowserClient : public ChromeContentBrowserClient {
+@@ -45,25 +45,37 @@ class AdblockContentBrowserClient : public ChromeContentBrowserClient {
    static void ForceAdblockProxyForTesting();
  #endif
  
@@ -667,7 +667,7 @@ diff --git a/chrome/browser/adblock/adblock_content_browser_client.h b/chrome/br
        mojo::PendingRemote<network::mojom::TrustedURLLoaderHeaderClient>*
            header_client,
        bool* bypass_redirect_checks,
-@@ -71,25 +83,51 @@ class AdblockContentBrowserClient : public ChromeContentBrowserClient {
+@@ -72,25 +84,51 @@ class AdblockContentBrowserClient : public ChromeContentBrowserClient {
        scoped_refptr<base::SequencedTaskRunner> navigation_response_task_runner)
        override;
  
@@ -1704,13 +1704,11 @@ diff --git a/chrome/browser/ui/webui/adblock_internals/adblock_internals_page_ha
  #include "components/adblock/core/session_stats.h"
  #include "components/adblock/core/subscription/subscription_config.h"
  #include "components/adblock/core/subscription/subscription_service.h"
-@@ -41,8 +40,7 @@ std::string SubscriptionInstallationStateToString(
-     case State::Unknown:
+@@ -42,7 +41,6 @@ std::string SubscriptionInstallationStateToString(
        return "Unknown";
    }
--  NOTREACHED();
+   NOTREACHED();
 -  return "";
-+  NOTREACHED_NORETURN();
  }
  
  std::string DebugLine(std::string name, std::string value, int level) {
@@ -2657,9 +2655,8 @@ diff --git a/components/adblock/content/browser/adblock_url_loader_factory.cc b/
      case network::mojom::RequestDestination::kWebIdentity:
        return ContentType::Other;
    }
--  NOTREACHED();
+   NOTREACHED();
 -  return ContentType::Other;
-+  NOTREACHED_NORETURN();
  }
  
  }  // namespace
@@ -4990,7 +4987,7 @@ diff --git a/components/adblock/core/subscription/subscription.cc b/components/a
 +    case State::Unknown:
 +      return "Unknown";
 +  }
-+  NOTREACHED_NORETURN();
++  NOTREACHED();
 +}
 +
  }  // namespace adblock

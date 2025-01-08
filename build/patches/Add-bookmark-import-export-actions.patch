@@ -152,7 +152,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/app/bookmarks/B
 +
 +        final boolean listenToActivityState = true;
 +        mIntentRequestTracker = IntentRequestTracker.createFromActivity(this);
-+        mWindowAndroid = new ActivityWindowAndroid(this, listenToActivityState, mIntentRequestTracker);
++        mWindowAndroid = new ActivityWindowAndroid(this, listenToActivityState, mIntentRequestTracker, /*InsetObserver*/ null);
 +        mWindowAndroid.getIntentRequestTracker().restoreInstanceState(savedInstanceState);
 +        mBookmarkManagerCoordinator.setWindow(mWindowAndroid,
 +                            new ModalDialogManager(

@@ -28,6 +28,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../browser/settings/SettingsActivity.java    |  42 ++++-
  chrome/browser/about_flags.cc                 |  11 ++
  chrome/browser/browser_features.cc            |   1 +
+ chrome/browser/browser_features.h             |   1 +
  chrome/browser/flags/BUILD.gn                 |  13 ++
  .../flags/android/chrome_feature_list.cc      |   1 +
  .../flags/android/chrome_feature_list.h       |   1 +
@@ -35,7 +36,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../flags/cromite/include_all_directory.java  |   1 +
  .../java_template/CromiteCachedFlag.java.tmpl |  47 +++++
  chrome/browser/settings/BUILD.gn              |   1 +
- .../settings/ChromeBaseSettingsFragment.java  |  50 ++++++
+ .../settings/ChromeBaseSettingsFragment.java  |  50 +++++
  .../strings/android_chrome_strings.grd        |   1 +
  .../Add-cromite-flags-support.grdp            |   9 +
  .../placeholder.txt                           |   1 +
@@ -43,8 +44,8 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  chrome/common/chrome_features.cc              |   1 +
  .../res/xml/accessibility_preferences.xml     |   3 +-
  .../android/java/res/values/attrs.xml         |   4 +
- .../settings/ChromeSwitchPreference.java      |  20 +++
- .../components/cached_flags/CachedFlag.java   |   8 +-
+ .../settings/ChromeSwitchPreference.java      |  20 ++
+ .../components/cached_flags/CachedFlag.java   |   9 +-
  components/components_strings.grd             |   1 +
  .../content_settings/core/common/features.cc  |   1 +
  .../placeholder.txt                           |   1 +
@@ -66,9 +67,10 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  content/common/features.cc                    |   1 +
  content/public/common/content_features.cc     |   1 +
  content/public/common/content_features.h      |   1 +
- cromite_flags/BUILD.gn                        | 168 ++++++++++++++++++
+ cromite_flags/BUILD.gn                        | 174 ++++++++++++++++++
  .../browser/about_flags_cc/placeholder.txt    |   1 +
  .../browser_features_cc/placeholder.txt       |   1 +
+ .../browser_features_h/placeholder.txt        |   1 +
  .../chrome_feature_list_cc/placeholder.txt    |   1 +
  .../chrome_feature_list_h/placeholder.txt     |   1 +
  .../browser/ui/ui_features_cc/placeholder.txt |   1 +
@@ -102,7 +104,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  third_party/blink/public/common/features.h    |   1 +
  ui/base/ui_base_features.cc                   |   1 +
  ui/base/ui_base_features.h                    |   1 +
- 89 files changed, 792 insertions(+), 28 deletions(-)
+ 91 files changed, 801 insertions(+), 28 deletions(-)
  create mode 100644 chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/cromite/include_all_directory.java
  create mode 100644 chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/cromite/java_template/CromiteCachedFlag.java.tmpl
  create mode 100644 chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Add-cromite-flags-support.grdp
@@ -111,6 +113,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  create mode 100755 cromite_flags/BUILD.gn
  create mode 100755 cromite_flags/chrome/browser/about_flags_cc/placeholder.txt
  create mode 100755 cromite_flags/chrome/browser/browser_features_cc/placeholder.txt
+ create mode 100755 cromite_flags/chrome/browser/browser_features_h/placeholder.txt
  create mode 100755 cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/placeholder.txt
  create mode 100755 cromite_flags/chrome/browser/flags/android/chrome_feature_list_h/placeholder.txt
  create mode 100755 cromite_flags/chrome/browser/ui/ui_features_cc/placeholder.txt
@@ -239,7 +242,7 @@ diff --git a/base/feature_list.cc b/base/feature_list.cc
 +      return key;
 +    }
 +  }
-+  NOTREACHED_NORETURN();
++  NOTREACHED();
 +}
 +
 +// static
@@ -259,7 +262,7 @@ diff --git a/base/feature_list.cc b/base/feature_list.cc
 +      return value == base::FEATURE_ENABLED_BY_DEFAULT;
 +    }
 +  }
-+  NOTREACHED_NORETURN();
++  NOTREACHED();
 +}
 +
  // static
@@ -671,6 +674,17 @@ diff --git a/chrome/browser/browser_features.cc b/chrome/browser/browser_feature
  
 +#include "cromite_flags/chrome_browser_browser_features_cc.inc"
  }  // namespace features
+diff --git a/chrome/browser/browser_features.h b/chrome/browser/browser_features.h
+--- a/chrome/browser/browser_features.h
++++ b/chrome/browser/browser_features.h
+@@ -145,6 +145,7 @@ BASE_DECLARE_FEATURE(kRemovalOfIWAsFromTabCapture);
+ // module, e.g.
+ // //chrome/browser/<foo_module>/features.h
+ //
++#include "cromite_flags/chrome_browser_browser_features_h.inc"
+ }  // namespace features
+ 
+ #endif  // CHROME_BROWSER_BROWSER_FEATURES_H_
 diff --git a/chrome/browser/flags/BUILD.gn b/chrome/browser/flags/BUILD.gn
 --- a/chrome/browser/flags/BUILD.gn
 +++ b/chrome/browser/flags/BUILD.gn
@@ -1032,7 +1046,15 @@ diff --git a/components/browser_ui/settings/android/widget/java/src/org/chromium
 diff --git a/components/cached_flags/android/java/src/org/chromium/components/cached_flags/CachedFlag.java b/components/cached_flags/android/java/src/org/chromium/components/cached_flags/CachedFlag.java
 --- a/components/cached_flags/android/java/src/org/chromium/components/cached_flags/CachedFlag.java
 +++ b/components/cached_flags/android/java/src/org/chromium/components/cached_flags/CachedFlag.java
-@@ -136,7 +136,7 @@ public class CachedFlag extends Flag {
+@@ -5,6 +5,7 @@
+ package org.chromium.components.cached_flags;
+ 
+ import android.content.SharedPreferences;
++import androidx.annotation.Nullable;
+ 
+ import org.chromium.base.FeatureList;
+ import org.chromium.base.FeatureMap;
+@@ -136,7 +137,7 @@ public class CachedFlag extends Flag {
          editor.putBoolean(getSharedPreferenceKey(), isEnabledInNative);
      }
  
@@ -1041,7 +1063,7 @@ diff --git a/components/cached_flags/android/java/src/org/chromium/components/ca
          // Create the key only once to avoid String concatenation every flag check.
          if (mPreferenceKey == null) {
              mPreferenceKey = CachedFlagsSharedPreferences.FLAGS_CACHED.createKey(mFeatureName);
-@@ -144,6 +144,12 @@ public class CachedFlag extends Flag {
+@@ -144,6 +145,12 @@ public class CachedFlag extends Flag {
          return mPreferenceKey;
      }
  
@@ -1101,7 +1123,7 @@ diff --git a/components/flags_ui/flags_state.cc b/components/flags_ui/flags_stat
 +          continue;
 +        }
 +      }
-+      NOTREACHED_NORETURN();
++      NOTREACHED();
 +    }
      CHECK(entry_it != name_to_switch_map.end(), base::NotFatalUntil::M130);
  
@@ -1549,7 +1571,7 @@ diff --git a/cromite_flags/BUILD.gn b/cromite_flags/BUILD.gn
 new file mode 100755
 --- /dev/null
 +++ b/cromite_flags/BUILD.gn
-@@ -0,0 +1,168 @@
+@@ -0,0 +1,174 @@
 +# This file is part of Bromite.
 +
 +# Bromite is free software: you can redistribute it and/or modify
@@ -1618,6 +1640,11 @@ new file mode 100755
 +cpp_bromite_include("chrome_browser_browser_features_cc") {
 +  inputs = [ "//cromite_flags/chrome/browser/browser_features_cc/placeholder.txt" ]
 +  output_file = "chrome_browser_browser_features_cc.inc"
++}
++
++cpp_bromite_include("chrome_browser_browser_features_h") {
++  inputs = [ "//cromite_flags/chrome/browser/browser_features_h/placeholder.txt" ]
++  output_file = "chrome_browser_browser_features_h.inc"
 +}
 +
 +cpp_bromite_include("chrome_browser_ui_ui_features_cc") {
@@ -1710,6 +1737,7 @@ new file mode 100755
 +    ":chrome_browser_flags_android_chrome_feature_list_h",
 +    ":chrome_browser_ui_ui_features_cc",
 +    ":chrome_browser_browser_features_cc",
++    ":chrome_browser_browser_features_h",
 +    ":services_network_public_cpp_features_cc",
 +    ":services_network_public_cpp_features_h",
 +    ":third_party_blink_common_features_cc",
@@ -1728,6 +1756,12 @@ diff --git a/cromite_flags/chrome/browser/browser_features_cc/placeholder.txt b/
 new file mode 100755
 --- /dev/null
 +++ b/cromite_flags/chrome/browser/browser_features_cc/placeholder.txt
+@@ -0,0 +1 @@
++this file is intentionally empty
+diff --git a/cromite_flags/chrome/browser/browser_features_h/placeholder.txt b/cromite_flags/chrome/browser/browser_features_h/placeholder.txt
+new file mode 100755
+--- /dev/null
++++ b/cromite_flags/chrome/browser/browser_features_h/placeholder.txt
 @@ -0,0 +1 @@
 +this file is intentionally empty
 diff --git a/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/placeholder.txt b/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/placeholder.txt

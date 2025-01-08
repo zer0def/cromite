@@ -29,9 +29,9 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  chrome/browser/resources/proxy_config.html    |  77 ++++
  chrome/browser/resources/proxy_config.js      | 278 +++++++++++++
  chrome/browser/ui/BUILD.gn                    |   2 +
- .../webui/chrome_web_ui_controller_factory.cc |   5 +-
+ .../browser/ui/webui/chrome_web_ui_configs.cc |   4 +
  chrome/browser/ui/webui/proxy_config_ui.cc    | 389 ++++++++++++++++++
- chrome/browser/ui/webui/proxy_config_ui.h     |  31 ++
+ chrome/browser/ui/webui/proxy_config_ui.h     |  41 ++
  chrome/common/webui_url_constants.cc          |   2 +
  chrome/common/webui_url_constants.h           |   2 +
  .../pref_proxy_config_tracker_impl.cc         |   5 +-
@@ -40,7 +40,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../proxy_config/proxy_policy_handler.cc      |   2 +-
  net/proxy_resolution/proxy_config.cc          |  51 ++-
  net/proxy_resolution/proxy_config.h           |   3 +
- 25 files changed, 974 insertions(+), 18 deletions(-)
+ 25 files changed, 984 insertions(+), 17 deletions(-)
  create mode 100644 chrome/browser/resources/proxy_config.css
  create mode 100644 chrome/browser/resources/proxy_config.html
  create mode 100644 chrome/browser/resources/proxy_config.js
@@ -669,28 +669,25 @@ diff --git a/chrome/browser/ui/BUILD.gn b/chrome/browser/ui/BUILD.gn
      "webui/net_internals/net_internals_ui.cc",
      "webui/net_internals/net_internals_ui.h",
      "webui/ntp_tiles_internals_ui.cc",
-diff --git a/chrome/browser/ui/webui/chrome_web_ui_controller_factory.cc b/chrome/browser/ui/webui/chrome_web_ui_controller_factory.cc
---- a/chrome/browser/ui/webui/chrome_web_ui_controller_factory.cc
-+++ b/chrome/browser/ui/webui/chrome_web_ui_controller_factory.cc
-@@ -27,6 +27,7 @@
- #include "chrome/browser/ui/webui/about/about_ui.h"
- #include "chrome/browser/ui/webui/components/components_ui.h"
- #include "chrome/browser/ui/webui/crashes_ui.h"
-+#include "chrome/browser/ui/webui/proxy_config_ui.h"
- #include "chrome/browser/ui/webui/download_internals/download_internals_ui.h"
- #include "chrome/browser/ui/webui/flags/flags_ui.h"
- #include "chrome/common/buildflags.h"
-@@ -400,7 +401,9 @@ base::RefCountedMemory* ChromeWebUIControllerFactory::GetFaviconResourceBytes(
+diff --git a/chrome/browser/ui/webui/chrome_web_ui_configs.cc b/chrome/browser/ui/webui/chrome_web_ui_configs.cc
+--- a/chrome/browser/ui/webui/chrome_web_ui_configs.cc
++++ b/chrome/browser/ui/webui/chrome_web_ui_configs.cc
+@@ -56,6 +56,9 @@
+ #include "extensions/buildflags/buildflags.h"
+ #include "printing/buildflags/buildflags.h"
  
-   if (page_url.host_piece() == chrome::kChromeUIFlagsHost)
-     return FlagsUI::GetFaviconResourceBytes(scale_factor);
--
-+  if (url.host_piece() == chrome::kChromeUIProxyConfigHost) {
-+    return &NewWebUI<ProxyConfigUI>;
-+  }
- #if !BUILDFLAG(IS_ANDROID)
- #if !BUILDFLAG(IS_CHROMEOS)
-   // The chrome://apps page is not available on Android or ChromeOS.
++#include "chrome/browser/ui/webui/proxy_config_ui.h"
++
++
+ #if BUILDFLAG(ENABLE_NACL)
+ #include "chrome/browser/ui/webui/nacl_ui.h"
+ #endif
+@@ -410,4 +413,5 @@ void RegisterChromeWebUIConfigs() {
+   map.AddWebUIConfig(std::make_unique<SigninErrorUIConfig>());
+   map.AddWebUIConfig(std::make_unique<SigninEmailConfirmationUIConfig>());
+ #endif  //  !BUILDFLAG(IS_CHROMEOS_ASH) && !BUILDFLAG(IS_ANDROID)
++  map.AddWebUIConfig(std::make_unique<ProxyConfigUIConfig>());
+ }
 diff --git a/chrome/browser/ui/webui/proxy_config_ui.cc b/chrome/browser/ui/webui/proxy_config_ui.cc
 new file mode 100644
 --- /dev/null
@@ -893,7 +890,7 @@ new file mode 100644
 +      state.SetByDottedPath("config.rules.fallback_proxies", base::Value(omitDirect(rules.fallback_proxies.ToPacString())));
 +      break;
 +    default:
-+     NOTREACHED_NORETURN();
++     NOTREACHED();
 +  }
 +  state.SetByDottedPath("config.rules.type", base::Value(type));
 +  state.SetByDottedPath("config.rules.bypass_rules", base::Value(rules.bypass_rules.ToString()));
@@ -1089,7 +1086,7 @@ diff --git a/chrome/browser/ui/webui/proxy_config_ui.h b/chrome/browser/ui/webui
 new file mode 100644
 --- /dev/null
 +++ b/chrome/browser/ui/webui/proxy_config_ui.h
-@@ -0,0 +1,31 @@
+@@ -0,0 +1,41 @@
 +/*
 +    This file is part of Bromite.
 +
@@ -1110,7 +1107,9 @@ new file mode 100644
 +#ifndef CHROME_BROWSER_UI_WEBUI_PROXY_CONFIG_UI_H_
 +#define CHROME_BROWSER_UI_WEBUI_PROXY_CONFIG_UI_H_
 +
++#include "chrome/common/webui_url_constants.h"
 +#include "content/public/browser/web_ui_controller.h"
++#include "content/public/browser/webui_config.h"
 +
 +// The WebUI for chrome://proxy/.
 +class ProxyConfigUI : public content::WebUIController {
@@ -1118,6 +1117,14 @@ new file mode 100644
 +  ProxyConfigUI(const ProxyConfigUI&) = delete;
 +  ProxyConfigUI& operator=(const ProxyConfigUI&) = delete;
 +  explicit ProxyConfigUI(content::WebUI* web_ui);
++};
++
++class ProxyConfigUIConfig
++    : public content::DefaultWebUIConfig<ProxyConfigUI> {
++ public:
++  ProxyConfigUIConfig()
++      : DefaultWebUIConfig(content::kChromeUIScheme,
++                           chrome::kChromeUIProxyConfigHost) {}
 +};
 +
 +#endif  // CHROME_BROWSER_UI_WEBUI_PROXY_CONFIG_UI_H_

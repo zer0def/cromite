@@ -64,7 +64,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../chrome/browser/hub/HubManagerImpl.java    |  16 +-
  .../browser/hub/ReversedLinearLayout.java     |  42 +++++
  .../android/res/layout/hub_layout.xml         |   4 +-
- .../android/res/layout/hub_toolbar_layout.xml |   2 +-
+ .../android/res/layout/hub_toolbar_layout.xml |   4 +-
  chrome/browser/prefs/browser_prefs.cc         |   2 +-
  .../chrome/browser/ui/appmenu/AppMenu.java    |  40 ++++-
  .../ui/appmenu/AppMenuHandlerImpl.java        |  10 ++
@@ -91,7 +91,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../AccessibilitySettingsDelegate.java        |   7 +
  .../render_widget_host_view_android.cc        |   3 +
  .../Move-navigation-bar-to-bottom.inc         |  17 ++
- 78 files changed, 1009 insertions(+), 78 deletions(-)
+ 78 files changed, 1010 insertions(+), 79 deletions(-)
  create mode 100644 chrome/browser/hub/internal/android/java/src/org/chromium/chrome/browser/hub/ReversedLinearLayout.java
  create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Move-navigation-bar-to-bottom.inc
 
@@ -1029,7 +1029,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/compositor/over
  import org.chromium.base.supplier.ObservableSupplier;
  import org.chromium.base.supplier.ObservableSupplierImpl;
  import org.chromium.cc.input.BrowserControlsOffsetTagsInfo;
-@@ -101,6 +102,8 @@ import org.chromium.ui.modaldialog.ModalDialogManager;
+@@ -102,6 +103,8 @@ import org.chromium.ui.modaldialog.ModalDialogManager;
  import org.chromium.ui.resources.ResourceManager;
  import org.chromium.ui.util.ColorUtils;
  import org.chromium.url.GURL;
@@ -1038,7 +1038,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/compositor/over
  
  import java.util.ArrayList;
  import java.util.List;
-@@ -250,12 +253,16 @@ public class StripLayoutHelperManager
+@@ -251,12 +254,16 @@ public class StripLayoutHelperManager
      // Drag-Drop
      @Nullable private TabDragSource mTabDragSource;
  
@@ -1055,7 +1055,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/compositor/over
              if (mModelSelectorButton != null
                      && mModelSelectorButton.onDown(x, y, fromMouse, buttons)) {
                  return;
-@@ -281,6 +288,7 @@ public class StripLayoutHelperManager
+@@ -282,6 +289,7 @@ public class StripLayoutHelperManager
              if (DragDropGlobalState.hasValue()) {
                  return;
              }
@@ -1063,7 +1063,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/compositor/over
              if (mModelSelectorButton != null) {
                  mModelSelectorButton.drag(x, y);
              }
-@@ -292,6 +300,7 @@ public class StripLayoutHelperManager
+@@ -293,6 +301,7 @@ public class StripLayoutHelperManager
              if (DragDropGlobalState.hasValue()) {
                  return;
              }
@@ -1071,7 +1071,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/compositor/over
              long time = time();
              if (mModelSelectorButton != null
                      && mModelSelectorButton.click(x, y, fromMouse, buttons)) {
-@@ -306,6 +315,7 @@ public class StripLayoutHelperManager
+@@ -307,6 +316,7 @@ public class StripLayoutHelperManager
              if (DragDropGlobalState.hasValue()) {
                  return;
              }
@@ -1079,7 +1079,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/compositor/over
              getActiveStripLayoutHelper().fling(time(), x, y, velocityX, velocityY);
          }
  
-@@ -314,6 +324,7 @@ public class StripLayoutHelperManager
+@@ -315,6 +325,7 @@ public class StripLayoutHelperManager
              if (DragDropGlobalState.hasValue()) {
                  return;
              }
@@ -1087,7 +1087,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/compositor/over
              getActiveStripLayoutHelper().onLongPress(time(), x, y);
          }
  
-@@ -421,7 +432,8 @@ public class StripLayoutHelperManager
+@@ -422,7 +433,8 @@ public class StripLayoutHelperManager
              @Nullable DesktopWindowStateManager desktopWindowStateManager,
              ActionConfirmationManager actionConfirmationManager,
              ModalDialogManager modalDialogManager,
@@ -1097,7 +1097,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/compositor/over
          Resources res = context.getResources();
          mUpdateHost = updateHost;
          mLayerTitleCacheSupplier = layerTitleCacheSupplier;
-@@ -525,6 +537,8 @@ public class StripLayoutHelperManager
+@@ -526,6 +538,8 @@ public class StripLayoutHelperManager
                                  !mTabStripObscured
                                          && getStripVisibilityState()
                                                  == StripVisibilityState.VISIBLE);
@@ -1106,7 +1106,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/compositor/over
  
          tabHoverCardViewStub.setOnInflateListener(
                  (viewStub, view) -> {
-@@ -757,6 +771,10 @@ public class StripLayoutHelperManager
+@@ -758,6 +772,10 @@ public class StripLayoutHelperManager
              // layer should be a negative value.
              yOffset -= getHeight();
          }
@@ -1117,7 +1117,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/compositor/over
          mTabStripTreeProvider.pushAndUpdateStrip(
                  this,
                  mLayerTitleCacheSupplier.get(),
-@@ -770,7 +788,9 @@ public class StripLayoutHelperManager
+@@ -771,7 +789,9 @@ public class StripLayoutHelperManager
                  mStripTransitionScrimOpacity,
                  mLeftPadding,
                  mRightPadding,
@@ -1128,7 +1128,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/compositor/over
          return mTabStripTreeProvider;
      }
  
-@@ -829,11 +849,21 @@ public class StripLayoutHelperManager
+@@ -830,11 +850,21 @@ public class StripLayoutHelperManager
                  mLeftPadding,
                  mRightPadding);
  
@@ -1518,9 +1518,9 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/searchwidget/Se
          mAnchorView = contentView.findViewById(R.id.toolbar);
 +        if (ChromeFeatureList.sMoveTopToolbarToBottom.isEnabled()) {
 +            CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams)
-+                anchorView.getLayoutParams();
++                mAnchorView.getLayoutParams();
 +            layoutParams.gravity = Gravity.START | Gravity.BOTTOM;
-+            anchorView.setLayoutParams(layoutParams);
++            mAnchorView.setLayoutParams(layoutParams);
 +        }
  
          // Update the status bar's color based on the toolbar color.
@@ -2135,6 +2135,15 @@ diff --git a/chrome/browser/hub/internal/android/res/layout/hub_layout.xml b/chr
 diff --git a/chrome/browser/hub/internal/android/res/layout/hub_toolbar_layout.xml b/chrome/browser/hub/internal/android/res/layout/hub_toolbar_layout.xml
 --- a/chrome/browser/hub/internal/android/res/layout/hub_toolbar_layout.xml
 +++ b/chrome/browser/hub/internal/android/res/layout/hub_toolbar_layout.xml
+@@ -9,7 +9,7 @@ found in the LICENSE file.
+   xmlns:app="http://schemas.android.com/apk/res-auto"
+   xmlns:tools="http://schemas.android.com/tools"
+   android:layout_width="match_parent"
+-  android:layout_height="wrap_content"
++  android:layout_height="@dimen/toolbar_height_no_shadow"
+   android:orientation="vertical"
+   tools:ignore="MergeRootFrame">
+   <!-- Should only be visible during animations involving hub search. -->
 @@ -24,7 +24,7 @@ found in the LICENSE file.
    <org.chromium.chrome.browser.hub.HubToolbarView
      android:id="@+id/hub_toolbar"

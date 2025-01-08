@@ -54,7 +54,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  components/google/core/common/google_util.cc  | 313 +-----------------
  components/google/core/common/google_util.h   |  15 +-
  .../browser/page_load_metrics_util.cc         |   3 +-
- .../google/browser/google_url_util.cc         |   3 +
+ .../google/browser/google_url_util.cc         |   1 +
  .../search_engines/search_engine_utils.cc     |   1 +
  .../search_engines/search_terms_data.cc       |   4 +-
  components/search_engines/template_url.cc     |   6 +-
@@ -65,7 +65,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  ...gled-chromium-no-special-hosts-domains.inc |   1 +
  net/base/url_util.cc                          |  25 +-
  services/network/network_context.cc           |   2 +-
- 58 files changed, 55 insertions(+), 796 deletions(-)
+ 58 files changed, 53 insertions(+), 796 deletions(-)
  create mode 100644 cromite_flags/content/public/common/content_features_cc/ungoogled-chromium-no-special-hosts-domains.inc
 
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ui/RootUiCoordinator.java b/chrome/android/java/src/org/chromium/chrome/browser/ui/RootUiCoordinator.java
@@ -1517,12 +1517,7 @@ diff --git a/components/page_load_metrics/browser/page_load_metrics_util.cc b/co
 diff --git a/components/page_load_metrics/google/browser/google_url_util.cc b/components/page_load_metrics/google/browser/google_url_util.cc
 --- a/components/page_load_metrics/google/browser/google_url_util.cc
 +++ b/components/page_load_metrics/google/browser/google_url_util.cc
-@@ -11,9 +11,12 @@
- #include "components/page_load_metrics/browser/page_load_metrics_util.h"
- #include "net/base/registry_controlled_domains/registry_controlled_domain.h"
- 
-+#error "Exclude from build!"
-+
+@@ -14,6 +14,7 @@
  namespace page_load_metrics {
  
  std::optional<std::string> GetGoogleHostnamePrefix(const GURL& url) {

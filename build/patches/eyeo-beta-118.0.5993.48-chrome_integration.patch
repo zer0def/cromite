@@ -10,7 +10,7 @@ Pre-requisites: eyeo Browser Ad filtering Solution: Base Module
  chrome/browser/BUILD.gn                       |  26 ++
  chrome/browser/adblock/README.md              |   3 +
  .../adblock/adblock_content_browser_client.cc | 320 ++++++++++++++++++
- .../adblock/adblock_content_browser_client.h  | 100 ++++++
+ .../adblock/adblock_content_browser_client.h  | 101 ++++++
  ...adblock_content_browser_client_unittest.cc | 203 +++++++++++
  .../adblock/adblock_controller_factory.cc     |  67 ++++
  .../adblock/adblock_controller_factory.h      |  49 +++
@@ -49,12 +49,12 @@ Pre-requisites: eyeo Browser Ad filtering Solution: Base Module
  .../adblock_internals_page_handler_impl.cc    | 115 +++++++
  .../adblock_internals_page_handler_impl.h     |  51 +++
  .../adblock_internals/adblock_internals_ui.cc |  47 +++
- .../adblock_internals/adblock_internals_ui.h  |  48 +++
- .../webui/chrome_web_ui_controller_factory.cc |   8 +
+ .../adblock_internals/adblock_internals_ui.h  |  57 ++++
+ .../browser/ui/webui/chrome_web_ui_configs.cc |   3 +
  chrome/common/BUILD.gn                        |   3 +
  chrome/common/webui_url_constants.cc          |   4 +
  chrome/common/webui_url_constants.h           |   5 +
- 48 files changed, 2288 insertions(+), 2 deletions(-)
+ 48 files changed, 2293 insertions(+), 2 deletions(-)
  create mode 100644 chrome/browser/adblock/README.md
  create mode 100644 chrome/browser/adblock/adblock_content_browser_client.cc
  create mode 100644 chrome/browser/adblock/adblock_content_browser_client.h
@@ -506,7 +506,7 @@ diff --git a/chrome/browser/adblock/adblock_content_browser_client.h b/chrome/br
 new file mode 100644
 --- /dev/null
 +++ b/chrome/browser/adblock/adblock_content_browser_client.h
-@@ -0,0 +1,100 @@
+@@ -0,0 +1,101 @@
 +/*
 + * This file is part of eyeo Chromium SDK,
 + * Copyright (C) 2006-present eyeo GmbH
@@ -528,6 +528,7 @@ new file mode 100644
 +#define CHROME_BROWSER_ADBLOCK_ADBLOCK_CONTENT_BROWSER_CLIENT_H_
 +
 +#include "build/buildflag.h"
++#include "extensions/buildflags/buildflags.h"
 +#include "chrome/browser/chrome_content_browser_client.h"
 +
 +namespace adblock {
@@ -2759,7 +2760,7 @@ diff --git a/chrome/browser/ui/webui/adblock_internals/adblock_internals_ui.h b/
 new file mode 100644
 --- /dev/null
 +++ b/chrome/browser/ui/webui/adblock_internals/adblock_internals_ui.h
-@@ -0,0 +1,48 @@
+@@ -0,0 +1,57 @@
 +/*
 + * This file is part of eyeo Chromium SDK,
 + * Copyright (C) 2006-present eyeo GmbH
@@ -2781,6 +2782,8 @@ new file mode 100644
 +#define CHROME_BROWSER_UI_WEBUI_ADBLOCK_INTERNALS_ADBLOCK_INTERNALS_UI_H_
 +
 +#include "chrome/browser/ui/webui/adblock_internals/adblock_internals.mojom.h"
++#include "chrome/common/webui_url_constants.h"
++#include "content/public/browser/webui_config.h"
 +#include "mojo/public/cpp/bindings/pending_receiver.h"
 +#include "ui/webui/mojo_web_ui_controller.h"
 +
@@ -2807,39 +2810,32 @@ new file mode 100644
 +      handler_;
 +};
 +
++class AdblockInternalsUIConfig : public content::DefaultWebUIConfig<AdblockInternalsUI> {
++ public:
++  AdblockInternalsUIConfig()
++      : DefaultWebUIConfig(content::kChromeUIScheme,
++                           chrome::kChromeUIAdblockInternalsHost) {}
++};
++
 +#endif  // CHROME_BROWSER_UI_WEBUI_ADBLOCK_INTERNALS_ADBLOCK_INTERNALS_UI_H_
-diff --git a/chrome/browser/ui/webui/chrome_web_ui_controller_factory.cc b/chrome/browser/ui/webui/chrome_web_ui_controller_factory.cc
---- a/chrome/browser/ui/webui/chrome_web_ui_controller_factory.cc
-+++ b/chrome/browser/ui/webui/chrome_web_ui_controller_factory.cc
-@@ -1,6 +1,10 @@
- // Copyright 2012 The Chromium Authors
- // Use of this source code is governed by a BSD-style license that can be
- // found in the LICENSE file.
-+//
-+// This source code is a part of eyeo Chromium SDK.
-+// Use of this source code is governed by the GPLv3 that can be found in the
-+// components/adblock/LICENSE file.
+diff --git a/chrome/browser/ui/webui/chrome_web_ui_configs.cc b/chrome/browser/ui/webui/chrome_web_ui_configs.cc
+--- a/chrome/browser/ui/webui/chrome_web_ui_configs.cc
++++ b/chrome/browser/ui/webui/chrome_web_ui_configs.cc
+@@ -56,6 +56,8 @@
+ #include "extensions/buildflags/buildflags.h"
+ #include "printing/buildflags/buildflags.h"
  
- #include "chrome/browser/ui/webui/chrome_web_ui_controller_factory.h"
- 
-@@ -25,6 +29,7 @@
- #include "chrome/browser/optimization_guide/optimization_guide_keyed_service_factory.h"
- #include "chrome/browser/profiles/profile.h"
- #include "chrome/browser/ui/webui/about/about_ui.h"
 +#include "chrome/browser/ui/webui/adblock_internals/adblock_internals_ui.h"
- #include "chrome/browser/ui/webui/components/components_ui.h"
- #include "chrome/browser/ui/webui/crashes_ui.h"
++
  #include "chrome/browser/ui/webui/proxy_config_ui.h"
-@@ -415,6 +420,9 @@ base::RefCountedMemory* ChromeWebUIControllerFactory::GetFaviconResourceBytes(
-   if (url.host_piece() == chrome::kChromeUISettingsHost)
-     return &NewWebUI<settings::SettingsUI>;
+ 
+ #if BUILDFLAG(IS_ANDROID)
+@@ -428,4 +430,5 @@ void RegisterChromeWebUIConfigs() {
+ #if BUILDFLAG(IS_ANDROID)
+   map.AddWebUIConfig(std::make_unique<settings::SettingsUIConfig>());
  #endif  // BUILDFLAG(IS_ANDROID)
-+  if (url.host_piece() == chrome::kChromeUIAdblockInternalsHost) {
-+    return &NewWebUI<AdblockInternalsUI>;
-+  }
- #if !BUILDFLAG(IS_ANDROID)
- #if !BUILDFLAG(IS_CHROMEOS)
-   // The chrome://apps page is not available on Android or ChromeOS.
++  map.AddWebUIConfig(std::make_unique<AdblockInternalsUIConfig>());
+ }
 diff --git a/chrome/common/BUILD.gn b/chrome/common/BUILD.gn
 --- a/chrome/common/BUILD.gn
 +++ b/chrome/common/BUILD.gn

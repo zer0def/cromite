@@ -36,7 +36,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../keyword_editor_controller.h               |   6 +-
  .../template_url_table_model.cc               |   9 +-
  .../search_engines/template_url_table_model.h |   6 +-
- .../webui/chrome_web_ui_controller_factory.cc |   7 +-
+ .../browser/ui/webui/chrome_web_ui_configs.cc |   7 +
  chrome/browser/ui/webui/favicon_source.cc     |  18 ++
  chrome/browser/ui/webui/favicon_source.h      |   2 +
  .../webui/settings/search_engines_handler.cc  |  28 +-
@@ -46,7 +46,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  ...tings_localized_strings_provider_android.h |  19 ++
  .../browser/ui/webui/settings/settings_ui.cc  |   4 +-
  .../ui/webui/settings/settings_ui_android.cc  | 126 +++++++++
- .../ui/webui/settings/settings_ui_android.h   | 103 +++++++
+ .../ui/webui/settings/settings_ui_android.h   | 112 ++++++++
  chrome/chrome_paks.gni                        |  11 +
  .../settings/SettingsNavigation.java          |   2 +
  .../search_engine_desktop_ui.grdp             |   6 +
@@ -74,7 +74,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  ui/webui/resources/images/BUILD.gn            |   2 +-
  ui/webui/resources/js/BUILD.gn                |   2 +-
  ui/webui/resources/js/load_time_data.ts       |  17 +-
- 67 files changed, 1119 insertions(+), 70 deletions(-)
+ 67 files changed, 1129 insertions(+), 69 deletions(-)
  create mode 100644 chrome/app/settings_strings_android.grdp
  create mode 100644 chrome/browser/search_engines/android/java/res/layout/search_engine_layout.xml
  create mode 100644 chrome/browser/ui/webui/settings/settings_localized_strings_provider_android.cc
@@ -415,7 +415,7 @@ new file mode 100644
 diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -3479,6 +3479,9 @@ static_library("browser") {
+@@ -3478,6 +3478,9 @@ static_library("browser") {
          "//components/user_scripts/android",
        ]
      }
@@ -1073,30 +1073,28 @@ diff --git a/chrome/browser/ui/search_engines/template_url_table_model.h b/chrom
  
    // Reloads the icon at the specified index.
    void ReloadIcon(size_t index);
-diff --git a/chrome/browser/ui/webui/chrome_web_ui_controller_factory.cc b/chrome/browser/ui/webui/chrome_web_ui_controller_factory.cc
---- a/chrome/browser/ui/webui/chrome_web_ui_controller_factory.cc
-+++ b/chrome/browser/ui/webui/chrome_web_ui_controller_factory.cc
-@@ -68,6 +68,8 @@
+diff --git a/chrome/browser/ui/webui/chrome_web_ui_configs.cc b/chrome/browser/ui/webui/chrome_web_ui_configs.cc
+--- a/chrome/browser/ui/webui/chrome_web_ui_configs.cc
++++ b/chrome/browser/ui/webui/chrome_web_ui_configs.cc
+@@ -62,6 +62,10 @@
+ #include "components/user_scripts/browser/ui/user_scripts_ui.h"
+ #endif
  
- #if BUILDFLAG(IS_ANDROID)
- #include "components/feed/feed_feature_list.h"
++#if BUILDFLAG(IS_ANDROID)
 +#include "chrome/browser/ui/webui/settings/settings_ui_android.h"
 +#include "chrome/browser/ui/webui/settings/settings_utils.h"
- #else  // BUILDFLAG(IS_ANDROID)
- #include "base/memory/ref_counted_memory.h"
- #include "base/memory/scoped_refptr.h"
-@@ -409,7 +411,10 @@ base::RefCountedMemory* ChromeWebUIControllerFactory::GetFaviconResourceBytes(
-   if (url.host_piece() == user_scripts::kChromeUIUserScriptsHost)
-     return &NewWebUI<user_scripts::UserScriptsUI>;
++#endif
+ 
+ #if BUILDFLAG(ENABLE_NACL)
+ #include "chrome/browser/ui/webui/nacl_ui.h"
+@@ -421,4 +425,7 @@ void RegisterChromeWebUIConfigs() {
+ #if BUILDFLAG(IS_ANDROID)
+   map.AddWebUIConfig(std::make_unique<user_scripts::UserScriptsUIConfig>());
  #endif
--
 +#if BUILDFLAG(IS_ANDROID)
-+  if (url.host_piece() == chrome::kChromeUISettingsHost)
-+    return &NewWebUI<settings::SettingsUI>;
++  map.AddWebUIConfig(std::make_unique<settings::SettingsUIConfig>());
 +#endif  // BUILDFLAG(IS_ANDROID)
- #if !BUILDFLAG(IS_ANDROID)
- #if !BUILDFLAG(IS_CHROMEOS)
-   // The chrome://apps page is not available on Android or ChromeOS.
+ }
 diff --git a/chrome/browser/ui/webui/favicon_source.cc b/chrome/browser/ui/webui/favicon_source.cc
 --- a/chrome/browser/ui/webui/favicon_source.cc
 +++ b/chrome/browser/ui/webui/favicon_source.cc
@@ -1736,15 +1734,17 @@ diff --git a/chrome/browser/ui/webui/settings/settings_ui_android.h b/chrome/bro
 new file mode 100644
 --- /dev/null
 +++ b/chrome/browser/ui/webui/settings/settings_ui_android.h
-@@ -0,0 +1,103 @@
+@@ -0,0 +1,112 @@
 +#ifndef CHROME_BROWSER_UI_WEBUI_SETTINGS_SETTINGS_UI_ANDROID_H_
 +#define CHROME_BROWSER_UI_WEBUI_SETTINGS_SETTINGS_UI_ANDROID_H_
 +
 +#include "build/build_config.h"
 +#include "build/chromeos_buildflags.h"
++#include "chrome/common/webui_url_constants.h"
 +#include "chrome/browser/profiles/profile.h"
 +#include "components/user_education/webui/help_bubble_handler.h"
 +#include "content/public/browser/web_ui_controller.h"
++#include "content/public/browser/webui_config.h"
 +#include "mojo/public/cpp/bindings/pending_receiver.h"
 +#include "mojo/public/cpp/bindings/pending_remote.h"
 +#include "mojo/public/cpp/bindings/receiver.h"
@@ -1835,6 +1835,13 @@ new file mode 100644
 +      override;
 +
 +  WEB_UI_CONTROLLER_TYPE_DECL();
++};
++
++class SettingsUIConfig : public content::DefaultWebUIConfig<SettingsUI> {
++ public:
++  SettingsUIConfig()
++      : DefaultWebUIConfig(content::kChromeUIScheme,
++                           chrome::kChromeUISettingsHost) {}
 +};
 +
 +}  // namespace settings

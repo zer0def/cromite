@@ -17,7 +17,6 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../developer_private_api.cc                  | 38 +++++++++++-
  .../developer_private/developer_private_api.h |  3 +
  .../webstore_private/webstore_private_api.cc  | 15 ++++-
- chrome/browser/extensions/cws_info_service.cc |  1 +
  .../extensions/cws_info_service_factory.cc    |  3 +-
  .../extensions/extension_management.cc        |  1 +
  .../extension_safety_check_utils.cc           |  3 +-
@@ -48,7 +47,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  extensions/common/extension_features.cc       | 15 +++++
  extensions/common/extension_features.h        |  5 ++
  .../definitions/developer_private.d.ts        |  2 +
- 35 files changed, 257 insertions(+), 109 deletions(-)
+ 34 files changed, 256 insertions(+), 109 deletions(-)
  create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Webstore-protection.inc
 
 diff --git a/chrome/app/extensions_strings.grdp b/chrome/app/extensions_strings.grdp
@@ -221,17 +220,6 @@ diff --git a/chrome/browser/extensions/api/webstore_private/webstore_private_api
  }
  
  WebstorePrivateGetExtensionStatusFunction::
-diff --git a/chrome/browser/extensions/cws_info_service.cc b/chrome/browser/extensions/cws_info_service.cc
---- a/chrome/browser/extensions/cws_info_service.cc
-+++ b/chrome/browser/extensions/cws_info_service.cc
-@@ -157,6 +157,7 @@ void RecordNetworkHistograms(const network::SimpleURLLoader* url_loader) {
- }  // namespace
- 
- namespace extensions {
-+SET_CROMITE_FEATURE_DISABLED(kCWSInfoService);
- 
- // Increase the frequency of periodic retrieval of extensions metadata from
- // CWS. This feature is used only for testing purposes.
 diff --git a/chrome/browser/extensions/cws_info_service_factory.cc b/chrome/browser/extensions/cws_info_service_factory.cc
 --- a/chrome/browser/extensions/cws_info_service_factory.cc
 +++ b/chrome/browser/extensions/cws_info_service_factory.cc

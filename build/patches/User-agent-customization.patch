@@ -139,7 +139,7 @@ new file mode 100644
 +        <TextView
 +            android:layout_width="match_parent"
 +            android:layout_height="wrap_content"
-+            android:textAppearance="@style/TextAppearance.AccessibilityTextPreference"
++            style="@style/TextAppearance.TextLarge.Primary"
 +            android:background="@color/default_bg_color_secondary"
 +            android:padding="16dp"
 +            android:text="@string/custom_ua_text"/>
@@ -170,7 +170,7 @@ new file mode 100644
 +        <TextView
 +            android:layout_width="match_parent"
 +            android:layout_height="wrap_content"
-+            android:textAppearance="@style/TextAppearance.AccessibilityTextPreference"
++            style="@style/TextAppearance.TextLarge.Primary"
 +            android:background="@color/default_bg_color_secondary"
 +            android:padding="16dp"
 +            android:text="@string/custom_desktop_ua_text"/>

@@ -13,6 +13,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../bookmark_merged_surface_service.cc        |  2 +
  .../dialogs/DownloadLocationCustomView.java   |  4 +-
  .../strings/android_chrome_strings.grd        |  3 +
+ .../bookmark_ui_operations_helper.cc          |  2 +
  .../views/bookmarks/bookmark_menu_delegate.cc |  2 +
  components/bookmark_bar_strings.grdp          |  6 ++
  .../bookmarks/browser/bookmark_codec.cc       | 20 +++++-
@@ -28,7 +29,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  components/bookmarks/browser/bookmark_uuids.h |  1 +
  components/bookmarks/browser/model_loader.cc  |  8 ++-
  .../bookmark_specifics_conversions.cc         |  1 +
- 24 files changed, 245 insertions(+), 15 deletions(-)
+ 25 files changed, 247 insertions(+), 15 deletions(-)
 
 diff --git a/chrome/android/java/res/menu/main_menu.xml b/chrome/android/java/res/menu/main_menu.xml
 --- a/chrome/android/java/res/menu/main_menu.xml
@@ -415,6 +416,18 @@ diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chro
        <message name="IDS_MENU_GET_IMAGE_DESCRIPTIONS" desc="Menu item to start getting alt text accessibility image labels/descriptions [CHAR_LIMIT=27]">
          Get image descriptions
        </message>
+diff --git a/chrome/browser/ui/bookmarks/bookmark_ui_operations_helper.cc b/chrome/browser/ui/bookmarks/bookmark_ui_operations_helper.cc
+--- a/chrome/browser/ui/bookmarks/bookmark_ui_operations_helper.cc
++++ b/chrome/browser/ui/bookmarks/bookmark_ui_operations_helper.cc
+@@ -54,6 +54,8 @@ ui::mojom::DragOperation BookmarkUIOperationsHelper::DropBookmarks(
+   if (is_reorder) {
+     base::UmaHistogramEnumeration("Bookmarks.ReorderDropTarget", target);
+     switch (GetParentType()) {
++      case bookmarks::BookmarkNode::TABS_COLLECTION:
++        break;
+       case bookmarks::BookmarkNode::URL:
+         NOTREACHED();
+       case bookmarks::BookmarkNode::FOLDER:
 diff --git a/chrome/browser/ui/views/bookmarks/bookmark_menu_delegate.cc b/chrome/browser/ui/views/bookmarks/bookmark_menu_delegate.cc
 --- a/chrome/browser/ui/views/bookmarks/bookmark_menu_delegate.cc
 +++ b/chrome/browser/ui/views/bookmarks/bookmark_menu_delegate.cc

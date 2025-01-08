@@ -5,7 +5,7 @@ Subject: Disable all predictors code
 Original License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 ---
- chrome/browser/BUILD.gn                           |  2 --
+ chrome/browser/BUILD.gn                           |  3 ---
  .../preloading_model_keyed_service.cc             |  3 +++
  .../preloading_model_keyed_service_factory.cc     |  4 +---
  .../optimization_guide/chrome_hints_manager.cc    |  1 +
@@ -14,10 +14,12 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../predictors/autocomplete_action_predictor.cc   |  2 ++
  .../predictors/loading_predictor_config.cc        |  4 ++--
  chrome/browser/predictors/predictors_features.cc  |  3 +--
+ chrome/browser/safe_browsing/BUILD.gn             |  1 -
+ ...ification_content_detection_service_factory.cc |  5 +++++
  chrome/browser/ui/tab_helpers.cc                  |  1 -
  .../ui/webui/omnibox/omnibox_page_handler.cc      |  2 ++
  .../read_anything/read_aloud_app_model.cc         |  8 ++++++++
- .../read_anything/read_aloud_app_model.h          |  6 ++++++
+ .../read_anything/read_aloud_app_model.h          |  7 +++++++
  .../read_anything/read_anything_app_controller.cc | 12 ++++++++++++
  .../read_anything/read_anything_app_controller.h  |  4 ++++
  chrome/utility/BUILD.gn                           |  2 +-
@@ -31,6 +33,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../core/prediction_model_fetcher_impl.cc         |  1 +
  components/optimization_guide/features.gni        |  3 +--
  .../core/page_content_annotations_features.cc     |  5 +++++
+ components/safe_browsing/core/common/features.cc  |  1 +
  .../Disable-all-predictors-code.inc               |  3 +++
  .../Disable-all-predictors-code.inc               |  1 +
  .../Disable-all-predictors-code.inc               |  1 +
@@ -40,7 +43,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  services/webnn/features.gni                       |  2 +-
  .../document_speculation_rules.cc                 |  1 +
  .../platform/runtime_enabled_features.json5       |  2 +-
- 35 files changed, 95 insertions(+), 35 deletions(-)
+ 38 files changed, 102 insertions(+), 37 deletions(-)
  create mode 100644 cromite_flags/chrome/browser/browser_features_cc/Disable-all-predictors-code.inc
  create mode 100644 cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Disable-all-predictors-code.inc
  create mode 100644 cromite_flags/chrome/common/chrome_features_cc/Disable-all-predictors-code.inc
@@ -60,6 +63,14 @@ diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
      "navigation_predictor/preloading_model_keyed_service.cc",
      "navigation_predictor/preloading_model_keyed_service.h",
      "navigation_predictor/preloading_model_keyed_service_factory.cc",
+@@ -2242,7 +2240,6 @@ static_library("browser") {
+     "//components/safe_browsing/content/browser",
+     "//components/safe_browsing/content/browser:client_side_detection",
+     "//components/safe_browsing/content/browser:safe_browsing_service",
+-    "//components/safe_browsing/content/browser/notification_content_detection",
+     "//components/safe_browsing/content/browser/password_protection",
+     "//components/safe_browsing/content/browser/web_ui",
+     "//components/safe_browsing/core/browser",
 diff --git a/chrome/browser/navigation_predictor/preloading_model_keyed_service.cc b/chrome/browser/navigation_predictor/preloading_model_keyed_service.cc
 --- a/chrome/browser/navigation_predictor/preloading_model_keyed_service.cc
 +++ b/chrome/browser/navigation_predictor/preloading_model_keyed_service.cc
@@ -210,6 +221,46 @@ diff --git a/chrome/browser/predictors/predictors_features.cc b/chrome/browser/p
  
  }  // namespace
  
+diff --git a/chrome/browser/safe_browsing/BUILD.gn b/chrome/browser/safe_browsing/BUILD.gn
+--- a/chrome/browser/safe_browsing/BUILD.gn
++++ b/chrome/browser/safe_browsing/BUILD.gn
+@@ -51,7 +51,6 @@ static_library("safe_browsing") {
+     "//components/safe_browsing/content/browser",
+     "//components/safe_browsing/content/browser:client_side_detection",
+     "//components/safe_browsing/content/browser:client_side_detection_service",
+-    "//components/safe_browsing/content/browser/notification_content_detection:notification_content_detection",
+     "//components/safe_browsing/content/browser/triggers:suspicious_site_trigger",
+     "//components/safe_browsing/content/browser/web_ui",
+     "//components/safe_browsing/core/browser",
+diff --git a/chrome/browser/safe_browsing/notification_content_detection_service_factory.cc b/chrome/browser/safe_browsing/notification_content_detection_service_factory.cc
+--- a/chrome/browser/safe_browsing/notification_content_detection_service_factory.cc
++++ b/chrome/browser/safe_browsing/notification_content_detection_service_factory.cc
+@@ -14,6 +14,7 @@
+ #include "components/safe_browsing/content/browser/notification_content_detection/notification_content_detection_service.h"
+ #include "components/safe_browsing/core/browser/db/database_manager.h"
+ #include "components/safe_browsing/core/common/features.h"
++#include "components/optimization_guide/machine_learning_tflite_buildflags.h"
+ #include "content/public/browser/browser_context.h"
+ 
+ namespace safe_browsing {
+@@ -63,6 +64,7 @@ std::unique_ptr<KeyedService> NotificationContentDetectionServiceFactory::
+     return nullptr;
+   }
+ 
++#if BUILDFLAG(BUILD_WITH_TFLITE_LIB)
+   auto database_manager =
+       g_browser_process->safe_browsing_service()->database_manager();
+   scoped_refptr<base::SequencedTaskRunner> background_task_runner =
+@@ -70,6 +72,9 @@ std::unique_ptr<KeyedService> NotificationContentDetectionServiceFactory::
+           {base::MayBlock(), base::TaskPriority::BEST_EFFORT});
+   return std::make_unique<NotificationContentDetectionService>(
+       opt_guide, background_task_runner, database_manager, context);
++#else
++  return nullptr;
++#endif
+ }
+ 
+ }  // namespace safe_browsing
 diff --git a/chrome/browser/ui/tab_helpers.cc b/chrome/browser/ui/tab_helpers.cc
 --- a/chrome/browser/ui/tab_helpers.cc
 +++ b/chrome/browser/ui/tab_helpers.cc
@@ -292,17 +343,18 @@ diff --git a/chrome/renderer/accessibility/read_anything/read_aloud_app_model.cc
 diff --git a/chrome/renderer/accessibility/read_anything/read_aloud_app_model.h b/chrome/renderer/accessibility/read_anything/read_aloud_app_model.h
 --- a/chrome/renderer/accessibility/read_anything/read_aloud_app_model.h
 +++ b/chrome/renderer/accessibility/read_anything/read_aloud_app_model.h
-@@ -9,7 +9,9 @@
+@@ -9,7 +9,10 @@
  #include "base/values.h"
  #include "chrome/common/read_anything/read_anything.mojom.h"
  #include "chrome/common/read_anything/read_anything_constants.h"
++#include "components/optimization_guide/machine_learning_tflite_buildflags.h"
 +#if BUILDFLAG(BUILD_WITH_TFLITE_LIB)
  #include "chrome/renderer/accessibility/phrase_segmentation/dependency_parser_model.h"
 +#endif
  #include "chrome/renderer/accessibility/read_anything/read_aloud_traversal_utils.h"
  #include "ui/accessibility/ax_node_position.h"
  
-@@ -87,7 +89,9 @@ class ReadAloudAppModel {
+@@ -87,7 +90,9 @@ class ReadAloudAppModel {
                                 bool is_docs,
                                 const std::set<ui::AXNodeID>* current_nodes);
  
@@ -312,7 +364,7 @@ diff --git a/chrome/renderer/accessibility/read_anything/read_aloud_app_model.h 
  
    // Increments the processed_granularity_index_, updating ReadAloud's state of
    // the current granularity to refer to the next granularity. The current
-@@ -241,9 +245,11 @@ class ReadAloudAppModel {
+@@ -241,9 +246,11 @@ class ReadAloudAppModel {
    //      still needs to be read.
    bool NoValidTextRemainingInCurrentNode(bool is_pdf, bool is_docs) const;
  
@@ -673,6 +725,17 @@ diff --git a/components/page_content_annotations/core/page_content_annotations_f
 +SET_CROMITE_FEATURE_DISABLED(kPageContentAnnotationsValidation);
 +SET_CROMITE_FEATURE_DISABLED(kPageContentAnnotationsPersistSalientImageMetadata);
  }  // namespace page_content_annotations::features
+diff --git a/components/safe_browsing/core/common/features.cc b/components/safe_browsing/core/common/features.cc
+--- a/components/safe_browsing/core/common/features.cc
++++ b/components/safe_browsing/core/common/features.cc
+@@ -228,6 +228,7 @@ BASE_FEATURE(kLogAccountEnhancedProtectionStateInProtegoPings,
+ BASE_FEATURE(kOnDeviceNotificationContentDetectionModel,
+              "OnDeviceNotificationContentDetectionModel",
+              base::FEATURE_DISABLED_BY_DEFAULT);
++SET_CROMITE_FEATURE_DISABLED(kOnDeviceNotificationContentDetectionModel);
+ 
+ constexpr base::FeatureParam<int>
+     kOnDeviceNotificationContentDetectionModelAllowlistSamplingRate{
 diff --git a/cromite_flags/chrome/browser/browser_features_cc/Disable-all-predictors-code.inc b/cromite_flags/chrome/browser/browser_features_cc/Disable-all-predictors-code.inc
 new file mode 100644
 --- /dev/null
