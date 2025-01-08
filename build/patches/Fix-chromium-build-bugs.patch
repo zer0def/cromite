@@ -59,7 +59,7 @@ diff --git a/chrome/browser/navigation_predictor/navigation_predictor_metrics_do
 diff --git a/chrome/browser/safe_browsing/BUILD.gn b/chrome/browser/safe_browsing/BUILD.gn
 --- a/chrome/browser/safe_browsing/BUILD.gn
 +++ b/chrome/browser/safe_browsing/BUILD.gn
-@@ -218,6 +218,7 @@ static_library("safe_browsing") {
+@@ -217,6 +217,7 @@ static_library("safe_browsing") {
        "//components/webdata/common",
        "//content/public/browser",
        "//services/preferences/public/mojom:mojom",
