@@ -41,7 +41,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 diff --git a/base/win/win_util.cc b/base/win/win_util.cc
 --- a/base/win/win_util.cc
 +++ b/base/win/win_util.cc
-@@ -133,76 +133,19 @@ bool EnablePerMonitorV2() {
+@@ -143,76 +143,19 @@ bool EnablePerMonitorV2() {
  }
  
  bool* GetDomainEnrollmentStateStorage() {
@@ -197,7 +197,7 @@ diff --git a/chrome/browser/metrics/chrome_feature_list_creator.cc b/chrome/brow
 diff --git a/chrome/browser/navigation_predictor/search_engine_preconnector.cc b/chrome/browser/navigation_predictor/search_engine_preconnector.cc
 --- a/chrome/browser/navigation_predictor/search_engine_preconnector.cc
 +++ b/chrome/browser/navigation_predictor/search_engine_preconnector.cc
-@@ -42,6 +42,8 @@ BASE_FEATURE(kPreconnectToSearch,
+@@ -43,6 +43,8 @@ BASE_FEATURE(kPreconnectToSearch,
  BASE_FEATURE(kPreconnectToSearchWithPrivacyModeEnabled,
               "PreconnectToSearchWithPrivacyModeEnabled",
               base::FEATURE_DISABLED_BY_DEFAULT);
@@ -209,7 +209,7 @@ diff --git a/chrome/browser/navigation_predictor/search_engine_preconnector.cc b
 diff --git a/chrome/browser/policy/chrome_browser_policy_connector.cc b/chrome/browser/policy/chrome_browser_policy_connector.cc
 --- a/chrome/browser/policy/chrome_browser_policy_connector.cc
 +++ b/chrome/browser/policy/chrome_browser_policy_connector.cc
-@@ -161,9 +161,6 @@ bool ChromeBrowserPolicyConnector::HasMachineLevelPolicies() {
+@@ -138,9 +138,6 @@ bool ChromeBrowserPolicyConnector::HasMachineLevelPolicies() {
      return true;
    }
  #endif  // !BUILDFLAG(IS_CHROMEOS_ASH)
@@ -222,7 +222,7 @@ diff --git a/chrome/browser/policy/chrome_browser_policy_connector.cc b/chrome/b
 diff --git a/chrome/browser/policy/configuration_policy_handler_list_factory.cc b/chrome/browser/policy/configuration_policy_handler_list_factory.cc
 --- a/chrome/browser/policy/configuration_policy_handler_list_factory.cc
 +++ b/chrome/browser/policy/configuration_policy_handler_list_factory.cc
-@@ -2327,9 +2327,9 @@ bool AreFuturePoliciesEnabledByDefault() {
+@@ -2348,9 +2348,9 @@ bool AreFuturePoliciesEnabledByDefault() {
    if (base::CommandLine::ForCurrentProcess()->HasSwitch(switches::kTestType)) {
      return true;
    }
@@ -265,11 +265,11 @@ diff --git a/chrome/browser/signin/account_consistency_mode_manager.cc b/chrome/
 +  return AccountConsistencyMethod::kDisabled;
  #endif
  
-   NOTREACHED_IN_MIGRATION();
+   NOTREACHED();
 diff --git a/chrome/browser/signin/account_consistency_mode_manager_factory.cc b/chrome/browser/signin/account_consistency_mode_manager_factory.cc
 --- a/chrome/browser/signin/account_consistency_mode_manager_factory.cc
 +++ b/chrome/browser/signin/account_consistency_mode_manager_factory.cc
-@@ -51,5 +51,5 @@ void AccountConsistencyModeManagerFactory::RegisterProfilePrefs(
+@@ -52,5 +52,5 @@ void AccountConsistencyModeManagerFactory::RegisterProfilePrefs(
  
  bool AccountConsistencyModeManagerFactory::ServiceIsCreatedWithBrowserContext()
      const {
@@ -320,7 +320,7 @@ diff --git a/chrome/browser/signin/bound_session_credentials/throttled_gaia_auth
 diff --git a/chrome/browser/signin/chrome_signin_client.cc b/chrome/browser/signin/chrome_signin_client.cc
 --- a/chrome/browser/signin/chrome_signin_client.cc
 +++ b/chrome/browser/signin/chrome_signin_client.cc
-@@ -236,7 +236,9 @@ void ChromeSigninClient::DoFinalInit() {
+@@ -237,7 +237,9 @@ void ChromeSigninClient::DoFinalInit() {
  bool ChromeSigninClient::ProfileAllowsSigninCookies(Profile* profile) {
    scoped_refptr<content_settings::CookieSettings> cookie_settings =
        CookieSettingsFactory::GetForProfile(profile);
@@ -331,7 +331,7 @@ diff --git a/chrome/browser/signin/chrome_signin_client.cc b/chrome/browser/sign
  }
  
  PrefService* ChromeSigninClient::GetPrefs() {
-@@ -359,6 +361,9 @@ bool ChromeSigninClient::AreNetworkCallsDelayed() {
+@@ -360,6 +362,9 @@ bool ChromeSigninClient::AreNetworkCallsDelayed() {
  }
  
  void ChromeSigninClient::DelayNetworkCall(base::OnceClosure callback) {
@@ -353,7 +353,7 @@ diff --git a/chrome/browser/signin/dice_response_handler.cc b/chrome/browser/sig
      "Signin.DiceTokenBindingOutcome";
  
  // Used for UMA. Do not reorder, append new values at the end.
-@@ -442,8 +442,10 @@ void DiceResponseHandler::ProcessDiceSignoutHeader(
+@@ -441,8 +441,10 @@ void DiceResponseHandler::ProcessDiceSignoutHeader(
    // - If there is a policy restriction on removing the primary account.
    bool invalidate_only_primary_account =
        identity_manager_->HasPrimaryAccount(signin::ConsentLevel::kSync) ||
@@ -375,7 +375,7 @@ diff --git a/chrome/browser/ui/webui/policy/policy_ui_handler.cc b/chrome/browse
  #include "base/strings/utf_string_conversions.h"
  #include "base/task/task_traits.h"
  #include "base/task/thread_pool.h"
-@@ -72,6 +73,7 @@
+@@ -71,6 +72,7 @@
  #include "components/policy/core/common/policy_details.h"
  #include "components/policy/core/common/policy_logger.h"
  #include "components/policy/core/common/policy_pref_names.h"
@@ -383,7 +383,7 @@ diff --git a/chrome/browser/ui/webui/policy/policy_ui_handler.cc b/chrome/browse
  #include "components/policy/core/common/policy_scheduler.h"
  #include "components/policy/core/common/policy_types.h"
  #include "components/policy/core/common/policy_utils.h"
-@@ -200,6 +202,10 @@ void PolicyUIHandler::RegisterMessages() {
+@@ -208,6 +210,10 @@ void PolicyUIHandler::RegisterMessages() {
        "exportPoliciesJSON",
        base::BindRepeating(&PolicyUIHandler::HandleExportPoliciesJson,
                            base::Unretained(this)));
@@ -394,7 +394,7 @@ diff --git a/chrome/browser/ui/webui/policy/policy_ui_handler.cc b/chrome/browse
    web_ui()->RegisterMessageCallback(
        "listenPoliciesUpdates",
        base::BindRepeating(&PolicyUIHandler::HandleListenPoliciesUpdates,
-@@ -477,8 +483,102 @@ void PolicyUIHandler::SendPolicies() {
+@@ -485,8 +491,102 @@ void PolicyUIHandler::SendPolicies() {
        "policies-updated",
        base::Value(
            policy_value_and_status_aggregator_->GetAggregatedPolicyNames()),
@@ -526,7 +526,7 @@ diff --git a/components/browser_ui/strings/android/browser_ui_strings.grd b/comp
 diff --git a/components/commerce/core/commerce_feature_list.cc b/components/commerce/core/commerce_feature_list.cc
 --- a/components/commerce/core/commerce_feature_list.cc
 +++ b/components/commerce/core/commerce_feature_list.cc
-@@ -56,56 +56,6 @@ const CountryLocaleMap& GetAllowedCountryToLocaleMap() {
+@@ -62,56 +62,6 @@ const CountryLocaleMap& GetAllowedCountryToLocaleMap() {
    return *allowed_map;
  }
  
@@ -582,10 +582,10 @@ diff --git a/components/commerce/core/commerce_feature_list.cc b/components/comm
 -
  }  // namespace
  
- namespace switches {
-@@ -375,6 +325,16 @@ const char kParcelTrackingTestDataParamDelivered[] = "Delivered";
- const char kParcelTrackingTestDataParamInProgress[] = "InProgress";
- const char kParcelTrackingTestDataParamOutForDelivery[] = "OutForDelivery";
+ BASE_FEATURE(kCommerceAllowChipExpansion,
+@@ -385,6 +335,16 @@ BASE_FEATURE(kParcelTrackingRegionLaunched,
+              "ParcelTrackingRegionLaunched",
+              base::FEATURE_DISABLED_BY_DEFAULT);
  
 +SET_CROMITE_FEATURE_DISABLED(kCommerceHintAndroid);
 +SET_CROMITE_FEATURE_DISABLED(kCommercePriceTrackingRegionLaunched);
@@ -600,7 +600,7 @@ diff --git a/components/commerce/core/commerce_feature_list.cc b/components/comm
  // Params for Discount Consent V2 in the NTP Cart module.
  const char kNtpChromeCartModuleDiscountConsentNtpVariationParam[] =
      "discount-consent-ntp-variation";
-@@ -517,11 +477,11 @@ bool IsPartnerMerchant(const GURL& url) {
+@@ -527,11 +487,11 @@ bool IsPartnerMerchant(const GURL& url) {
  }
  
  bool IsRuleDiscountPartnerMerchant(const GURL& url) {
@@ -614,7 +614,7 @@ diff --git a/components/commerce/core/commerce_feature_list.cc b/components/comm
  }
  
  bool IsCartDiscountFeatureEnabled() {
-@@ -601,6 +561,7 @@ base::TimeDelta GetDiscountFetchDelay() {
+@@ -611,6 +571,7 @@ base::TimeDelta GetDiscountFetchDelay() {
  }
  
  bool IsNoDiscountMerchant(const GURL& url) {
@@ -821,7 +821,7 @@ diff --git a/components/policy/core/common/policy_pref_names.cc b/components/pol
 diff --git a/components/policy/core/common/policy_pref_names.h b/components/policy/core/common/policy_pref_names.h
 --- a/components/policy/core/common/policy_pref_names.h
 +++ b/components/policy/core/common/policy_pref_names.h
-@@ -50,6 +50,7 @@ extern const char kUrlAllowlist[];
+@@ -61,6 +61,7 @@ extern const char kUrlAllowlist[];
  extern const char kUserPolicyRefreshRate[];
  extern const char kIntensiveWakeUpThrottlingEnabled[];
  extern const char kUserAgentClientHintsGREASEUpdateEnabled[];
@@ -967,7 +967,7 @@ diff --git a/components/signin/features.gni b/components/signin/features.gni
 diff --git a/components/signin/internal/identity_manager/gaia_cookie_manager_service.cc b/components/signin/internal/identity_manager/gaia_cookie_manager_service.cc
 --- a/components/signin/internal/identity_manager/gaia_cookie_manager_service.cc
 +++ b/components/signin/internal/identity_manager/gaia_cookie_manager_service.cc
-@@ -469,6 +469,8 @@ void GaiaCookieManagerService::RegisterPrefs(PrefRegistrySimple* registry) {
+@@ -465,6 +465,8 @@ void GaiaCookieManagerService::RegisterPrefs(PrefRegistrySimple* registry) {
  }
  
  void GaiaCookieManagerService::InitCookieListener() {
@@ -976,7 +976,7 @@ diff --git a/components/signin/internal/identity_manager/gaia_cookie_manager_ser
    DCHECK(!cookie_listener_receiver_.is_bound());
  
    network::mojom::CookieManager* cookie_manager =
-@@ -866,6 +868,8 @@ void GaiaCookieManagerService::OnSetAccountsFinished(
+@@ -857,6 +859,8 @@ void GaiaCookieManagerService::OnSetAccountsFinished(
  }
  
  void GaiaCookieManagerService::HandleNextRequest() {
@@ -999,7 +999,7 @@ diff --git a/google_apis/gaia/gaia_auth_fetcher.cc b/google_apis/gaia/gaia_auth_
 diff --git a/net/socket/ssl_client_socket_impl.cc b/net/socket/ssl_client_socket_impl.cc
 --- a/net/socket/ssl_client_socket_impl.cc
 +++ b/net/socket/ssl_client_socket_impl.cc
-@@ -772,6 +772,7 @@ int SSLClientSocketImpl::Init() {
+@@ -770,6 +770,7 @@ int SSLClientSocketImpl::Init() {
      return ERR_UNEXPECTED;
    }
  
@@ -1007,7 +1007,7 @@ diff --git a/net/socket/ssl_client_socket_impl.cc b/net/socket/ssl_client_socket
    // Disable SHA-1 server signatures.
    // TODO(crbug.com/boringssl/699): Once the default is flipped in BoringSSL, we
    // no longer need to override it.
-@@ -1180,6 +1181,8 @@ ssl_verify_result_t SSLClientSocketImpl::HandleVerifyResult() {
+@@ -1176,6 +1177,8 @@ ssl_verify_result_t SSLClientSocketImpl::HandleVerifyResult() {
  
    cert_verifier_request_.reset();
  

@@ -281,7 +281,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/offlinepages/in
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tabbed_mode/TabbedRootUiCoordinator.java b/chrome/android/java/src/org/chromium/chrome/browser/tabbed_mode/TabbedRootUiCoordinator.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/tabbed_mode/TabbedRootUiCoordinator.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/tabbed_mode/TabbedRootUiCoordinator.java
-@@ -1169,7 +1169,10 @@ public class TabbedRootUiCoordinator extends RootUiCoordinator {
+@@ -1181,7 +1181,10 @@ public class TabbedRootUiCoordinator extends RootUiCoordinator {
                          mActivity,
                          mStatusIndicatorCoordinator,
                          isUrlBarFocusedSupplier,
@@ -296,7 +296,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tabbed_mode/Tab
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tabmodel/TabModelSelectorBase.java b/chrome/android/java/src/org/chromium/chrome/browser/tabmodel/TabModelSelectorBase.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/tabmodel/TabModelSelectorBase.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/tabmodel/TabModelSelectorBase.java
-@@ -337,6 +337,13 @@ public abstract class TabModelSelectorBase
+@@ -335,6 +335,13 @@ public abstract class TabModelSelectorBase
          return null;
      }
  
@@ -362,7 +362,7 @@ diff --git a/chrome/browser/tabmodel/android/java/src/org/chromium/chrome/browse
 diff --git a/chrome/browser/tabmodel/android/java/src/org/chromium/chrome/browser/tabmodel/TabModelUtils.java b/chrome/browser/tabmodel/android/java/src/org/chromium/chrome/browser/tabmodel/TabModelUtils.java
 --- a/chrome/browser/tabmodel/android/java/src/org/chromium/chrome/browser/tabmodel/TabModelUtils.java
 +++ b/chrome/browser/tabmodel/android/java/src/org/chromium/chrome/browser/tabmodel/TabModelUtils.java
-@@ -17,10 +17,14 @@ import org.chromium.base.supplier.SupplierUtils;
+@@ -17,12 +17,16 @@ import org.chromium.base.supplier.SupplierUtils;
  import org.chromium.chrome.browser.tab.Tab;
  import org.chromium.chrome.browser.tab.TabSelectionType;
  import org.chromium.content_public.browser.WebContents;
@@ -370,14 +370,16 @@ diff --git a/chrome/browser/tabmodel/android/java/src/org/chromium/chrome/browse
  import org.chromium.ui.base.WindowAndroid;
  
  import java.util.ArrayList;
+ import java.util.Collection;
  import java.util.List;
+ import java.util.function.Predicate;
 +import java.util.Collections;
 +import java.util.stream.IntStream;
 +import java.util.stream.Collectors;
  
  /**
   * A set of convenience methods used for interacting with {@link TabList}s and {@link TabModel}s.
-@@ -89,6 +93,20 @@ public class TabModelUtils {
+@@ -91,6 +95,20 @@ public class TabModelUtils {
          return TabModel.INVALID_TAB_INDEX;
      }
  
@@ -401,7 +403,7 @@ diff --git a/chrome/browser/tabmodel/android/java/src/org/chromium/chrome/browse
 diff --git a/chrome/browser/tabmodel/android/java/src/org/chromium/chrome/browser/tabmodel/TabWindowManager.java b/chrome/browser/tabmodel/android/java/src/org/chromium/chrome/browser/tabmodel/TabWindowManager.java
 --- a/chrome/browser/tabmodel/android/java/src/org/chromium/chrome/browser/tabmodel/TabWindowManager.java
 +++ b/chrome/browser/tabmodel/android/java/src/org/chromium/chrome/browser/tabmodel/TabWindowManager.java
-@@ -103,6 +103,8 @@ public interface TabWindowManager {
+@@ -107,6 +107,8 @@ public interface TabWindowManager {
       */
      int getIncognitoTabCount();
  
@@ -413,7 +415,7 @@ diff --git a/chrome/browser/tabmodel/android/java/src/org/chromium/chrome/browse
 diff --git a/chrome/browser/tabmodel/internal/android/java/src/org/chromium/chrome/browser/tabmodel/TabWindowManagerImpl.java b/chrome/browser/tabmodel/internal/android/java/src/org/chromium/chrome/browser/tabmodel/TabWindowManagerImpl.java
 --- a/chrome/browser/tabmodel/internal/android/java/src/org/chromium/chrome/browser/tabmodel/TabWindowManagerImpl.java
 +++ b/chrome/browser/tabmodel/internal/android/java/src/org/chromium/chrome/browser/tabmodel/TabWindowManagerImpl.java
-@@ -456,6 +456,16 @@ public class TabWindowManagerImpl implements ActivityStateListener, TabWindowMan
+@@ -459,6 +459,16 @@ public class TabWindowManagerImpl implements ActivityStateListener, TabWindowMan
          return null;
      }
  
@@ -472,7 +474,7 @@ diff --git a/chrome/browser/ui/messages/android/java/res/layout/snackbar.xml b/c
 diff --git a/chrome/browser/ui/messages/android/java/src/org/chromium/chrome/browser/ui/messages/snackbar/Snackbar.java b/chrome/browser/ui/messages/android/java/src/org/chromium/chrome/browser/ui/messages/snackbar/Snackbar.java
 --- a/chrome/browser/ui/messages/android/java/src/org/chromium/chrome/browser/ui/messages/snackbar/Snackbar.java
 +++ b/chrome/browser/ui/messages/android/java/src/org/chromium/chrome/browser/ui/messages/snackbar/Snackbar.java
-@@ -130,6 +130,8 @@ public class Snackbar {
+@@ -133,6 +133,8 @@ public class Snackbar {
      private String mTemplateText;
      private String mActionText;
      private Object mActionData;
@@ -481,7 +483,7 @@ diff --git a/chrome/browser/ui/messages/android/java/src/org/chromium/chrome/bro
      private String mAccessibilityActionAnnouncement;
      private int mBackgroundColor;
      private int mTextApperanceResId;
-@@ -198,6 +200,20 @@ public class Snackbar {
+@@ -200,6 +202,20 @@ public class Snackbar {
          return this;
      }
  
@@ -521,7 +523,7 @@ diff --git a/chrome/browser/ui/messages/android/java/src/org/chromium/chrome/bro
 diff --git a/chrome/browser/ui/messages/android/java/src/org/chromium/chrome/browser/ui/messages/snackbar/SnackbarView.java b/chrome/browser/ui/messages/android/java/src/org/chromium/chrome/browser/ui/messages/snackbar/SnackbarView.java
 --- a/chrome/browser/ui/messages/android/java/src/org/chromium/chrome/browser/ui/messages/snackbar/SnackbarView.java
 +++ b/chrome/browser/ui/messages/android/java/src/org/chromium/chrome/browser/ui/messages/snackbar/SnackbarView.java
-@@ -51,6 +51,7 @@ public class SnackbarView implements InsetObserver.WindowInsetObserver {
+@@ -52,6 +52,7 @@ public class SnackbarView implements InsetObserver.WindowInsetObserver {
      protected final ViewGroup mSnackbarView;
      protected final TemplatePreservingTextView mMessageView;
      private final TextView mActionButtonView;
@@ -529,7 +531,7 @@ diff --git a/chrome/browser/ui/messages/android/java/src/org/chromium/chrome/bro
      private final ImageView mProfileImageView;
      private final int mAnimationDuration;
      private final boolean mIsTablet;
-@@ -97,11 +98,12 @@ public class SnackbarView implements InsetObserver.WindowInsetObserver {
+@@ -98,11 +99,12 @@ public class SnackbarView implements InsetObserver.WindowInsetObserver {
      public SnackbarView(
              Activity activity,
              OnClickListener listener,
@@ -543,7 +545,7 @@ diff --git a/chrome/browser/ui/messages/android/java/src/org/chromium/chrome/bro
      }
  
      /**
-@@ -120,6 +122,7 @@ public class SnackbarView implements InsetObserver.WindowInsetObserver {
+@@ -121,6 +123,7 @@ public class SnackbarView implements InsetObserver.WindowInsetObserver {
      public SnackbarView(
              Activity activity,
              OnClickListener listener,
@@ -551,7 +553,7 @@ diff --git a/chrome/browser/ui/messages/android/java/src/org/chromium/chrome/bro
              Snackbar snackbar,
              ViewGroup parentView,
              @Nullable WindowAndroid windowAndroid,
-@@ -141,6 +144,8 @@ public class SnackbarView implements InsetObserver.WindowInsetObserver {
+@@ -142,6 +145,8 @@ public class SnackbarView implements InsetObserver.WindowInsetObserver {
                  (TemplatePreservingTextView) mContainerView.findViewById(R.id.snackbar_message);
          mActionButtonView = (TextView) mContainerView.findViewById(R.id.snackbar_button);
          mActionButtonView.setOnClickListener(listener);
@@ -560,7 +562,7 @@ diff --git a/chrome/browser/ui/messages/android/java/src/org/chromium/chrome/bro
          mProfileImageView = (ImageView) mContainerView.findViewById(R.id.snackbar_profile_image);
          mEdgeToEdgeSupplier = edgeToEdgeSupplier;
          mEdgeToEdgePadAdjuster =
-@@ -376,6 +381,12 @@ public class SnackbarView implements InsetObserver.WindowInsetObserver {
+@@ -377,6 +382,12 @@ public class SnackbarView implements InsetObserver.WindowInsetObserver {
              mActionButtonView.setVisibility(View.VISIBLE);
              mActionButtonView.setContentDescription(snackbar.getActionText());
              setViewText(mActionButtonView, snackbar.getActionText(), animate);
@@ -576,7 +578,7 @@ diff --git a/chrome/browser/ui/messages/android/java/src/org/chromium/chrome/bro
 diff --git a/content/browser/web_contents/web_contents_android.cc b/content/browser/web_contents/web_contents_android.cc
 --- a/content/browser/web_contents/web_contents_android.cc
 +++ b/content/browser/web_contents/web_contents_android.cc
-@@ -904,6 +904,22 @@ void WebContentsAndroid::SetFocus(JNIEnv* env, jboolean focused) {
+@@ -898,6 +898,22 @@ void WebContentsAndroid::SetFocus(JNIEnv* env, jboolean focused) {
    view->SetFocus(focused);
  }
  
@@ -602,7 +604,7 @@ diff --git a/content/browser/web_contents/web_contents_android.cc b/content/brow
 diff --git a/content/browser/web_contents/web_contents_android.h b/content/browser/web_contents/web_contents_android.h
 --- a/content/browser/web_contents/web_contents_android.h
 +++ b/content/browser/web_contents/web_contents_android.h
-@@ -197,6 +197,7 @@ class CONTENT_EXPORT WebContentsAndroid {
+@@ -194,6 +194,7 @@ class CONTENT_EXPORT WebContentsAndroid {
  
    void OnScaleFactorChanged(JNIEnv* env);
    void SetFocus(JNIEnv* env, jboolean focused);
@@ -613,7 +615,7 @@ diff --git a/content/browser/web_contents/web_contents_android.h b/content/brows
 diff --git a/content/browser/web_contents/web_contents_impl.cc b/content/browser/web_contents/web_contents_impl.cc
 --- a/content/browser/web_contents/web_contents_impl.cc
 +++ b/content/browser/web_contents/web_contents_impl.cc
-@@ -3574,8 +3574,10 @@ void WebContentsImpl::Stop() {
+@@ -3676,8 +3676,10 @@ void WebContentsImpl::Stop() {
  void WebContentsImpl::SetPageFrozen(bool frozen) {
    TRACE_EVENT1("content", "WebContentsImpl::SetPageFrozen", "frozen", frozen);
  
@@ -627,7 +629,7 @@ diff --git a/content/browser/web_contents/web_contents_impl.cc b/content/browser
 diff --git a/content/public/android/java/src/org/chromium/content/browser/webcontents/WebContentsImpl.java b/content/public/android/java/src/org/chromium/content/browser/webcontents/WebContentsImpl.java
 --- a/content/public/android/java/src/org/chromium/content/browser/webcontents/WebContentsImpl.java
 +++ b/content/public/android/java/src/org/chromium/content/browser/webcontents/WebContentsImpl.java
-@@ -1156,6 +1156,12 @@ public class WebContentsImpl implements WebContents, RenderFrameHostDelegate, Wi
+@@ -1146,6 +1146,12 @@ public class WebContentsImpl implements WebContents, RenderFrameHostDelegate, Wi
          WebContentsImplJni.get().setFocus(mNativeWebContentsAndroid, hasFocus);
      }
  
@@ -640,7 +642,7 @@ diff --git a/content/public/android/java/src/org/chromium/content/browser/webcon
      @Override
      public void setDisplayCutoutSafeArea(Rect insets) {
          if (mNativeWebContentsAndroid == 0) return;
-@@ -1438,6 +1444,8 @@ public class WebContentsImpl implements WebContents, RenderFrameHostDelegate, Wi
+@@ -1428,6 +1434,8 @@ public class WebContentsImpl implements WebContents, RenderFrameHostDelegate, Wi
  
          void setFocus(long nativeWebContentsAndroid, boolean focused);
  
@@ -709,7 +711,7 @@ new file mode 100644
 diff --git a/third_party/blink/renderer/core/dom/document.cc b/third_party/blink/renderer/core/dom/document.cc
 --- a/third_party/blink/renderer/core/dom/document.cc
 +++ b/third_party/blink/renderer/core/dom/document.cc
-@@ -4250,6 +4250,7 @@ void Document::DispatchUnloadEvents(UnloadEventTimingInfo* unload_timing_info) {
+@@ -4267,6 +4267,7 @@ void Document::DispatchUnloadEvents(UnloadEventTimingInfo* unload_timing_info) {
  }
  
  void Document::DispatchFreezeEvent() {
@@ -720,7 +722,7 @@ diff --git a/third_party/blink/renderer/core/dom/document.cc b/third_party/blink
 diff --git a/third_party/blink/renderer/core/frame/local_frame.cc b/third_party/blink/renderer/core/frame/local_frame.cc
 --- a/third_party/blink/renderer/core/frame/local_frame.cc
 +++ b/third_party/blink/renderer/core/frame/local_frame.cc
-@@ -3226,6 +3226,7 @@ void LocalFrame::DidFreeze() {
+@@ -3231,6 +3231,7 @@ void LocalFrame::DidFreeze() {
    LoaderFreezeMode freeze_mode = GetLoaderFreezeMode();
    GetDocument()->Fetcher()->SetDefersLoading(freeze_mode);
    Loader().SetDefersLoading(freeze_mode);
@@ -728,7 +730,7 @@ diff --git a/third_party/blink/renderer/core/frame/local_frame.cc b/third_party/
  }
  
  void LocalFrame::DidResume() {
-@@ -3240,6 +3241,7 @@ void LocalFrame::DidResume() {
+@@ -3245,6 +3246,7 @@ void LocalFrame::DidResume() {
    GetDocument()->Fetcher()->SetDefersLoading(LoaderFreezeMode::kNone);
    Loader().SetDefersLoading(LoaderFreezeMode::kNone);
  
@@ -739,7 +741,7 @@ diff --git a/third_party/blink/renderer/core/frame/local_frame.cc b/third_party/
 diff --git a/third_party/blink/renderer/platform/scheduler/main_thread/frame_scheduler_impl.cc b/third_party/blink/renderer/platform/scheduler/main_thread/frame_scheduler_impl.cc
 --- a/third_party/blink/renderer/platform/scheduler/main_thread/frame_scheduler_impl.cc
 +++ b/third_party/blink/renderer/platform/scheduler/main_thread/frame_scheduler_impl.cc
-@@ -982,7 +982,9 @@ SchedulingLifecycleState FrameSchedulerImpl::CalculateLifecycleState(
+@@ -979,7 +979,9 @@ SchedulingLifecycleState FrameSchedulerImpl::CalculateLifecycleState(
    if (!parent_page_scheduler_)
      return SchedulingLifecycleState::kNotThrottled;
    if (parent_page_scheduler_->IsFrozen()) {

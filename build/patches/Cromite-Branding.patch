@@ -55,9 +55,9 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../chromium/product_logo_white.png           | Bin 2512 -> 6790 bytes
  .../version_ui/resources/about_version.ts     |   2 +-
  .../resources/about_version_mobile.css        |   9 ++
- content/child/runtime_features.cc             |  23 +++--
+ content/child/runtime_features.cc             |  24 +++--
  tools/grit/grit/grd_reader.py                 |  35 +++++++
- 53 files changed, 187 insertions(+), 117 deletions(-)
+ 53 files changed, 187 insertions(+), 118 deletions(-)
 
 diff --git a/build/BUILD.gn b/build/BUILD.gn
 --- a/build/BUILD.gn
@@ -80,7 +80,7 @@ diff --git a/build/BUILD.gn b/build/BUILD.gn
 diff --git a/build/config/BUILDCONFIG.gn b/build/config/BUILDCONFIG.gn
 --- a/build/config/BUILDCONFIG.gn
 +++ b/build/config/BUILDCONFIG.gn
-@@ -183,6 +183,10 @@ declare_args() {
+@@ -186,6 +186,10 @@ declare_args() {
    clang_unsafe_buffers_paths = ""
  }
  
@@ -9199,7 +9199,7 @@ diff --git a/chrome/app/extensions_strings.grdp b/chrome/app/extensions_strings.
 diff --git a/chrome/app/settings_strings.grdp b/chrome/app/settings_strings.grdp
 --- a/chrome/app/settings_strings.grdp
 +++ b/chrome/app/settings_strings.grdp
-@@ -288,7 +288,7 @@
+@@ -283,7 +283,7 @@
      Change
    </message>
    <message name="IDS_SETTINGS_WEB_STORE" desc="Sub-label about choosing something from the Chrome Web Store.">
@@ -13153,7 +13153,7 @@ e)fqMZZ`3a)Ds&5H<cfp<0000<MNUMnLSTYHt&Yn8
 diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -1852,6 +1852,7 @@ static_library("browser") {
+@@ -1835,6 +1835,7 @@ static_library("browser") {
      "//build:chromeos_buildflags",
      "//build/config/chromebox_for_meetings:buildflags",
      "//build/config/compiler:compiler_buildflags",
@@ -13242,7 +13242,7 @@ diff --git a/chrome/browser/resources/settings/settings_menu/settings_menu.html 
 diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chrome/browser/ui/android/strings/android_chrome_strings.grd
 --- a/chrome/browser/ui/android/strings/android_chrome_strings.grd
 +++ b/chrome/browser/ui/android/strings/android_chrome_strings.grd
-@@ -2471,7 +2471,7 @@ Your Google account may have other forms of browsing history like searches and a
+@@ -2474,7 +2474,7 @@ Your Google account may have other forms of browsing history like searches and a
          About Chrome
        </message>
        <message name="IDS_LEGAL_INFORMATION_SUMMARY" desc="Summary for legal information" meaning="Android">
@@ -13287,15 +13287,15 @@ diff --git a/chrome/install_static/chromium_install_modes.cc b/chrome/install_st
 diff --git a/components/browser_ui/strings/android/browser_ui_strings.grd b/components/browser_ui/strings/android/browser_ui_strings.grd
 --- a/components/browser_ui/strings/android/browser_ui_strings.grd
 +++ b/components/browser_ui/strings/android/browser_ui_strings.grd
-@@ -986,7 +986,7 @@
+@@ -984,7 +984,7 @@
  
        <!-- Accessibility preferences -->
        <message name="IDS_PREFS_ACCESSIBILITY" desc="Title of Accessibility settings, which allows the user to change webpage font sizes. [CHAR_LIMIT=32]">
 -        Accessibility
 +        Accessibility and UI
        </message>
-       <message name="IDS_FONT_SIZE" desc="Title for font size preference.">
-         Text scaling
+       <message name="IDS_FONT_SIZE_ACCESSIBILITY_LABEL" desc="Accessibility label for control to allow user to change font size.">
+         Text scaling set to <ph name="TEXT_SCALING">%1$s<ex>100%</ex></ph>
 diff --git a/components/browser_ui/styles/android/java/res_chromium/drawable-hdpi/fre_product_logo.png b/components/browser_ui/styles/android/java/res_chromium/drawable-hdpi/fre_product_logo.png
 index 2353496bafc8f8559a8fcbf6d609302327dc820c..9d123a8918eea5e93f6139534d7dc01a88c4278f 100644
 GIT binary patch
@@ -18896,7 +18896,7 @@ EKU(of)Bpeg
 diff --git a/components/version_ui/resources/about_version.ts b/components/version_ui/resources/about_version.ts
 --- a/components/version_ui/resources/about_version.ts
 +++ b/components/version_ui/resources/about_version.ts
-@@ -183,7 +183,7 @@ function initialize() {
+@@ -220,7 +220,7 @@ function initialize() {
    // </if>
  
    chrome.send('requestVersionInfo');
@@ -19001,12 +19001,13 @@ diff --git a/content/child/runtime_features.cc b/content/child/runtime_features.
          << "AttributionReportingCrossAppWeb cannot be enabled in this "
             "configuration. Use --"
          << switches::kEnableFeatures << "="
-@@ -712,7 +711,7 @@ void ResolveInvalidConfigurations() {
+@@ -712,8 +711,7 @@ void ResolveInvalidConfigurations() {
    }
  
    if (!base::FeatureList::IsEnabled(blink::features::kInterestGroupStorage)) {
--    LOG_IF(WARNING, WebRuntimeFeatures::IsAdInterestGroupAPIEnabled())
-+    CHECK(!WebRuntimeFeatures::IsAdInterestGroupAPIEnabled())
+-    LOG_IF(WARNING,
+-           WebRuntimeFeatures::IsAdInterestGroupAPIEnabledByRuntimeFlag())
++    CHECK(!WebRuntimeFeatures::IsAdInterestGroupAPIEnabledByRuntimeFlag())
          << "AdInterestGroupAPI cannot be enabled in this "
             "configuration. Use --"
          << switches::kEnableFeatures << "="

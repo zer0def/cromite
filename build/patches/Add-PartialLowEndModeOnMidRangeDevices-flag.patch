@@ -15,7 +15,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 diff --git a/base/features.cc b/base/features.cc
 --- a/base/features.cc
 +++ b/base/features.cc
-@@ -121,6 +121,10 @@ BASE_FEATURE(kPostGetMyMemoryStateToBackground,
+@@ -115,6 +115,10 @@ BASE_FEATURE(kPostGetMyMemoryStateToBackground,
               FEATURE_DISABLED_BY_DEFAULT);
  #endif  // BUILDFLAG(IS_ANDROID)
  
@@ -29,7 +29,7 @@ diff --git a/base/features.cc b/base/features.cc
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -21,6 +21,7 @@
+@@ -22,6 +22,7 @@
  #include "base/base_switches.h"
  #include "base/command_line.h"
  #include "base/feature_list.h"

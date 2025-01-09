@@ -42,7 +42,7 @@ new file mode 100644
 diff --git a/third_party/blink/renderer/core/dom/document.cc b/third_party/blink/renderer/core/dom/document.cc
 --- a/third_party/blink/renderer/core/dom/document.cc
 +++ b/third_party/blink/renderer/core/dom/document.cc
-@@ -4626,6 +4626,14 @@ void Document::ProcessBaseElement() {
+@@ -4642,6 +4642,14 @@ void Document::ProcessBaseElement() {
    KURL base_element_url;
    if (href) {
      String stripped_href = StripLeadingAndTrailingHTMLSpaces(*href);
@@ -57,7 +57,7 @@ diff --git a/third_party/blink/renderer/core/dom/document.cc b/third_party/blink
      if (!stripped_href.empty())
        base_element_url = KURL(FallbackBaseURL(), stripped_href);
    }
-@@ -4643,6 +4651,14 @@ void Document::ProcessBaseElement() {
+@@ -4659,6 +4667,14 @@ void Document::ProcessBaseElement() {
          !GetExecutionContext()->GetSecurityOrigin()->CanRequest(
              base_element_url)) {
        UseCounter::Count(*this, WebFeature::kBaseWithCrossOriginHref);
@@ -72,7 +72,7 @@ diff --git a/third_party/blink/renderer/core/dom/document.cc b/third_party/blink
      }
    }
  
-@@ -4674,6 +4690,8 @@ void Document::ProcessBaseElement() {
+@@ -4689,6 +4705,8 @@ void Document::ProcessBaseElement() {
      if (target->Contains('<'))
        UseCounter::Count(*this, WebFeature::kBaseWithOpenBracketInTarget);
      base_target_ = *target;
@@ -84,7 +84,7 @@ diff --git a/third_party/blink/renderer/core/dom/document.cc b/third_party/blink
 diff --git a/third_party/blink/renderer/core/dom/element.cc b/third_party/blink/renderer/core/dom/element.cc
 --- a/third_party/blink/renderer/core/dom/element.cc
 +++ b/third_party/blink/renderer/core/dom/element.cc
-@@ -2969,8 +2969,26 @@ void Element::StripScriptingAttributes(
+@@ -2963,8 +2963,26 @@ void Element::StripScriptingAttributes(
    attribute_vector.Shrink(destination);
  }
  
@@ -115,7 +115,7 @@ diff --git a/third_party/blink/renderer/core/dom/element.cc b/third_party/blink/
 diff --git a/third_party/blink/renderer/core/dom/element.h b/third_party/blink/renderer/core/dom/element.h
 --- a/third_party/blink/renderer/core/dom/element.h
 +++ b/third_party/blink/renderer/core/dom/element.h
-@@ -693,7 +693,8 @@ class CORE_EXPORT Element : public ContainerNode, public Animatable {
+@@ -719,7 +719,8 @@ class CORE_EXPORT Element : public ContainerNode, public Animatable {
    virtual bool HasLegalLinkAttribute(const QualifiedName&) const;
  
    // Only called by the parser immediately after element construction.
@@ -137,7 +137,7 @@ diff --git a/third_party/blink/renderer/core/editing/serializers/markup_formatte
  #include "third_party/blink/renderer/core/dom/cdata_section.h"
  #include "third_party/blink/renderer/core/dom/comment.h"
  #include "third_party/blink/renderer/core/dom/document.h"
-@@ -211,6 +213,13 @@ void MarkupFormatter::AppendAttributeValue(StringBuilder& result,
+@@ -208,6 +210,13 @@ void MarkupFormatter::AppendAttributeValue(StringBuilder& result,
                                             const Document& document) {
    if (attribute.Contains('<') || attribute.Contains('>')) {
      document.CountUse(mojom::blink::WebFeature::kAttributeValueContainsLtOrGt);
@@ -331,7 +331,7 @@ diff --git a/third_party/blink/renderer/core/page/frame_tree.cc b/third_party/bl
 diff --git a/third_party/blink/renderer/platform/runtime_enabled_features.json5 b/third_party/blink/renderer/platform/runtime_enabled_features.json5
 --- a/third_party/blink/renderer/platform/runtime_enabled_features.json5
 +++ b/third_party/blink/renderer/platform/runtime_enabled_features.json5
-@@ -1690,8 +1690,8 @@
+@@ -1700,8 +1700,8 @@
        // Experiment with preventing some instances of mutation XSS
        // by escaping "<" and ">" in attribute values.
        // See: crbug.com/1175016
@@ -342,7 +342,7 @@ diff --git a/third_party/blink/renderer/platform/runtime_enabled_features.json5 
      },
      {
        name: "EventTimingHandleKeyboardEventSimulatedClick",
-@@ -2634,6 +2634,12 @@
+@@ -2636,6 +2636,12 @@
        name: "LongTaskFromLongAnimationFrame",
        status: "test",
      },
