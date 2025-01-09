@@ -117,7 +117,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tabbed_mode/Tab
 diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browser/flags/android/chrome_feature_list.cc
 --- a/chrome/browser/flags/android/chrome_feature_list.cc
 +++ b/chrome/browser/flags/android/chrome_feature_list.cc
-@@ -281,6 +281,7 @@ const base::Feature* const kFeaturesExposedToJava[] = {
+@@ -282,6 +282,7 @@ const base::Feature* const kFeaturesExposedToJava[] = {
      &kNotificationPermissionVariant,
      &kNotificationPermissionBottomSheet,
      &kNotificationTrampoline,

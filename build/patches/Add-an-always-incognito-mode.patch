@@ -97,7 +97,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 diff --git a/chrome/android/chrome_java_resources.gni b/chrome/android/chrome_java_resources.gni
 --- a/chrome/android/chrome_java_resources.gni
 +++ b/chrome/android/chrome_java_resources.gni
-@@ -626,6 +626,7 @@ chrome_java_resources = [
+@@ -627,6 +627,7 @@ chrome_java_resources = [
    "java/res/xml/main_preferences_legacy.xml",
    "java/res/xml/manage_sync_preferences.xml",
    "java/res/xml/personalize_google_services_preferences.xml",

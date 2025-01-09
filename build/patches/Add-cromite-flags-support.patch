@@ -644,7 +644,7 @@ diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
  namespace about_flags {
  
  namespace {
-@@ -4309,6 +4313,10 @@ const FeatureEntry::FeatureVariation kServiceWorkerAutoPreloadVariations[] = {
+@@ -4315,6 +4319,10 @@ const FeatureEntry::FeatureVariation kServiceWorkerAutoPreloadVariations[] = {
       std::size(kServiceWorkerAutoPreload_SWNotRunningOnly), nullptr},
  };
  
@@ -655,7 +655,7 @@ diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
  // RECORDING USER METRICS FOR FLAGS:
  // -----------------------------------------------------------------------------
  // The first line of the entry is the internal name.
-@@ -4335,6 +4343,9 @@ const FeatureEntry::FeatureVariation kServiceWorkerAutoPreloadVariations[] = {
+@@ -4341,6 +4349,9 @@ const FeatureEntry::FeatureVariation kServiceWorkerAutoPreloadVariations[] = {
  const FeatureEntry kFeatureEntries[] = {
  // Include generated flags for flag unexpiry; see //docs/flag_expiry.md and
  // //tools/flags/generate_unexpire_flags.py.
@@ -727,7 +727,7 @@ diff --git a/chrome/browser/flags/BUILD.gn b/chrome/browser/flags/BUILD.gn
 diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browser/flags/android/chrome_feature_list.cc
 --- a/chrome/browser/flags/android/chrome_feature_list.cc
 +++ b/chrome/browser/flags/android/chrome_feature_list.cc
-@@ -1062,5 +1062,6 @@ BASE_FEATURE(kWebOtpCrossDeviceSimpleString,
+@@ -1063,5 +1063,6 @@ BASE_FEATURE(kWebOtpCrossDeviceSimpleString,
               "WebOtpCrossDeviceSimpleString",
               base::FEATURE_DISABLED_BY_DEFAULT);
  
@@ -759,7 +759,7 @@ diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/f
  import java.util.List;
  import java.util.Map;
  
-@@ -729,7 +733,7 @@ public abstract class ChromeFeatureList {
+@@ -730,7 +734,7 @@ public abstract class ChromeFeatureList {
      public static final CachedFlag sWebApkMinShellApkVersion =
              newCachedFlag(WEB_APK_MIN_SHELL_APK_VERSION, true);
  
@@ -768,7 +768,7 @@ diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/f
              List.of(
                      sAccountReauthenticationRecentTimeWindow,
                      sAndroidAppIntegration,
-@@ -822,6 +826,13 @@ public abstract class ChromeFeatureList {
+@@ -823,6 +827,13 @@ public abstract class ChromeFeatureList {
                      sUseLibunwindstackNativeUnwinderAndroid,
                      sWebApkMinShellApkVersion);
  
@@ -966,7 +966,7 @@ diff --git a/chrome/browser/ui/ui_features.cc b/chrome/browser/ui/ui_features.cc
 diff --git a/chrome/common/chrome_features.cc b/chrome/common/chrome_features.cc
 --- a/chrome/common/chrome_features.cc
 +++ b/chrome/common/chrome_features.cc
-@@ -1618,4 +1618,5 @@ BASE_FEATURE(kPeriodicLogUploadMigration,
+@@ -1629,4 +1629,5 @@ BASE_FEATURE(kPeriodicLogUploadMigration,
               base::FEATURE_DISABLED_BY_DEFAULT);
  #endif  // BUILDFLAG(IS_CHROMEOS_ASH)
  
@@ -1550,7 +1550,7 @@ diff --git a/content/common/features.cc b/content/common/features.cc
 diff --git a/content/public/common/content_features.cc b/content/public/common/content_features.cc
 --- a/content/public/common/content_features.cc
 +++ b/content/public/common/content_features.cc
-@@ -1497,4 +1497,5 @@ bool IsVideoCaptureServiceEnabledForBrowserProcess() {
+@@ -1498,4 +1498,5 @@ bool IsVideoCaptureServiceEnabledForBrowserProcess() {
           VideoCaptureServiceConfiguration::kEnabledForBrowserProcess;
  }
  
@@ -1559,7 +1559,7 @@ diff --git a/content/public/common/content_features.cc b/content/public/common/c
 diff --git a/content/public/common/content_features.h b/content/public/common/content_features.h
 --- a/content/public/common/content_features.h
 +++ b/content/public/common/content_features.h
-@@ -351,6 +351,7 @@ CONTENT_EXPORT extern const base::FeatureParam<std::string>
+@@ -352,6 +352,7 @@ CONTENT_EXPORT extern const base::FeatureParam<std::string>
  CONTENT_EXPORT bool IsVideoCaptureServiceEnabledForOutOfProcess();
  CONTENT_EXPORT bool IsVideoCaptureServiceEnabledForBrowserProcess();
  

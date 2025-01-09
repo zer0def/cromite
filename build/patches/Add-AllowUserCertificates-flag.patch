@@ -40,7 +40,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActiv
 diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browser/flags/android/chrome_feature_list.cc
 --- a/chrome/browser/flags/android/chrome_feature_list.cc
 +++ b/chrome/browser/flags/android/chrome_feature_list.cc
-@@ -164,6 +164,7 @@ const base::Feature* const kFeaturesExposedToJava[] = {
+@@ -165,6 +165,7 @@ const base::Feature* const kFeaturesExposedToJava[] = {
      &feed::kFeedPerformanceStudy,
      &feed::kFeedShowSignInCommand,
      &feed::kFeedSignedOutViewDemotion,
@@ -59,7 +59,7 @@ diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/f
      public static final String ADAPTIVE_BUTTON_IN_TOP_TOOLBAR_PAGE_SUMMARY =
              "AdaptiveButtonInTopToolbarPageSummary";
      public static final String ADAPTIVE_BUTTON_IN_TOP_TOOLBAR_CUSTOMIZATION_V2 =
-@@ -585,6 +586,8 @@ public abstract class ChromeFeatureList {
+@@ -586,6 +587,8 @@ public abstract class ChromeFeatureList {
      public static final CachedFlag sAndroidTabDeclutterDedupeTabIdsKillSwitch =
              newCachedFlag(ANDROID_TAB_DECLUTTER_DEDUPE_TAB_IDS_KILL_SWITCH, true);
      public static final CachedFlag sAppSpecificHistory = newCachedFlag(APP_SPECIFIC_HISTORY, true);
@@ -68,7 +68,7 @@ diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/f
      public static final CachedFlag sAsyncNotificationManager =
              newCachedFlag(ASYNC_NOTIFICATION_MANAGER, false);
      public static final CachedFlag sBlockIntentsWhileLocked =
-@@ -743,6 +746,7 @@ public abstract class ChromeFeatureList {
+@@ -744,6 +747,7 @@ public abstract class ChromeFeatureList {
      public static final List<CachedFlag> sFlagsCachedFullBrowserChromium =
              List.of(
                      sAccountReauthenticationRecentTimeWindow,

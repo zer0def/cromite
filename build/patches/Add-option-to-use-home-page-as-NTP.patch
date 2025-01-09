@@ -60,7 +60,7 @@ diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser
  
  import java.util.List;
  
-@@ -205,8 +207,13 @@ public class TabUiUtils {
+@@ -210,8 +212,13 @@ public class TabUiUtils {
          List<Tab> relatedTabs = filter.getRelatedTabList(tabId);
          assert relatedTabs.size() > 0;
  

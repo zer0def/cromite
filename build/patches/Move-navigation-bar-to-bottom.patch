@@ -136,7 +136,7 @@ diff --git a/cc/input/browser_controls_offset_manager.cc b/cc/input/browser_cont
  
  namespace cc {
  namespace {
-@@ -522,6 +523,11 @@ gfx::Vector2dF BrowserControlsOffsetManager::ScrollBy(
+@@ -526,6 +527,11 @@ gfx::Vector2dF BrowserControlsOffsetManager::ScrollBy(
    // content. If the top controls have no height, the content should scroll
    // immediately.
    gfx::Vector2dF applied_delta(0.f, old_top_offset - ContentTopOffset());
@@ -151,7 +151,7 @@ diff --git a/cc/input/browser_controls_offset_manager.cc b/cc/input/browser_cont
 diff --git a/cc/trees/layer_tree_host_impl.cc b/cc/trees/layer_tree_host_impl.cc
 --- a/cc/trees/layer_tree_host_impl.cc
 +++ b/cc/trees/layer_tree_host_impl.cc
-@@ -4646,6 +4646,9 @@ bool LayerTreeHostImpl::AnimateBrowserControls(base::TimeTicks time) {
+@@ -4670,6 +4670,9 @@ bool LayerTreeHostImpl::AnimateBrowserControls(base::TimeTicks time) {
    if (scroll_delta.IsZero())
      return false;
  
@@ -1293,7 +1293,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/fullscreen/Brow
      @Override
      public int getTopControlsMinHeight() {
          return mTopControlsMinHeight;
-@@ -526,6 +536,8 @@ public class BrowserControlsManager implements ActivityStateListener, BrowserCon
+@@ -550,6 +560,8 @@ public class BrowserControlsManager implements ActivityStateListener, BrowserCon
  
      @Override
      public float getTopVisibleContentOffset() {
@@ -1916,7 +1916,7 @@ diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browse
  #include "chrome/browser/android/webapk/webapk_features.h"
  #include "chrome/browser/browser_features.h"
  #include "chrome/browser/flags/android/chrome_session_state.h"
-@@ -278,6 +279,8 @@ const base::Feature* const kFeaturesExposedToJava[] = {
+@@ -279,6 +280,8 @@ const base::Feature* const kFeaturesExposedToJava[] = {
      &kNavBarColorMatchesTabBackground,
      &kNewTabSearchEngineUrlAndroid,
      &kNewTabPageAndroidTriggerForPrerender2,
@@ -1939,7 +1939,7 @@ diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/f
      public static final String NOTIFICATION_PERMISSION_VARIANT = "NotificationPermissionVariant";
      public static final String NOTIFICATION_PERMISSION_BOTTOM_SHEET =
              "NotificationPermissionBottomSheet";
-@@ -686,6 +690,10 @@ public abstract class ChromeFeatureList {
+@@ -687,6 +691,10 @@ public abstract class ChromeFeatureList {
      public static final CachedFlag sPriceInsights = newCachedFlag(PRICE_INSIGHTS, false);
      public static final CachedFlag sOptimizationGuidePushNotifications =
              newCachedFlag(OPTIMIZATION_GUIDE_PUSH_NOTIFICATIONS, false);
@@ -1950,7 +1950,7 @@ diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/f
      public static final CachedFlag sPaintPreviewDemo = newCachedFlag(PAINT_PREVIEW_DEMO, false);
      public static final CachedFlag sPostGetMyMemoryStateToBackground =
              newCachedFlag(POST_GET_MEMORY_PRESSURE_TO_BACKGROUND, false);
-@@ -811,6 +819,8 @@ public abstract class ChromeFeatureList {
+@@ -812,6 +820,8 @@ public abstract class ChromeFeatureList {
                      sPriceChangeModule,
                      sPriceInsights,
                      sOptimizationGuidePushNotifications,

@@ -23,7 +23,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browser/flags/android/chrome_feature_list.cc
 --- a/chrome/browser/flags/android/chrome_feature_list.cc
 +++ b/chrome/browser/flags/android/chrome_feature_list.cc
-@@ -299,6 +299,7 @@ const base::Feature* const kFeaturesExposedToJava[] = {
+@@ -300,6 +300,7 @@ const base::Feature* const kFeaturesExposedToJava[] = {
      &kReaderModeInCCT,
      &kRecordSuppressionMetrics,
      &kReengagementNotification,

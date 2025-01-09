@@ -35,9 +35,9 @@ diff --git a/chrome/android/chrome_java_resources.gni b/chrome/android/chrome_ja
    "java/res/layout/find_toolbar.xml",
    "java/res/layout/fre_tos_privacy_disclaimer.xml",
 +  "java/res/layout/fre_tosanduma.xml",
+   "java/res/layout/hats_survey_container.xml",
    "java/res/layout/history_clear_browsing_data_header.xml",
    "java/res/layout/history_item_view.xml",
-   "java/res/layout/history_main.xml",
 diff --git a/chrome/android/chrome_java_sources.gni b/chrome/android/chrome_java_sources.gni
 --- a/chrome/android/chrome_java_sources.gni
 +++ b/chrome/android/chrome_java_sources.gni

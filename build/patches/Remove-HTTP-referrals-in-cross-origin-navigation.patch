@@ -44,7 +44,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 diff --git a/chrome/android/chrome_java_resources.gni b/chrome/android/chrome_java_resources.gni
 --- a/chrome/android/chrome_java_resources.gni
 +++ b/chrome/android/chrome_java_resources.gni
-@@ -633,6 +633,8 @@ chrome_java_resources = [
+@@ -634,6 +634,8 @@ chrome_java_resources = [
    "java/res/xml/personalize_google_services_preferences.xml",
    "java/res/xml/incognito_preferences.xml",
    "java/res/xml/privacy_preferences.xml",

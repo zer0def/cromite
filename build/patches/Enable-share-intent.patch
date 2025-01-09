@@ -34,7 +34,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 diff --git a/chrome/android/chrome_java_resources.gni b/chrome/android/chrome_java_resources.gni
 --- a/chrome/android/chrome_java_resources.gni
 +++ b/chrome/android/chrome_java_resources.gni
-@@ -568,6 +568,7 @@ chrome_java_resources = [
+@@ -569,6 +569,7 @@ chrome_java_resources = [
    "java/res/layout/signin_settings_card_view.xml",
    "java/res/layout/status_indicator_container.xml",
    "java/res/layout/suggestions_tile_view_condensed.xml",
@@ -468,7 +468,7 @@ new file mode 100644
 diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browser/flags/android/chrome_feature_list.cc
 --- a/chrome/browser/flags/android/chrome_feature_list.cc
 +++ b/chrome/browser/flags/android/chrome_feature_list.cc
-@@ -307,6 +307,7 @@ const base::Feature* const kFeaturesExposedToJava[] = {
+@@ -308,6 +308,7 @@ const base::Feature* const kFeaturesExposedToJava[] = {
      &kSearchReadyOmniboxFeature,
      &kRelatedSearchesAllLanguage,
      &kRelatedSearchesSwitch,
