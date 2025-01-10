@@ -87,3 +87,4 @@ IMPACT:
 
 DESC: An issue was discovered in dec_patch_dictionary.cc in libjxl before 0.8.2. An integer underflow in patch decoding can lead to a denial of service, such as an infinite loop.
 No CVEs found
+No CVEs found
