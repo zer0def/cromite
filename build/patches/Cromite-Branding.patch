@@ -36,6 +36,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../chromium/product_logo_32.png              | Bin 822 -> 2301 bytes
  chrome/browser/BUILD.gn                       |   1 +
  .../chrome/browser/omaha/UpdateConfigs.java   |   2 +-
+ chrome/browser/prefs/BUILD.gn                 |   1 +
  .../prefs/chrome_pref_service_factory.cc      |   6 +-
  .../profiles/profile_shortcut_manager_win.cc  |   2 +-
  .../settings/settings_menu/settings_menu.html |  14 ++-
@@ -57,7 +58,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../resources/about_version_mobile.css        |   9 ++
  content/child/runtime_features.cc             |  24 +++--
  tools/grit/grit/grd_reader.py                 |  35 +++++++
- 53 files changed, 187 insertions(+), 118 deletions(-)
+ 54 files changed, 188 insertions(+), 118 deletions(-)
 
 diff --git a/build/BUILD.gn b/build/BUILD.gn
 --- a/build/BUILD.gn
@@ -13173,6 +13174,17 @@ diff --git a/chrome/browser/omaha/android/java/src/org/chromium/chrome/browser/o
      private static final long DEFAULT_UPDATE_ATTRIBUTION_WINDOW_MS = 2 * DateUtils.DAY_IN_MILLIS;
  
      /** Possible update flow configurations. */
+diff --git a/chrome/browser/prefs/BUILD.gn b/chrome/browser/prefs/BUILD.gn
+--- a/chrome/browser/prefs/BUILD.gn
++++ b/chrome/browser/prefs/BUILD.gn
+@@ -51,6 +51,7 @@ source_set("impl") {
+   deps = [
+     ":prefs",
+     ":util",
++    "//build:cromite_buildflags",
+     "//chrome/browser:browser_process",
+     "//chrome/browser/devtools",
+     "//chrome/browser/media/prefs",
 diff --git a/chrome/browser/prefs/chrome_pref_service_factory.cc b/chrome/browser/prefs/chrome_pref_service_factory.cc
 --- a/chrome/browser/prefs/chrome_pref_service_factory.cc
 +++ b/chrome/browser/prefs/chrome_pref_service_factory.cc
