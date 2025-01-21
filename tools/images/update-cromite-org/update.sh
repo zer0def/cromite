@@ -48,6 +48,7 @@ do
   curl -O https://easylist-downloads.adblockplus.org/fanboy-notifications.txt || KO=1
   curl -O https://easylist-downloads.adblockplus.org/easyprivacy.txt || KO=1
   curl -O https://easylist-downloads.adblockplus.org/fanboy-social.txt || KO=1
+  curl -O https://easylist-downloads.adblockplus.org/japanese-filters+easylist.txt || KO=1
 
   NOW=$(date +"%Y-%m-%dT%H:%M:%S%z")
   echo Last Update $NOW > LAST-UPDATE.txt
