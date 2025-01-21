@@ -128,7 +128,7 @@ if (target_os == "android") {
   cromite_pref_hash_seed_bin = getenv("CROMITE_PREF_HASH_SEED_BIN")
 
   _is_debug_build = getenv("TARGET_ISDEBUG")
-  if(_is_debug_build == "true") {
+  if (_is_debug_build == "true") {
     # print("Debug build on")
     is_debug = true
     is_official_build = false
@@ -141,8 +141,8 @@ if (target_os == "android") {
   }
 
   if (build_webview) {
-    # only 64bit
-    skip_secondary_abi_for_cq = true
+    # 32 and 64bit
+    skip_secondary_abi_for_cq = false
   }
 }
 
