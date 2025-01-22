@@ -19,8 +19,9 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../suggestions/AutocompleteController.java   | 25 -------
  .../suggestions/AutocompleteCoordinator.java  |  8 ---
  .../suggestions/AutocompleteMediator.java     |  8 ---
+ .../omnibox/voice/VoiceRecognitionUtil.java   |  1 +
  chrome/browser/ui/android/toolbar/BUILD.gn    |  1 -
- 16 files changed, 6 insertions(+), 234 deletions(-)
+ 17 files changed, 7 insertions(+), 234 deletions(-)
 
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ntp/NewTabPage.java b/chrome/android/java/src/org/chromium/chrome/browser/ntp/NewTabPage.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/ntp/NewTabPage.java
@@ -674,6 +675,17 @@ diff --git a/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/brow
      /**
       * TODO(crbug.com/40725530): Figure out how to remove this.
       *
+diff --git a/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/browser/omnibox/voice/VoiceRecognitionUtil.java b/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/browser/omnibox/voice/VoiceRecognitionUtil.java
+--- a/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/browser/omnibox/voice/VoiceRecognitionUtil.java
++++ b/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/browser/omnibox/voice/VoiceRecognitionUtil.java
+@@ -121,6 +121,7 @@ public class VoiceRecognitionUtil {
+      * @return {@code true} if recognition is supported. {@code false} otherwise.
+      */
+     public static boolean isRecognitionIntentPresent(boolean useCachedValue) {
++        if ((true)) return false;
+         ThreadUtils.assertOnUiThread();
+         if (sHasRecognitionIntentHandler == null || !useCachedValue) {
+             sHasRecognitionIntentHandler =
 diff --git a/chrome/browser/ui/android/toolbar/BUILD.gn b/chrome/browser/ui/android/toolbar/BUILD.gn
 --- a/chrome/browser/ui/android/toolbar/BUILD.gn
 +++ b/chrome/browser/ui/android/toolbar/BUILD.gn
