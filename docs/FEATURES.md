@@ -21,6 +21,7 @@
 - Disable visited pseudo class
 - Disable WebGPU
 - Disable GamePad API by default (https://www.w3.org/TR/gamepad/#fingerprinting-mitigation)
+- Disable Posture API by default (https://github.com/w3c/device-posture/blob/gh-pages/security-privacy-self-assessment.md)
 Also disable gamepadconnected and gamepaddisconnected, see https://jshelter.org/gp/
 - Disable WebGL by default
 - Disable WebRTC by default
