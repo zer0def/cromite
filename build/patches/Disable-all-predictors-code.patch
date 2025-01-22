@@ -41,9 +41,10 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../features_cc/Disable-all-predictors-code.inc   |  1 +
  .../features_cc/Disable-all-predictors-code.inc   |  2 ++
  services/webnn/features.gni                       |  2 +-
+ .../core/html/parser/html_document_parser.cc      |  1 +
  .../document_speculation_rules.cc                 |  1 +
  .../platform/runtime_enabled_features.json5       |  2 +-
- 38 files changed, 102 insertions(+), 37 deletions(-)
+ 39 files changed, 103 insertions(+), 37 deletions(-)
  create mode 100644 cromite_flags/chrome/browser/browser_features_cc/Disable-all-predictors-code.inc
  create mode 100644 cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Disable-all-predictors-code.inc
  create mode 100644 cromite_flags/chrome/common/chrome_features_cc/Disable-all-predictors-code.inc
@@ -789,6 +790,17 @@ diff --git a/services/webnn/features.gni b/services/webnn/features.gni
  
    # Enable logging of TFLite profiling information on MLGraph destruction.
    webnn_enable_tflite_profiler = false
+diff --git a/third_party/blink/renderer/core/html/parser/html_document_parser.cc b/third_party/blink/renderer/core/html/parser/html_document_parser.cc
+--- a/third_party/blink/renderer/core/html/parser/html_document_parser.cc
++++ b/third_party/blink/renderer/core/html/parser/html_document_parser.cc
+@@ -1764,6 +1764,7 @@ ALWAYS_INLINE bool HTMLDocumentParser::ShouldCheckTimeBudget(
+ }
+ 
+ bool HTMLDocumentParser::ShouldSkipPreloadScan() {
++  if ((true)) return true; // see https://wpt.live/html/syntax/speculative-parsing/expect-no-linked-resources/no-speculative-fetch.tentative.optional.html
+   // Check if Document-Policy has Expect-No-Linked-Resources hint.
+   auto* document = GetDocument();
+   if (const auto* context = document->GetExecutionContext()) {
 diff --git a/third_party/blink/renderer/core/speculation_rules/document_speculation_rules.cc b/third_party/blink/renderer/core/speculation_rules/document_speculation_rules.cc
 --- a/third_party/blink/renderer/core/speculation_rules/document_speculation_rules.cc
 +++ b/third_party/blink/renderer/core/speculation_rules/document_speculation_rules.cc
