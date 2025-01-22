@@ -10,17 +10,17 @@ attacks, so it is better to warn the user of the presence of an
 unsupported device.
 you can remove the message by going to chrome://flags/#no-hw-aes-warning
 ---
- base/base_switches.cc                                    | 2 ++
- base/base_switches.h                                     | 1 +
- chrome/BUILD.gn                                          | 3 +++
- chrome/app/chrome_main_delegate.cc                       | 9 +++++++++
- chrome/app/generated_resources.grd                       | 4 ++++
- chrome/browser/ui/startup/bad_flags_prompt.cc            | 9 +++++++++
- .../browser/renderer_host/render_process_host_impl.cc    | 1 +
- .../Warning-message-for-unsupported-hardware-aes.inc     | 9 +++++++++
- .../Warning-message-for-unsupported-hardware-aes.inc     | 4 ++++
- .../Warning-message-for-unsupported-hardware-aes.inc     | 1 +
- 10 files changed, 43 insertions(+)
+ base/base_switches.cc                                  |  2 ++
+ base/base_switches.h                                   |  1 +
+ chrome/BUILD.gn                                        |  3 +++
+ chrome/app/chrome_main_delegate.cc                     |  9 +++++++++
+ chrome/app/generated_resources.grd                     |  4 ++++
+ chrome/browser/ui/startup/bad_flags_prompt.cc          |  9 +++++++++
+ .../browser/renderer_host/render_process_host_impl.cc  |  1 +
+ .../Warning-message-for-unsupported-hardware-aes.inc   | 10 ++++++++++
+ .../Warning-message-for-unsupported-hardware-aes.inc   |  4 ++++
+ .../Warning-message-for-unsupported-hardware-aes.inc   |  1 +
+ 10 files changed, 44 insertions(+)
  create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Warning-message-for-unsupported-hardware-aes.inc
  create mode 100644 cromite_flags/content/public/common/content_features_cc/Warning-message-for-unsupported-hardware-aes.inc
  create mode 100644 cromite_flags/content/public/common/content_features_h/Warning-message-for-unsupported-hardware-aes.inc
@@ -142,13 +142,14 @@ diff --git a/cromite_flags/chrome/browser/about_flags_cc/Warning-message-for-uns
 new file mode 100644
 --- /dev/null
 +++ b/cromite_flags/chrome/browser/about_flags_cc/Warning-message-for-unsupported-hardware-aes.inc
-@@ -0,0 +1,9 @@
+@@ -0,0 +1,10 @@
 +
 +#ifdef FLAG_SECTION
 +
 +    {"no-hw-aes-warning",
 +     "Enable no aes warning message",
-+     "Displays a warning message if the device does not have aes support in the hardware", kOsDesktop | kOsAndroid,
++     "Displays a warning message if the device does not have aes support in the hardware. "
++     "The message is not shown with the feature disabled.", kOsDesktop | kOsAndroid,
 +     FEATURE_VALUE_TYPE(features::kNoAESHardwareMessage)},
 +
 +#endif
