@@ -48,6 +48,7 @@ Also disable gamepadconnected and gamepaddisconnected, see https://jshelter.org/
 - (WINDOWS) Disable Windows ClearType Text Tuner setting (active in rdp sessions)
 - (WINDOWS) Hide the presence of the webcam if the user has not given permission
 - (WINDOWS) PublicKeyCredential fingerprinting mitigations, see #1758
+- (DESKTOP) Disable Bluetooth API by default
 
 #### Tracking navigation
 - Enable network isolation features
