@@ -1,0 +1,26 @@
+From: uazo <uazo@users.noreply.github.com>
+Date: Mon, 20 Jan 2025 16:55:57 +0000
+Subject: Enable ProcessBoundStringEncryption by default
+
+Data placed into a crypto::ProcessBoundString no longer appears in crash dumps
+or memory dumps so should be used for any sensitive data that should be process-bound.
+https://issuetracker.google.com/issues/372873695
+
+License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
+---
+ crypto/features.cc | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/crypto/features.cc b/crypto/features.cc
+--- a/crypto/features.cc
++++ b/crypto/features.cc
+@@ -11,5 +11,7 @@ namespace crypto::features {
+ BASE_FEATURE(kProcessBoundStringEncryption,
+              "ProcessBoundStringEncryption",
+              base::FEATURE_DISABLED_BY_DEFAULT);
+-
++#if BUILDFLAG(IS_WIN)
++SET_CROMITE_FEATURE_ENABLED(kProcessBoundStringEncryption);
++#endif
+ }  // namespace crypto::features
+--
