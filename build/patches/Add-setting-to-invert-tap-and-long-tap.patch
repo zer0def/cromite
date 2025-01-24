@@ -215,7 +215,7 @@ diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browse
 diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 --- a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 +++ b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
-@@ -391,6 +391,8 @@ public abstract class ChromeFeatureList {
+@@ -390,6 +390,8 @@ public abstract class ChromeFeatureList {
              "DisableToolbarSwipeUp";
      public static final String MOVE_TOP_TOOLBAR_TO_BOTTOM =
              "MoveTopToolbarToBottom";
@@ -224,7 +224,7 @@ diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/f
      public static final String NOTIFICATION_PERMISSION_VARIANT = "NotificationPermissionVariant";
      public static final String NOTIFICATION_PERMISSION_BOTTOM_SHEET =
              "NotificationPermissionBottomSheet";
-@@ -696,6 +698,8 @@ public abstract class ChromeFeatureList {
+@@ -695,6 +697,8 @@ public abstract class ChromeFeatureList {
              newCachedFlag(DISABLE_TOOLBAR_SWIPE_UP, false);
      public static final CachedFlag sMoveTopToolbarToBottom =
              newCachedFlag(MOVE_TOP_TOOLBAR_TO_BOTTOM, false);
@@ -233,7 +233,7 @@ diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/f
      public static final CachedFlag sPaintPreviewDemo = newCachedFlag(PAINT_PREVIEW_DEMO, false);
      public static final CachedFlag sPostGetMyMemoryStateToBackground =
              newCachedFlag(POST_GET_MEMORY_PRESSURE_TO_BACKGROUND, false);
-@@ -849,6 +853,7 @@ public abstract class ChromeFeatureList {
+@@ -848,6 +852,7 @@ public abstract class ChromeFeatureList {
                      sTabWindowManagerReportIndicesMismatch,
                      sTraceBinderIpc,
                      sUseChimeAndroidSdk,
