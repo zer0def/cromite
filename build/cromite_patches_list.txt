@@ -291,6 +291,11 @@ Override-the-MV2-deprecation.patch
 Remove-sideloading-of-version-dll.patch
 Use-browser-navigation-handler.patch
 Cromite-Branding--improve-settings-ui.patch
+Disable-Posture-API.patch
+PublicKeyCredential-fingerprinting-mitigations.patch
+Disable-Web-Bluetooth-by-default-in-desktop-platforms.patch
+Enable-Cert-Management-UI.patch
+Enable-ProcessBoundStringEncryption-by-default.patch
 
 # temporary or wip patches
 Temp-PerformanceNavigationTiming-privacy-fix.patch
