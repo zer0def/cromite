@@ -21,7 +21,6 @@
 - Disable visited pseudo class
 - Disable WebGPU
 - Disable GamePad API by default (https://www.w3.org/TR/gamepad/#fingerprinting-mitigation)
-- Disable Posture API by default (https://github.com/w3c/device-posture/blob/gh-pages/security-privacy-self-assessment.md)
 Also disable gamepadconnected and gamepaddisconnected, see https://jshelter.org/gp/
 - Disable WebGL by default
 - Disable WebRTC by default
@@ -41,12 +40,14 @@ Also disable gamepadconnected and gamepaddisconnected, see https://jshelter.org/
 - Do not expose local IP addresses with webRTC
 - Allows the use of the api DocumentPiP only with the content setting popup allowed (https://wicg.github.io/document-picture-in-picture/#privacy-considerations)
 - Multi-Screen Window Placement API fix (screen.isExtended)
+- Disable Posture API by default (https://github.com/w3c/device-posture/blob/gh-pages/security-privacy-self-assessment.md)
 - (ANDROID) Do not follow night mode for dark mode preference when theme is set to system default
 - (DESKTOP) Enable HighEfficiencyMode by default
 - (DESKTOP) Enable percent based scrolling for mousewheel
 - (DESKTOP) Enable Keyboard Layout API mitigation
 - (WINDOWS) Disable Windows ClearType Text Tuner setting (active in rdp sessions)
 - (WINDOWS) Hide the presence of the webcam if the user has not given permission
+- (WINDOWS) PublicKeyCredential fingerprinting mitigations, see #1758
 
 #### Tracking navigation
 - Enable network isolation features
