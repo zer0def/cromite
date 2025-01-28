@@ -1560,6 +1560,7 @@ new file mode 100644
 + <item id="blink_resource_loader" allowed="1"/>
 + <item id="blink_resource_loader_workers" allowed="1"/>
 + <item id="blink_resource_loader_manifest" allowed="1"/>
++ <item id="blink_resource_loader_xslt" allowed="1"/>
 + <item id="renderer_initiated_download" allowed="1"/>
 +
 + <item id="background_fetch_context" allowed="1"/>
@@ -1574,7 +1575,6 @@ new file mode 100644
 + <item id="blink_resource_loader_worklet" allowed="1"/>
 +
 + <!-- But disallow this -->
-+ <item id="blink_resource_loader_xslt" allowed="0"/>
 + <item id="blink_resource_loader_report" allowed="0"/>
 + <item id="blink_resource_loader_webbundle" allowed="0"/>
 + <item id="blink_resource_speculation_rules" allowed="0"/>
