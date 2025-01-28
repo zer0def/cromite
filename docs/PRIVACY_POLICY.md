@@ -16,7 +16,7 @@ Please note that all browsing data are recorded on disk and that access protecti
 Below is the list of features you can find in Cromite, compared to those exposed by default in chromium.
 
 #### OMNIBOX
-Cromite do not send any data to your default search engine by default, but you can enable suggestions query by ui. They can be turned on by checking "Autocomplete searches and URLs" of Cromite settings.
+Cromite do not send any data to your default search engine by default, but you can enable suggestions query by ui. They can be turned on by checking "Improve search suggestion" under ""Privacy and Security" of Cromite settings.
 
 Please note that autocomplete, when activated, is on also for incognito windows.
 
