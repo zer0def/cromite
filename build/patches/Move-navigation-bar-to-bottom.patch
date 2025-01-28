@@ -71,9 +71,10 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  ...mniboxSuggestionsDropdownEmbedderImpl.java |  18 ++
  .../suggestions/AutocompleteCoordinator.java  |  13 ++
  .../suggestions/AutocompleteMediator.java     |   6 +-
- .../DropdownItemViewInfoListManager.java      |   7 +-
+ .../DropdownItemViewInfoListManager.java      |   1 +
  .../OmniboxSuggestionsDropdown.java           |  11 +-
  .../OmniboxSuggestionsDropdownEmbedder.java   |   4 +
+ .../base/BaseSuggestionViewBinder.java        |   7 +
  .../strings/android_chrome_strings.grd        |   6 +
  chrome/browser/ui/android/toolbar/BUILD.gn    |   1 +
  .../toolbar/LocationBarFocusScrimHandler.java |   5 +
@@ -91,7 +92,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../AccessibilitySettingsDelegate.java        |   7 +
  .../render_widget_host_view_android.cc        |   3 +
  .../Move-navigation-bar-to-bottom.inc         |  17 ++
- 78 files changed, 1010 insertions(+), 79 deletions(-)
+ 79 files changed, 1012 insertions(+), 78 deletions(-)
  create mode 100644 chrome/browser/hub/internal/android/java/src/org/chromium/chrome/browser/hub/ReversedLinearLayout.java
  create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Move-navigation-bar-to-bottom.inc
 
@@ -2445,19 +2446,6 @@ diff --git a/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/brow
  import org.chromium.chrome.browser.ui.theme.BrandedColorScheme;
  import org.chromium.ui.base.DeviceFormFactor;
  import org.chromium.ui.modelutil.MVCListAdapter.ListItem;
-@@ -102,7 +103,11 @@ class DropdownItemViewInfoListManager {
- 
-         // round the bottom corners of the last suggestion.
-         if (previousItem != null) {
--            previousItem.model.set(DropdownCommonProperties.BG_BOTTOM_CORNER_ROUNDED, true);
-+            boolean toolbarToBottom =
-+                ChromeFeatureList.sMoveTopToolbarToBottom.isEnabled();
-+            previousItem.model.set(toolbarToBottom
-+                ? DropdownCommonProperties.BG_TOP_CORNER_ROUNDED
-+                : DropdownCommonProperties.BG_BOTTOM_CORNER_ROUNDED, true);
-         }
- 
-         mManagedModel.set(suggestionsList);
 diff --git a/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/browser/omnibox/suggestions/OmniboxSuggestionsDropdown.java b/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/browser/omnibox/suggestions/OmniboxSuggestionsDropdown.java
 --- a/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/browser/omnibox/suggestions/OmniboxSuggestionsDropdown.java
 +++ b/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/browser/omnibox/suggestions/OmniboxSuggestionsDropdown.java
@@ -2514,6 +2502,30 @@ diff --git a/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/brow
      /** Return whether the suggestions are being rendered in the tablet UI. */
      boolean isTablet();
  
+diff --git a/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/browser/omnibox/suggestions/base/BaseSuggestionViewBinder.java b/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/browser/omnibox/suggestions/base/BaseSuggestionViewBinder.java
+--- a/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/browser/omnibox/suggestions/base/BaseSuggestionViewBinder.java
++++ b/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/browser/omnibox/suggestions/base/BaseSuggestionViewBinder.java
+@@ -31,6 +31,7 @@ import androidx.appcompat.content.res.AppCompatResources;
+ import androidx.core.view.ViewCompat;
+ import androidx.core.widget.ImageViewCompat;
+ 
++import org.chromium.chrome.browser.flags.ChromeFeatureList;
+ import org.chromium.chrome.browser.omnibox.R;
+ import org.chromium.chrome.browser.omnibox.styles.OmniboxDrawableState;
+ import org.chromium.chrome.browser.omnibox.styles.OmniboxResourceProvider;
+@@ -107,6 +108,12 @@ public final class BaseSuggestionViewBinder<T extends View>
+             updateColorScheme(model, view);
+         } else if (DropdownCommonProperties.BG_BOTTOM_CORNER_ROUNDED == propertyKey
+                 || DropdownCommonProperties.BG_TOP_CORNER_ROUNDED == propertyKey) {
++            if (ChromeFeatureList.sMoveTopToolbarToBottom.isEnabled()) {
++                view.setRoundingEdges(
++                        model.get(DropdownCommonProperties.BG_BOTTOM_CORNER_ROUNDED),
++                        model.get(DropdownCommonProperties.BG_TOP_CORNER_ROUNDED));
++                return;
++            }
+             view.setRoundingEdges(
+                     model.get(DropdownCommonProperties.BG_TOP_CORNER_ROUNDED),
+                     model.get(DropdownCommonProperties.BG_BOTTOM_CORNER_ROUNDED));
 diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chrome/browser/ui/android/strings/android_chrome_strings.grd
 --- a/chrome/browser/ui/android/strings/android_chrome_strings.grd
 +++ b/chrome/browser/ui/android/strings/android_chrome_strings.grd
