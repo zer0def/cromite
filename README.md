@@ -51,8 +51,8 @@ The following files will be present for each release:
 - [x64_ChromePublic.apk](https://github.com/uazo/cromite/releases/latest/download/x64_ChromePublic.apk)
 
 #### Cromite System WebView apk for android:
-- [arm64_SystemWebView64.apk](https://github.com/uazo/cromite/releases/latest/download/arm64_SystemWebView64.apk)
-- [x64_SystemWebView64.apk](https://github.com/uazo/cromite/releases/latest/download/x64_SystemWebView64.apk)
+- [arm64_SystemWebView.apk](https://github.com/uazo/cromite/releases/latest/download/arm64_SystemWebView.apk)
+- [x64_SystemWebView.apk](https://github.com/uazo/cromite/releases/latest/download/x64_SystemWebView.apk)
 
 #### Linux package:
 - [chrome-lin64.tar.gz](https://github.com/uazo/cromite/releases/latest/download/chrome-lin64.tar.gz)

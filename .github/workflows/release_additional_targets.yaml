@@ -60,27 +60,27 @@ jobs:
 
           # android arm64
           echo "::group::-------- android systemwebview arm64"
-          sudo cp ${{ env.OUTPUTFILE_ARM64 }}/apks/SystemWebView64.apk arm64_SystemWebView64.apk
-          sudo chown runner arm64_SystemWebView64.apk
+          sudo cp ${{ env.OUTPUTFILE_ARM64 }}/apks/SystemWebView.apk arm64_SystemWebView.apk
+          sudo chown runner arm64_SystemWebView.apk
 
           sudo cp ${{ env.OUTPUTFILE_ARM64 }}/apks/SystemWebViewShell.apk arm64_SystemWebViewShell.apk
           sudo chown runner arm64_SystemWebViewShell.apk
 
-          echo Uploading arm64_SystemWebView64
-          $GH release upload $VERSION-$CROMITE_SHA arm64_SystemWebView64.apk
+          echo Uploading arm64_SystemWebView
+          $GH release upload $VERSION-$CROMITE_SHA arm64_SystemWebView.apk
           $GH release upload $VERSION-$CROMITE_SHA arm64_SystemWebViewShell.apk
           echo "::endgroup::"
 
           # android x64
           echo "::group::-------- android systemwebview x64"
-          sudo cp ${{ env.OUTPUTFILE_X64 }}/apks/SystemWebView64.apk x64_SystemWebView64.apk
-          sudo chown runner x64_SystemWebView64.apk
+          sudo cp ${{ env.OUTPUTFILE_X64 }}/apks/SystemWebView.apk x64_SystemWebView.apk
+          sudo chown runner x64_SystemWebView.apk
 
           sudo cp ${{ env.OUTPUTFILE_X64 }}/apks/SystemWebViewShell.apk x64_SystemWebViewShell.apk
           sudo chown runner x64_SystemWebViewShell.apk
 
-          echo Uploading x64_SystemWebView64
-          $GH release upload $VERSION-$CROMITE_SHA x64_SystemWebView64.apk
+          echo Uploading x64_SystemWebView
+          $GH release upload $VERSION-$CROMITE_SHA x64_SystemWebView.apk
           $GH release upload $VERSION-$CROMITE_SHA x64_SystemWebViewShell.apk
           echo "::endgroup::"
 
