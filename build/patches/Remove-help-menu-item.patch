@@ -24,7 +24,8 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../settings/PreloadPagesSettingsFragmentBase.java       | 1 +
  .../PrivacySandboxSettingsBaseFragment.java              | 1 +
  .../settings/SafeBrowsingSettingsFragmentBase.java       | 1 +
- 20 files changed, 17 insertions(+), 17 deletions(-)
+ chrome/browser/ui/chrome_pages.cc                        | 1 +
+ 21 files changed, 18 insertions(+), 17 deletions(-)
 
 diff --git a/chrome/android/java/res/menu/main_menu.xml b/chrome/android/java/res/menu/main_menu.xml
 --- a/chrome/android/java/res/menu/main_menu.xml
@@ -259,4 +260,15 @@ diff --git a/chrome/browser/safe_browsing/android/java/src/org/chromium/chrome/b
      }
  
      @Override
+diff --git a/chrome/browser/ui/chrome_pages.cc b/chrome/browser/ui/chrome_pages.cc
+--- a/chrome/browser/ui/chrome_pages.cc
++++ b/chrome/browser/ui/chrome_pages.cc
+@@ -139,6 +139,7 @@ void LaunchReleaseNotesImpl(Profile* profile, apps::LaunchSource source) {
+ // shown in the last active browser. If there is no such browser, a new browser
+ // is created.
+ void ShowHelpImpl(Browser* browser, Profile* profile, HelpSource source) {
++  if ((true)) return;
+   base::RecordAction(UserMetricsAction("ShowHelpTab"));
+ #if BUILDFLAG(IS_CHROMEOS_ASH) && BUILDFLAG(GOOGLE_CHROME_BRANDING)
+   auto app_launch_source = apps::LaunchSource::kUnknown;
 --
