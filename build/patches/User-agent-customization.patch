@@ -1281,7 +1281,7 @@ diff --git a/content/browser/web_contents/web_contents_impl.cc b/content/browser
  #include "base/base_switches.h"
  #include "base/check_op.h"
  #include "base/command_line.h"
-@@ -2311,8 +2312,6 @@ void WebContentsImpl::SetUserAgentOverride(
+@@ -2313,8 +2314,6 @@ void WebContentsImpl::SetUserAgentOverride(
    OPTIONAL_TRACE_EVENT2("content", "WebContentsImpl::SetUserAgentOverride",
                          "ua_override", ua_override.ua_string_override,
                          "override_in_new_tabs", override_in_new_tabs);
@@ -1290,7 +1290,7 @@ diff --git a/content/browser/web_contents/web_contents_impl.cc b/content/browser
  
    if (GetUserAgentOverride() == ua_override) {
      return;
-@@ -3457,6 +3456,9 @@ const blink::web_pref::WebPreferences WebContentsImpl::ComputeWebPreferences() {
+@@ -3459,6 +3458,9 @@ const blink::web_pref::WebPreferences WebContentsImpl::ComputeWebPreferences() {
  #else
      prefs.viewport_meta_enabled = false;
  #endif

@@ -615,7 +615,7 @@ diff --git a/content/browser/web_contents/web_contents_android.h b/content/brows
 diff --git a/content/browser/web_contents/web_contents_impl.cc b/content/browser/web_contents/web_contents_impl.cc
 --- a/content/browser/web_contents/web_contents_impl.cc
 +++ b/content/browser/web_contents/web_contents_impl.cc
-@@ -3676,8 +3676,10 @@ void WebContentsImpl::Stop() {
+@@ -3678,8 +3678,10 @@ void WebContentsImpl::Stop() {
  void WebContentsImpl::SetPageFrozen(bool frozen) {
    TRACE_EVENT1("content", "WebContentsImpl::SetPageFrozen", "frozen", frozen);
  

@@ -90,7 +90,7 @@ diff --git a/components/content_settings/renderer/content_settings_agent_impl.cc
  
    blink::WebLocalFrame* frame = render_frame()->GetWebFrame();
    if (frame->Parent())
-@@ -377,6 +377,41 @@ bool ContentSettingsAgentImpl::AllowImage(bool enabled_per_settings,
+@@ -380,6 +380,41 @@ bool ContentSettingsAgentImpl::AllowImage(bool enabled_per_settings,
    return allow;
  }
  
@@ -132,7 +132,7 @@ diff --git a/components/content_settings/renderer/content_settings_agent_impl.cc
  bool ContentSettingsAgentImpl::AllowReadFromClipboard() {
    return delegate_->AllowReadFromClipboard();
  }
-@@ -435,6 +470,7 @@ void ContentSettingsAgentImpl::DidNotAllowImage() {
+@@ -438,6 +473,7 @@ void ContentSettingsAgentImpl::DidNotAllowImage() {
  void ContentSettingsAgentImpl::ClearBlockedContentSettings() {
    content_blocked_.clear();
    cached_storage_permissions_.clear();
