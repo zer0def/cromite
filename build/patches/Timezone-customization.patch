@@ -853,7 +853,7 @@ diff --git a/components/content_settings/renderer/content_settings_agent_impl.cc
  
    blink::WebLocalFrame* frame = render_frame()->GetWebFrame();
    if (frame->Parent())
-@@ -473,4 +476,78 @@ void ContentSettingsAgentImpl::ClearBlockedContentSettings() {
+@@ -476,4 +479,78 @@ void ContentSettingsAgentImpl::ClearBlockedContentSettings() {
    cached_script_permissions_.clear();
  }
  
