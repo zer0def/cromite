@@ -48,6 +48,7 @@ jobs:
   check_images:
     runs-on: ${{ github.event.inputs.type }}
     strategy:
+      max-parallel: 2
       matrix:
         kind:
         - build-deps
@@ -140,11 +141,12 @@ jobs:
 
   build:
     runs-on: ${{ github.event.inputs.type }}
-    needs: check_images
+    #needs: check_images
     if: success()
     timeout-minutes: 1440
 
     strategy:
+      max-parallel: 2
       matrix:
         kind:
         - cro
@@ -155,7 +157,7 @@ jobs:
         - arm64
         - arm
         - lin64
-        - win64
+        #- win64  # temporarily
         exclude:
           - kind: chr
             target: lin64
@@ -169,7 +171,8 @@ jobs:
             target: win64
 
     container:
-      image: uazo/cromite-build:build
+      #image: uazo/cromite-build:build
+      image: uazo/cromite-build:132.0.6834.163-ae296a42b9b1412a54aca8635affabd26ea8ce1e
       env:
         REMOVEDOCKERSUPPORT: true # CUSTOM RUNNER: remove sharing of docker socket
         USELOCALIMAGE: true       # CUSTOM RUNNER: permit use of local images
@@ -185,25 +188,26 @@ jobs:
         GYP_MSVS_OVERRIDE_PATH: /win_sdk/10.0.22621.0/
         # compile in debug mode
         TARGET_ISDEBUG: ${{ github.event.inputs.debug }}
-        USE_KEYSTORE: true
+        #USE_KEYSTORE: true
         KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
         CROMITE_PREF_HASH_SEED_BIN: ${{ secrets.CROMITE_PREF_HASH_SEED_BIN }}
-      volumes:
-        - /storage/images/${{ github.event.inputs.sha }}/android/${{ github.event.inputs.debug }}/chr_arm:/home/lg/working_dir/chromium/src/out/chr_arm
-        - /storage/images/${{ github.event.inputs.sha }}/android/${{ github.event.inputs.debug }}/chr_arm64:/home/lg/working_dir/chromium/src/out/chr_arm64
-        - /storage/images/${{ github.event.inputs.sha }}/android/${{ github.event.inputs.debug }}/chr_x64:/home/lg/working_dir/chromium/src/out/chr_x64
-        - /storage/images/${{ github.event.inputs.sha }}/android/${{ github.event.inputs.debug }}/wv_x64:/home/lg/working_dir/chromium/src/out/wv_x64
-        - /storage/images/${{ github.event.inputs.sha }}/android/${{ github.event.inputs.debug }}/wv_arm64:/home/lg/working_dir/chromium/src/out/wv_arm64
-        - /storage/images/${{ github.event.inputs.sha }}/android/${{ github.event.inputs.debug }}/cro_arm:/home/lg/working_dir/chromium/src/out/cro_arm
-        - /storage/images/${{ github.event.inputs.sha }}/android/${{ github.event.inputs.debug }}/cro_arm64:/home/lg/working_dir/chromium/src/out/cro_arm64
-        - /storage/images/${{ github.event.inputs.sha }}/android/${{ github.event.inputs.debug }}/cro_x64:/home/lg/working_dir/chromium/src/out/cro_x64
-        - /storage/images/${{ github.event.inputs.sha }}/linux/${{ github.event.inputs.debug }}/cro_lin64:/home/lg/working_dir/chromium/src/out/cro_lin64
-        - /storage/images/${{ github.event.inputs.sha }}/win/cro_x64:/home/lg/working_dir/chromium/src/out/cro_win64
-        - /tmp/proxy:/tmp/proxy
-        - /win_sdk:/win_sdk
+      #volumes:
+      #  - /storage/images/${{ github.event.inputs.sha }}/android/${{ github.event.inputs.debug }}/chr_arm:/home/lg/working_dir/chromium/src/out/chr_arm
+      #  - /storage/images/${{ github.event.inputs.sha }}/android/${{ github.event.inputs.debug }}/chr_arm64:/home/lg/working_dir/chromium/src/out/chr_arm64
+      #  - /storage/images/${{ github.event.inputs.sha }}/android/${{ github.event.inputs.debug }}/chr_x64:/home/lg/working_dir/chromium/src/out/chr_x64
+      #  - /storage/images/${{ github.event.inputs.sha }}/android/${{ github.event.inputs.debug }}/wv_x64:/home/lg/working_dir/chromium/src/out/wv_x64
+      #  - /storage/images/${{ github.event.inputs.sha }}/android/${{ github.event.inputs.debug }}/wv_arm64:/home/lg/working_dir/chromium/src/out/wv_arm64
+      #  - /storage/images/${{ github.event.inputs.sha }}/android/${{ github.event.inputs.debug }}/cro_arm:/home/lg/working_dir/chromium/src/out/cro_arm
+      #  - /storage/images/${{ github.event.inputs.sha }}/android/${{ github.event.inputs.debug }}/cro_arm64:/home/lg/working_dir/chromium/src/out/cro_arm64
+      #  - /storage/images/${{ github.event.inputs.sha }}/android/${{ github.event.inputs.debug }}/cro_x64:/home/lg/working_dir/chromium/src/out/cro_x64
+      #  - /storage/images/${{ github.event.inputs.sha }}/linux/${{ github.event.inputs.debug }}/cro_lin64:/home/lg/working_dir/chromium/src/out/cro_lin64
+      #  - /storage/images/${{ github.event.inputs.sha }}/win/cro_x64:/home/lg/working_dir/chromium/src/out/cro_win64
+      #  - /tmp/proxy:/tmp/proxy
+      #  - /win_sdk:/win_sdk
 
     steps:
       - name: Prepare Build Container
+        if: ${{ !always() }}
         shell: bash
         run: |
           # set workspace paths
@@ -237,6 +241,7 @@ jobs:
           gpg --homedir ./ -d --passphrase "${{ secrets.KEYSTORE_PASSPHRASE }}" --batch cromite.keystore.asc > cromite.keystore
           echo "::endgroup::"
 
+      # act --rm -r -W .github/workflows/build.yaml -j build -P ubuntu-latest=docker.io/catthehacker/ubuntu:act-latest
       - name: build
         shell: bash
         run: |
