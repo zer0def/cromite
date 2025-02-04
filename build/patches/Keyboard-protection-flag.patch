@@ -181,7 +181,7 @@ diff --git a/third_party/blink/renderer/core/events/keyboard_event.cc b/third_pa
  #if BUILDFLAG(IS_ANDROID)
    // FIXME: Check to see if this applies to other OS.
    // If the key event belongs to IME composition then propagate to JS.
-@@ -204,6 +334,12 @@ unsigned KeyboardEvent::which() const {
+@@ -205,6 +335,12 @@ unsigned KeyboardEvent::which() const {
    return (unsigned)keyCode();
  }
  
@@ -197,7 +197,7 @@ diff --git a/third_party/blink/renderer/core/events/keyboard_event.cc b/third_pa
 diff --git a/third_party/blink/renderer/core/events/keyboard_event.h b/third_party/blink/renderer/core/events/keyboard_event.h
 --- a/third_party/blink/renderer/core/events/keyboard_event.h
 +++ b/third_party/blink/renderer/core/events/keyboard_event.h
-@@ -97,6 +97,8 @@ class CORE_EXPORT KeyboardEvent final : public UIEventWithKeyState {
+@@ -99,6 +99,8 @@ class CORE_EXPORT KeyboardEvent final : public UIEventWithKeyState {
    unsigned which() const override;
    bool isComposing() const { return is_composing_; }
  
@@ -206,7 +206,7 @@ diff --git a/third_party/blink/renderer/core/events/keyboard_event.h b/third_par
    void Trace(Visitor*) const override;
  
   private:
-@@ -109,6 +111,7 @@ class CORE_EXPORT KeyboardEvent final : public UIEventWithKeyState {
+@@ -111,6 +113,7 @@ class CORE_EXPORT KeyboardEvent final : public UIEventWithKeyState {
    bool is_composing_ = false;
    unsigned char_code_ = 0;
    unsigned key_code_ = 0;
@@ -217,7 +217,7 @@ diff --git a/third_party/blink/renderer/core/events/keyboard_event.h b/third_par
 diff --git a/ui/base/ui_base_features.cc b/ui/base/ui_base_features.cc
 --- a/ui/base/ui_base_features.cc
 +++ b/ui/base/ui_base_features.cc
-@@ -217,6 +217,14 @@ BASE_FEATURE(kSystemKeyboardLock,
+@@ -179,6 +179,14 @@ BASE_FEATURE(kSystemKeyboardLock,
               "SystemKeyboardLock",
               base::FEATURE_ENABLED_BY_DEFAULT);
  
@@ -235,9 +235,9 @@ diff --git a/ui/base/ui_base_features.cc b/ui/base/ui_base_features.cc
 diff --git a/ui/base/ui_base_features.h b/ui/base/ui_base_features.h
 --- a/ui/base/ui_base_features.h
 +++ b/ui/base/ui_base_features.h
-@@ -27,6 +27,8 @@ BASE_DECLARE_FEATURE(kWindowsScrollingPersonality);
- COMPONENT_EXPORT(UI_BASE_FEATURES) bool IsPercentBasedScrollingEnabled();
- COMPONENT_EXPORT(UI_BASE_FEATURES) BASE_DECLARE_FEATURE(kSystemCaptionStyle);
+@@ -23,6 +23,8 @@ BASE_DECLARE_FEATURE(kSettingsShowsPerKeyboardSettings);
+ COMPONENT_EXPORT(UI_BASE_FEATURES)
+ BASE_DECLARE_FEATURE(kInputMethodSettingsUiUpdate);
  COMPONENT_EXPORT(UI_BASE_FEATURES) BASE_DECLARE_FEATURE(kSystemKeyboardLock);
 +COMPONENT_EXPORT(UI_BASE_FEATURES) BASE_DECLARE_FEATURE(kSystemKeyboardProtection);
 +COMPONENT_EXPORT(UI_BASE_FEATURES) bool IsSystemKeyboardProtectionEnabled();

@@ -14,14 +14,14 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 diff --git a/ui/base/ui_base_features.cc b/ui/base/ui_base_features.cc
 --- a/ui/base/ui_base_features.cc
 +++ b/ui/base/ui_base_features.cc
-@@ -176,6 +176,9 @@ static_assert(!BUILDFLAG(IS_MAC) ||
- BASE_FEATURE(kWindowsScrollingPersonality,
-              "WindowsScrollingPersonality",
-              kWindowsScrollingPersonalityDefaultStatus);
+@@ -305,6 +305,9 @@ BASE_FEATURE(kEyeDropper,
+              base::FEATURE_DISABLED_BY_DEFAULT
+ #endif
+ );
 +#if BUILDFLAG(IS_WIN)
 +SET_CROMITE_FEATURE_ENABLED(kWindowsScrollingPersonality);
 +#endif
  
- bool IsPercentBasedScrollingEnabled() {
-   return base::FeatureList::IsEnabled(features::kWindowsScrollingPersonality);
+ bool IsEyeDropperEnabled() {
+   return base::FeatureList::IsEnabled(features::kEyeDropper);
 --

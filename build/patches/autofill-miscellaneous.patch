@@ -10,48 +10,35 @@ Do not skip google.com domains for password generation (csagan5)
 
 License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 ---
- chrome/browser/prefs/browser_prefs.cc         |  2 +-
  .../ui/autofill/chrome_autofill_client.cc     |  7 +-
  .../autofill_crowdsourcing_manager.cc         | 66 ++-----------------
  .../autofill_crowdsourcing_manager.h          |  2 -
  .../autofill/core/common/autofill_features.cc |  2 +
  .../autofill/core/common/autofill_prefs.cc    | 10 +--
  .../password_generation_frame_helper.cc       |  5 --
- 7 files changed, 14 insertions(+), 80 deletions(-)
+ 6 files changed, 13 insertions(+), 79 deletions(-)
 
-diff --git a/chrome/browser/prefs/browser_prefs.cc b/chrome/browser/prefs/browser_prefs.cc
---- a/chrome/browser/prefs/browser_prefs.cc
-+++ b/chrome/browser/prefs/browser_prefs.cc
-@@ -1255,7 +1255,7 @@ void RegisterProfilePrefsForMigration(
- #endif
- 
-   // Deprecated 12/2023.
--  registry->RegisterBooleanPref(kDownloadDuplicateFilePromptEnabled, true);
-+  registry->RegisterBooleanPref(kDownloadDuplicateFilePromptEnabled, false);
- 
-   // Deprecated 12/2023.
-   registry->RegisterInt64Pref(kModelQualityLoggingClientId, true);
 diff --git a/chrome/browser/ui/autofill/chrome_autofill_client.cc b/chrome/browser/ui/autofill/chrome_autofill_client.cc
 --- a/chrome/browser/ui/autofill/chrome_autofill_client.cc
 +++ b/chrome/browser/ui/autofill/chrome_autofill_client.cc
-@@ -245,12 +245,7 @@ ChromeAutofillClient::GetURLLoaderFactory() {
+@@ -323,12 +323,7 @@ ChromeAutofillClient::GetURLLoaderFactory() {
  }
  
- AutofillCrowdsourcingManager* ChromeAutofillClient::GetCrowdsourcingManager() {
+ AutofillCrowdsourcingManager& ChromeAutofillClient::GetCrowdsourcingManager() {
 -  if (!crowdsourcing_manager_) {
 -    // Lazy initialization to avoid virtual function calls in the constructor.
--    crowdsourcing_manager_ = std::make_unique<AutofillCrowdsourcingManager>(
--        this, GetChannel(), GetLogManager());
+-    crowdsourcing_manager_ =
+-        std::make_unique<AutofillCrowdsourcingManager>(this, GetChannel());
 -  }
--  return crowdsourcing_manager_.get();
+-  return *crowdsourcing_manager_;
 +  return nullptr;
  }
  
- AutofillOptimizationGuide* ChromeAutofillClient::GetAutofillOptimizationGuide()
+ VotesUploader& ChromeAutofillClient::GetVotesUploader() {
 diff --git a/components/autofill/core/browser/crowdsourcing/autofill_crowdsourcing_manager.cc b/components/autofill/core/browser/crowdsourcing/autofill_crowdsourcing_manager.cc
 --- a/components/autofill/core/browser/crowdsourcing/autofill_crowdsourcing_manager.cc
 +++ b/components/autofill/core/browser/crowdsourcing/autofill_crowdsourcing_manager.cc
-@@ -500,33 +500,6 @@ std::optional<std::string> GetUploadPayloadForApi(
+@@ -481,33 +481,6 @@ std::optional<std::string> GetUploadPayloadForApi(
    return std::move(payload);
  }
  
@@ -85,7 +72,7 @@ diff --git a/components/autofill/core/browser/crowdsourcing/autofill_crowdsourci
  // Gets HTTP body payload for API POST request.
  std::optional<std::string> GetAPIBodyPayload(std::string payload,
                                               RequestType type) {
-@@ -558,15 +531,7 @@ std::optional<std::string> GetAPIQueryPayload(
+@@ -539,15 +512,7 @@ std::optional<std::string> GetAPIQueryPayload(
  }
  
  std::string GetAPIKeyForUrl(version_info::Channel channel) {
@@ -102,7 +89,7 @@ diff --git a/components/autofill/core/browser/crowdsourcing/autofill_crowdsourci
  }
  
  std::optional<std::vector<variations::VariationID>>& GetActiveExperiments() {
-@@ -865,34 +830,13 @@ size_t AutofillCrowdsourcingManager::GetPayloadLength(
+@@ -846,34 +811,13 @@ size_t AutofillCrowdsourcingManager::GetPayloadLength(
  
  std::tuple<GURL, std::string> AutofillCrowdsourcingManager::GetRequestURLAndMethod(
      const FormRequestData& request_data) const {
@@ -144,9 +131,9 @@ diff --git a/components/autofill/core/browser/crowdsourcing/autofill_crowdsourci
 diff --git a/components/autofill/core/browser/crowdsourcing/autofill_crowdsourcing_manager.h b/components/autofill/core/browser/crowdsourcing/autofill_crowdsourcing_manager.h
 --- a/components/autofill/core/browser/crowdsourcing/autofill_crowdsourcing_manager.h
 +++ b/components/autofill/core/browser/crowdsourcing/autofill_crowdsourcing_manager.h
-@@ -33,8 +33,6 @@ namespace autofill {
+@@ -32,8 +32,6 @@ namespace autofill {
+ 
  class AutofillClient;
- class LogManager;
  
 -inline constexpr size_t kMaxQueryGetSize = 10240;  // 10 KiB
 -
@@ -156,7 +143,7 @@ diff --git a/components/autofill/core/browser/crowdsourcing/autofill_crowdsourci
 diff --git a/components/autofill/core/common/autofill_features.cc b/components/autofill/core/common/autofill_features.cc
 --- a/components/autofill/core/common/autofill_features.cc
 +++ b/components/autofill/core/common/autofill_features.cc
-@@ -842,6 +842,8 @@ BASE_FEATURE(kAutofillUploadThrottling,
+@@ -961,6 +961,8 @@ BASE_FEATURE(kAutofillUploadThrottling,
               "AutofillUploadThrottling",
               base::FEATURE_ENABLED_BY_DEFAULT);
  
@@ -168,7 +155,7 @@ diff --git a/components/autofill/core/common/autofill_features.cc b/components/a
 diff --git a/components/autofill/core/common/autofill_prefs.cc b/components/autofill/core/common/autofill_prefs.cc
 --- a/components/autofill/core/common/autofill_prefs.cc
 +++ b/components/autofill/core/common/autofill_prefs.cc
-@@ -40,7 +40,7 @@ int GetSyncTransportOptInBitFieldForAccount(const PrefService* prefs,
+@@ -21,7 +21,7 @@ namespace prefs {
  void RegisterProfilePrefs(user_prefs::PrefRegistrySyncable* registry) {
    // Synced prefs. Used for cross-device choices, e.g., credit card Autofill.
    registry->RegisterBooleanPref(
@@ -177,7 +164,7 @@ diff --git a/components/autofill/core/common/autofill_prefs.cc b/components/auto
        user_prefs::PrefRegistrySyncable::SYNCABLE_PREF);
    registry->RegisterIntegerPref(
        prefs::kAutofillLastVersionDeduped, 0,
-@@ -49,10 +49,10 @@ void RegisterProfilePrefs(user_prefs::PrefRegistrySyncable* registry) {
+@@ -30,10 +30,10 @@ void RegisterProfilePrefs(user_prefs::PrefRegistrySyncable* registry) {
        prefs::kAutofillHasSeenIban, false,
        user_prefs::PrefRegistrySyncable::SYNCABLE_PREF);
    registry->RegisterBooleanPref(
@@ -190,7 +177,7 @@ diff --git a/components/autofill/core/common/autofill_prefs.cc b/components/auto
        user_prefs::PrefRegistrySyncable::SYNCABLE_PREF);
    registry->RegisterBooleanPref(
        kAutofillPaymentCardBenefits, true,
-@@ -96,9 +96,9 @@ void RegisterProfilePrefs(user_prefs::PrefRegistrySyncable* registry) {
+@@ -77,9 +77,9 @@ void RegisterProfilePrefs(user_prefs::PrefRegistrySyncable* registry) {
  #endif
  
    // Deprecated prefs registered for migration.

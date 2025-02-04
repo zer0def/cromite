@@ -21,15 +21,15 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabUiFeatureUtilities.java b/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabUiFeatureUtilities.java
 --- a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabUiFeatureUtilities.java
 +++ b/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabUiFeatureUtilities.java
-@@ -12,6 +12,7 @@ import org.chromium.base.SysUtils;
+@@ -11,6 +11,7 @@ import org.chromium.base.ResettersForTesting;
+ import org.chromium.base.SysUtils;
  import org.chromium.chrome.browser.flags.ChromeFeatureList;
- import org.chromium.chrome.browser.tabmodel.TabGroupFeatureUtils;
  import org.chromium.ui.base.DeviceFormFactor;
 +import org.chromium.chrome.browser.flags.cromite.sTabSwitcherListMode;
  
  import java.util.Locale;
  import java.util.Set;
-@@ -47,8 +48,7 @@ public class TabUiFeatureUtilities {
+@@ -45,8 +46,7 @@ public class TabUiFeatureUtilities {
  
      /** Returns whether the Grid Tab Switcher UI should use list mode. */
      public static boolean shouldUseListMode() {
@@ -42,7 +42,7 @@ diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser
 diff --git a/chrome/android/java/res/xml/privacy_preferences.xml b/chrome/android/java/res/xml/privacy_preferences.xml
 --- a/chrome/android/java/res/xml/privacy_preferences.xml
 +++ b/chrome/android/java/res/xml/privacy_preferences.xml
-@@ -100,6 +100,12 @@ found in the LICENSE file.
+@@ -99,6 +99,12 @@ found in the LICENSE file.
          android:summary="@string/allow_external_intent_requests_summary"
          app:featureName="AllowExternalIntentRequests"
          app:needRestart="false" />
@@ -118,7 +118,7 @@ diff --git a/chrome/browser/ui/android/toolbar/java/src/org/chromium/chrome/brow
  import org.chromium.chrome.browser.omnibox.LocationBar;
  import org.chromium.chrome.browser.omnibox.LocationBarCoordinator;
  import org.chromium.chrome.browser.omnibox.NewTabPageDelegate;
-@@ -1886,7 +1887,7 @@ public class ToolbarPhone extends ToolbarLayout
+@@ -1899,7 +1900,7 @@ public class ToolbarPhone extends ToolbarLayout
          // On entering the tab switcher, set the focusability of the url bar to be false. This will
          // occur at the start of the enter event, and will later be reset to true upon finishing the
          // exit event.
@@ -127,7 +127,7 @@ diff --git a/chrome/browser/ui/android/toolbar/java/src/org/chromium/chrome/brow
              mLocationBar.setUrlBarFocusable(false);
          }
  
-@@ -2088,7 +2089,8 @@ public class ToolbarPhone extends ToolbarLayout
+@@ -2101,7 +2102,8 @@ public class ToolbarPhone extends ToolbarLayout
  
          updateLocationBarForNtp(mVisualState, urlHasFocus());
  

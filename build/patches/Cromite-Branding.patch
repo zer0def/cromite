@@ -57,9 +57,9 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../chromium/product_logo_white.png           | Bin 2512 -> 6790 bytes
  .../version_ui/resources/about_version.ts     |   2 +-
  .../resources/about_version_mobile.css        |   9 ++
- content/child/runtime_features.cc             |  24 +++--
+ content/child/runtime_features.cc             |  26 +++--
  tools/grit/grit/grd_reader.py                 |  35 +++++++
- 55 files changed, 189 insertions(+), 118 deletions(-)
+ 55 files changed, 189 insertions(+), 120 deletions(-)
 
 diff --git a/build/BUILD.gn b/build/BUILD.gn
 --- a/build/BUILD.gn
@@ -9180,7 +9180,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/omaha/inline/Br
 diff --git a/chrome/app/extensions_strings.grdp b/chrome/app/extensions_strings.grdp
 --- a/chrome/app/extensions_strings.grdp
 +++ b/chrome/app/extensions_strings.grdp
-@@ -380,7 +380,7 @@
+@@ -392,7 +392,7 @@
      No recent activities
    </message>
    <message name="IDS_EXTENSIONS_NO_INSTALLED_ITEMS" desc="The message shown to the user on the Extensions settings page when there are no extensions or apps installed.">
@@ -9189,7 +9189,7 @@ diff --git a/chrome/app/extensions_strings.grdp b/chrome/app/extensions_strings.
    </message>
    <message name="IDS_EXTENSIONS_NO_DESCRIPTION" desc="The message shown to the user when an extension does not have any description.">
      No description provided
-@@ -518,7 +518,7 @@
+@@ -530,7 +530,7 @@
      My extensions
    </message>
    <message name="IDS_EXTENSIONS_SIDEBAR_DISCOVER_MORE" desc="The text displayed in the sidebar to open the Chrome Web Store to get more extensions.">
@@ -9201,7 +9201,7 @@ diff --git a/chrome/app/extensions_strings.grdp b/chrome/app/extensions_strings.
 diff --git a/chrome/app/settings_strings.grdp b/chrome/app/settings_strings.grdp
 --- a/chrome/app/settings_strings.grdp
 +++ b/chrome/app/settings_strings.grdp
-@@ -283,7 +283,7 @@
+@@ -275,7 +275,7 @@
      Change
    </message>
    <message name="IDS_SETTINGS_WEB_STORE" desc="Sub-label about choosing something from the Chrome Web Store.">
@@ -13155,10 +13155,10 @@ e)fqMZZ`3a)Ds&5H<cfp<0000<MNUMnLSTYHt&Yn8
 diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -1835,6 +1835,7 @@ static_library("browser") {
-     "//build:chromeos_buildflags",
+@@ -1811,6 +1811,7 @@ static_library("browser") {
      "//build/config/chromebox_for_meetings:buildflags",
      "//build/config/compiler:compiler_buildflags",
+     "//build/config/linux/dbus:buildflags",
 +    "//build:cromite_buildflags",
      "//cc",
      "//chrome:extra_resources",
@@ -13178,7 +13178,7 @@ diff --git a/chrome/browser/omaha/android/java/src/org/chromium/chrome/browser/o
 diff --git a/chrome/browser/prefs/BUILD.gn b/chrome/browser/prefs/BUILD.gn
 --- a/chrome/browser/prefs/BUILD.gn
 +++ b/chrome/browser/prefs/BUILD.gn
-@@ -51,6 +51,7 @@ source_set("impl") {
+@@ -52,6 +52,7 @@ source_set("impl") {
    deps = [
      ":prefs",
      ":util",
@@ -13243,7 +13243,7 @@ diff --git a/chrome/browser/resources/settings/settings_menu/settings_menu.html 
        #menu {
          color: var(--google-grey-700);
          display: flex;
-@@ -165,7 +177,7 @@
+@@ -173,7 +185,7 @@
          </a>
          <a role="menuitem" id="about-menu" href="/help"
              class="cr-nav-menu-item">
@@ -13311,7 +13311,7 @@ diff --git a/chrome/install_static/chromium_install_modes.cc b/chrome/install_st
 diff --git a/components/browser_ui/strings/android/browser_ui_strings.grd b/components/browser_ui/strings/android/browser_ui_strings.grd
 --- a/components/browser_ui/strings/android/browser_ui_strings.grd
 +++ b/components/browser_ui/strings/android/browser_ui_strings.grd
-@@ -984,7 +984,7 @@
+@@ -975,7 +975,7 @@
  
        <!-- Accessibility preferences -->
        <message name="IDS_PREFS_ACCESSIBILITY" desc="Title of Accessibility settings, which allows the user to change webpage font sizes. [CHAR_LIMIT=32]">
@@ -18920,7 +18920,7 @@ EKU(of)Bpeg
 diff --git a/components/version_ui/resources/about_version.ts b/components/version_ui/resources/about_version.ts
 --- a/components/version_ui/resources/about_version.ts
 +++ b/components/version_ui/resources/about_version.ts
-@@ -220,7 +220,7 @@ function initialize() {
+@@ -180,7 +180,7 @@ function initialize() {
    // </if>
  
    chrome.send('requestVersionInfo');
@@ -18948,7 +18948,7 @@ diff --git a/components/version_ui/resources/about_version_mobile.css b/componen
 diff --git a/content/child/runtime_features.cc b/content/child/runtime_features.cc
 --- a/content/child/runtime_features.cc
 +++ b/content/child/runtime_features.cc
-@@ -610,7 +610,7 @@ void ResolveInvalidConfigurations() {
+@@ -574,7 +574,7 @@ void ResolveInvalidConfigurations() {
         base::FeatureList::IsEnabled(
             features::kPrivacySandboxAdsAPIsM1Override)) &&
        !base::FeatureList::IsEnabled(blink::features::kFencedFrames)) {
@@ -18957,7 +18957,7 @@ diff --git a/content/child/runtime_features.cc b/content/child/runtime_features.
          << "Fenced frames cannot be enabled in this configuration. Use --"
          << switches::kEnableFeatures << "="
          << blink::features::kFencedFrames.name << " instead.";
-@@ -620,9 +620,8 @@ void ResolveInvalidConfigurations() {
+@@ -584,9 +584,8 @@ void ResolveInvalidConfigurations() {
    if (!base::FeatureList::IsEnabled(blink::features::kFencedFrames) &&
        base::FeatureList::IsEnabled(
            blink::features::kFencedFramesLocalUnpartitionedDataAccess)) {
@@ -18969,7 +18969,7 @@ diff --git a/content/child/runtime_features.cc b/content/child/runtime_features.
          << "Fenced frames must be enabled in order to enable local "
             "unpartitioned "
          << "data access. Use --" << switches::kEnableFeatures << "="
-@@ -635,7 +634,7 @@ void ResolveInvalidConfigurations() {
+@@ -599,7 +598,7 @@ void ResolveInvalidConfigurations() {
    // The Document API should be additionally gated by the
    // `kBrowsingTopicsDocumentAPI` feature.
    if (!base::FeatureList::IsEnabled(blink::features::kBrowsingTopics)) {
@@ -18978,34 +18978,27 @@ diff --git a/content/child/runtime_features.cc b/content/child/runtime_features.
          << "Topics cannot be enabled in this configuration. Use --"
          << switches::kEnableFeatures << "="
          << blink::features::kBrowsingTopics.name << " in addition.";
-@@ -655,7 +654,7 @@ void ResolveInvalidConfigurations() {
+@@ -609,7 +608,7 @@ void ResolveInvalidConfigurations() {
+   } else {
+     if (!base::FeatureList::IsEnabled(
+             blink::features::kBrowsingTopicsDocumentAPI)) {
+-      LOG_IF(WARNING, WebRuntimeFeatures::IsTopicsDocumentAPIEnabled())
++      CHECK(!WebRuntimeFeatures::IsTopicsDocumentAPIEnabled())
+           << "Topics Document API cannot be enabled in this configuration. Use "
+              "--"
+           << switches::kEnableFeatures << "="
+@@ -620,8 +619,8 @@ void ResolveInvalidConfigurations() {
    }
  
    if (!base::FeatureList::IsEnabled(blink::features::kSharedStorageAPI)) {
 -    LOG_IF(WARNING, WebRuntimeFeatures::IsSharedStorageAPIEnabled())
+-        << "SharedStorage cannot be enabled in this "
 +    CHECK(!WebRuntimeFeatures::IsSharedStorageAPIEnabled())
-         << "SharedStorage cannot be enabled in this "
++        << "SharedStorage for M118+ cannot be enabled in this "
             "configuration. Use --"
          << switches::kEnableFeatures << "="
-@@ -665,7 +664,7 @@ void ResolveInvalidConfigurations() {
- 
-   if (!base::FeatureList::IsEnabled(blink::features::kSharedStorageAPIM118) ||
-       !base::FeatureList::IsEnabled(blink::features::kSharedStorageAPI)) {
--    LOG_IF(WARNING, WebRuntimeFeatures::IsSharedStorageAPIM118Enabled())
-+    CHECK(!WebRuntimeFeatures::IsSharedStorageAPIM118Enabled())
-         << "SharedStorage for M118+ cannot be enabled in this "
-            "configuration. Use --"
-         << switches::kEnableFeatures << "="
-@@ -676,7 +675,7 @@ void ResolveInvalidConfigurations() {
- 
-   if (!base::FeatureList::IsEnabled(blink::features::kSharedStorageAPIM125) ||
-       !base::FeatureList::IsEnabled(blink::features::kSharedStorageAPI)) {
--    LOG_IF(WARNING, WebRuntimeFeatures::IsSharedStorageAPIM125Enabled())
-+    CHECK(!WebRuntimeFeatures::IsSharedStorageAPIM125Enabled())
-         << "SharedStorage for M125+ cannot be enabled in this "
-            "configuration. Use --"
-         << switches::kEnableFeatures << "="
-@@ -687,7 +686,7 @@ void ResolveInvalidConfigurations() {
+         << blink::features::kSharedStorageAPI.name << " in addition.";
+@@ -630,7 +629,7 @@ void ResolveInvalidConfigurations() {
  
    if (!base::FeatureList::IsEnabled(
            attribution_reporting::features::kConversionMeasurement)) {
@@ -19014,18 +19007,17 @@ diff --git a/content/child/runtime_features.cc b/content/child/runtime_features.
          << "AttributionReporting cannot be enabled in this "
             "configuration. Use --"
          << switches::kEnableFeatures << "="
-@@ -700,8 +699,8 @@ void ResolveInvalidConfigurations() {
+@@ -643,8 +642,7 @@ void ResolveInvalidConfigurations() {
            attribution_reporting::features::kConversionMeasurement) ||
        !base::FeatureList::IsEnabled(
            network::features::kAttributionReportingCrossAppWeb)) {
 -    LOG_IF(WARNING,
 -           WebRuntimeFeatures::IsAttributionReportingCrossAppWebEnabled())
-+    CHECK(
-+           !WebRuntimeFeatures::IsAttributionReportingCrossAppWebEnabled())
++    CHECK(!WebRuntimeFeatures::IsAttributionReportingCrossAppWebEnabled())
          << "AttributionReportingCrossAppWeb cannot be enabled in this "
             "configuration. Use --"
          << switches::kEnableFeatures << "="
-@@ -712,8 +711,7 @@ void ResolveInvalidConfigurations() {
+@@ -655,8 +653,7 @@ void ResolveInvalidConfigurations() {
    }
  
    if (!base::FeatureList::IsEnabled(blink::features::kInterestGroupStorage)) {
@@ -19035,6 +19027,16 @@ diff --git a/content/child/runtime_features.cc b/content/child/runtime_features.
          << "AdInterestGroupAPI cannot be enabled in this "
             "configuration. Use --"
          << switches::kEnableFeatures << "="
+@@ -668,8 +665,7 @@ void ResolveInvalidConfigurations() {
+   // PermissionElement cannot be enabled without the support of the
+   // browser process.
+   if (!base::FeatureList::IsEnabled(blink::features::kPermissionElement)) {
+-    LOG_IF(WARNING,
+-           WebRuntimeFeatures::IsPermissionElementEnabledByRuntimeFlag())
++    CHECK(!WebRuntimeFeatures::IsPermissionElementEnabledByRuntimeFlag())
+         << "PermissionElement cannot be enabled in this configuration. Use --"
+         << switches::kEnableFeatures << "="
+         << blink::features::kPermissionElement.name << " instead.";
 diff --git a/tools/grit/grit/grd_reader.py b/tools/grit/grit/grd_reader.py
 --- a/tools/grit/grit/grd_reader.py
 +++ b/tools/grit/grit/grd_reader.py

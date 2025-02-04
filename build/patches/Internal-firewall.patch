@@ -59,18 +59,18 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -2421,6 +2421,7 @@ static_library("browser") {
+@@ -2407,6 +2407,7 @@ static_library("browser") {
      "//third_party/ungoogled:switches",
      "//services/device/public/mojom",
      "//services/device/public/mojom:usb",
 +    "//services/firewall/public:firewall_builders",
      "//services/image_annotation:service",
      "//services/media_session/public/mojom",
-     "//services/metrics/public/cpp:ukm_builders",
+     "//services/metrics",
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -223,6 +223,7 @@
+@@ -224,6 +224,7 @@
  #include "sandbox/policy/features.h"
  #include "sandbox/policy/switches.h"
  #include "services/device/public/cpp/device_features.h"
@@ -130,7 +130,7 @@ diff --git a/chrome/browser/download/android/download_controller.cc b/chrome/bro
 diff --git a/chrome/browser/offline_pages/android/downloads/offline_page_download_bridge.cc b/chrome/browser/offline_pages/android/downloads/offline_page_download_bridge.cc
 --- a/chrome/browser/offline_pages/android/downloads/offline_page_download_bridge.cc
 +++ b/chrome/browser/offline_pages/android/downloads/offline_page_download_bridge.cc
-@@ -270,13 +270,43 @@ content::WebContents::Getter GetWebContentsGetter(
+@@ -269,13 +269,43 @@ content::WebContents::Getter GetWebContentsGetter(
        web_contents->GetPrimaryMainFrame()->GetRoutingID());
  }
  
@@ -289,12 +289,12 @@ new file mode 100644
 diff --git a/net/BUILD.gn b/net/BUILD.gn
 --- a/net/BUILD.gn
 +++ b/net/BUILD.gn
-@@ -1104,6 +1104,7 @@ component("net") {
-     "//components/miracle_parameter/common",
+@@ -1116,6 +1116,7 @@ component("net") {
      "//components/network_time/time_tracker",
+     "//components/network_session_configurator/common"
      "//net/http:transport_security_state_generated_files",
 +    "//services/firewall/public:firewall_builders",
-     "//components/network_session_configurator/common"
+     "//third_party/simdutf:simdutf",
    ]
  
 diff --git a/net/traffic_annotation/network_traffic_annotation.h b/net/traffic_annotation/network_traffic_annotation.h
@@ -314,7 +314,7 @@ diff --git a/net/traffic_annotation/network_traffic_annotation.h b/net/traffic_a
 diff --git a/net/url_request/url_request_http_job.cc b/net/url_request/url_request_http_job.cc
 --- a/net/url_request/url_request_http_job.cc
 +++ b/net/url_request/url_request_http_job.cc
-@@ -402,6 +402,9 @@ URLRequestHttpJob::URLRequestHttpJob(
+@@ -403,6 +403,9 @@ URLRequestHttpJob::URLRequestHttpJob(
      : URLRequestJob(request),
        http_user_agent_settings_(http_user_agent_settings) {
    ResetTimer();
@@ -324,7 +324,7 @@ diff --git a/net/url_request/url_request_http_job.cc b/net/url_request/url_reque
  }
  
  URLRequestHttpJob::~URLRequestHttpJob() {
-@@ -690,6 +693,18 @@ void URLRequestHttpJob::MaybeStartTransactionInternal(int result) {
+@@ -691,6 +694,18 @@ void URLRequestHttpJob::MaybeStartTransactionInternal(int result) {
  void URLRequestHttpJob::StartTransactionInternal() {
    DCHECK(!override_response_headers_);
  
@@ -1651,7 +1651,7 @@ new file mode 100644
 diff --git a/services/network/network_context.cc b/services/network/network_context.cc
 --- a/services/network/network_context.cc
 +++ b/services/network/network_context.cc
-@@ -101,6 +101,7 @@
+@@ -100,6 +100,7 @@
  #include "net/url_request/url_request.h"
  #include "net/url_request/url_request_context.h"
  #include "net/url_request/url_request_context_builder.h"
@@ -1659,7 +1659,7 @@ diff --git a/services/network/network_context.cc b/services/network/network_cont
  #include "services/network/brokered_client_socket_factory.h"
  #include "services/network/cookie_manager.h"
  #include "services/network/data_remover_util.h"
-@@ -1795,6 +1796,9 @@ void NetworkContext::OnNewSCTAuditingReportSent() {
+@@ -1790,6 +1791,9 @@ void NetworkContext::OnNewSCTAuditingReportSent() {
  void NetworkContext::CreateUDPSocket(
      mojo::PendingReceiver<mojom::UDPSocket> receiver,
      mojo::PendingRemote<mojom::UDPSocketListener> listener) {
@@ -1669,7 +1669,7 @@ diff --git a/services/network/network_context.cc b/services/network/network_cont
    socket_factory_->CreateUDPSocket(std::move(receiver), std::move(listener));
  }
  
-@@ -1807,6 +1811,17 @@ void NetworkContext::CreateRestrictedUDPSocket(
+@@ -1802,6 +1806,17 @@ void NetworkContext::CreateRestrictedUDPSocket(
      mojo::PendingRemote<mojom::UDPSocketListener> listener,
      CreateRestrictedUDPSocketCallback callback) {
    // SimpleHostResolver is transitively owned by |this|.
@@ -1687,7 +1687,7 @@ diff --git a/services/network/network_context.cc b/services/network/network_cont
    socket_factory_->CreateRestrictedUDPSocket(
        addr, mode, traffic_annotation, std::move(params), std::move(receiver),
        std::move(listener), SimpleHostResolver::Create(this),
-@@ -1819,6 +1834,17 @@ void NetworkContext::CreateTCPServerSocket(
+@@ -1814,6 +1829,17 @@ void NetworkContext::CreateTCPServerSocket(
      const net::MutableNetworkTrafficAnnotationTag& traffic_annotation,
      mojo::PendingReceiver<mojom::TCPServerSocket> receiver,
      CreateTCPServerSocketCallback callback) {
@@ -1705,7 +1705,7 @@ diff --git a/services/network/network_context.cc b/services/network/network_cont
    socket_factory_->CreateTCPServerSocket(
        local_addr, std::move(options),
        static_cast<net::NetworkTrafficAnnotationTag>(traffic_annotation),
-@@ -1833,6 +1859,21 @@ void NetworkContext::CreateTCPConnectedSocket(
+@@ -1828,6 +1854,21 @@ void NetworkContext::CreateTCPConnectedSocket(
      mojo::PendingReceiver<mojom::TCPConnectedSocket> receiver,
      mojo::PendingRemote<mojom::SocketObserver> observer,
      CreateTCPConnectedSocketCallback callback) {
@@ -1727,7 +1727,7 @@ diff --git a/services/network/network_context.cc b/services/network/network_cont
    socket_factory_->CreateTCPConnectedSocket(
        local_addr, remote_addr_list, std::move(tcp_connected_socket_options),
        static_cast<net::NetworkTrafficAnnotationTag>(traffic_annotation),
-@@ -1844,6 +1885,20 @@ void NetworkContext::CreateTCPBoundSocket(
+@@ -1839,6 +1880,20 @@ void NetworkContext::CreateTCPBoundSocket(
      const net::MutableNetworkTrafficAnnotationTag& traffic_annotation,
      mojo::PendingReceiver<mojom::TCPBoundSocket> receiver,
      CreateTCPBoundSocketCallback callback) {
@@ -1748,7 +1748,7 @@ diff --git a/services/network/network_context.cc b/services/network/network_cont
    socket_factory_->CreateTCPBoundSocket(
        local_addr,
        static_cast<net::NetworkTrafficAnnotationTag>(traffic_annotation),
-@@ -1910,6 +1965,24 @@ void NetworkContext::CreateWebSocket(
+@@ -1905,6 +1960,24 @@ void NetworkContext::CreateWebSocket(
      mojo::PendingRemote<mojom::WebSocketAuthenticationHandler> auth_handler,
      mojo::PendingRemote<mojom::TrustedHeaderClient> header_client,
      const std::optional<base::UnguessableToken>& throttling_profile_id) {
@@ -1776,7 +1776,7 @@ diff --git a/services/network/network_context.cc b/services/network/network_cont
 diff --git a/services/network/public/cpp/simple_url_loader.cc b/services/network/public/cpp/simple_url_loader.cc
 --- a/services/network/public/cpp/simple_url_loader.cc
 +++ b/services/network/public/cpp/simple_url_loader.cc
-@@ -1300,6 +1300,8 @@ SimpleURLLoaderImpl::SimpleURLLoaderImpl(
+@@ -1278,6 +1278,8 @@ SimpleURLLoaderImpl::SimpleURLLoaderImpl(
        timeout_timer_(timeout_tick_clock_) {
    // Allow creation and use on different threads.
    DETACH_FROM_SEQUENCE(sequence_checker_);
@@ -1785,7 +1785,7 @@ diff --git a/services/network/public/cpp/simple_url_loader.cc b/services/network
  #if DCHECK_IS_ON()
    if (resource_request_->request_body) {
      for (const DataElement& element :
-@@ -1797,6 +1799,22 @@ void SimpleURLLoaderImpl::StartRequest(
+@@ -1773,6 +1775,22 @@ void SimpleURLLoaderImpl::StartRequest(
      resource_request_->request_body->AppendDataPipe(
          string_upload_data_pipe_getter_->GetRemoteForNewUpload());
    }

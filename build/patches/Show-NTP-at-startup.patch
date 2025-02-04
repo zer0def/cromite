@@ -94,7 +94,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ChromeInactivit
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java b/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java
-@@ -2314,6 +2314,8 @@ public class ChromeTabbedActivity extends ChromeActivity<ChromeActivityComponent
+@@ -2395,6 +2395,8 @@ public class ChromeTabbedActivity extends ChromeActivity implements MismatchedIn
          mInactivityTracker =
                  new ChromeInactivityTracker(
                          ChromePreferenceKeys.TABBED_ACTIVITY_LAST_BACKGROUNDED_TIME_MS_PREF);
@@ -118,7 +118,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tasks/ReturnToC
  import org.chromium.chrome.browser.magic_stack.HomeModulesMetricsUtils;
  import org.chromium.chrome.browser.ntp.NewTabPage;
  import org.chromium.chrome.browser.tab.Tab;
-@@ -133,6 +135,18 @@ public final class ReturnToChromeUtil {
+@@ -124,6 +126,18 @@ public final class ReturnToChromeUtil {
              return false;
          }
  
@@ -137,7 +137,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tasks/ReturnToC
          // Checks whether to show the NTP homepage due to feature flag
          // HOME_SURFACE_RETURN_TIME_SECONDS.
          long lastVisibleTimeMs = inactivityTracker.getLastVisibleTimeMs();
-@@ -243,7 +257,7 @@ public final class ReturnToChromeUtil {
+@@ -234,7 +248,7 @@ public final class ReturnToChromeUtil {
              TabModel currentTabModel,
              TabCreator tabCreator,
              HomeSurfaceTracker homeSurfaceTracker) {
@@ -149,7 +149,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tasks/ReturnToC
 diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browser/flags/android/chrome_feature_list.cc
 --- a/chrome/browser/flags/android/chrome_feature_list.cc
 +++ b/chrome/browser/flags/android/chrome_feature_list.cc
-@@ -317,6 +317,7 @@ const base::Feature* const kFeaturesExposedToJava[] = {
+@@ -332,6 +332,7 @@ const base::Feature* const kFeaturesExposedToJava[] = {
      &kSearchInCCT,
      &kSearchInCCTAlternateTapHandling,
      &kSearchResumptionModuleAndroid,
@@ -198,7 +198,7 @@ new file mode 100644
 diff --git a/chrome/browser/preferences/android/java/src/org/chromium/chrome/browser/preferences/ChromePreferenceKeys.java b/chrome/browser/preferences/android/java/src/org/chromium/chrome/browser/preferences/ChromePreferenceKeys.java
 --- a/chrome/browser/preferences/android/java/src/org/chromium/chrome/browser/preferences/ChromePreferenceKeys.java
 +++ b/chrome/browser/preferences/android/java/src/org/chromium/chrome/browser/preferences/ChromePreferenceKeys.java
-@@ -784,6 +784,8 @@ public final class ChromePreferenceKeys {
+@@ -795,6 +795,8 @@ public final class ChromePreferenceKeys {
  
      public static final String TABBED_ACTIVITY_LAST_BACKGROUNDED_TIME_MS_PREF =
              "ChromeTabbedActivity.BackgroundTimeMs";

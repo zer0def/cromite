@@ -115,7 +115,7 @@ diff --git a/skia/ext/skia_utils_win.h b/skia/ext/skia_utils_win.h
 diff --git a/third_party/blink/public/common/features.h b/third_party/blink/public/common/features.h
 --- a/third_party/blink/public/common/features.h
 +++ b/third_party/blink/public/common/features.h
-@@ -263,6 +263,9 @@ BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE_PARAM(int,
+@@ -257,6 +257,9 @@ BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE_PARAM(int,
                                                 kMaxDiskDataAllocatorCapacityMB);
  BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE(kLessAggressiveParkableString);
  
@@ -442,7 +442,7 @@ diff --git a/third_party/blink/renderer/platform/fonts/skia/font_cache_skia.cc b
  namespace blink {
  
  AtomicString ToAtomicString(const SkString& str) {
-   return AtomicString::FromUTF8(str.c_str(), str.size());
+   return AtomicString::FromUTF8(std::string_view(str.begin(), str.end()));
  }
  
 +sk_sp<SkTypeface> ReturnIfAllowed(sk_sp<SkTypeface> typeface, const std::string& name, bool check_fonts) {
@@ -528,7 +528,7 @@ diff --git a/third_party/blink/renderer/platform/fonts/skia/font_cache_skia.cc b
 diff --git a/third_party/blink/renderer/platform/fonts/win/font_cache_skia_win.cc b/third_party/blink/renderer/platform/fonts/win/font_cache_skia_win.cc
 --- a/third_party/blink/renderer/platform/fonts/win/font_cache_skia_win.cc
 +++ b/third_party/blink/renderer/platform/fonts/win/font_cache_skia_win.cc
-@@ -444,6 +444,7 @@ const FontPlatformData* FontCache::CreateFontPlatformData(
+@@ -443,6 +443,7 @@ const FontPlatformData* FontCache::CreateFontPlatformData(
    sk_sp<SkTypeface> typeface;
  
    std::string name;
@@ -536,7 +536,7 @@ diff --git a/third_party/blink/renderer/platform/fonts/win/font_cache_skia_win.c
  
    if (alternate_font_name == AlternateFontName::kLocalUniqueFace &&
        RuntimeEnabledFeatures::FontSrcLocalMatchingEnabled()) {
-@@ -455,7 +456,7 @@ const FontPlatformData* FontCache::CreateFontPlatformData(
+@@ -454,7 +455,7 @@ const FontPlatformData* FontCache::CreateFontPlatformData(
        return nullptr;
  
    } else {
@@ -545,7 +545,7 @@ diff --git a/third_party/blink/renderer/platform/fonts/win/font_cache_skia_win.c
  
      // For a family match, Windows will always give us a valid pointer here,
      // even if the face name is non-existent. We have to double-check and see if
-@@ -489,7 +490,7 @@ const FontPlatformData* FontCache::CreateFontPlatformData(
+@@ -488,7 +489,7 @@ const FontPlatformData* FontCache::CreateFontPlatformData(
          FontDescription adjusted_font_description = font_description;
          adjusted_font_description.SetWeight(variant_weight);
          typeface =
@@ -554,7 +554,7 @@ diff --git a/third_party/blink/renderer/platform/fonts/win/font_cache_skia_win.c
          if (!typeface ||
              !TypefacesMatchesFamily(typeface.get(), adjusted_name)) {
            return nullptr;
-@@ -501,7 +502,7 @@ const FontPlatformData* FontCache::CreateFontPlatformData(
+@@ -500,7 +501,7 @@ const FontPlatformData* FontCache::CreateFontPlatformData(
          FontDescription adjusted_font_description = font_description;
          adjusted_font_description.SetStretch(variant_stretch);
          typeface =

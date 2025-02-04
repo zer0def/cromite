@@ -15,7 +15,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 diff --git a/components/network_time/network_time_tracker.cc b/components/network_time/network_time_tracker.cc
 --- a/components/network_time/network_time_tracker.cc
 +++ b/components/network_time/network_time_tracker.cc
-@@ -68,6 +68,7 @@ BASE_FEATURE(kNetworkTimeServiceQuerying,
+@@ -67,6 +67,7 @@ BASE_FEATURE(kNetworkTimeServiceQuerying,
               "NetworkTimeServiceQuerying",
               base::FEATURE_ENABLED_BY_DEFAULT);
  #endif

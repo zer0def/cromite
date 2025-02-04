@@ -20,7 +20,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/settings/MainSettings.java b/chrome/android/java/src/org/chromium/chrome/browser/settings/MainSettings.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/settings/MainSettings.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/settings/MainSettings.java
-@@ -301,15 +301,7 @@ public class MainSettings extends ChromeBaseSettingsFragment
+@@ -267,15 +267,7 @@ public class MainSettings extends ChromeBaseSettingsFragment
              templateUrlService.load();
          }
  
