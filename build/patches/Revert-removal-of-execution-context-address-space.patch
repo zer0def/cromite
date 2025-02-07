@@ -171,7 +171,7 @@ diff --git a/third_party/blink/renderer/core/frame/policy_container.h b/third_pa
 diff --git a/third_party/blink/renderer/core/frame/web_frame_test.cc b/third_party/blink/renderer/core/frame/web_frame_test.cc
 --- a/third_party/blink/renderer/core/frame/web_frame_test.cc
 +++ b/third_party/blink/renderer/core/frame/web_frame_test.cc
-@@ -8089,6 +8089,40 @@ TEST_F(WebFrameTest, PushStateStartsAndStops) {
+@@ -8090,6 +8090,40 @@ TEST_F(WebFrameTest, PushStateStartsAndStops) {
    EXPECT_EQ(client.StopLoadingCount(), 2);
  }
  
