@@ -6,12 +6,17 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 ---
  chrome/android/BUILD.gn                       |  5 ---
  chrome/android/chrome_java_sources.gni        |  1 -
- .../android/java/res/xml/main_preferences.xml |  5 ---
+ .../android/java/res/xml/main_preferences.xml |  3 +-
  .../settings/FragmentDependencyProvider.java  | 31 -------------------
+ .../chrome/browser/settings/MainSettings.java |  2 +-
  .../settings/SettingsNavigationImpl.java      | 13 ++------
  chrome/browser/BUILD.gn                       |  1 -
  .../suggestions/action/OmniboxPedal.java      |  3 --
- 7 files changed, 2 insertions(+), 57 deletions(-)
+ chrome/browser/ui/tab_helpers.cc              |  2 +-
+ .../site_settings/SiteSettings.java           |  2 +-
+ .../Disable-safety-check.inc                  |  1 +
+ 11 files changed, 8 insertions(+), 56 deletions(-)
+ create mode 100644 cromite_flags/chrome/common/chrome_features_cc/Disable-safety-check.inc
 
 diff --git a/chrome/android/BUILD.gn b/chrome/android/BUILD.gn
 --- a/chrome/android/BUILD.gn
@@ -56,15 +61,13 @@ diff --git a/chrome/android/chrome_java_sources.gni b/chrome/android/chrome_java
 diff --git a/chrome/android/java/res/xml/main_preferences.xml b/chrome/android/java/res/xml/main_preferences.xml
 --- a/chrome/android/java/res/xml/main_preferences.xml
 +++ b/chrome/android/java/res/xml/main_preferences.xml
-@@ -54,11 +54,6 @@ for the previous order (main_preferences_legacy). -->
-         android:key="privacy"
-         android:order="8"
-         android:title="@string/prefs_privacy_security"/>
--    <Preference
--        android:fragment="org.chromium.chrome.browser.safety_check.SafetyCheckSettingsFragment"
--        android:key="safety_check"
--        android:order="9"
+@@ -58,7 +58,8 @@ for the previous order (main_preferences_legacy). -->
+         android:fragment="org.chromium.chrome.browser.safety_check.SafetyCheckSettingsFragment"
+         android:key="safety_check"
+         android:order="9"
 -        android:title="@string/prefs_safety_check"/>
++        android:title="@string/prefs_safety_check"
++        app:isPreferenceVisible="false" />
      <Preference
          android:fragment="org.chromium.chrome.browser.safety_hub.SafetyHubFragment"
          android:key="safety_hub"
@@ -129,6 +132,18 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/settings/Fragme
 -        }
      }
  }
+diff --git a/chrome/android/java/src/org/chromium/chrome/browser/settings/MainSettings.java b/chrome/android/java/src/org/chromium/chrome/browser/settings/MainSettings.java
+--- a/chrome/android/java/src/org/chromium/chrome/browser/settings/MainSettings.java
++++ b/chrome/android/java/src/org/chromium/chrome/browser/settings/MainSettings.java
+@@ -277,7 +277,7 @@ public class MainSettings extends ChromeBaseSettingsFragment
+                                     .removePreference(findPreference(PREF_TOOLBAR_SHORTCUT));
+                         });
+ 
+-        if (BuildInfo.getInstance().isAutomotive) {
++        if (((true)) || BuildInfo.getInstance().isAutomotive) {
+             getPreferenceScreen().removePreference(findPreference(PREF_SAFETY_CHECK));
+             getPreferenceScreen().removePreference(findPreference(PREF_SAFETY_HUB));
+         } else if (!ChromeFeatureList.sSafetyHub.isEnabled()) {
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/settings/SettingsNavigationImpl.java b/chrome/android/java/src/org/chromium/chrome/browser/settings/SettingsNavigationImpl.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/settings/SettingsNavigationImpl.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/settings/SettingsNavigationImpl.java
@@ -190,4 +205,34 @@ diff --git a/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/brow
              case OmniboxPedalId.MANAGE_SITE_SETTINGS:
                  delegate.openSettingsPage(SettingsFragment.SITE);
                  break;
+diff --git a/chrome/browser/ui/tab_helpers.cc b/chrome/browser/ui/tab_helpers.cc
+--- a/chrome/browser/ui/tab_helpers.cc
++++ b/chrome/browser/ui/tab_helpers.cc
+@@ -553,7 +553,7 @@ void TabHelpers::AttachTabHelpers(WebContents* web_contents) {
+   tpcd::trial::ValidityService::MaybeCreateForWebContents(web_contents);
+   TrustedVaultEncryptionKeysTabHelper::CreateForWebContents(web_contents);
+ #if BUILDFLAG(IS_ANDROID)
+-  if (base::FeatureList::IsEnabled(features::kSafetyHub)) {
++  if (((true)) || base::FeatureList::IsEnabled(features::kSafetyHub)) {
+     auto* service = UnusedSitePermissionsServiceFactory::GetForProfile(profile);
+     if (service) {
+       UnusedSitePermissionsService::TabHelper::CreateForWebContents(
+diff --git a/components/browser_ui/site_settings/android/java/src/org/chromium/components/browser_ui/site_settings/SiteSettings.java b/components/browser_ui/site_settings/android/java/src/org/chromium/components/browser_ui/site_settings/SiteSettings.java
+--- a/components/browser_ui/site_settings/android/java/src/org/chromium/components/browser_ui/site_settings/SiteSettings.java
++++ b/components/browser_ui/site_settings/android/java/src/org/chromium/components/browser_ui/site_settings/SiteSettings.java
+@@ -87,7 +87,7 @@ public class SiteSettings extends BaseSiteSettingsFragment
+         }
+ 
+         // Remove the permission autorevocation preference if Safety Hub is not enabled.
+-        if (!getSiteSettingsDelegate().isSafetyHubEnabled()) {
++        if (((false)) && !getSiteSettingsDelegate().isSafetyHubEnabled()) {
+             getPreferenceScreen().removePreference(findPreference(PERMISSION_AUTOREVOCATION_PREF));
+             getPreferenceScreen().removePreference(findPreference(DIVIDER_PREF));
+         }
+diff --git a/cromite_flags/chrome/common/chrome_features_cc/Disable-safety-check.inc b/cromite_flags/chrome/common/chrome_features_cc/Disable-safety-check.inc
+new file mode 100644
+--- /dev/null
++++ b/cromite_flags/chrome/common/chrome_features_cc/Disable-safety-check.inc
+@@ -0,0 +1 @@
++SET_CROMITE_FEATURE_DISABLED(kSafetyHub);
 --

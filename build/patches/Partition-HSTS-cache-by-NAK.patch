@@ -13,7 +13,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../web_package/signed_exchange_loader.h      |   2 +
  .../signed_exchange_prefetch_handler.cc       |   2 +-
  .../signed_exchange_request_handler.cc        |   1 +
- net/http/transport_security_state.cc          | 100 ++++++++++++------
+ net/http/transport_security_state.cc          | 103 ++++++++++++------
  net/http/transport_security_state.h           |  39 ++++---
  net/quic/crypto/proof_verifier_chromium.cc    |   5 +-
  net/quic/quic_chromium_client_session.cc      |   2 +-
@@ -25,7 +25,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  services/network/network_context.cc           |  31 ++++--
  services/network/network_context.h            |  13 ++-
  .../public/mojom/network_context.mojom        |   9 +-
- 21 files changed, 171 insertions(+), 101 deletions(-)
+ 21 files changed, 173 insertions(+), 102 deletions(-)
 
 diff --git a/chrome/browser/ssl/https_upgrades_interceptor.cc b/chrome/browser/ssl/https_upgrades_interceptor.cc
 --- a/chrome/browser/ssl/https_upgrades_interceptor.cc
@@ -315,7 +315,7 @@ diff --git a/net/http/transport_security_state.cc b/net/http/transport_security_
      // [*.]localhost hosts now ignore Strict-Transport-Security response
      // headers, but an entry may have been stored before this restriction
      // was introduced (crbug.com/41251622).
-@@ -319,10 +344,11 @@ SSLUpgradeDecision TransportSecurityState::GetSSLUpgradeDecision(
+@@ -319,29 +344,31 @@ SSLUpgradeDecision TransportSecurityState::GetSSLUpgradeDecision(
  }
  
  bool TransportSecurityState::ShouldUpgradeToSSL(
@@ -328,9 +328,12 @@ diff --git a/net/http/transport_security_state.cc b/net/http/transport_security_
           SSLUpgradeDecision::kNoUpgrade;
  }
  
-@@ -331,17 +357,17 @@ TransportSecurityState::PKPStatus TransportSecurityState::CheckPublicKeyPins(
+ TransportSecurityState::PKPStatus TransportSecurityState::CheckPublicKeyPins(
+     std::string_view host,
      bool is_issued_by_known_root,
-     const HashValueVector& public_key_hashes) {
+-    const HashValueVector& public_key_hashes) {
++    const HashValueVector& public_key_hashes,
++    const NetworkAnonymizationKey& network_anonymization_key) {
    // Perform pin validation only if the server actually has public key pins.
 -  if (!HasPublicKeyPins(host)) {
 +  if (!HasPublicKeyPins(network_anonymization_key, host)) {
@@ -350,7 +353,7 @@ diff --git a/net/http/transport_security_state.cc b/net/http/transport_security_
  }
  
  TransportSecurityState::CTRequirementsStatus
-@@ -421,12 +447,13 @@ void TransportSecurityState::UpdatePinList(
+@@ -421,12 +448,13 @@ void TransportSecurityState::UpdatePinList(
  }
  
  void TransportSecurityState::AddHSTSInternal(
@@ -365,7 +368,7 @@ diff --git a/net/http/transport_security_state.cc b/net/http/transport_security_
    if (canonicalized_host.empty())
      return;
  
-@@ -450,13 +477,14 @@ void TransportSecurityState::AddHSTSInternal(
+@@ -450,13 +478,14 @@ void TransportSecurityState::AddHSTSInternal(
    DirtyNotify();
  }
  
@@ -382,7 +385,7 @@ diff --git a/net/http/transport_security_state.cc b/net/http/transport_security_
    if (canonicalized_host.empty())
      return;
  
-@@ -500,10 +528,10 @@ TransportSecurityState::PKPStatus TransportSecurityState::CheckPins(
+@@ -500,10 +529,10 @@ TransportSecurityState::PKPStatus TransportSecurityState::CheckPins(
    return PKPStatus::VIOLATED;
  }
  
@@ -395,7 +398,7 @@ diff --git a/net/http/transport_security_state.cc b/net/http/transport_security_
    if (canonicalized_host.empty())
      return false;
  
-@@ -580,7 +608,8 @@ void TransportSecurityState::DirtyNotify() {
+@@ -580,7 +609,8 @@ void TransportSecurityState::DirtyNotify() {
      delegate_->StateIsDirty(this);
  }
  
@@ -405,7 +408,7 @@ diff --git a/net/http/transport_security_state.cc b/net/http/transport_security_
                                             std::string_view value) {
    DCHECK_CALLED_ON_VALID_THREAD(thread_checker_);
  
-@@ -599,23 +628,25 @@ bool TransportSecurityState::AddHSTSHeader(std::string_view host,
+@@ -599,23 +629,25 @@ bool TransportSecurityState::AddHSTSHeader(std::string_view host,
      upgrade_mode = STSState::MODE_FORCE_HTTPS;
    }
  
@@ -436,7 +439,7 @@ diff --git a/net/http/transport_security_state.cc b/net/http/transport_security_
  }
  
  size_t TransportSecurityState::num_sts_entries() const {
-@@ -639,9 +670,10 @@ bool TransportSecurityState::IsBuildTimely() {
+@@ -639,9 +671,10 @@ bool TransportSecurityState::IsBuildTimely() {
  TransportSecurityState::PKPStatus
  TransportSecurityState::CheckPublicKeyPinsImpl(std::string_view host,
                                                 bool is_issued_by_known_root,
@@ -449,7 +452,7 @@ diff --git a/net/http/transport_security_state.cc b/net/http/transport_security_
  
    // HasPublicKeyPins should have returned true in order for this method to have
    // been called.
-@@ -682,7 +714,7 @@ bool TransportSecurityState::GetStaticPKPState(std::string_view host,
+@@ -682,7 +715,7 @@ bool TransportSecurityState::GetStaticPKPState(std::string_view host,
    PreloadResult result;
    if (host_pins_.has_value()) {
      // Ensure that |host| is a valid hostname before processing.
@@ -458,7 +461,7 @@ diff --git a/net/http/transport_security_state.cc b/net/http/transport_security_
        return false;
      }
      // Normalize any trailing '.' used for DNS suffix searches.
-@@ -764,21 +796,21 @@ bool TransportSecurityState::GetStaticPKPState(std::string_view host,
+@@ -764,21 +797,21 @@ bool TransportSecurityState::GetStaticPKPState(std::string_view host,
    return false;
  }
  
@@ -486,7 +489,7 @@ diff --git a/net/http/transport_security_state.cc b/net/http/transport_security_
    if (canonicalized_host.empty())
      return false;
  
-@@ -815,11 +847,11 @@ bool TransportSecurityState::GetDynamicSTSState(std::string_view host,
+@@ -815,11 +848,11 @@ bool TransportSecurityState::GetDynamicSTSState(std::string_view host,
    return false;
  }
  
@@ -525,7 +528,7 @@ diff --git a/net/http/transport_security_state.h b/net/http/transport_security_s
 -                               const HashValueVector& hashes);
 -  bool HasPublicKeyPins(std::string_view host);
 +                               const HashValueVector& hashes,
-+                               const NetworkAnonymizationKey& nak, );
++                               const NetworkAnonymizationKey& nak);
 +  bool HasPublicKeyPins(const NetworkAnonymizationKey& nak, std::string_view host);
  
    // Returns CT_REQUIREMENTS_NOT_MET if a connection violates CT policy
@@ -873,7 +876,7 @@ diff --git a/services/network/network_context.cc b/services/network/network_cont
  
    // |PreconnectSockets| may receive arguments from the renderer, which is not
    // guaranteed to validate them.
-@@ -3059,7 +3064,9 @@ void NetworkContext::OnConnectionError() {
+@@ -3061,7 +3066,9 @@ void NetworkContext::OnConnectionError() {
    }
  }
  
@@ -884,7 +887,7 @@ diff --git a/services/network/network_context.cc b/services/network/network_cont
    // TODO(lilyhoughton) This needs to be gotten rid of once explicit
    // construction with a URLRequestContext is no longer supported.
  
-@@ -3076,6 +3083,7 @@ GURL NetworkContext::GetHSTSRedirectForPreconnect(const GURL& original_url) {
+@@ -3078,6 +3085,7 @@ GURL NetworkContext::GetHSTSRedirectForPreconnect(const GURL& original_url) {
    }
  
    if (!url_request_context_->transport_security_state()->ShouldUpgradeToSSL(
@@ -892,7 +895,7 @@ diff --git a/services/network/network_context.cc b/services/network/network_cont
            original_url.host())) {
      RecordHSTSPreconnectUpgradeReason(
          HSTSRedirectUpgradeReason::kNotUpgradedNoHSTSPin);
-@@ -3127,7 +3135,8 @@ void NetworkContext::OnVerifyCertForSignedExchangeComplete(
+@@ -3129,7 +3137,8 @@ void NetworkContext::OnVerifyCertForSignedExchangeComplete(
          url_request_context_->transport_security_state()->CheckPublicKeyPins(
              pending_cert_verify->url.host(),
              pending_cert_verify->result->is_issued_by_known_root,

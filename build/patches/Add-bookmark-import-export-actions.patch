@@ -14,7 +14,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  chrome/android/java/AndroidManifest.xml       |   1 -
  .../menu/bookmark_toolbar_menu_improved.xml   |  14 +
  .../browser/TabbedModeTabDelegateFactory.java |   5 +-
- .../app/bookmarks/BookmarkActivity.java       |  30 ++
+ .../app/bookmarks/BookmarkActivity.java       |  32 ++
  .../browser/bookmarks/BookmarkBridge.java     | 285 ++++++++++++++++++
  .../browser/bookmarks/BookmarkDelegate.java   |  10 +
  .../bookmarks/BookmarkManagerCoordinator.java |   9 +
@@ -53,7 +53,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  ui/shell_dialogs/select_file_dialog_linux.cc  |   4 +
  ui/shell_dialogs/select_file_dialog_linux.h   |   2 +
  ui/shell_dialogs/select_file_dialog_win.cc    |   5 +
- 42 files changed, 898 insertions(+), 30 deletions(-)
+ 42 files changed, 900 insertions(+), 30 deletions(-)
  create mode 100644 cromite_flags/chrome/browser/about_flags_cc/add-bookmark-import-export-actions.inc
  create mode 100644 cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/add-bookmark-import-export-actions.inc
  create mode 100644 cromite_flags/chrome/browser/flags/android/chrome_feature_list_h/add-bookmark-import-export-actions.inc
@@ -145,14 +145,16 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/app/bookmarks/B
      @Override
      protected void onCreate(Bundle savedInstanceState) {
          super.onCreate(savedInstanceState);
-@@ -62,8 +68,23 @@ public class BookmarkActivity extends SnackbarActivity {
+@@ -62,8 +68,25 @@ public class BookmarkActivity extends SnackbarActivity {
                  getOnBackPressedDispatcher(),
                  mBookmarkManagerCoordinator,
                  SecondaryActivity.BOOKMARK);
 +
 +        final boolean listenToActivityState = true;
 +        mIntentRequestTracker = IntentRequestTracker.createFromActivity(this);
-+        mWindowAndroid = new ActivityWindowAndroid(this, listenToActivityState, mIntentRequestTracker, /*InsetObserver*/ null);
++        mWindowAndroid = new ActivityWindowAndroid(this, listenToActivityState,
++                                                   mIntentRequestTracker, /*InsetObserver*/ null,
++                                                   /* trackOcclusion= */ true);
 +        mWindowAndroid.getIntentRequestTracker().restoreInstanceState(savedInstanceState);
 +        mBookmarkManagerCoordinator.setWindow(mWindowAndroid,
 +                            new ModalDialogManager(
@@ -169,7 +171,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/app/bookmarks/B
      @Override
      protected void onDestroy() {
          super.onDestroy();
-@@ -73,6 +94,7 @@ public class BookmarkActivity extends SnackbarActivity {
+@@ -73,6 +96,7 @@ public class BookmarkActivity extends SnackbarActivity {
      @Override
      protected void onActivityResult(int requestCode, int resultCode, Intent data) {
          super.onActivityResult(requestCode, resultCode, data);
@@ -177,7 +179,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/app/bookmarks/B
          if (requestCode == EDIT_BOOKMARK_REQUEST_CODE && resultCode == RESULT_OK) {
              BookmarkId bookmarkId =
                      BookmarkId.getBookmarkIdFromString(
-@@ -86,6 +108,14 @@ public class BookmarkActivity extends SnackbarActivity {
+@@ -86,6 +110,14 @@ public class BookmarkActivity extends SnackbarActivity {
          return new ModalDialogManager(new AppModalPresenter(this), ModalDialogType.APP);
      }
  

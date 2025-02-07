@@ -47,7 +47,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  components/domain_reliability/BUILD.gn        |   5 +-
  .../domain_reliability/bake_in_configs.py     |   2 +-
  .../domain_reliability/context_manager.cc     |  22 +-
- .../domain_reliability/google_configs.cc      |  10 +-
+ .../domain_reliability/google_configs.cc      |  73 +---
  .../domain_reliability/google_configs.h       |   8 +-
  components/domain_reliability/monitor.cc      |   8 -
  components/domain_reliability/uploader.cc     |   2 +-
@@ -65,7 +65,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  ...gled-chromium-no-special-hosts-domains.inc |   1 +
  net/base/url_util.cc                          |  25 +-
  services/network/network_context.cc           |   2 +-
- 58 files changed, 53 insertions(+), 811 deletions(-)
+ 58 files changed, 52 insertions(+), 875 deletions(-)
  create mode 100644 cromite_flags/content/public/common/content_features_cc/ungoogled-chromium-no-special-hosts-domains.inc
 
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ui/RootUiCoordinator.java b/chrome/android/java/src/org/chromium/chrome/browser/ui/RootUiCoordinator.java
@@ -1020,31 +1020,94 @@ diff --git a/components/domain_reliability/google_configs.cc b/components/domain
  };
  
 -const auto kGoogleConfigs = base::MakeFixedFlatMap<std::string_view,
-+/*const auto kGoogleConfigs = base::MakeFixedFlatMap<std::string_view,
++[[maybe_unused]] const auto kGoogleConfigs = base::MakeFixedFlatMap<std::string_view,
                                                     GoogleConfigParams>({
      // Origins with subdomains and same-origin collectors. Currently, all
      // origins with same-origin collectors also run collectors on their www
-@@ -554,11 +554,11 @@ std::unique_ptr<const DomainReliabilityConfig> CreateGoogleConfig(
-   config->failure_sample_rate = 1.00;
-   config->path_prefixes.clear();
-   return config;
--}
-+}*/
+@@ -514,7 +514,7 @@ const auto kGoogleConfigs = base::MakeFixedFlatMap<std::string_view,
+     {"redirector.googlevideo.com", {false, false, false}},
+ });
  
+-const char* const kGoogleStandardCollectors[] = {
++[[maybe_unused]] const char* const kGoogleStandardCollectors[] = {
+     "https://beacons.gcp.gvt2.com/domainreliability/upload",
+     "https://beacons.gvt2.com/domainreliability/upload",
+     "https://beacons2.gvt2.com/domainreliability/upload",
+@@ -525,74 +525,9 @@ const char* const kGoogleStandardCollectors[] = {
+     "https://clients2.google.com/domainreliability/upload",
+ };
+ 
+-const char* const kGoogleOriginSpecificCollectorPathString =
++[[maybe_unused]] const char* const kGoogleOriginSpecificCollectorPathString =
+     "/domainreliability/upload";
+ 
+-std::unique_ptr<const DomainReliabilityConfig> CreateGoogleConfig(
+-    std::string_view hostname,
+-    const GoogleConfigParams& params,
+-    bool is_www) {
+-  CHECK(params.duplicate_for_www || !is_www);
+-
+-  bool include_subdomains = params.include_subdomains && !is_www;
+-
+-  auto config = std::make_unique<DomainReliabilityConfig>();
+-  GURL url(base::StrCat({"https://", (is_www ? "www." : ""), hostname, "/"}));
+-  config->origin = url::Origin::Create(url);
+-  config->include_subdomains = include_subdomains;
+-  config->collectors.clear();
+-  if (params.include_origin_specific_collector) {
+-    GURL::Replacements replacements;
+-    replacements.SetPathStr(kGoogleOriginSpecificCollectorPathString);
+-    config->collectors.push_back(
+-        std::make_unique<GURL>(url.ReplaceComponents(replacements)));
+-  }
+-  for (const char* collector : kGoogleStandardCollectors) {
+-    config->collectors.push_back(std::make_unique<GURL>(collector));
+-  }
+-  config->success_sample_rate = 0.05;
+-  config->failure_sample_rate = 1.00;
+-  config->path_prefixes.clear();
+-  return config;
+-}
+-
  }  // namespace
  
 -std::unique_ptr<const DomainReliabilityConfig> MaybeGetGoogleConfig(
-+/*std::unique_ptr<const DomainReliabilityConfig> MaybeGetGoogleConfig(
-     const std::string& hostname) {
-   bool is_www_subdomain =
-       base::StartsWith(hostname, "www.", base::CompareCase::SENSITIVE);
-@@ -593,6 +593,6 @@ GetAllGoogleConfigsForTesting() {
-     }
-   }
-   return configs_out;
+-    const std::string& hostname) {
+-  bool is_www_subdomain =
+-      base::StartsWith(hostname, "www.", base::CompareCase::SENSITIVE);
+-
+-  const auto itr = kGoogleConfigs.find(hostname);
+-  if (itr != std::end(kGoogleConfigs)) {
+-    return CreateGoogleConfig(hostname, itr->second, /*is_www=*/false);
+-  }
+-  std::string hostname_parent = net::GetSuperdomain(hostname);
+-  const auto parent_it = kGoogleConfigs.find(hostname_parent);
+-  if (parent_it != std::end(kGoogleConfigs)) {
+-    const GoogleConfigParams& params = parent_it->second;
+-    if (is_www_subdomain && params.duplicate_for_www) {
+-      return CreateGoogleConfig(hostname_parent, params, /*is_www=*/true);
+-    }
+-    if (params.include_subdomains) {
+-      return CreateGoogleConfig(hostname_parent, params, /*is_www=*/false);
+-    }
+-  }
+-
+-  return nullptr;
 -}
-+} */
- 
+-
+-std::vector<std::unique_ptr<const DomainReliabilityConfig>>
+-GetAllGoogleConfigsForTesting() {
+-  std::vector<std::unique_ptr<const DomainReliabilityConfig>> configs_out;
+-
+-  for (const auto& [hostname, params] : kGoogleConfigs) {
+-    configs_out.push_back(CreateGoogleConfig(hostname, params, false));
+-    if (params.duplicate_for_www) {
+-      configs_out.push_back(CreateGoogleConfig(hostname, params, true));
+-    }
+-  }
+-  return configs_out;
+-}
+-
  }  // namespace domain_reliability
 diff --git a/components/domain_reliability/google_configs.h b/components/domain_reliability/google_configs.h
 --- a/components/domain_reliability/google_configs.h

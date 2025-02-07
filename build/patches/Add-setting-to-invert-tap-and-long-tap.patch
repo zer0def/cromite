@@ -76,12 +76,12 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/accessibility/s
  
 +    private static class ShowAlwaysContextMenuOnLinksDelegate implements BooleanPreferenceDelegate {
 +        @Override
-+        public boolean isEnabled() {
++        public boolean getValue() {
 +            return ChromeFeatureList.sShowAlwaysContextMenuOnLinks.isEnabled();
 +        }
 +
 +        @Override
-+        public void setEnabled(boolean value) {
++        public void setValue(boolean value) {
 +            CromiteNativeUtils.setFlagEnabled(ChromeFeatureList.SHOW_ALWAYS_CONTEXT_MENU_ON_LINKS,
 +                    "show-always-context-menu-on-links", value);
 +        }
@@ -260,13 +260,13 @@ diff --git a/components/browser_ui/accessibility/android/java/src/org/chromium/c
      private ChromeSwitchPreference mPageZoomIncludeOSAdjustment;
      private ChromeSwitchPreference mPageZoomAlwaysShowPref;
 @@ -136,6 +139,12 @@ public class AccessibilitySettings extends ChromeBaseSettingsFragment
-         mDisableToolbarSwipeUpPref.setChecked(mDisableToolbarSwipeUpDelegate.isEnabled());
+         mDisableToolbarSwipeUpPref.setChecked(mDisableToolbarSwipeUpDelegate.getValue());
          mDisableToolbarSwipeUpPref.setOnPreferenceChangeListener(this);
  
 +        ChromeSwitchPreference mShowAlwaysContextMenuOnLinksPref =
 +                (ChromeSwitchPreference) findPreference(PREF_ALWAYS_SHOW_CONTEXTMENU_ON_LINKS);
 +        mShowAlwaysContextMenuOnLinksDelegate = mDelegate.getShowAlwaysContextMenuOnLinksDelegate();
-+        mShowAlwaysContextMenuOnLinksPref.setChecked(mShowAlwaysContextMenuOnLinksDelegate.isEnabled());
++        mShowAlwaysContextMenuOnLinksPref.setChecked(mShowAlwaysContextMenuOnLinksDelegate.getValue());
 +        mShowAlwaysContextMenuOnLinksPref.setOnPreferenceChangeListener(this);
 +
          Preference captions = findPreference(PREF_CAPTIONS);
@@ -275,9 +275,9 @@ diff --git a/components/browser_ui/accessibility/android/java/src/org/chromium/c
 @@ -213,6 +222,9 @@ public class AccessibilitySettings extends ChromeBaseSettingsFragment
              mDelegate.requestRestart(getActivity());
          } else if (PREF_DISABLE_TOOLBAR_SWIPE_UP.equals(preference.getKey())) {
-             mDisableToolbarSwipeUpDelegate.setEnabled((Boolean) newValue);
+             mDisableToolbarSwipeUpDelegate.setValue((Boolean) newValue);
 +        } else if (PREF_ALWAYS_SHOW_CONTEXTMENU_ON_LINKS.equals(preference.getKey())) {
-+            mShowAlwaysContextMenuOnLinksDelegate.setEnabled((Boolean) newValue);
++            mShowAlwaysContextMenuOnLinksDelegate.setValue((Boolean) newValue);
 +            mDelegate.requestRestart(getActivity());
          } else if (PREF_PAGE_ZOOM_INCLUDE_OS_ADJUSTMENT.equals(preference.getKey())) {
              // TODO(mschillaci): Implement the override behavior for OS level.
@@ -285,7 +285,7 @@ diff --git a/components/browser_ui/accessibility/android/java/src/org/chromium/c
 diff --git a/components/browser_ui/accessibility/android/java/src/org/chromium/components/browser_ui/accessibility/AccessibilitySettingsDelegate.java b/components/browser_ui/accessibility/android/java/src/org/chromium/components/browser_ui/accessibility/AccessibilitySettingsDelegate.java
 --- a/components/browser_ui/accessibility/android/java/src/org/chromium/components/browser_ui/accessibility/AccessibilitySettingsDelegate.java
 +++ b/components/browser_ui/accessibility/android/java/src/org/chromium/components/browser_ui/accessibility/AccessibilitySettingsDelegate.java
-@@ -51,6 +51,8 @@ public interface AccessibilitySettingsDelegate {
+@@ -42,6 +42,8 @@ public interface AccessibilitySettingsDelegate {
      BooleanPreferenceDelegate getMoveTopToolbarToBottomDelegate();
      BooleanPreferenceDelegate getDisableToolbarSwipeUpDelegate();
  

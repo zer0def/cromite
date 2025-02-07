@@ -61,7 +61,7 @@ diff --git a/third_party/blink/renderer/modules/webaudio/audio_buffer.cc b/third
 +    if (NotShared<DOMFloat32Array> array = getChannelData(i)) {
 +      size_t len = array->length();
 +      if (len > 0) {
-+        float* destination = array->Data();
++        base::span<float> destination = array->AsSpan();
 +        for (unsigned j = 0; j < len; ++j) {
 +          destination[j] = BaseAudioContext::ShuffleAudioData(destination[j], j);
 +        }

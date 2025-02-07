@@ -17,10 +17,11 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../browser/firstrun/FirstRunUtils.java       |   1 +
  .../firstrun/ToSAndUMAFirstRunFragment.java   | 335 +++++++++++++++++
  .../firstrun/TosAndUmaFragmentView.java       | 336 ++++++++++++++++++
+ .../signin/ChildAccountStatusSupplier.java    |   3 +
  ...creenSigninAndHistorySyncActivityBase.java |   6 +-
  .../browser/locale/LocaleManagerDelegate.java |   5 +-
  .../Welcome-screen.grdp                       |  27 ++
- 14 files changed, 914 insertions(+), 80 deletions(-)
+ 15 files changed, 917 insertions(+), 80 deletions(-)
  create mode 100644 chrome/android/java/res/layout/fre_tosanduma.xml
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/firstrun/ToSAndUMAFirstRunFragment.java
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/firstrun/TosAndUmaFragmentView.java
@@ -532,7 +533,7 @@ new file mode 100644
 +import org.chromium.chrome.R;
 +import org.chromium.chrome.browser.privacy.settings.PrivacyPreferencesManagerImpl;
 +import org.chromium.ui.modaldialog.ModalDialogManagerHolder;
-+import org.chromium.ui.text.NoUnderlineClickableSpan;
++import org.chromium.ui.text.ChromeClickableSpan;
 +import org.chromium.ui.text.SpanApplier;
 +import org.chromium.ui.text.SpanApplier.SpanInfo;
 +
@@ -688,8 +689,8 @@ new file mode 100644
 +    }
 +
 +    private SpanInfo buildPrivacyPolicyLink(String suffix, int url) {
-+        NoUnderlineClickableSpan clickableSpan =
-+                new NoUnderlineClickableSpan(getContext(), (view1) -> {
++        ChromeClickableSpan clickableSpan =
++                new ChromeClickableSpan(getContext(), (view1) -> {
 +                    if (!isAdded()) return;
 +                    getPageDelegate().showInfoPage(url);
 +                });
@@ -1177,6 +1178,20 @@ new file mode 100644
 +        return mLastWidth > mLastHeight;
 +    }
 +}
+diff --git a/chrome/android/java/src/org/chromium/chrome/browser/signin/ChildAccountStatusSupplier.java b/chrome/android/java/src/org/chromium/chrome/browser/signin/ChildAccountStatusSupplier.java
+--- a/chrome/android/java/src/org/chromium/chrome/browser/signin/ChildAccountStatusSupplier.java
++++ b/chrome/android/java/src/org/chromium/chrome/browser/signin/ChildAccountStatusSupplier.java
+@@ -41,7 +41,10 @@ public class ChildAccountStatusSupplier implements OneshotSupplier<Boolean> {
+      */
+     public ChildAccountStatusSupplier(
+             AccountManagerFacade accountManagerFacade, AppRestrictionSupplier appRestrictionInfo) {
++        mHasRestriction = false;
++        mChildAccountStatusFromAccountManagerFacade = false;
+         mChildAccountStatusStartTime = SystemClock.elapsedRealtime();
++        if ((true)) return;
+ 
+         appRestrictionInfo.getHasAppRestriction(this::onAppRestrictionDetected);
+ 
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/signin/FullscreenSigninAndHistorySyncActivityBase.java b/chrome/android/java/src/org/chromium/chrome/browser/signin/FullscreenSigninAndHistorySyncActivityBase.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/signin/FullscreenSigninAndHistorySyncActivityBase.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/signin/FullscreenSigninAndHistorySyncActivityBase.java

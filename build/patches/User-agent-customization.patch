@@ -26,7 +26,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../chromium/chrome/browser/tab/TabUtils.java |  11 +-
  .../browser/android/content/content_utils.cc  |  30 +++
  .../preferences/browser_prefs_android.cc      |   7 +
- .../privacy_preferences_manager_impl.cc       | 124 ++++++++++++
+ .../privacy_preferences_manager_impl.cc       | 126 ++++++++++++
  ...ktop_site_web_contents_observer_android.cc |  11 ++
  ...sktop_site_web_contents_observer_android.h |   2 +
  .../preferences/ChromePreferenceKeys.java     |   2 -
@@ -46,7 +46,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../browser/web_contents/web_contents_impl.cc |   6 +-
  .../framehost/NavigationControllerImpl.java   |   3 +-
  content/renderer/render_thread_impl.cc        |   1 -
- 36 files changed, 796 insertions(+), 16 deletions(-)
+ 36 files changed, 798 insertions(+), 16 deletions(-)
  create mode 100644 chrome/android/java/res/layout/custom_useragent_preferences.xml
  create mode 100644 chrome/android/java/res/xml/useragent_preferences.xml
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/settings/UserAgentPreferences.java
@@ -797,7 +797,7 @@ diff --git a/chrome/browser/android/preferences/privacy_preferences_manager_impl
  static jboolean JNI_PrivacyPreferencesManagerImpl_IsMetricsReportingEnabled(
      JNIEnv* env) {
    PrefService* local_state = g_browser_process->local_state();
-@@ -36,3 +62,101 @@ JNI_PrivacyPreferencesManagerImpl_IsMetricsReportingDisabledByPolicy(
+@@ -36,3 +62,103 @@ JNI_PrivacyPreferencesManagerImpl_IsMetricsReportingDisabledByPolicy(
               metrics::prefs::kMetricsReportingEnabled) &&
           !local_state->GetBoolean(metrics::prefs::kMetricsReportingEnabled);
  }
@@ -821,11 +821,13 @@ diff --git a/chrome/browser/android/preferences/privacy_preferences_manager_impl
 +    for (auto iter = content::RenderProcessHost::AllHostsIterator(); !iter.IsAtEnd();
 +         iter.Advance()) {
 +      if (iter.GetCurrentValue()->IsInitializedAndNotDead()) {
++        uint64_t trace_id = base::Token::CreateRandom().high();
 +        std::vector<std::string> cors_exempt_header_list;
 +        iter.GetCurrentValue()->GetRendererInterface()->InitializeRenderer(
 +          /*user_agent*/ ua, /*metadata*/ blink::UserAgentMetadata(),
 +          cors_exempt_header_list,
-+          g_browser_process->GetOriginTrialsSettingsStorage()->GetSettings());
++          g_browser_process->GetOriginTrialsSettingsStorage()->GetSettings(),
++          trace_id);
 +      }
 +    }
 +  }

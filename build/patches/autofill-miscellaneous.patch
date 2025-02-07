@@ -10,31 +10,97 @@ Do not skip google.com domains for password generation (csagan5)
 
 License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 ---
- .../ui/autofill/chrome_autofill_client.cc     |  7 +-
+ .../chrome_password_manager_client.cc         |  4 --
+ .../ui/autofill/chrome_autofill_client.cc     |  9 ---
+ .../ui/autofill/chrome_autofill_client.h      |  1 -
+ .../browser/android_autofill_client.cc        | 11 ----
+ .../browser/android_autofill_client.h         |  1 -
  .../autofill_crowdsourcing_manager.cc         | 66 ++-----------------
  .../autofill_crowdsourcing_manager.h          |  2 -
+ .../browser/crowdsourcing/votes_uploader.cc   |  6 --
+ .../browser/foundations/autofill_client.h     |  4 --
+ .../browser/foundations/autofill_manager.cc   | 11 ----
  .../autofill/core/common/autofill_features.cc |  2 +
  .../autofill/core/common/autofill_prefs.cc    | 10 +--
  .../password_generation_frame_helper.cc       |  5 --
- 6 files changed, 13 insertions(+), 79 deletions(-)
+ 13 files changed, 12 insertions(+), 120 deletions(-)
 
+diff --git a/chrome/browser/password_manager/chrome_password_manager_client.cc b/chrome/browser/password_manager/chrome_password_manager_client.cc
+--- a/chrome/browser/password_manager/chrome_password_manager_client.cc
++++ b/chrome/browser/password_manager/chrome_password_manager_client.cc
+@@ -1050,10 +1050,6 @@ ChromePasswordManagerClient::GetHttpAuthManager() {
+ 
+ autofill::AutofillCrowdsourcingManager*
+ ChromePasswordManagerClient::GetAutofillCrowdsourcingManager() {
+-  if (auto* client =
+-          autofill::ContentAutofillClient::FromWebContents(web_contents())) {
+-    return &client->GetCrowdsourcingManager();
+-  }
+   return nullptr;
+ }
+ 
 diff --git a/chrome/browser/ui/autofill/chrome_autofill_client.cc b/chrome/browser/ui/autofill/chrome_autofill_client.cc
 --- a/chrome/browser/ui/autofill/chrome_autofill_client.cc
 +++ b/chrome/browser/ui/autofill/chrome_autofill_client.cc
-@@ -323,12 +323,7 @@ ChromeAutofillClient::GetURLLoaderFactory() {
+@@ -322,15 +322,6 @@ ChromeAutofillClient::GetURLLoaderFactory() {
+       ->GetURLLoaderFactoryForBrowserProcess();
  }
  
- AutofillCrowdsourcingManager& ChromeAutofillClient::GetCrowdsourcingManager() {
+-AutofillCrowdsourcingManager& ChromeAutofillClient::GetCrowdsourcingManager() {
 -  if (!crowdsourcing_manager_) {
 -    // Lazy initialization to avoid virtual function calls in the constructor.
 -    crowdsourcing_manager_ =
 -        std::make_unique<AutofillCrowdsourcingManager>(this, GetChannel());
 -  }
 -  return *crowdsourcing_manager_;
-+  return nullptr;
+-}
+-
+ VotesUploader& ChromeAutofillClient::GetVotesUploader() {
+   return votes_uploader_;
+ }
+diff --git a/chrome/browser/ui/autofill/chrome_autofill_client.h b/chrome/browser/ui/autofill/chrome_autofill_client.h
+--- a/chrome/browser/ui/autofill/chrome_autofill_client.h
++++ b/chrome/browser/ui/autofill/chrome_autofill_client.h
+@@ -107,7 +107,6 @@ class ChromeAutofillClient : public ContentAutofillClient,
+   version_info::Channel GetChannel() const final;
+   bool IsOffTheRecord() const final;
+   scoped_refptr<network::SharedURLLoaderFactory> GetURLLoaderFactory() final;
+-  AutofillCrowdsourcingManager& GetCrowdsourcingManager() final;
+   VotesUploader& GetVotesUploader() final;
+   AutofillOptimizationGuide* GetAutofillOptimizationGuide() const final;
+   FieldClassificationModelHandler* GetAutofillFieldClassificationModelHandler()
+diff --git a/components/android_autofill/browser/android_autofill_client.cc b/components/android_autofill/browser/android_autofill_client.cc
+--- a/components/android_autofill/browser/android_autofill_client.cc
++++ b/components/android_autofill/browser/android_autofill_client.cc
+@@ -73,17 +73,6 @@ AndroidAutofillClient::GetURLLoaderFactory() {
+       ->GetURLLoaderFactoryForBrowserProcess();
  }
  
- VotesUploader& ChromeAutofillClient::GetVotesUploader() {
+-autofill::AutofillCrowdsourcingManager&
+-AndroidAutofillClient::GetCrowdsourcingManager() {
+-  if (!crowdsourcing_manager_) {
+-    // Lazy initialization to avoid virtual function calls in the constructor.
+-    crowdsourcing_manager_ =
+-        std::make_unique<autofill::AutofillCrowdsourcingManager>(this,
+-                                                                 GetChannel());
+-  }
+-  return *crowdsourcing_manager_;
+-}
+-
+ autofill::VotesUploader& AndroidAutofillClient::GetVotesUploader() {
+   return votes_uploader_;
+ }
+diff --git a/components/android_autofill/browser/android_autofill_client.h b/components/android_autofill/browser/android_autofill_client.h
+--- a/components/android_autofill/browser/android_autofill_client.h
++++ b/components/android_autofill/browser/android_autofill_client.h
+@@ -86,7 +86,6 @@ class AndroidAutofillClient : public autofill::ContentAutofillClient {
+   const std::string& GetAppLocale() const final;
+   bool IsOffTheRecord() const final;
+   scoped_refptr<network::SharedURLLoaderFactory> GetURLLoaderFactory() final;
+-  autofill::AutofillCrowdsourcingManager& GetCrowdsourcingManager() final;
+   autofill::VotesUploader& GetVotesUploader() override;
+   autofill::PersonalDataManager& GetPersonalDataManager() final;
+   autofill::SingleFieldFillRouter& GetSingleFieldFillRouter() final;
 diff --git a/components/autofill/core/browser/crowdsourcing/autofill_crowdsourcing_manager.cc b/components/autofill/core/browser/crowdsourcing/autofill_crowdsourcing_manager.cc
 --- a/components/autofill/core/browser/crowdsourcing/autofill_crowdsourcing_manager.cc
 +++ b/components/autofill/core/browser/crowdsourcing/autofill_crowdsourcing_manager.cc
@@ -140,6 +206,57 @@ diff --git a/components/autofill/core/browser/crowdsourcing/autofill_crowdsourci
  // A helper to make sure that tests which modify the set of active autofill
  // experiments do not interfere with one another.
  struct ScopedActiveAutofillExperiments {
+diff --git a/components/autofill/core/browser/crowdsourcing/votes_uploader.cc b/components/autofill/core/browser/crowdsourcing/votes_uploader.cc
+--- a/components/autofill/core/browser/crowdsourcing/votes_uploader.cc
++++ b/components/autofill/core/browser/crowdsourcing/votes_uploader.cc
+@@ -383,12 +383,6 @@ void VotesUploader::UploadVote(
+       non_empty_types.contains(CREDIT_CARD_NUMBER)) {
+     non_empty_types.insert(CREDIT_CARD_VERIFICATION_CODE);
+   }
+-  client_->GetCrowdsourcingManager().StartUploadRequest(
+-      /*upload_contents=*/EncodeUploadRequest(*submitted_form, non_empty_types,
+-                                              /*login_form_signature=*/{},
+-                                              observed_submission),
+-      submitted_form->submission_source(),
+-      /*is_password_manager_upload=*/false);
+ }
+ 
+ }  // namespace autofill
+diff --git a/components/autofill/core/browser/foundations/autofill_client.h b/components/autofill/core/browser/foundations/autofill_client.h
+--- a/components/autofill/core/browser/foundations/autofill_client.h
++++ b/components/autofill/core/browser/foundations/autofill_client.h
+@@ -242,10 +242,6 @@ class AutofillClient {
+   // Returns the VotesUploader.
+   virtual VotesUploader& GetVotesUploader() = 0;
+ 
+-  // Returns the AutofillCrowdsourcingManager for communication with the
+-  // Autofill server.
+-  virtual AutofillCrowdsourcingManager& GetCrowdsourcingManager() = 0;
+-
+   // Gets the PersonalDataManager instance associated with the original Chrome
+   // profile.
+   // To distinguish between (non-)incognito mode when deciding to persist data,
+diff --git a/components/autofill/core/browser/foundations/autofill_manager.cc b/components/autofill/core/browser/foundations/autofill_manager.cc
+--- a/components/autofill/core/browser/foundations/autofill_manager.cc
++++ b/components/autofill/core/browser/foundations/autofill_manager.cc
+@@ -324,17 +324,6 @@ void AutofillManager::OnFormsParsed(const std::vector<FormData>& forms) {
+   driver().SendTypePredictionsToRenderer(queryable_forms);
+   LogTypePredictionsAvailable(log_manager(), non_queryable_forms);
+   LogTypePredictionsAvailable(log_manager(), queryable_forms);
+-
+-  // Query the server if at least one of the forms was parsed.
+-  if (!queryable_forms.empty()) {
+-    NotifyObservers(&Observer::OnBeforeLoadedServerPredictions);
+-    // If language detection is currently reparsing the form, wait until the
+-    // server response is processed, to ensure server predictions are not lost.
+-    client().GetCrowdsourcingManager().StartQueryRequest(
+-        queryable_forms, driver().GetIsolationInfo(),
+-        AfterParsingFinishes(base::BindOnce(
+-            &AutofillManager::OnLoadedServerPredictions, GetWeakPtr())));
+-  }
+ }
+ 
+ void AutofillManager::OnCaretMovedInFormField(const FormData& form,
 diff --git a/components/autofill/core/common/autofill_features.cc b/components/autofill/core/common/autofill_features.cc
 --- a/components/autofill/core/common/autofill_features.cc
 +++ b/components/autofill/core/common/autofill_features.cc

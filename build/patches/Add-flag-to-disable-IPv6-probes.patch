@@ -49,7 +49,7 @@ diff --git a/net/BUILD.gn b/net/BUILD.gn
      "//build:chromeos_buildflags",
      "//components/miracle_parameter/common",
      "//components/network_time/time_tracker",
-+    "//components/network_session_configurator/common"
++    "//components/network_session_configurator/common",
      "//net/http:transport_security_state_generated_files",
      "//third_party/simdutf:simdutf",
    ]

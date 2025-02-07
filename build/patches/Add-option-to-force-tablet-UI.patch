@@ -7,37 +7,37 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../layout/custom_tabs_control_container.xml  |  2 +-
  .../java/res/layout/recent_tabs_page.xml      |  2 +-
  .../java/res/values-sw600dp/dimens.xml        |  4 ++--
- chrome/android/java/res/values/dimens.xml     |  6 ++++-
+ chrome/android/java/res/values/dimens.xml     |  6 +++++-
  .../browser/ChromeBaseAppCompatActivity.java  |  3 +++
- .../chrome/browser/WarmupManager.java         |  5 +++-
- .../ChromeAccessibilitySettingsDelegate.java  | 19 +++++++++++++++
+ .../chrome/browser/WarmupManager.java         |  5 ++++-
+ .../ChromeAccessibilitySettingsDelegate.java  | 19 ++++++++++++++++++
  .../chrome/browser/app/ChromeActivity.java    |  4 +++-
- .../overlays/strip/StripLayoutHelper.java     | 10 ++++++--
- .../strip/StripLayoutHelperManager.java       |  6 ++++-
+ .../overlays/strip/StripLayoutHelper.java     | 10 ++++++++--
+ .../strip/StripLayoutHelperManager.java       |  6 +++++-
  .../init/ChromeBrowserInitializer.java        |  2 ++
  .../tabbed_mode/TabbedRootUiCoordinator.java  |  4 +++-
- .../chrome/browser/ui/RootUiCoordinator.java  |  6 ++++-
+ .../chrome/browser/ui/RootUiCoordinator.java  |  6 +++++-
  chrome/browser/preferences/BUILD.gn           |  1 +
  .../preferences/ChromePreferenceKeys.java     |  1 +
- .../preferences/ChromeSharedPreferences.java  | 12 ++++++++++
+ .../preferences/ChromeSharedPreferences.java  | 12 +++++++++++
  .../LegacyChromePreferenceKeys.java           |  1 +
  .../AppHeaderCoordinator.java                 |  2 ++
  .../omnibox/LocationBarCoordinator.java       |  2 +-
- .../strings/android_chrome_strings.grd        |  7 ++++++
- .../java/res/layout/control_container.xml     |  8 +++----
+ .../strings/android_chrome_strings.grd        |  7 +++++++
+ .../java/res/layout/control_container.xml     |  8 ++++----
  .../java/res/layout/toolbar_tablet.xml        |  2 +-
- .../java/res/values-sw600dp/dimens.xml        |  5 ++--
- .../toolbar/java/res/values/dimens.xml        |  6 +++--
+ .../java/res/values-sw600dp/dimens.xml        |  5 +++--
+ .../toolbar/java/res/values/dimens.xml        |  6 ++++--
  .../browser/toolbar/ControlContainer.java     |  2 +-
- .../toolbar/top/ToolbarControlContainer.java  | 24 ++++++++++++++++++-
- .../browser/toolbar/top/ToolbarLayout.java    |  5 +++-
+ .../toolbar/top/ToolbarControlContainer.java  | 20 ++++++++++++++++++-
+ .../browser/toolbar/top/ToolbarLayout.java    |  5 ++++-
  .../tab_strip/HeightTransitionHandler.java    |  2 ++
- .../TabStripTransitionCoordinator.java        |  6 ++++-
- .../res/xml/accessibility_preferences.xml     |  5 ++++
- .../accessibility/AccessibilitySettings.java  | 13 ++++++++++
- .../AccessibilitySettingsDelegate.java        | 11 +++++++++
- .../chromium/ui/base/DeviceFormFactor.java    | 14 +++++++++++
- 33 files changed, 176 insertions(+), 26 deletions(-)
+ .../TabStripTransitionCoordinator.java        |  6 +++++-
+ .../res/xml/accessibility_preferences.xml     |  5 +++++
+ .../accessibility/AccessibilitySettings.java  | 13 ++++++++++++
+ .../AccessibilitySettingsDelegate.java        |  2 ++
+ .../chromium/ui/base/DeviceFormFactor.java    | 14 +++++++++++++
+ 33 files changed, 163 insertions(+), 26 deletions(-)
 
 diff --git a/chrome/android/java/res/layout/custom_tabs_control_container.xml b/chrome/android/java/res/layout/custom_tabs_control_container.xml
 --- a/chrome/android/java/res/layout/custom_tabs_control_container.xml
@@ -146,13 +146,13 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/accessibility/s
  
 +    private static class ForceTabletUIDelegate implements BooleanPreferenceDelegate {
 +        @Override
-+        public boolean isEnabled() {
++        public boolean getValue() {
 +            return ChromeSharedPreferences.getInstance().readBoolean(
 +                      ChromePreferenceKeys.FLAGS_FORCE_TABLET_UI_ENABLED, false);
 +        }
 +
 +        @Override
-+        public void setEnabled(boolean value) {
++        public void setValue(boolean value) {
 +            ChromeSharedPreferences.getInstance().writeBoolean(
 +                      ChromePreferenceKeys.FLAGS_FORCE_TABLET_UI_ENABLED, value);
 +        }
@@ -499,7 +499,7 @@ diff --git a/chrome/browser/ui/android/toolbar/java/src/org/chromium/chrome/brow
  import android.graphics.Canvas;
  import android.graphics.PorterDuff;
  import android.graphics.Rect;
-@@ -143,8 +144,29 @@ public class ToolbarControlContainer extends OptimizedFrameLayout
+@@ -143,8 +144,25 @@ public class ToolbarControlContainer extends OptimizedFrameLayout
      }
  
      @Override
@@ -520,10 +520,6 @@ diff --git a/chrome/browser/ui/android/toolbar/java/src/org/chromium/chrome/brow
 +                if (view != null) view.setVisibility(View.GONE);
 +
 +                view = findViewById(R.id.find_toolbar_stub);
-+                if (view != null)
-+                    ((MarginLayoutParams)view.getLayoutParams()).topMargin = tab_strip_height;
-+
-+                view = findViewById(R.id.target_view_stub);
 +                if (view != null)
 +                    ((MarginLayoutParams)view.getLayoutParams()).topMargin = tab_strip_height;
 +            }
@@ -637,7 +633,7 @@ diff --git a/components/browser_ui/accessibility/android/java/src/org/chromium/c
 +        ChromeSwitchPreference forceTabletUiPref =
 +                (ChromeSwitchPreference) findPreference(PREF_FORCE_TABLET_UI);
 +        mForceTabletUIDelegate = mDelegate.getForceTabletUIDelegate();
-+        forceTabletUiPref.setChecked(mForceTabletUIDelegate.isEnabled());
++        forceTabletUiPref.setChecked(mForceTabletUIDelegate.getValue());
 +        forceTabletUiPref.setOnPreferenceChangeListener(this);
 +
          Preference captions = findPreference(PREF_CAPTIONS);
@@ -648,7 +644,7 @@ diff --git a/components/browser_ui/accessibility/android/java/src/org/chromium/c
          if (PREF_FORCE_ENABLE_ZOOM.equals(preference.getKey())) {
              mDelegate.getForceEnableZoomAccessibilityDelegate().setValue((Boolean) newValue);
 +        } else if (PREF_FORCE_TABLET_UI.equals(preference.getKey())) {
-+            mForceTabletUIDelegate.setEnabled((Boolean) newValue);
++            mForceTabletUIDelegate.setValue((Boolean) newValue);
 +            mDelegate.requestRestart(getActivity());
          } else if (PREF_READER_FOR_ACCESSIBILITY.equals(preference.getKey())) {
              mDelegate.getReaderAccessibilityDelegate().setValue((Boolean) newValue);
@@ -656,23 +652,7 @@ diff --git a/components/browser_ui/accessibility/android/java/src/org/chromium/c
 diff --git a/components/browser_ui/accessibility/android/java/src/org/chromium/components/browser_ui/accessibility/AccessibilitySettingsDelegate.java b/components/browser_ui/accessibility/android/java/src/org/chromium/components/browser_ui/accessibility/AccessibilitySettingsDelegate.java
 --- a/components/browser_ui/accessibility/android/java/src/org/chromium/components/browser_ui/accessibility/AccessibilitySettingsDelegate.java
 +++ b/components/browser_ui/accessibility/android/java/src/org/chromium/components/browser_ui/accessibility/AccessibilitySettingsDelegate.java
-@@ -12,6 +12,15 @@ import org.chromium.content_public.browser.BrowserContextHandle;
-  * embedder-specific logic.
-  */
- public interface AccessibilitySettingsDelegate {
-+    /** An interface to control a single boolean preference. */
-+    interface BooleanPreferenceDelegate {
-+        /** @return whether the preference is enabled. */
-+        boolean isEnabled();
-+
-+        /** Called when the preference value is changed. */
-+        void setEnabled(boolean value);
-+    }
-+
-     /** An interface to control a single integer preference. */
-     interface IntegerPreferenceDelegate {
-         /**
-@@ -39,6 +48,8 @@ public interface AccessibilitySettingsDelegate {
+@@ -39,6 +39,8 @@ public interface AccessibilitySettingsDelegate {
       */
      BrowserContextHandle getBrowserContextHandle();
  

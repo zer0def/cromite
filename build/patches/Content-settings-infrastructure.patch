@@ -38,6 +38,7 @@ Require: bromite-build-utils.patch
  .../preference_spinner_single_widget.xml      |  92 ++++
  .../settings/SpinnerPreference.java           |  24 +
  .../browser_ui/site_settings/android/BUILD.gn |  18 +
+ .../res/xml/site_settings_preferences.xml     |   7 +
  .../site_settings/AllSiteSettings.java        |   5 +-
  .../BromiteCustomContentSetting.java          | 155 +++++++
  .../BromiteCustomContentSettingImpl.java      | 412 ++++++++++++++++++
@@ -83,7 +84,7 @@ Require: bromite-build-utils.patch
  .../platform/web_content_settings_client.h    |  13 +
  .../execution_context/execution_context.cc    |  16 +
  .../execution_context/execution_context.h     |   5 +
- 72 files changed, 1934 insertions(+), 104 deletions(-)
+ 73 files changed, 1941 insertions(+), 104 deletions(-)
  create mode 100644 components/browser_ui/settings/android/java/res/layout/preference_spinner_single_widget.xml
  create mode 100644 components/browser_ui/site_settings/android/java/src/org/chromium/components/browser_ui/site_settings/BromiteCustomContentSetting.java
  create mode 100644 components/browser_ui/site_settings/android/java/src/org/chromium/components/browser_ui/site_settings/BromiteCustomContentSettingImpl.java
@@ -108,7 +109,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/site_settings/C
  /** A SiteSettingsDelegate instance that contains Chrome-specific Site Settings logic. */
  public class ChromeSiteSettingsDelegate implements SiteSettingsDelegate {
      public static final String EMBEDDED_CONTENT_HELP_CENTER_URL =
-@@ -241,7 +245,7 @@ public class ChromeSiteSettingsDelegate implements SiteSettingsDelegate {
+@@ -243,7 +247,7 @@ public class ChromeSiteSettingsDelegate implements SiteSettingsDelegate {
  
      @Override
      public boolean isHelpAndFeedbackEnabled() {
@@ -117,7 +118,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/site_settings/C
      }
  
      @Override
-@@ -398,6 +402,17 @@ public class ChromeSiteSettingsDelegate implements SiteSettingsDelegate {
+@@ -400,6 +404,17 @@ public class ChromeSiteSettingsDelegate implements SiteSettingsDelegate {
          return mPrivacySandboxBridge.getRelatedWebsiteSetOwner(memberOrigin);
      }
  
@@ -150,7 +151,7 @@ diff --git a/chrome/browser/content_settings/page_specific_content_settings_dele
 diff --git a/chrome/browser/resources/settings/privacy_page/privacy_page.html b/chrome/browser/resources/settings/privacy_page/privacy_page.html
 --- a/chrome/browser/resources/settings/privacy_page/privacy_page.html
 +++ b/chrome/browser/resources/settings/privacy_page/privacy_page.html
-@@ -1462,4 +1462,5 @@
+@@ -1457,4 +1457,5 @@
            </settings-subpage>
          </template>
        </template>
@@ -588,7 +589,7 @@ diff --git a/chrome/browser/resources/settings/site_settings_page/site_settings_
      {
        route: routes.SITE_SETTINGS_ADS,
        id: Id.ADS,
-@@ -450,10 +450,36 @@ function getCategoryItemMap(): Map<ContentSettingsTypes, CategoryListItem> {
+@@ -451,10 +451,36 @@ function getCategoryItemMap(): Map<ContentSettingsTypes, CategoryListItem> {
        icon: 'privacy:cookie',
      },
    ];
@@ -625,7 +626,7 @@ diff --git a/chrome/browser/resources/settings/site_settings_page/site_settings_
  function buildItemListFromIds(orderedIdList: ContentSettingsTypes[]):
      CategoryListItem[] {
    const map = getCategoryItemMap();
-@@ -543,7 +569,7 @@ export class SettingsSiteSettingsPageElement extends
+@@ -544,7 +570,7 @@ export class SettingsSiteSettingsPageElement extends
                Id.IMAGES,
                Id.POPUPS,
              ]),
@@ -1536,6 +1537,21 @@ diff --git a/components/browser_ui/site_settings/android/BUILD.gn b/components/b
    sources = [
      "java/res/drawable-hdpi/ic_volume_up_grey600_24dp.png",
      "java/res/drawable-hdpi/permission_background_sync.png",
+diff --git a/components/browser_ui/site_settings/android/java/res/xml/site_settings_preferences.xml b/components/browser_ui/site_settings/android/java/res/xml/site_settings_preferences.xml
+--- a/components/browser_ui/site_settings/android/java/res/xml/site_settings_preferences.xml
++++ b/components/browser_ui/site_settings/android/java/res/xml/site_settings_preferences.xml
+@@ -181,4 +181,11 @@ The order of the following items is from: http://crbug.com/610358.
+         android:title="@string/safety_hub_autorevocation_toggle_title"
+         android:summary="@string/safety_hub_autorevocation_toggle_summary" />
+ 
++    <Preference
++        android:key="divider_cromite"
++        android:selectable="false"
++        android:layout="@layout/horizontal_divider"/>
++
++    <PreferenceCategory android:title="Cromite content settings"/>
++
+ </PreferenceScreen>
 diff --git a/components/browser_ui/site_settings/android/java/src/org/chromium/components/browser_ui/site_settings/AllSiteSettings.java b/components/browser_ui/site_settings/android/java/src/org/chromium/components/browser_ui/site_settings/AllSiteSettings.java
 --- a/components/browser_ui/site_settings/android/java/src/org/chromium/components/browser_ui/site_settings/AllSiteSettings.java
 +++ b/components/browser_ui/site_settings/android/java/src/org/chromium/components/browser_ui/site_settings/AllSiteSettings.java

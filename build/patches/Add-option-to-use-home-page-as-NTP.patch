@@ -6,20 +6,51 @@ And allow use about:blank as default homepage
 
 License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 ---
+ .../tab_management/TabGridDialogMediator.java    | 11 ++++++++++-
  .../tasks/tab_management/TabGroupUiMediator.java |  8 +++++++-
  .../java/res/xml/homepage_preferences.xml        |  5 +++++
+ .../strip/TabGroupContextMenuCoordinator.java    | 11 ++++++++++-
  .../chrome/browser/homepage/HomepageManager.java | 16 ++++++++++++++++
  .../homepage/settings/HomepageSettings.java      | 12 ++++++++++++
  .../chrome/browser/metrics/LaunchMetrics.java    |  1 -
  .../browser/tabmodel/ChromeTabCreator.java       |  8 ++++++++
  .../preferences/ChromePreferenceKeys.java        |  1 +
  .../preferences/LegacyChromePreferenceKeys.java  |  1 +
- .../chrome/browser/tabmodel/TabGroupUtils.java   |  8 ++++++++
  .../android/strings/android_chrome_strings.grd   |  3 +++
  chrome/browser/ui/browser_ui_prefs.cc            |  2 ++
  chrome/common/pref_names.h                       |  4 ++++
- 12 files changed, 67 insertions(+), 2 deletions(-)
+ 13 files changed, 79 insertions(+), 4 deletions(-)
 
+diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabGridDialogMediator.java b/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabGridDialogMediator.java
+--- a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabGridDialogMediator.java
++++ b/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabGridDialogMediator.java
+@@ -94,6 +94,9 @@ import java.util.Map;
+ import java.util.Objects;
+ import java.util.Optional;
+ 
++import org.chromium.chrome.browser.homepage.HomepageManager;
++import org.chromium.url.GURL;
++
+ /**
+  * A mediator for the TabGridDialog component, responsible for communicating with the components'
+  * coordinator as well as managing the business logic for dialog show/hide.
+@@ -914,9 +917,15 @@ public class TabGridDialogMediator
+                 return;
+             }
+ 
++            String url = UrlConstants.NTP_URL;
++            if (UrlConstants.NTP_URL.equals(url)
++                    && HomepageManager.getInstance().getPrefNTPIsHomepageEnabled()) {
++                GURL gurl = HomepageManager.getInstance().getHomepageGurl();
++                url = gurl != null ? gurl.getSpec() : url;
++            }
+             TabGroupUtils.openUrlInGroup(
+                     mCurrentTabGroupModelFilterSupplier.get(),
+-                    UrlConstants.NTP_URL,
++                    url,
+                     currentTab.getId(),
+                     TabLaunchType.FROM_TAB_GROUP_UI);
+             RecordUserAction.record("MobileNewTabOpened." + mComponentName);
 diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabGroupUiMediator.java b/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabGroupUiMediator.java
 --- a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabGroupUiMediator.java
 +++ b/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabGroupUiMediator.java
@@ -63,6 +94,36 @@ diff --git a/chrome/android/java/res/xml/homepage_preferences.xml b/chrome/andro
      <org.chromium.chrome.browser.homepage.settings.RadioButtonGroupHomepagePreference
          android:key="homepage_radio_group"
          android:selectable="false"
+diff --git a/chrome/android/java/src/org/chromium/chrome/browser/compositor/overlays/strip/TabGroupContextMenuCoordinator.java b/chrome/android/java/src/org/chromium/chrome/browser/compositor/overlays/strip/TabGroupContextMenuCoordinator.java
+--- a/chrome/android/java/src/org/chromium/chrome/browser/compositor/overlays/strip/TabGroupContextMenuCoordinator.java
++++ b/chrome/android/java/src/org/chromium/chrome/browser/compositor/overlays/strip/TabGroupContextMenuCoordinator.java
+@@ -63,6 +63,9 @@ import org.chromium.ui.text.EmptyTextWatcher;
+ import org.chromium.ui.widget.AnchoredPopupWindow.HorizontalOrientation;
+ import org.chromium.ui.widget.RectProvider;
+ 
++import org.chromium.chrome.browser.homepage.HomepageManager;
++import org.chromium.url.GURL;
++
+ /**
+  * A coordinator for the context menu on the tab strip by long-pressing on the group titles. It is
+  * responsible for creating a list of menu items, setting up the menu and displaying the menu.
+@@ -191,9 +194,15 @@ public class TabGroupContextMenuCoordinator extends TabGroupOverflowMenuCoordina
+                         /* didCloseCallback= */ null);
+                 recordUserAction("DeleteGroup");
+             } else if (menuId == org.chromium.chrome.R.id.open_new_tab_in_group) {
++                String url = UrlConstants.NTP_URL;
++                if (UrlConstants.NTP_URL.equals(url)
++                        && HomepageManager.getInstance().getPrefNTPIsHomepageEnabled()) {
++                    GURL gurl = HomepageManager.getInstance().getHomepageGurl();
++                    url = gurl != null ? gurl.getSpec() : url;
++                }
+                 TabGroupUtils.openUrlInGroup(
+                         tabGroupModelFilter,
+-                        UrlConstants.NTP_URL,
++                        url,
+                         tabId,
+                         TabLaunchType.FROM_TAB_GROUP_UI);
+                 recordUserAction("NewTabInGroup");
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/homepage/HomepageManager.java b/chrome/android/java/src/org/chromium/chrome/browser/homepage/HomepageManager.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/homepage/HomepageManager.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/homepage/HomepageManager.java
@@ -183,31 +244,6 @@ diff --git a/chrome/browser/preferences/android/java/src/org/chromium/chrome/bro
                  ChromePreferenceKeys.INCOGNITO_SHORTCUT_ADDED,
                  ChromePreferenceKeys.LATEST_UNSUPPORTED_VERSION,
                  ChromePreferenceKeys.LOCALE_MANAGER_AUTO_SWITCH,
-diff --git a/chrome/browser/tabmodel/android/java/src/org/chromium/chrome/browser/tabmodel/TabGroupUtils.java b/chrome/browser/tabmodel/android/java/src/org/chromium/chrome/browser/tabmodel/TabGroupUtils.java
---- a/chrome/browser/tabmodel/android/java/src/org/chromium/chrome/browser/tabmodel/TabGroupUtils.java
-+++ b/chrome/browser/tabmodel/android/java/src/org/chromium/chrome/browser/tabmodel/TabGroupUtils.java
-@@ -7,6 +7,8 @@ package org.chromium.chrome.browser.tabmodel;
- import org.chromium.chrome.browser.tab.Tab;
- import org.chromium.chrome.browser.tab.TabLaunchType;
- import org.chromium.content_public.browser.LoadUrlParams;
-+import org.chromium.chrome.browser.homepage.HomepageManager;
-+import org.chromium.url.GURL;
- 
- import java.util.List;
- 
-@@ -65,6 +67,12 @@ public class TabGroupUtils {
-         List<Tab> relatedTabs = tabGroupModelFilter.getRelatedTabList(parentId);
-         if (relatedTabs.isEmpty()) return;
- 
-+        if (UrlConstants.NTP_URL.equals(url)
-+                && HomepageManager.getInstance().getPrefNTPIsHomepageEnabled()) {
-+            GURL gurl = HomepageManager.getInstance().getHomepageGurl();
-+            url = gurl != null ? gurl.getSpec() : url;
-+        }
-+
-         Tab lastTab = relatedTabs.get(relatedTabs.size() - 1);
-         TabCreator tabCreator = tabGroupModelFilter.getTabModel().getTabCreator();
-         LoadUrlParams loadUrlParams = new LoadUrlParams(url);
 diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chrome/browser/ui/android/strings/android_chrome_strings.grd
 --- a/chrome/browser/ui/android/strings/android_chrome_strings.grd
 +++ b/chrome/browser/ui/android/strings/android_chrome_strings.grd

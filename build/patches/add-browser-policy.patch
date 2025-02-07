@@ -19,7 +19,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../ui/webui/policy/policy_ui_handler.cc      | 104 ++++++++++++-
  .../ui/webui/policy/policy_ui_handler.h       |   2 +
  .../strings/android/browser_ui_strings.grd    |   2 +-
- .../commerce/core/commerce_feature_list.cc    |  69 ++-------
+ .../commerce/core/commerce_feature_list.cc    |  67 ++-------
  .../core/browser/browser_policy_connector.cc  |   3 +
  .../common/command_line_policy_provider.cc    |   3 +
  .../core/common/policy_loader_command_line.cc | 137 ++++++++++++++++--
@@ -32,11 +32,12 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../policy/resources/webui/policy_row.html    |   1 +
  .../policy/resources/webui/policy_row.ts      |  12 ++
  components/policy_strings.grdp                |   4 +-
+ components/search/ntp_features.cc             |   1 +
  components/signin/features.gni                |   2 +-
  .../gaia_cookie_manager_service.cc            |   4 +
  google_apis/gaia/gaia_auth_fetcher.cc         |   1 +
  net/socket/ssl_client_socket_impl.cc          |   3 +
- 32 files changed, 326 insertions(+), 158 deletions(-)
+ 33 files changed, 325 insertions(+), 158 deletions(-)
 
 diff --git a/base/win/win_util.cc b/base/win/win_util.cc
 --- a/base/win/win_util.cc
@@ -623,13 +624,11 @@ diff --git a/components/commerce/core/commerce_feature_list.cc b/components/comm
    auto* pattern_from_component =
        commerce_heuristics::CommerceHeuristicsData::GetInstance()
            .GetNoDiscountMerchantPattern();
-@@ -497,4 +448,14 @@ bool IsNoDiscountMerchant(const GURL& url) {
+@@ -497,4 +448,12 @@ bool IsNoDiscountMerchant(const GURL& url) {
    return RE2::PartialMatch(url.host_piece(), *pattern_from_component);
  }
  #endif
 +
-+SET_CROMITE_FEATURE_DISABLED(kCommerceHintAndroid);
-+SET_CROMITE_FEATURE_DISABLED(kCommercePriceTrackingRegionLaunched);
 +SET_CROMITE_FEATURE_DISABLED(kShoppingListRegionLaunched);
 +
 +SET_CROMITE_FEATURE_DISABLED(kParcelTracking);
@@ -968,6 +967,17 @@ diff --git a/components/policy_strings.grdp b/components/policy_strings.grdp
    </message>
    <message name="IDS_POLICY_SOURCE_CLOUD" desc="Indicates that the policy originates from the cloud.">
      Cloud
+diff --git a/components/search/ntp_features.cc b/components/search/ntp_features.cc
+--- a/components/search/ntp_features.cc
++++ b/components/search/ntp_features.cc
+@@ -92,6 +92,7 @@ BASE_FEATURE(kNtpCalendarModule,
+ BASE_FEATURE(kNtpChromeCartModule,
+              "NtpChromeCartModule",
+              base::FEATURE_ENABLED_BY_DEFAULT);
++SET_CROMITE_FEATURE_DISABLED(kNtpChromeCartModule);
+ 
+ #if !defined(OFFICIAL_BUILD)
+ // If enabled, dummy modules will be shown.
 diff --git a/components/signin/features.gni b/components/signin/features.gni
 --- a/components/signin/features.gni
 +++ b/components/signin/features.gni

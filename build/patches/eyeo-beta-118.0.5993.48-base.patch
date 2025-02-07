@@ -15,7 +15,7 @@ Based on Chromium 118.0.5993.48
  components/adblock/README.md                  |   80 +
  components/adblock/content/BUILD.gn           |   22 +
  components/adblock/content/browser/BUILD.gn   |  136 ++
- .../adblock_controller_factory_base.cc        |   87 +
+ .../adblock_controller_factory_base.cc        |   88 +
  .../browser/adblock_controller_factory_base.h |   50 +
  .../content/browser/adblock_filter_match.h    |   30 +
  .../adblock_telemetry_service_factory_base.cc |  100 ++
@@ -43,7 +43,7 @@ Based on Chromium 118.0.5993.48
  .../resource_classification_runner_impl.h     |  156 ++
  .../content/browser/session_stats_impl.cc     |   86 +
  .../content/browser/session_stats_impl.h      |   71 +
- .../subscription_service_factory_base.cc      |  224 +++
+ .../subscription_service_factory_base.cc      |  225 +++
  .../subscription_service_factory_base.h       |   60 +
  components/adblock/core/BUILD.gn              |  175 ++
  .../activeping_telemetry_topic_provider.cc    |  285 ++++
@@ -223,7 +223,7 @@ Based on Chromium 118.0.5993.48
  tools/eyeo/generate_modules.sh                |  209 +++
  tools/eyeo/snippets_deps.py                   |   61 +
  tools/gritsettings/resource_ids.spec          |   11 +-
- 219 files changed, 22051 insertions(+), 4 deletions(-)
+ 219 files changed, 22053 insertions(+), 4 deletions(-)
  create mode 100644 components/adblock/CHANGELOG.md
  create mode 100644 components/adblock/LICENSE
  create mode 100644 components/adblock/README.md
@@ -2165,7 +2165,7 @@ diff --git a/components/adblock/content/browser/adblock_controller_factory_base.
 new file mode 100644
 --- /dev/null
 +++ b/components/adblock/content/browser/adblock_controller_factory_base.cc
-@@ -0,0 +1,87 @@
+@@ -0,0 +1,88 @@
 +/*
 + * This file is part of eyeo Chromium SDK,
 + * Copyright (C) 2006-present eyeo GmbH
@@ -2208,7 +2208,8 @@ new file mode 100644
 +          "AdblockController",
 +          BrowserContextDependencyManager::GetInstance()) {}
 +
-+KeyedService* AdblockControllerFactoryBase::BuildServiceInstanceFor(
++std::unique_ptr<KeyedService>
++AdblockControllerFactoryBase::BuildServiceInstanceForBrowserContext(
 +    content::BrowserContext* context) const {
 +  auto* prefs = GetPrefs(context);
 +  auto adblock_filtering_configuration =
@@ -2236,7 +2237,7 @@ new file mode 100644
 +  subscription_service->InstallFilteringConfiguration(
 +      std::move(adblock_filtering_configuration));
 +
-+  return controller.release();
++  return controller;
 +}
 +
 +void AdblockControllerFactoryBase::RegisterProfilePrefs(
@@ -2297,7 +2298,7 @@ new file mode 100644
 +
 + private:
 +  // BrowserContextKeyedServiceFactory:
-+  KeyedService* BuildServiceInstanceFor(
++  std::unique_ptr<KeyedService> BuildServiceInstanceForBrowserContext(
 +      content::BrowserContext* context) const override;
 +  void RegisterProfilePrefs(
 +      user_prefs::PrefRegistrySyncable* registry) override;
@@ -6178,7 +6179,7 @@ diff --git a/components/adblock/content/browser/subscription_service_factory_bas
 new file mode 100644
 --- /dev/null
 +++ b/components/adblock/content/browser/subscription_service_factory_base.cc
-@@ -0,0 +1,224 @@
+@@ -0,0 +1,225 @@
 +/*
 + * This file is part of eyeo Chromium SDK,
 + * Copyright (C) 2006-present eyeo GmbH
@@ -6341,10 +6342,11 @@ new file mode 100644
 +
 +SubscriptionServiceFactoryBase::~SubscriptionServiceFactoryBase() = default;
 +
-+KeyedService* SubscriptionServiceFactoryBase::BuildServiceInstanceFor(
++std::unique_ptr<KeyedService>
++SubscriptionServiceFactoryBase::BuildServiceInstanceForBrowserContext(
 +    content::BrowserContext* context) const {
 +  auto* prefs = GetPrefs(context);
-+  auto* subscription_service = new SubscriptionServiceImpl(
++  auto subscription_service = std::make_unique<SubscriptionServiceImpl>(
 +      base::BindRepeating(&MakeFilterConfigurationMaintainer, context, prefs,
 +                          GetSubscriptionPersistentMetadata(context),
 +                          static_cast<const ConversionExecutors*>(this)),
@@ -6459,7 +6461,7 @@ new file mode 100644
 +  ~SubscriptionServiceFactoryBase() override;
 +
 +  // BrowserContextKeyedServiceFactory:
-+  KeyedService* BuildServiceInstanceFor(
++  std::unique_ptr<KeyedService> BuildServiceInstanceForBrowserContext(
 +      content::BrowserContext* context) const override;
 +  void RegisterProfilePrefs(
 +      user_prefs::PrefRegistrySyncable* registry) override;
@@ -13856,9 +13858,9 @@ new file mode 100644
 +
 +  crypto::SignatureVerifier verifier;
 +  if (verifier.VerifyInit(crypto::SignatureVerifier::RSA_PKCS1_SHA1,
-+                          base::as_bytes(base::make_span(signature)),
-+                          base::as_bytes(base::make_span(public_key)))) {
-+    verifier.VerifyUpdate(base::as_bytes(base::make_span(data)));
++                          base::as_byte_span(signature),
++                          base::as_byte_span(public_key))) {
++    verifier.VerifyUpdate(base::as_byte_span(data));
 +    return verifier.VerifyFinal();
 +  }
 +
@@ -52553,7 +52555,7 @@ diff --git a/third_party/blink/renderer/core/exported/web_document.cc b/third_pa
 +  if (props.PropertyCount() != 1)
 +    return false;
 +  const auto& ref = props.PropertyAt(0);
-+  return ref.Id() == CSSPropertyID::kDisplay && ref.IsImportant();
++  return ref.PropertyID() == CSSPropertyID::kDisplay && ref.IsImportant();
 +}
 +
 +// Should be same as WebDocument::InsertStyleSheet, excluding content

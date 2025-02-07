@@ -5,45 +5,46 @@ Subject: Disable all predictors code
 Original License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 ---
- chrome/browser/BUILD.gn                           |  3 ---
- .../preloading_model_keyed_service.cc             |  3 +++
- .../preloading_model_keyed_service_factory.cc     |  4 +---
- .../optimization_guide/chrome_hints_manager.cc    |  1 +
- .../model_validator_keyed_service.cc              |  6 +++++-
- .../optimization_guide_keyed_service.cc           |  1 -
- .../predictors/autocomplete_action_predictor.cc   |  2 ++
- .../predictors/loading_predictor_config.cc        |  4 ++--
- chrome/browser/predictors/predictors_features.cc  |  3 +--
- chrome/browser/safe_browsing/BUILD.gn             |  1 -
- ...ification_content_detection_service_factory.cc |  5 +++++
- chrome/browser/ui/tab_helpers.cc                  |  1 -
- .../read_anything/read_aloud_app_model.cc         |  6 ++++++
- .../read_anything/read_aloud_app_model.h          |  7 +++++++
- .../read_anything/read_anything_app_controller.cc | 10 ++++++++++
- .../read_anything/read_anything_app_controller.h  |  4 ++++
- chrome/utility/BUILD.gn                           |  2 +-
- chrome/utility/services.cc                        |  8 --------
- .../integrators/autofill_optimization_guide.cc    |  5 +++--
- .../omnibox/browser/autocomplete_controller.cc    |  4 ++++
- .../optimization_guide/core/hints_fetcher.cc      |  1 +
- .../optimization_guide/core/hints_manager.cc      |  5 +++++
- .../core/optimization_guide_features.cc           | 15 +++++++++------
- .../core/prediction_model_download_manager.cc     |  6 ++++--
- .../core/prediction_model_fetcher_impl.cc         |  1 +
- components/optimization_guide/features.gni        |  3 +--
- .../core/page_content_annotations_features.cc     |  5 +++++
- components/safe_browsing/core/common/features.cc  |  1 +
- .../Disable-all-predictors-code.inc               |  3 +++
- .../Disable-all-predictors-code.inc               |  1 +
- .../Disable-all-predictors-code.inc               |  1 +
- .../features_cc/Disable-all-predictors-code.inc   |  3 +++
- .../features_cc/Disable-all-predictors-code.inc   |  1 +
- .../features_cc/Disable-all-predictors-code.inc   |  2 ++
- services/webnn/features.gni                       |  2 +-
- .../core/html/parser/html_document_parser.cc      |  1 +
- .../document_speculation_rules.cc                 |  1 +
- .../platform/runtime_enabled_features.json5       |  2 +-
- 38 files changed, 97 insertions(+), 37 deletions(-)
+ chrome/browser/BUILD.gn                          |  3 ---
+ .../preloading_model_keyed_service.cc            |  3 +++
+ .../preloading_model_keyed_service_factory.cc    |  4 +---
+ .../optimization_guide/chrome_hints_manager.cc   |  1 +
+ .../model_validator_keyed_service.cc             |  6 +++++-
+ .../optimization_guide_keyed_service.cc          |  1 -
+ .../predictors/autocomplete_action_predictor.cc  |  2 ++
+ .../predictors/loading_predictor_config.cc       |  4 ++--
+ chrome/browser/predictors/predictors_features.cc |  3 +--
+ chrome/browser/safe_browsing/BUILD.gn            |  1 -
+ ...fication_content_detection_service_factory.cc |  5 +++++
+ chrome/browser/ui/tab_helpers.cc                 |  1 -
+ .../read_anything/read_aloud_app_model.cc        | 16 ++++++++++++++--
+ .../read_anything/read_aloud_app_model.h         |  9 ++++++++-
+ .../read_anything_app_controller.cc              | 10 ++++++++++
+ .../read_anything/read_anything_app_controller.h |  4 ++++
+ chrome/utility/BUILD.gn                          |  2 +-
+ chrome/utility/services.cc                       |  8 --------
+ .../integrators/autofill_optimization_guide.cc   |  5 +++--
+ .../omnibox/browser/autocomplete_controller.cc   |  4 ++++
+ .../optimization_guide/core/hints_fetcher.cc     |  1 +
+ .../optimization_guide/core/hints_manager.cc     |  5 +++++
+ .../core/optimization_guide_features.cc          | 15 +++++++++------
+ .../core/prediction_model_download_manager.cc    |  6 ++++--
+ .../core/prediction_model_fetcher_impl.cc        |  1 +
+ components/optimization_guide/features.gni       |  3 +--
+ .../core/page_content_annotations_features.cc    |  4 ++++
+ .../page_content_annotations_model_manager.cc    |  1 +
+ components/safe_browsing/core/common/features.cc |  1 +
+ .../Disable-all-predictors-code.inc              |  3 +++
+ .../Disable-all-predictors-code.inc              |  1 +
+ .../Disable-all-predictors-code.inc              |  1 +
+ .../features_cc/Disable-all-predictors-code.inc  |  3 +++
+ .../features_cc/Disable-all-predictors-code.inc  |  1 +
+ .../features_cc/Disable-all-predictors-code.inc  |  2 ++
+ services/webnn/features.gni                      |  2 +-
+ .../core/html/parser/html_document_parser.cc     |  1 +
+ .../document_speculation_rules.cc                |  1 +
+ .../platform/runtime_enabled_features.json5      |  2 +-
+ 39 files changed, 106 insertions(+), 40 deletions(-)
  create mode 100644 cromite_flags/chrome/browser/browser_features_cc/Disable-all-predictors-code.inc
  create mode 100644 cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Disable-all-predictors-code.inc
  create mode 100644 cromite_flags/chrome/common/chrome_features_cc/Disable-all-predictors-code.inc
@@ -301,7 +302,7 @@ diff --git a/chrome/renderer/accessibility/read_anything/read_aloud_app_model.cc
  
  }  // namespace
  
-@@ -148,9 +152,11 @@ void ReadAloudAppModel::PreprocessTextForSpeech(
+@@ -148,10 +152,13 @@ void ReadAloudAppModel::PreprocessTextForSpeech(
    }
  }
  
@@ -311,8 +312,44 @@ diff --git a/chrome/renderer/accessibility/read_anything/read_aloud_app_model.cc
  }
 +#endif
  
++#if BUILDFLAG(BUILD_WITH_TFLITE_LIB)
  void ReadAloudAppModel::CalculatePhrases(
      a11y::ReadAloudCurrentGranularity& granularity) {
+   if (!features::IsReadAnythingReadAloudPhraseHighlightingEnabled()) {
+@@ -206,19 +213,23 @@ void ReadAloudAppModel::CalculatePhrases(
+       base::BindOnce(&ReadAloudAppModel::UpdatePhraseBoundaries,
+                      weak_ptr_factory_.GetWeakPtr(), phrase_tokens));
+ }
++#endif
+ 
+-static const Strategy kPhraseStrategy = Strategy::kWords;
+-static const int kPhraseStrategyParameter = 5;
++[[maybe_unused]] static const Strategy kPhraseStrategy = Strategy::kWords;
++[[maybe_unused]] static const int kPhraseStrategyParameter = 5;
+ 
+ void ReadAloudAppModel::StartPhraseCalculation() {
+   if (processed_granularities_on_current_page_.size() > 0) {
+     current_phrase_calculation_index_ = 0;
++#if BUILDFLAG(BUILD_WITH_TFLITE_LIB)
+     CalculatePhrases(processed_granularities_on_current_page_[0]);
++#endif
+   }
+ }
+ 
+ void ReadAloudAppModel::UpdatePhraseBoundaries(std::vector<std::string> tokens,
+                                                std::vector<size_t> heads) {
++#if BUILDFLAG(BUILD_WITH_TFLITE_LIB)
+   // Reset the phrase calculation flag, so that the next phrase calculation can
+   // be scheduled, if needed.
+   is_calculating_phrases = false;
+@@ -279,6 +290,7 @@ void ReadAloudAppModel::UpdatePhraseBoundaries(std::vector<std::string> tokens,
+     current_phrase_calculation_index_ = -1;
+     LOG(WARNING) << "All phrases calculated!";
+   }
++#endif
+ }
+ 
+ // TODO(crbug.com/40927698): Update to use AXRange to better handle multiple
 diff --git a/chrome/renderer/accessibility/read_anything/read_aloud_app_model.h b/chrome/renderer/accessibility/read_anything/read_aloud_app_model.h
 --- a/chrome/renderer/accessibility/read_anything/read_aloud_app_model.h
 +++ b/chrome/renderer/accessibility/read_anything/read_aloud_app_model.h
@@ -350,6 +387,15 @@ diff --git a/chrome/renderer/accessibility/read_anything/read_aloud_app_model.h 
  
    // Once the phrase segmentation has completed for a given sentence, update the
    // granularity with the phrase boundaries, and calculate phrases for the next
+@@ -306,7 +313,7 @@ class ReadAloudAppModel {
+ 
+   // Whether a phrase calculation for a sentence is currently underway. (We
+   // do not initiate a second calculation before the first has completed.)
+-  bool is_calculating_phrases = false;
++  [[maybe_unused]] bool is_calculating_phrases = false;
+ 
+   // Which sentence (index into `processed_granularities_on_current_page`) is
+   // currently being processed for phrases. -1 if none.
 diff --git a/chrome/renderer/accessibility/read_anything/read_anything_app_controller.cc b/chrome/renderer/accessibility/read_anything/read_anything_app_controller.cc
 --- a/chrome/renderer/accessibility/read_anything/read_anything_app_controller.cc
 +++ b/chrome/renderer/accessibility/read_anything/read_anything_app_controller.cc
@@ -673,16 +719,26 @@ diff --git a/components/optimization_guide/features.gni b/components/optimizatio
 diff --git a/components/page_content_annotations/core/page_content_annotations_features.cc b/components/page_content_annotations/core/page_content_annotations_features.cc
 --- a/components/page_content_annotations/core/page_content_annotations_features.cc
 +++ b/components/page_content_annotations/core/page_content_annotations_features.cc
-@@ -255,4 +255,9 @@ size_t MaxRelatedSearchesCacheSize() {
+@@ -255,4 +255,8 @@ size_t MaxRelatedSearchesCacheSize() {
        "max_related_searches_cache_size", 10);
  }
  
 +SET_CROMITE_FEATURE_DISABLED(kPageContentAnnotations);
 +SET_CROMITE_FEATURE_DISABLED(kRemotePageMetadata);
-+SET_CROMITE_FEATURE_DISABLED(kPageVisibilityBatchAnnotations);
 +SET_CROMITE_FEATURE_DISABLED(kPageContentAnnotationsValidation);
 +SET_CROMITE_FEATURE_DISABLED(kPageContentAnnotationsPersistSalientImageMetadata);
  }  // namespace page_content_annotations::features
+diff --git a/components/page_content_annotations/core/page_content_annotations_model_manager.cc b/components/page_content_annotations/core/page_content_annotations_model_manager.cc
+--- a/components/page_content_annotations/core/page_content_annotations_model_manager.cc
++++ b/components/page_content_annotations/core/page_content_annotations_model_manager.cc
+@@ -44,6 +44,7 @@ PageContentAnnotationsModelManager::~PageContentAnnotationsModelManager() =
+ void PageContentAnnotationsModelManager::SetUpPageVisibilityModel(
+     optimization_guide::OptimizationGuideModelProvider*
+         optimization_guide_model_provider) {
++  if ((true)) return; // was kPageVisibilityBatchAnnotations
+   if (page_visibility_model_handler_)
+     return;
+ 
 diff --git a/components/safe_browsing/core/common/features.cc b/components/safe_browsing/core/common/features.cc
 --- a/components/safe_browsing/core/common/features.cc
 +++ b/components/safe_browsing/core/common/features.cc

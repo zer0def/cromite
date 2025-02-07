@@ -51,12 +51,14 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../search_engine_desktop_ui.grdp             |   6 +
  .../android/template_url_service_android.cc   |   2 +-
  .../search_engines/search_engines_switches.cc |   1 +
+ components/search_engines/template_url.cc     |   4 +
+ components/search_engines/template_url.h      |   1 +
  .../search_engines/template_url_service.cc    |   8 +-
  .../search_engines/template_url_service.h     |   6 +-
  content/browser/webui/web_ui_impl.cc          |  16 +-
  content/browser/webui/web_ui_impl.h           |   3 +
  content/public/browser/web_ui.h               |   1 +
- third_party/polymer/v3_0/BUILD.gn             |  10 +-
+ third_party/polymer/v3_0/BUILD.gn             |  12 +-
  ui/base/template_expressions.cc               |  21 +-
  ui/webui/BUILD.gn                             |   7 +
  ui/webui/resources/BUILD.gn                   |  20 ++
@@ -73,7 +75,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  ui/webui/resources/images/BUILD.gn            |   2 +-
  ui/webui/resources/js/BUILD.gn                |   2 +-
  ui/webui/resources/js/load_time_data.ts       |  17 +-
- 66 files changed, 1123 insertions(+), 67 deletions(-)
+ 68 files changed, 1130 insertions(+), 67 deletions(-)
  create mode 100644 chrome/app/settings_strings_android.grdp
  create mode 100644 chrome/browser/search_engines/android/java/res/layout/search_engine_layout.xml
  create mode 100644 chrome/browser/ui/webui/settings/settings_localized_strings_provider_android.cc
@@ -1630,7 +1632,7 @@ new file mode 100644
 +#include "third_party/blink/public/common/features.h"
 +#include "ui/base/interaction/element_identifier.h"
 +
-+#include "chrome/browser/ui/webui/webui_util.h"
++#include "ui/webui/webui_util.h"
 +#include "chrome/browser/ui/webui/theme_handler.h"
 +#include "chrome/browser/ui/webui/cr_components/customize_color_scheme_mode/customize_color_scheme_mode_handler.h"
 +#include "chrome/browser/ui/webui/settings/settings_localized_strings_provider_android.h"
@@ -1898,6 +1900,31 @@ diff --git a/components/search_engines/search_engines_switches.cc b/components/s
  
  #if BUILDFLAG(IS_ANDROID)
  COMPONENT_EXPORT(SEARCH_ENGINES_SWITCHES)
+diff --git a/components/search_engines/template_url.cc b/components/search_engines/template_url.cc
+--- a/components/search_engines/template_url.cc
++++ b/components/search_engines/template_url.cc
+@@ -2084,6 +2084,10 @@ void TemplateURL::SetURL(const std::string& url) {
+   url_ref().InvalidateCachedValues();
+ }
+ 
++void TemplateURL::set_suggestions_url(const std::string& url) {
++  active_data().suggestions_url = url;
++}
++
+ void TemplateURL::SetPrepopulateId(int id) {
+   active_data().prepopulate_id = id;
+   const bool prepopulated = id > 0;
+diff --git a/components/search_engines/template_url.h b/components/search_engines/template_url.h
+--- a/components/search_engines/template_url.h
++++ b/components/search_engines/template_url.h
+@@ -1004,6 +1004,7 @@ class TemplateURL {
+   bool CreatedByNonDefaultSearchProviderPolicy() const;
+ 
+   void SetURL(const std::string& url);
++  void set_suggestions_url(const std::string& url);
+   void SetPrepopulateId(int id);
+ 
+   // Resets the keyword if IsGoogleSearchURLWithReplaceableKeyword() or |force|.
 diff --git a/components/search_engines/template_url_service.cc b/components/search_engines/template_url_service.cc
 --- a/components/search_engines/template_url_service.cc
 +++ b/components/search_engines/template_url_service.cc
@@ -1914,7 +1941,7 @@ diff --git a/components/search_engines/template_url_service.cc b/components/sear
    template_url->set_short_name(short_name);
    template_url->set_keyword(keyword);
    template_url->SetURL(url);
-+  template_url->data_.suggestions_url = suggestions_url;
++  template_url->set_suggestions_url(suggestions_url);
    return Add(std::move(template_url));
  }
  
@@ -2035,21 +2062,23 @@ diff --git a/third_party/polymer/v3_0/BUILD.gn b/third_party/polymer/v3_0/BUILD.
  
  js_files = [
    "iron-a11y-keys-behavior/iron-a11y-keys-behavior.js",
-@@ -234,6 +234,14 @@ ts_library("library") {
-     "components-chromium/polymer/polymer-legacy.d.ts",
-   ]
+@@ -18,6 +18,16 @@ js_files = [
+   "iron-scroll-target-behavior/iron-scroll-target-behavior.js",
+ ]
  
-+  if (is_android) {
-+    js_files += [
-+      "iron-collapse/iron-collapse.js",
-+      "iron-icon/iron-icon.js",
-+      "iron-iconset-svg/iron-iconset-svg.js",
-+    ]
-+  }
++if (is_android) {
++  js_files += [
++    "iron-collapse/iron-collapse.js",
++    "iron-icon/iron-icon.js",
++    "iron-iconset-svg/iron-iconset-svg.js",
++    "iron-flex-layout/iron-flex-layout-classes.js",
++    "iron-meta/iron-meta.js",
++  ]
++}
 +
-   # Also needed on LaCros for Print Preview. Remove once CrOS Print Preview
-   # launches.
-   if (is_chromeos) {
+ if (is_chromeos_ash) {
+   js_files += [
+     "iron-a11y-announcer/iron-a11y-announcer.js",
 diff --git a/ui/base/template_expressions.cc b/ui/base/template_expressions.cc
 --- a/ui/base/template_expressions.cc
 +++ b/ui/base/template_expressions.cc

@@ -162,7 +162,7 @@ diff --git a/chrome/android/java/res/xml/main_preferences.xml b/chrome/android/j
  <!-- The main_preferences file will be reordered with the upcoming autofill
  options. Only the order changes. Each pref should exist here and in the layout
  for the previous order (main_preferences_legacy). -->
-@@ -123,6 +114,11 @@ for the previous order (main_preferences_legacy). -->
+@@ -129,6 +120,11 @@ for the previous order (main_preferences_legacy). -->
          android:key="adblock"
          android:order="13"
          android:title="@string/prefs_adblock"/>
@@ -174,7 +174,7 @@ diff --git a/chrome/android/java/res/xml/main_preferences.xml b/chrome/android/j
      <Preference
          android:key="notifications"
          android:order="22"
-@@ -137,11 +133,6 @@ for the previous order (main_preferences_legacy). -->
+@@ -143,11 +139,6 @@ for the previous order (main_preferences_legacy). -->
          android:key="accessibility"
          android:order="24"
          android:title="@string/prefs_accessibility"/>
@@ -2616,7 +2616,7 @@ diff --git a/components/adblock/content/browser/BUILD.gn b/components/adblock/co
 diff --git a/components/adblock/content/browser/adblock_controller_factory_base.cc b/components/adblock/content/browser/adblock_controller_factory_base.cc
 --- a/components/adblock/content/browser/adblock_controller_factory_base.cc
 +++ b/components/adblock/content/browser/adblock_controller_factory_base.cc
-@@ -47,10 +47,7 @@ KeyedService* AdblockControllerFactoryBase::BuildServiceInstanceFor(
+@@ -48,10 +48,7 @@ AdblockControllerFactoryBase::BuildServiceInstanceForBrowserContext(
        std::make_unique<PersistentFilteringConfiguration>(
            prefs, kAdblockFilteringConfigurationName);
  
@@ -3200,7 +3200,7 @@ diff --git a/components/adblock/content/browser/subscription_service_factory_bas
    }
    base::DeleteFile(path);
    return result;
-@@ -201,10 +203,11 @@ SubscriptionServiceFactoryBase::ConvertCustomFilters(
+@@ -202,10 +204,11 @@ SubscriptionServiceFactoryBase::ConvertCustomFilters(
  void SubscriptionServiceFactoryBase::ConvertFilterListFile(
      const GURL& subscription_url,
      const base::FilePath& path,

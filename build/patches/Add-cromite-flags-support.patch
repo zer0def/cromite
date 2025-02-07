@@ -41,6 +41,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../placeholder.txt                           |   1 +
  chrome/browser/ui/ui_features.cc              |   1 +
  chrome/common/chrome_features.cc              |   1 +
+ .../browser_ui/accessibility/android/BUILD.gn |   1 +
  .../res/xml/accessibility_preferences.xml     |   3 +-
  .../accessibility/AccessibilitySettings.java  |   6 +-
  .../android/java/res/values/attrs.xml         |   4 +
@@ -104,7 +105,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  third_party/blink/public/common/features.h    |   1 +
  ui/base/ui_base_features.cc                   |   1 +
  ui/base/ui_base_features.h                    |   1 +
- 91 files changed, 802 insertions(+), 28 deletions(-)
+ 92 files changed, 803 insertions(+), 28 deletions(-)
  create mode 100644 chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/cromite/include_all_directory.java
  create mode 100644 chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/cromite/java_template/CromiteCachedFlag.java.tmpl
  create mode 100644 chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Add-cromite-flags-support.grdp
@@ -944,6 +945,17 @@ diff --git a/chrome/common/chrome_features.cc b/chrome/common/chrome_features.cc
  
 +#include "cromite_flags/chrome_common_chrome_features_cc.inc"
  }  // namespace features
+diff --git a/components/browser_ui/accessibility/android/BUILD.gn b/components/browser_ui/accessibility/android/BUILD.gn
+--- a/components/browser_ui/accessibility/android/BUILD.gn
++++ b/components/browser_ui/accessibility/android/BUILD.gn
+@@ -55,6 +55,7 @@ android_library("lib_java") {
+     ":page_zoom_utils_java",
+     "//base:base_java",
+     "//build/android:build_java",
++    "//chrome/browser/settings:java",
+     "//components/browser_ui/settings/android:java",
+     "//components/browser_ui/site_settings/android:java",
+     "//components/cached_flags:java",
 diff --git a/components/browser_ui/accessibility/android/java/res/xml/accessibility_preferences.xml b/components/browser_ui/accessibility/android/java/res/xml/accessibility_preferences.xml
 --- a/components/browser_ui/accessibility/android/java/res/xml/accessibility_preferences.xml
 +++ b/components/browser_ui/accessibility/android/java/res/xml/accessibility_preferences.xml

@@ -291,7 +291,7 @@ diff --git a/net/BUILD.gn b/net/BUILD.gn
 +++ b/net/BUILD.gn
 @@ -1116,6 +1116,7 @@ component("net") {
      "//components/network_time/time_tracker",
-     "//components/network_session_configurator/common"
+     "//components/network_session_configurator/common",
      "//net/http:transport_security_state_generated_files",
 +    "//services/firewall/public:firewall_builders",
      "//third_party/simdutf:simdutf",

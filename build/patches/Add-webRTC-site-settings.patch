@@ -201,7 +201,7 @@ diff --git a/third_party/blink/renderer/modules/peerconnection/peer_connection_d
        // origin.
 +      blink::WebContentSettingsClient* settings = web_frame->GetContentSettingsClient();
 +      if (settings && settings->AllowContentSetting(ContentSettingsType::WEBRTC, false)) {
-+        policy = kDefault;
++        webrtc_ip_handling_policy = mojom::blink::WebRtcIpHandlingPolicy::kDefault;
 +      }
 +
        switch (webrtc_ip_handling_policy) {

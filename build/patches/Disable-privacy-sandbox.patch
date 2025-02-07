@@ -24,11 +24,12 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../privacy_sandbox_settings_impl.cc          | 19 ++++++++++++++-----
  .../tracking_protection_prefs.cc              |  4 ++--
  .../identity_manager/account_capabilities.cc  |  2 +-
+ .../shared_storage_document_service_impl.cc   |  9 +++++++++
  .../features_cc/Disable-privacy-sandbox.inc   |  1 +
  .../Disable-privacy-sandbox.inc               |  1 +
- .../features_cc/Disable-privacy-sandbox.inc   |  4 ++++
+ .../features_cc/Disable-privacy-sandbox.inc   |  2 ++
  third_party/blink/common/features.cc          |  1 +
- 18 files changed, 41 insertions(+), 28 deletions(-)
+ 19 files changed, 48 insertions(+), 28 deletions(-)
  create mode 100644 cromite_flags/content/common/features_cc/Disable-privacy-sandbox.inc
  create mode 100644 cromite_flags/content/public/common/content_features_cc/Disable-privacy-sandbox.inc
  create mode 100644 cromite_flags/third_party/blink/common/features_cc/Disable-privacy-sandbox.inc
@@ -296,6 +297,25 @@ diff --git a/components/signin/public/identity_manager/account_capabilities.cc b
  }
  
  signin::Tribool AccountCapabilities::is_opted_in_to_parental_supervision()
+diff --git a/content/browser/shared_storage/shared_storage_document_service_impl.cc b/content/browser/shared_storage/shared_storage_document_service_impl.cc
+--- a/content/browser/shared_storage/shared_storage_document_service_impl.cc
++++ b/content/browser/shared_storage/shared_storage_document_service_impl.cc
+@@ -127,6 +127,15 @@ void SharedStorageDocumentServiceImpl::CreateWorklet(
+       render_frame_host().GetLastCommittedOrigin().IsSameOriginWith(
+           data_origin);
+ 
++  // A document can only create cross-origin worklets with
++  // `kSharedStorageAPIM125` enabled.
++  if (!is_same_origin) {
++    // This could indicate a compromised renderer, so let's terminate it.
++    receiver_.ReportBadMessage(
++        "Attempted to load a cross-origin module script.");
++    return;
++  }
++
+   // `CreateWorklet()` cannot differentiate between calls from addModule() and
+   // createWorklet(). Hence, we skip the mojom validation for opaque origin
+   // context for addModule().
 diff --git a/cromite_flags/content/common/features_cc/Disable-privacy-sandbox.inc b/cromite_flags/content/common/features_cc/Disable-privacy-sandbox.inc
 new file mode 100644
 --- /dev/null
@@ -312,11 +332,9 @@ diff --git a/cromite_flags/third_party/blink/common/features_cc/Disable-privacy-
 new file mode 100644
 --- /dev/null
 +++ b/cromite_flags/third_party/blink/common/features_cc/Disable-privacy-sandbox.inc
-@@ -0,0 +1,4 @@
+@@ -0,0 +1,2 @@
 +SET_CROMITE_FEATURE_DISABLED(kFencedFrames);
 +SET_CROMITE_FEATURE_DISABLED(kSharedStorageAPI);
-+SET_CROMITE_FEATURE_DISABLED(kSharedStorageAPIM118);
-+SET_CROMITE_FEATURE_DISABLED(kSharedStorageAPIM125);
 diff --git a/third_party/blink/common/features.cc b/third_party/blink/common/features.cc
 --- a/third_party/blink/common/features.cc
 +++ b/third_party/blink/common/features.cc
