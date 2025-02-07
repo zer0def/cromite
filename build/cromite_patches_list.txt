@@ -175,7 +175,6 @@ Add-kill-switch-for-unsupported-clangd-flags.patch
 WIN-enable-pdf-plugin.patch
 WIN-disable-annotate-downloads.patch
 Enable-HighEfficiencyMode-by-default.patch
-WIN-enable-file-system-access-blocklist.patch
 WIN-Disable-TabHoverCard-images.patch
 WIN-Fix-log-to-file.patch
 WIN-Disable-updater.patch
@@ -190,7 +189,6 @@ Always-open-browser-controls-in-new-tab.patch
 Partitioning-all-cookies-by-top-frame-domain.patch
 Disable-FedCm.patch
 Disable-BackForwardCache.patch
-Evict-the-entire-FrameTree-like-desktop.patch
 Disable-visited-pseudo-class.patch
 Add-setting-to-clear-data-on-exit.patch
 Improve-the-browser-sandbox.patch
@@ -265,7 +263,6 @@ Enable-gwp-asan-on-Android.patch
 Disable-Read-Aloud-by-default.patch
 Disable-Compose-feature.patch
 Disable-offline-autofetch-flag.patch
-Enable-percent-based-scrolling-on-Windows.patch
 Show-NTP-at-startup.patch
 Enable-platform-aac-audio-and-h264-video.patch
 Disable-Paint-Preview-by-default.patch
