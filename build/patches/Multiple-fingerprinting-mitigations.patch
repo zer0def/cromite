@@ -196,7 +196,7 @@ diff --git a/third_party/blink/renderer/core/dom/document.cc b/third_party/blink
  #include "base/ranges/algorithm.h"
  #include "base/task/single_thread_task_runner.h"
  #include "base/time/time.h"
-@@ -862,6 +863,17 @@ Document::Document(const DocumentInit& initializer,
+@@ -863,6 +864,17 @@ Document::Document(const DocumentInit& initializer,
    TRACE_EVENT_WITH_FLOW0("blink", "Document::Document", TRACE_ID_LOCAL(this),
                           TRACE_EVENT_FLAG_FLOW_OUT);
    DCHECK(agent_);
@@ -214,7 +214,7 @@ diff --git a/third_party/blink/renderer/core/dom/document.cc b/third_party/blink
    if (base::FeatureList::IsEnabled(features::kDelayAsyncScriptExecution) &&
        features::kDelayAsyncScriptExecutionDelayByDefaultParam.Get()) {
      script_runner_delayer_->Activate();
-@@ -2479,6 +2491,14 @@ void Document::UpdateStyleAndLayoutTreeForThisDocument() {
+@@ -2480,6 +2492,14 @@ void Document::UpdateStyleAndLayoutTreeForThisDocument() {
  #endif
  }
  
@@ -243,7 +243,7 @@ diff --git a/third_party/blink/renderer/core/dom/document.h b/third_party/blink/
    V8VisibilityState visibilityState() const;
    String visibilityStateAsString() const;
    bool IsPageVisible() const;
-@@ -2625,6 +2629,9 @@ class CORE_EXPORT Document : public ContainerNode,
+@@ -2632,6 +2636,9 @@ class CORE_EXPORT Document : public ContainerNode,
  
    base::ElapsedTimer start_time_;
  
