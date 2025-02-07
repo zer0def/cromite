@@ -21,7 +21,7 @@ diff --git a/chrome/version.gni b/chrome/version.gni
        _version_dictionary_template += "trichrome_64_32_high_version_code = \"@TRICHROME_64_32_HIGH_VERSION_CODE@\" "
        _version_dictionary_template += "trichrome_auto_64_32_high_version_code = \"@TRICHROME_AUTO_64_32_HIGH_VERSION_CODE@\" "
      }
-@@ -192,7 +192,7 @@ if (is_mac) {
+@@ -188,7 +188,7 @@ if (is_mac) {
    chrome_version_name = chrome_version_full
  
    # There is a different version code only for arm64.
@@ -33,7 +33,7 @@ diff --git a/chrome/version.gni b/chrome/version.gni
 diff --git a/components/viz/common/features.cc b/components/viz/common/features.cc
 --- a/components/viz/common/features.cc
 +++ b/components/viz/common/features.cc
-@@ -300,9 +300,11 @@ const base::FeatureParam<base::TimeDelta> kADPFBoostTimeout{
+@@ -324,9 +324,11 @@ const base::FeatureParam<base::TimeDelta> kADPFBoostTimeout{
  
  // If enabled, Chrome includes the Renderer Main thread(s) into the
  // ADPF(Android Dynamic Performance Framework) hint session.
@@ -48,7 +48,7 @@ diff --git a/components/viz/common/features.cc b/components/viz/common/features.
 diff --git a/components/viz/service/performance_hint/hint_session.cc b/components/viz/service/performance_hint/hint_session.cc
 --- a/components/viz/service/performance_hint/hint_session.cc
 +++ b/components/viz/service/performance_hint/hint_session.cc
-@@ -304,16 +304,13 @@ bool IsAdpfEnabled() {
+@@ -303,16 +303,13 @@ bool IsAdpfEnabled() {
            switches::kDisableAdpf)) {
      return false;
    }
@@ -64,6 +64,6 @@ diff --git a/components/viz/service/performance_hint/hint_session.cc b/component
    }
 +  if ((true)) return true;
  
-   std::string allowlist_param = features::kADPFSocManufacturerAllowlist.Get();
-   std::vector<std::string_view> allowlist = base::SplitStringPiece(
+   std::string soc_allowlist = features::kADPFSocManufacturerAllowlist.Get();
+   std::string soc_blocklist = features::kADPFSocManufacturerBlocklist.Get();
 --

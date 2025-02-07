@@ -15,7 +15,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 diff --git a/chrome/browser/ui/views/toolbar/reload_button.cc b/chrome/browser/ui/views/toolbar/reload_button.cc
 --- a/chrome/browser/ui/views/toolbar/reload_button.cc
 +++ b/chrome/browser/ui/views/toolbar/reload_button.cc
-@@ -220,6 +220,14 @@ void ReloadButton::ButtonPressed(const ui::Event& event) {
+@@ -226,6 +226,14 @@ void ReloadButton::ButtonPressed(const ui::Event& event) {
        command = IDC_RELOAD;
      }
  
@@ -33,9 +33,9 @@ diff --git a/chrome/browser/ui/views/toolbar/reload_button.cc b/chrome/browser/u
 diff --git a/ui/views/widget/widget.h b/ui/views/widget/widget.h
 --- a/ui/views/widget/widget.h
 +++ b/ui/views/widget/widget.h
-@@ -1235,6 +1235,19 @@ class VIEWS_EXPORT Widget : public internal::NativeWidgetDelegate,
-   void OnChildAdded(Widget* child_widget);
-   void OnChildRemoved(Widget* child_widget);
+@@ -1310,6 +1310,19 @@ class VIEWS_EXPORT Widget : public internal::NativeWidgetDelegate,
+ 
+   void UpdateAccessibleNameForRootView();
  
 +  // Type of ways to ignore activation changes.
 +  enum class DisableActivationChangeHandlingType {
@@ -53,7 +53,7 @@ diff --git a/ui/views/widget/widget.h b/ui/views/widget/widget.h
   protected:
    // Creates the RootView to be used within this Widget. Subclasses may override
    // to create custom RootViews that do specialized event processing.
-@@ -1274,13 +1287,6 @@ class VIEWS_EXPORT Widget : public internal::NativeWidgetDelegate,
+@@ -1348,13 +1361,6 @@ class VIEWS_EXPORT Widget : public internal::NativeWidgetDelegate,
    ui::ColorProviderKey GetColorProviderKey() const override;
  
   private:
@@ -67,7 +67,7 @@ diff --git a/ui/views/widget/widget.h b/ui/views/widget/widget.h
    class PaintAsActiveLockImpl;
  
    friend class ButtonTest;
-@@ -1291,11 +1297,6 @@ class VIEWS_EXPORT Widget : public internal::NativeWidgetDelegate,
+@@ -1365,11 +1371,6 @@ class VIEWS_EXPORT Widget : public internal::NativeWidgetDelegate,
    friend class ui_devtools::BubbleLocking;
    friend void DisableActivationChangeHandlingForTests();
  

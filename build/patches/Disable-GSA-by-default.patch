@@ -5,17 +5,19 @@ Subject: Disable GSA by default
 License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
  .../chrome/browser/IntentHandler.java         |  6 ------
+ .../provider/PageContentProviderImpl.java     |  6 ------
  .../chrome/browser/share/LensUtils.java       | 14 ++------------
  .../chromium/chrome/browser/gsa/GSAUtils.java | 10 +++-------
  .../GoogleBottomBarActionsHandler.java        | 19 ++-----------------
+ .../chrome/browser/pdf/PdfCoordinator.java    |  4 +---
  .../Disable-GSA-by-default.inc                |  1 +
- 5 files changed, 8 insertions(+), 42 deletions(-)
+ 7 files changed, 9 insertions(+), 51 deletions(-)
  create mode 100644 cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Disable-GSA-by-default.inc
 
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/IntentHandler.java b/chrome/android/java/src/org/chromium/chrome/browser/IntentHandler.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/IntentHandler.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/IntentHandler.java
-@@ -44,7 +44,6 @@ import org.chromium.chrome.browser.document.ChromeLauncherActivity;
+@@ -45,7 +45,6 @@ import org.chromium.chrome.browser.document.ChromeLauncherActivity;
  import org.chromium.chrome.browser.externalnav.IntentWithRequestMetadataHandler;
  import org.chromium.chrome.browser.externalnav.IntentWithRequestMetadataHandler.RequestMetadata;
  import org.chromium.chrome.browser.flags.ChromeFeatureList;
@@ -23,7 +25,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/IntentHandler.j
  import org.chromium.chrome.browser.omnibox.suggestions.AutocompleteCoordinator;
  import org.chromium.chrome.browser.profiles.Profile;
  import org.chromium.chrome.browser.profiles.ProfileManager;
-@@ -262,9 +261,6 @@ public class IntentHandler {
+@@ -263,9 +262,6 @@ public class IntentHandler {
      public static final String EXTRA_SKIP_PRECONNECT =
              "org.chromium.chrome.browser.skip_preconnect";
  
@@ -33,7 +35,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/IntentHandler.j
      private static Pair<Integer, String> sPendingReferrer;
      private static int sReferrerId;
      private static String sPendingIncognitoUrl;
-@@ -526,8 +522,6 @@ public class IntentHandler {
+@@ -539,8 +535,6 @@ public class IntentHandler {
              return ExternalAppId.LINE;
          } else if (packageName.equals(PACKAGE_WHATSAPP)) {
              return ExternalAppId.WHATSAPP;
@@ -42,6 +44,29 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/IntentHandler.j
          } else if (packageName.equals(ContextUtils.getApplicationContext().getPackageName())) {
              return ExternalAppId.CHROME;
          } else if (packageName.startsWith(WEBAPK_PACKAGE_PREFIX)) {
+diff --git a/chrome/android/java/src/org/chromium/chrome/browser/provider/PageContentProviderImpl.java b/chrome/android/java/src/org/chromium/chrome/browser/provider/PageContentProviderImpl.java
+--- a/chrome/android/java/src/org/chromium/chrome/browser/provider/PageContentProviderImpl.java
++++ b/chrome/android/java/src/org/chromium/chrome/browser/provider/PageContentProviderImpl.java
+@@ -56,8 +56,6 @@ import java.util.UUID;
+ public class PageContentProviderImpl extends SplitCompatContentProvider.Impl {
+ 
+     private static final int INVALIDATE_URI_DELAY_MS = 10_000;
+-    private static final String[] AUTHORIZED_PACKAGE_NAMES =
+-            new String[] {GSAUtils.GSA_PACKAGE_NAME};
+ 
+     static final class PageContentInvocationState {
+ 
+@@ -339,10 +337,6 @@ public class PageContentProviderImpl extends SplitCompatContentProvider.Impl {
+     }
+ 
+     private static void grantAccessToUri(Uri uri) {
+-        for (String packageName : AUTHORIZED_PACKAGE_NAMES) {
+-            ContextUtils.getApplicationContext()
+-                    .grantUriPermission(packageName, uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+-        }
+     }
+ 
+     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/share/LensUtils.java b/chrome/android/java/src/org/chromium/chrome/browser/share/LensUtils.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/share/LensUtils.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/share/LensUtils.java
@@ -178,6 +203,27 @@ diff --git a/chrome/browser/ui/android/google_bottom_bar/java/src/org/chromium/c
          Tab tab = mTabProvider.get();
          if (tab == null) {
              Log.e(TAG, "Can't send pending intent as tab is null.");
+diff --git a/chrome/browser/ui/android/pdf/java/src/org/chromium/chrome/browser/pdf/PdfCoordinator.java b/chrome/browser/ui/android/pdf/java/src/org/chromium/chrome/browser/pdf/PdfCoordinator.java
+--- a/chrome/browser/ui/android/pdf/java/src/org/chromium/chrome/browser/pdf/PdfCoordinator.java
++++ b/chrome/browser/ui/android/pdf/java/src/org/chromium/chrome/browser/pdf/PdfCoordinator.java
+@@ -246,7 +246,7 @@ public class PdfCoordinator {
+     }
+ 
+     String requestAssistContent(String filename, boolean isWorkProfile) {
+-        if (mUri == null) {
++        if ((true)) {
+             return null;
+         }
+         String structuredData;
+@@ -264,8 +264,6 @@ public class PdfCoordinator {
+         } catch (JSONException e) {
+             return null;
+         }
+-        mActivity.grantUriPermission(
+-                GSAUtils.GSA_PACKAGE_NAME, mUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+         PdfUtils.recordIsWorkProfile(isWorkProfile);
+         return structuredData;
+     }
 diff --git a/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Disable-GSA-by-default.inc b/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Disable-GSA-by-default.inc
 new file mode 100644
 --- /dev/null

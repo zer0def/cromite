@@ -13,7 +13,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -8407,6 +8407,12 @@ static_library("browser") {
+@@ -8383,6 +8383,12 @@ static_library("browser") {
      deps += [ "//components/segmentation_platform/internal:optimization_guide_segmentation_handler" ]
    }
  
@@ -26,7 +26,7 @@ diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
    if (enable_compose) {
      sources += [
        "compose/chrome_compose_client.cc",
-@@ -8422,7 +8428,6 @@ static_library("browser") {
+@@ -8398,7 +8404,6 @@ static_library("browser") {
      ]
  
      deps += [
@@ -34,7 +34,7 @@ diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
        "//chrome/common/compose",
        "//chrome/common/compose:mojo_bindings",
        "//components/autofill/content/browser:browser",
-@@ -8869,7 +8874,7 @@ source_set("font_pref") {
+@@ -8845,7 +8850,7 @@ source_set("font_pref") {
    deps = [ "//chrome/common" ]
  }
  
@@ -46,15 +46,15 @@ diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 diff --git a/chrome/browser/ui/webui/settings/settings_ui.cc b/chrome/browser/ui/webui/settings/settings_ui.cc
 --- a/chrome/browser/ui/webui/settings/settings_ui.cc
 +++ b/chrome/browser/ui/webui/settings/settings_ui.cc
-@@ -389,7 +389,7 @@ SettingsUI::SettingsUI(content::WebUI* web_ui)
+@@ -378,7 +378,7 @@ SettingsUI::SettingsUI(content::WebUI* web_ui)
        base::FeatureList::IsEnabled(features::kLinkedServicesSetting));
  
  #if BUILDFLAG(ENABLE_COMPOSE)
 -  const bool compose_enabled = ComposeEnabling::IsEnabledForProfile(profile);
 +  const bool compose_enabled = false;
+   const bool compose_visible = ComposeEnabling::IsSettingVisible(profile);
  #else
    const bool compose_enabled = false;
- #endif  // BUILDFLAG(ENABLE_COMPOSE)
 diff --git a/components/compose/core/browser/compose_features.cc b/components/compose/core/browser/compose_features.cc
 --- a/components/compose/core/browser/compose_features.cc
 +++ b/components/compose/core/browser/compose_features.cc
@@ -68,11 +68,11 @@ diff --git a/components/compose/core/browser/compose_features.cc b/components/co
 diff --git a/components/compose/features.gni b/components/compose/features.gni
 --- a/components/compose/features.gni
 +++ b/components/compose/features.gni
-@@ -6,5 +6,5 @@ import("//build/config/chromeos/ui_mode.gni")
+@@ -4,5 +4,5 @@
  
  declare_args() {
    # Whether Compose is enabled in the build.
--  enable_compose = is_mac || is_win || is_linux || is_chromeos_ash
+-  enable_compose = is_mac || is_win || is_linux || is_chromeos
 +  enable_compose = false
  }
 --

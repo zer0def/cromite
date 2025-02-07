@@ -51,7 +51,7 @@ diff --git a/third_party/blink/renderer/core/preferences/preference_manager.idl 
 diff --git a/third_party/blink/renderer/platform/runtime_enabled_features.json5 b/third_party/blink/renderer/platform/runtime_enabled_features.json5
 --- a/third_party/blink/renderer/platform/runtime_enabled_features.json5
 +++ b/third_party/blink/renderer/platform/runtime_enabled_features.json5
-@@ -3349,6 +3349,10 @@
+@@ -3378,6 +3378,10 @@
        name: "PrefersReducedData",
        status: "experimental",
      },
@@ -59,7 +59,7 @@ diff --git a/third_party/blink/renderer/platform/runtime_enabled_features.json5 
 +      name: "PrefersReducedTransparency",
 +      status: "experimental",
 +    },
-     // This feature is deprecated and we are evangelizing affected sites.
-     // A deprecation trial is underway, starting in M125.
-     // See https://crbug.com/40352864 for current status
+     {
+       // Used to allow preloading data: URLs with link rel=preload.
+       name: "PreloadLinkRelDataUrls",
 --

@@ -20,7 +20,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 diff --git a/android_webview/tools/system_webview_shell/apk/src/org/chromium/webview_shell/WebViewBrowserFragment.java b/android_webview/tools/system_webview_shell/apk/src/org/chromium/webview_shell/WebViewBrowserFragment.java
 --- a/android_webview/tools/system_webview_shell/apk/src/org/chromium/webview_shell/WebViewBrowserFragment.java
 +++ b/android_webview/tools/system_webview_shell/apk/src/org/chromium/webview_shell/WebViewBrowserFragment.java
-@@ -240,62 +240,6 @@ public class WebViewBrowserFragment extends Fragment {
+@@ -233,62 +233,6 @@ public class WebViewBrowserFragment extends Fragment {
          /** Downloading file in background thread */
          @Override
          protected String doInBackground() {
@@ -283,7 +283,7 @@ diff --git a/components/minidump_uploader/android/java/src/org/chromium/componen
 diff --git a/components/variations/android/java/src/org/chromium/components/variations/firstrun/VariationsSeedFetcher.java b/components/variations/android/java/src/org/chromium/components/variations/firstrun/VariationsSeedFetcher.java
 --- a/components/variations/android/java/src/org/chromium/components/variations/firstrun/VariationsSeedFetcher.java
 +++ b/components/variations/android/java/src/org/chromium/components/variations/firstrun/VariationsSeedFetcher.java
-@@ -190,14 +190,6 @@ public class VariationsSeedFetcher {
+@@ -194,14 +194,6 @@ public class VariationsSeedFetcher {
          ResettersForTesting.register(() -> sInstance = oldValue);
      }
  
@@ -298,7 +298,7 @@ diff --git a/components/variations/android/java/src/org/chromium/components/vari
      @VisibleForTesting
      protected List<String> getAvailableInstanceManipulations() {
          List<String> compressions = new ArrayList<String>();
-@@ -531,24 +523,8 @@ public class VariationsSeedFetcher {
+@@ -535,24 +527,8 @@ public class VariationsSeedFetcher {
          HttpURLConnection connection = null;
          try {
              long startTimeMillis = SystemClock.elapsedRealtime();
@@ -327,7 +327,7 @@ diff --git a/components/variations/android/java/src/org/chromium/components/vari
 diff --git a/net/android/java/src/org/chromium/net/ChromiumNetworkAdapter.java b/net/android/java/src/org/chromium/net/ChromiumNetworkAdapter.java
 --- a/net/android/java/src/org/chromium/net/ChromiumNetworkAdapter.java
 +++ b/net/android/java/src/org/chromium/net/ChromiumNetworkAdapter.java
-@@ -23,10 +23,6 @@ public final class ChromiumNetworkAdapter {
+@@ -26,10 +26,6 @@ public final class ChromiumNetworkAdapter {
       *     data gets sent, what triggers it, etc.
       * @return a URLConnection linking to the URL.
       */
@@ -338,7 +338,7 @@ diff --git a/net/android/java/src/org/chromium/net/ChromiumNetworkAdapter.java b
  
      /**
       * Wrapper around URL#openConnection(Proxy), with an extra argument for static analysis/privacy
-@@ -38,11 +34,6 @@ public final class ChromiumNetworkAdapter {
+@@ -41,11 +37,6 @@ public final class ChromiumNetworkAdapter {
       *     data gets sent, what triggers it, etc.
       * @return a URLConnection linking to the URL.
       */
@@ -350,7 +350,7 @@ diff --git a/net/android/java/src/org/chromium/net/ChromiumNetworkAdapter.java b
  
      /**
       * Wrapper around URL#openStream(), with an extra argument for static analysis/privacy auditing.
-@@ -52,8 +43,4 @@ public final class ChromiumNetworkAdapter {
+@@ -55,8 +46,4 @@ public final class ChromiumNetworkAdapter {
       *     data gets sent, what triggers it, etc.
       * @return an InputStream linking to the URL.
       */

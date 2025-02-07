@@ -11,33 +11,33 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
  .../browser/chrome_content_browser_client.cc  |  2 +-
  .../extensions/api/cookies/cookies_helpers.cc |  4 ++
- .../net/profile_network_context_service.cc    | 12 ++---
+ .../net/profile_network_context_service.cc    | 12 ++--
  .../privacy_sandbox_settings_delegate.cc      |  1 +
- ...storage_access_grant_permission_context.cc | 12 +++++
+ ...storage_access_grant_permission_context.cc | 12 ++++
  .../experiment/experiment_manager_impl.cc     |  1 +
  .../strings/android/site_settings.grdp        |  4 +-
  .../core/browser/cookie_settings.cc           |  4 +-
- .../core/common/cookie_settings_base.cc       | 54 +------------------
+ .../core/common/cookie_settings_base.cc       | 57 +------------------
  ...ioning-all-cookies-by-top-frame-domain.inc |  4 ++
  ...ioning-all-cookies-by-top-frame-domain.inc |  1 +
  ...ioning-all-cookies-by-top-frame-domain.inc |  1 +
  ...ioning-all-cookies-by-top-frame-domain.inc | 16 ++++++
  ...ioning-all-cookies-by-top-frame-domain.inc |  1 +
- net/cookies/canonical_cookie.cc               |  3 --
+ net/cookies/canonical_cookie.cc               |  3 -
  net/cookies/cookie_deletion_info.cc           |  3 +-
  net/cookies/cookie_monster.cc                 |  1 +
  net/cookies/cookie_util.cc                    |  1 +
- net/cookies/parsed_cookie.h                   |  6 ++-
+ net/cookies/parsed_cookie.h                   |  6 +-
  .../sqlite/sqlite_persistent_cookie_store.cc  |  8 +++
- net/url_request/url_request_http_job.cc       | 10 ++--
- services/network/cookie_settings.cc           |  6 +--
- services/network/restricted_cookie_manager.cc |  6 +++
+ net/url_request/url_request_http_job.cc       | 10 +---
+ services/network/cookie_settings.cc           |  6 +-
+ services/network/restricted_cookie_manager.cc |  6 ++
  .../modules/cookie_store/cookie_init.idl      |  2 +-
- .../modules/cookie_store/cookie_store.cc      |  3 ++
+ .../modules/cookie_store/cookie_store.cc      |  3 +
  .../cookie_store_delete_options.idl           |  2 +-
  ui/webui/webui_allowlist.cc                   |  1 +
  url/url_features.cc                           |  1 +
- 28 files changed, 88 insertions(+), 82 deletions(-)
+ 28 files changed, 88 insertions(+), 85 deletions(-)
  create mode 100644 cromite_flags/components/content_settings/core/common/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
  create mode 100644 cromite_flags/components/permissions/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
  create mode 100644 cromite_flags/content/public/common/content_features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
@@ -47,7 +47,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 diff --git a/chrome/browser/chrome_content_browser_client.cc b/chrome/browser/chrome_content_browser_client.cc
 --- a/chrome/browser/chrome_content_browser_client.cc
 +++ b/chrome/browser/chrome_content_browser_client.cc
-@@ -3736,7 +3736,7 @@ bool IsFullCookieAccessAllowed(content::BrowserContext* browser_context,
+@@ -3674,7 +3674,7 @@ bool ChromeContentBrowserClient::IsFullCookieAccessAllowed(
    scoped_refptr<content_settings::CookieSettings> cookie_settings =
        CookieSettingsFactory::GetForProfile(profile);
    if (!cookie_settings) {
@@ -59,7 +59,7 @@ diff --git a/chrome/browser/chrome_content_browser_client.cc b/chrome/browser/ch
 diff --git a/chrome/browser/extensions/api/cookies/cookies_helpers.cc b/chrome/browser/extensions/api/cookies/cookies_helpers.cc
 --- a/chrome/browser/extensions/api/cookies/cookies_helpers.cc
 +++ b/chrome/browser/extensions/api/cookies/cookies_helpers.cc
-@@ -366,6 +366,10 @@ ToNetCookiePartitionKey(
+@@ -365,6 +365,10 @@ ToNetCookiePartitionKey(
  bool CookieMatchesPartitionKeyCollection(
      const net::CookiePartitionKeyCollection& cookie_partition_key_collection,
      const net::CanonicalCookie& cookie) {
@@ -73,7 +73,7 @@ diff --git a/chrome/browser/extensions/api/cookies/cookies_helpers.cc b/chrome/b
 diff --git a/chrome/browser/net/profile_network_context_service.cc b/chrome/browser/net/profile_network_context_service.cc
 --- a/chrome/browser/net/profile_network_context_service.cc
 +++ b/chrome/browser/net/profile_network_context_service.cc
-@@ -1011,16 +1011,16 @@ ProfileNetworkContextService::CreateCookieManagerParams(
+@@ -1018,16 +1018,16 @@ ProfileNetworkContextService::CreateCookieManagerParams(
    // UI to interact with SameSite cookies on accounts.google.com, which is used
    // for displaying a list of available accounts on the NTP
    // (chrome://new-tab-page), etc.
@@ -152,7 +152,7 @@ diff --git a/components/browser_ui/strings/android/site_settings.grdp b/componen
    </message>
    <message name="IDS_THIRD_PARTY_COOKIES_LINK_ROW_SUB_LABEL_DISABLED_INCOGNITO" desc="2 of 3 possible states for the Third-party cookies setting. This text appears beneath the 'Third-party cookies' button label.">
      Third-party cookies are blocked in Incognito mode
-@@ -550,7 +550,7 @@
+@@ -578,7 +578,7 @@
      Allow third-party cookies
    </message>
    <message name="IDS_WEBSITE_SETTINGS_THIRD_PARTY_COOKIES_PAGE_ALLOW_RADIO_SUB_LABEL" desc="This string appears as a sub label beneath the 'Allow all cookies' label. It summarizes the result of choosing this option.">
@@ -172,7 +172,7 @@ diff --git a/components/content_settings/core/browser/cookie_settings.cc b/compo
    if (url.is_empty() || first_party_url.is_empty()) {
      return;
    }
-@@ -413,8 +414,7 @@ bool CookieSettings::ShouldBlockThirdPartyCookiesInternal() const {
+@@ -416,8 +417,7 @@ bool CookieSettings::ShouldBlockThirdPartyCookiesInternal() const {
  }
  
  bool CookieSettings::MitigationsEnabledFor3pcdInternal() const {
@@ -185,7 +185,7 @@ diff --git a/components/content_settings/core/browser/cookie_settings.cc b/compo
 diff --git a/components/content_settings/core/common/cookie_settings_base.cc b/components/content_settings/core/common/cookie_settings_base.cc
 --- a/components/content_settings/core/common/cookie_settings_base.cc
 +++ b/components/content_settings/core/common/cookie_settings_base.cc
-@@ -544,68 +544,16 @@ CookieSettingsBase::DecideAccess(
+@@ -559,72 +559,17 @@ CookieSettingsBase::DecideAccess(
          ThirdPartyCookieAllowMechanism::kAllowByGlobalSetting};
    }
  
@@ -196,11 +196,15 @@ diff --git a/components/content_settings/core/common/cookie_settings_base.cc b/c
 -  // Site controlled mechanisms (ex: web APIs, deprecation trial):
 -  if (IsAllowedByTopLevelStorageAccessGrant(url, first_party_url, overrides)) {
 -    return AllowAllCookies{
--        ThirdPartyCookieAllowMechanism::kAllowByTopLevelStorageAccess};
+-        ThirdPartyCookieAllowMechanism::kAllowByTopLevelStorageAccess,
+-        IsAllowedByStorageAccessGrant(url, first_party_url, overrides)
+-            ? AllowedByStorageAccessType::kTopLevelAndStorageAccess
+-            : AllowedByStorageAccessType::kTopLevelOnly};
 -  }
    if (IsAllowedByStorageAccessGrant(url, first_party_url, overrides)) {
      return AllowAllCookies{
-         ThirdPartyCookieAllowMechanism::kAllowByStorageAccess};
+         ThirdPartyCookieAllowMechanism::kAllowByStorageAccess,
+         AllowedByStorageAccessType::kStorageAccessOnly};
    }
  
 -  if (IsAllowedBy3pcdHeuristicsGrantsSettings(url, first_party_url,
@@ -254,7 +258,7 @@ diff --git a/components/content_settings/core/common/cookie_settings_base.cc b/c
    return AllowPartitionedCookies{};
  }
  
-@@ -634,7 +582,7 @@ CookieSettingsBase::GetCookieSettingInternal(
+@@ -653,7 +598,7 @@ CookieSettingsBase::GetCookieSettingInternal(
      }
      return CookieSettingWithMetadata{/*cookie_setting=*/CONTENT_SETTING_ALLOW,
                                       /*allow_partitioned_cookies=*/true,
@@ -314,7 +318,7 @@ new file mode 100644
 diff --git a/net/cookies/canonical_cookie.cc b/net/cookies/canonical_cookie.cc
 --- a/net/cookies/canonical_cookie.cc
 +++ b/net/cookies/canonical_cookie.cc
-@@ -992,9 +992,6 @@ bool CanonicalCookie::IsCanonicalForFromStorage() const {
+@@ -991,9 +991,6 @@ bool CanonicalCookie::IsCanonicalForFromStorage() const {
      if (CookiePartitionKey::HasNonce(PartitionKey())) {
        return true;
      }
@@ -340,7 +344,7 @@ diff --git a/net/cookies/cookie_deletion_info.cc b/net/cookies/cookie_deletion_i
 diff --git a/net/cookies/cookie_monster.cc b/net/cookies/cookie_monster.cc
 --- a/net/cookies/cookie_monster.cc
 +++ b/net/cookies/cookie_monster.cc
-@@ -2219,6 +2219,7 @@ size_t CookieMonster::GarbageCollectPartitionedCookies(
+@@ -2318,6 +2318,7 @@ size_t CookieMonster::GarbageCollectPartitionedCookies(
    if (cookie_partition_it == partitioned_cookies_.end())
      return num_deleted;
  
@@ -351,7 +355,7 @@ diff --git a/net/cookies/cookie_monster.cc b/net/cookies/cookie_monster.cc
 diff --git a/net/cookies/cookie_util.cc b/net/cookies/cookie_util.cc
 --- a/net/cookies/cookie_util.cc
 +++ b/net/cookies/cookie_util.cc
-@@ -746,6 +746,7 @@ bool IsCookiePartitionedValid(const GURL& url,
+@@ -750,6 +750,7 @@ bool IsCookiePartitionedValid(const GURL& url,
                                bool secure,
                                bool is_partitioned,
                                bool partition_has_nonce) {
@@ -403,7 +407,7 @@ diff --git a/net/extras/sqlite/sqlite_persistent_cookie_store.cc b/net/extras/sq
 diff --git a/net/url_request/url_request_http_job.cc b/net/url_request/url_request_http_job.cc
 --- a/net/url_request/url_request_http_job.cc
 +++ b/net/url_request/url_request_http_job.cc
-@@ -840,13 +840,9 @@ void URLRequestHttpJob::SetCookieHeaderAndStart(
+@@ -841,13 +841,9 @@ void URLRequestHttpJob::SetCookieHeaderAndStart(
      AnnotateAndMoveUserBlockedCookies(maybe_included_cookies, excluded_cookies);
    }
  
@@ -423,7 +427,7 @@ diff --git a/net/url_request/url_request_http_job.cc b/net/url_request/url_reque
 diff --git a/services/network/cookie_settings.cc b/services/network/cookie_settings.cc
 --- a/services/network/cookie_settings.cc
 +++ b/services/network/cookie_settings.cc
-@@ -44,8 +44,7 @@ namespace network {
+@@ -45,8 +45,7 @@ namespace network {
  namespace {
  
  bool ShouldApply3pcdRelatedReasons(const net::CanonicalCookie& cookie) {
@@ -433,7 +437,7 @@ diff --git a/services/network/cookie_settings.cc b/services/network/cookie_setti
  }
  
  bool IsValidType(ContentSettingsType type) {
-@@ -113,8 +112,7 @@ bool IsOriginOpaqueHttpOrHttps(
+@@ -120,8 +119,7 @@ bool IsOriginOpaqueHttpOrHttps(
  // static
  bool CookieSettings::IsCookieAllowed(const net::CanonicalCookie& cookie,
                                       const CookieSettingWithMetadata& setting) {
@@ -446,7 +450,7 @@ diff --git a/services/network/cookie_settings.cc b/services/network/cookie_setti
 diff --git a/services/network/restricted_cookie_manager.cc b/services/network/restricted_cookie_manager.cc
 --- a/services/network/restricted_cookie_manager.cc
 +++ b/services/network/restricted_cookie_manager.cc
-@@ -853,6 +853,12 @@ void RestrictedCookieManager::SetCookieFromString(
+@@ -854,6 +854,12 @@ void RestrictedCookieManager::SetCookieFromString(
  
    std::move(callback).Run();
  
@@ -520,7 +524,7 @@ diff --git a/ui/webui/webui_allowlist.cc b/ui/webui/webui_allowlist.cc
 diff --git a/url/url_features.cc b/url/url_features.cc
 --- a/url/url_features.cc
 +++ b/url/url_features.cc
-@@ -24,6 +24,7 @@ BASE_FEATURE(kStandardCompliantNonSpecialSchemeURLParsing,
+@@ -19,6 +19,7 @@ BASE_FEATURE(kStandardCompliantNonSpecialSchemeURLParsing,
  BASE_FEATURE(kDisallowSpaceCharacterInURLHostParsing,
               "DisallowSpaceCharacterInURLHostParsing",
               base::FEATURE_DISABLED_BY_DEFAULT);

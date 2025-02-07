@@ -40,7 +40,7 @@ diff --git a/chrome/browser/enterprise/util/android/java/src/org/chromium/chrome
  
  import java.util.LinkedList;
  import java.util.Queue;
-@@ -76,6 +77,10 @@ public class EnterpriseInfoImpl extends EnterpriseInfo {
+@@ -104,6 +105,10 @@ public class EnterpriseInfoImpl extends EnterpriseInfo {
              new AsyncTask<OwnedState>() {
                  // TODO: Unit test this function. https://crbug.com/1099262
                  private OwnedState calculateIsRunningOnManagedProfile(Context context) {
@@ -54,7 +54,7 @@ diff --git a/chrome/browser/enterprise/util/android/java/src/org/chromium/chrome
 diff --git a/chrome/browser/flags/BUILD.gn b/chrome/browser/flags/BUILD.gn
 --- a/chrome/browser/flags/BUILD.gn
 +++ b/chrome/browser/flags/BUILD.gn
-@@ -25,6 +25,7 @@ android_library("java") {
+@@ -26,6 +26,7 @@ android_library("java") {
      "//build:chromeos_buildflags",
      "//build/android:build_java",
      "//chrome/browser/preferences:java",

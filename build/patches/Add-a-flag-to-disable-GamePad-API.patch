@@ -17,8 +17,8 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 diff --git a/chrome/browser/flag-metadata.json b/chrome/browser/flag-metadata.json
 --- a/chrome/browser/flag-metadata.json
 +++ b/chrome/browser/flag-metadata.json
-@@ -7726,9 +7726,9 @@
-     "expiry_milestone" : 130
+@@ -7587,9 +7587,9 @@
+     "expiry_milestone": 140
    },
    {
 -    "name": "restrict-gamepad-access",
@@ -32,7 +32,7 @@ diff --git a/chrome/browser/flag-metadata.json b/chrome/browser/flag-metadata.js
 diff --git a/content/child/runtime_features.cc b/content/child/runtime_features.cc
 --- a/content/child/runtime_features.cc
 +++ b/content/child/runtime_features.cc
-@@ -271,6 +271,8 @@ void SetRuntimeFeaturesFromChromiumFeatures() {
+@@ -267,6 +267,8 @@ void SetRuntimeFeaturesFromChromiumFeatures() {
             raw_ref(features::kPeriodicBackgroundSync)},
            {wf::EnablePushMessagingSubscriptionChange,
             raw_ref(features::kPushSubscriptionChangeEvent)},
@@ -94,7 +94,7 @@ diff --git a/third_party/blink/renderer/modules/gamepad/navigator_gamepad.cc b/t
  #include "third_party/blink/public/common/privacy_budget/identifiability_metric_builder.h"
  #include "third_party/blink/public/common/privacy_budget/identifiability_study_settings.h"
  #include "third_party/blink/public/mojom/frame/user_activation_notification_type.mojom-blink.h"
-@@ -112,6 +113,10 @@ void RecordGamepadsForIdentifiabilityStudy(
+@@ -114,6 +115,10 @@ void RecordGamepadsForIdentifiabilityStudy(
  HeapVector<Member<Gamepad>> NavigatorGamepad::getGamepads(
      Navigator& navigator,
      ExceptionState& exception_state) {
@@ -105,7 +105,7 @@ diff --git a/third_party/blink/renderer/modules/gamepad/navigator_gamepad.cc b/t
    if (!navigator.DomWindow()) {
      // Using an existing NavigatorGamepad if one exists, but don't create one
      // for a detached window, as its subclasses depend on a non-null window.
-@@ -418,6 +423,8 @@ void NavigatorGamepad::SampleAndCompareGamepadState() {
+@@ -420,6 +425,8 @@ void NavigatorGamepad::SampleAndCompareGamepadState() {
  
  void NavigatorGamepad::DispatchGamepadEvent(const AtomicString& event_name,
                                              Gamepad* gamepad) {

@@ -60,7 +60,7 @@ diff --git a/third_party/blink/renderer/modules/netinfo/network_information.cc b
 diff --git a/third_party/blink/renderer/platform/network/network_state_notifier.cc b/third_party/blink/renderer/platform/network/network_state_notifier.cc
 --- a/third_party/blink/renderer/platform/network/network_state_notifier.cc
 +++ b/third_party/blink/renderer/platform/network/network_state_notifier.cc
-@@ -107,6 +107,21 @@ NetworkStateNotifier::ScopedNotifier::~ScopedNotifier() {
+@@ -106,6 +106,21 @@ NetworkStateNotifier::ScopedNotifier::~ScopedNotifier() {
    }
  }
  

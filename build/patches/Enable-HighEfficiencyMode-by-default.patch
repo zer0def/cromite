@@ -21,7 +21,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 diff --git a/components/performance_manager/features.cc b/components/performance_manager/features.cc
 --- a/components/performance_manager/features.cc
 +++ b/components/performance_manager/features.cc
-@@ -134,6 +134,7 @@ BASE_FEATURE(kUrgentPageDiscarding,
+@@ -142,6 +142,7 @@ BASE_FEATURE(kUrgentPageDiscarding,
  BASE_FEATURE(kCPUMeasurementInFreezingPolicy,
               "CPUMeasurementInFreezingPolicy",
               base::FEATURE_ENABLED_BY_DEFAULT);
@@ -29,8 +29,8 @@ diff --git a/components/performance_manager/features.cc b/components/performance
  
  BASE_FEATURE(kMemoryMeasurementInFreezingPolicy,
               "MemoryMeasurementInFreezingPolicy",
-@@ -177,9 +178,14 @@ BASE_FEATURE(kFreezingOnBatterySaverForTesting,
-              "FreezingOnBatterySaverForTesting",
+@@ -189,9 +190,14 @@ BASE_FEATURE(kFreezingFollowsDiscardOptOut,
+              "FreezingFollowsDiscardOptOut",
               base::FEATURE_DISABLED_BY_DEFAULT);
  
 +CROMITE_FEATURE(kFreezingWithoutBatterySaver,
@@ -47,7 +47,7 @@ diff --git a/components/performance_manager/features.cc b/components/performance
 diff --git a/components/performance_manager/freezing/freezing_policy.cc b/components/performance_manager/freezing/freezing_policy.cc
 --- a/components/performance_manager/freezing/freezing_policy.cc
 +++ b/components/performance_manager/freezing/freezing_policy.cc
-@@ -284,11 +284,11 @@ void FreezingPolicy::UpdateFrozenState(
+@@ -293,11 +293,11 @@ void FreezingPolicy::UpdateFrozenState(
        const BrowsingInstanceState& browsing_instance_state = it->second;
  
        if (browsing_instance_state.cpu_intensive_in_background &&
@@ -64,9 +64,9 @@ diff --git a/components/performance_manager/freezing/freezing_policy.cc b/compon
 diff --git a/components/performance_manager/public/features.h b/components/performance_manager/public/features.h
 --- a/components/performance_manager/public/features.h
 +++ b/components/performance_manager/public/features.h
-@@ -175,6 +175,9 @@ BASE_DECLARE_FEATURE(kFreezingOnBatterySaver);
- // - Pretend that all tabs have high CPU usage in background.
- BASE_DECLARE_FEATURE(kFreezingOnBatterySaverForTesting);
+@@ -190,6 +190,9 @@ BASE_DECLARE_FEATURE(kFreezingOnBatterySaverForTesting);
+ // tab discarding.
+ BASE_DECLARE_FEATURE(kFreezingFollowsDiscardOptOut);
  
 +// activates freezing of tabs with high background cpu usage
 +BASE_DECLARE_FEATURE(kFreezingWithoutBatterySaver);
