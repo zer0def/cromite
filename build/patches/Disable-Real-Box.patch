@@ -54,7 +54,7 @@ diff --git a/chrome/browser/ui/webui/searchbox/searchbox_handler.cc b/chrome/bro
 diff --git a/components/search/ntp_features.cc b/components/search/ntp_features.cc
 --- a/components/search/ntp_features.cc
 +++ b/components/search/ntp_features.cc
-@@ -120,7 +120,7 @@ BASE_FEATURE(kNtpDriveModuleShowSixFiles,
+@@ -121,7 +121,7 @@ BASE_FEATURE(kNtpDriveModuleShowSixFiles,
  
  // If enabled, logo will be shown.
  // This is a kill switch. Keep indefinitely.
@@ -63,7 +63,7 @@ diff --git a/components/search/ntp_features.cc b/components/search/ntp_features.
  
  // If enabled, middle slot promo will be shown.
  // This is a kill switch. Keep indefinitely.
-@@ -178,8 +178,8 @@ BASE_FEATURE(kNtpModulesLoad,
+@@ -179,8 +179,8 @@ BASE_FEATURE(kNtpModulesLoad,
  // If enabled, OneGoogleBar will be shown.
  // This is a kill switch. Keep indefinitely.
  BASE_FEATURE(kNtpOneGoogleBar,

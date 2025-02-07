@@ -35,7 +35,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/settings/MainSe
 -                        });
 +        new AdaptiveToolbarStatePredictor(getContext(), getProfile(), null);
  
-         if (BuildInfo.getInstance().isAutomotive) {
+         if (((true)) || BuildInfo.getInstance().isAutomotive) {
              getPreferenceScreen().removePreference(findPreference(PREF_SAFETY_CHECK));
 diff --git a/chrome/browser/segmentation_platform/segmentation_platform_config.cc b/chrome/browser/segmentation_platform/segmentation_platform_config.cc
 --- a/chrome/browser/segmentation_platform/segmentation_platform_config.cc

@@ -278,7 +278,7 @@ diff --git a/chrome/android/java/res/xml/main_preferences.xml b/chrome/android/j
  -->
  
  <!-- The main_preferences file will be reordered with the upcoming autofill
-@@ -134,6 +137,11 @@ for the previous order (main_preferences_legacy). -->
+@@ -140,6 +143,11 @@ for the previous order (main_preferences_legacy). -->
          android:key="accessibility"
          android:order="24"
          android:title="@string/prefs_accessibility"/>
