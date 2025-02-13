@@ -54,7 +54,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  components/flags_ui/resources/app.css         |  24 +++
  components/flags_ui/resources/app.html.ts     |  28 +++
  components/flags_ui/resources/app.ts          |  23 +++
- components/flags_ui/resources/experiment.css  |   7 +-
+ components/flags_ui/resources/experiment.css  |   9 +-
  .../flags_ui/resources/experiment.html.ts     |   7 +-
  components/flags_ui/resources/experiment.ts   |  14 +-
  .../flags_ui/resources/flags_browser_proxy.ts |   5 +
@@ -105,7 +105,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  third_party/blink/public/common/features.h    |   1 +
  ui/base/ui_base_features.cc                   |   1 +
  ui/base/ui_base_features.h                    |   1 +
- 92 files changed, 803 insertions(+), 28 deletions(-)
+ 92 files changed, 805 insertions(+), 28 deletions(-)
  create mode 100644 chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/cromite/include_all_directory.java
  create mode 100644 chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/cromite/java_template/CromiteCachedFlag.java.tmpl
  create mode 100644 chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Add-cromite-flags-support.grdp
@@ -1343,7 +1343,15 @@ diff --git a/components/flags_ui/resources/app.ts b/components/flags_ui/resource
 diff --git a/components/flags_ui/resources/experiment.css b/components/flags_ui/resources/experiment.css
 --- a/components/flags_ui/resources/experiment.css
 +++ b/components/flags_ui/resources/experiment.css
-@@ -79,6 +79,11 @@
+@@ -12,6 +12,7 @@
+ }
+ 
+ .experiment {
++  padding-bottom: 25px;
+   color: var(--secondary-color);
+   line-height: 1.45;
+   width: 100%;
+@@ -79,6 +80,11 @@
    resize: none;
  }
  
@@ -1355,7 +1363,15 @@ diff --git a/components/flags_ui/resources/experiment.css b/components/flags_ui/
  select {
    background: white;
    border: 1px solid var(--link-color);
-@@ -172,7 +177,6 @@ input {
+@@ -155,6 +161,7 @@ input {
+ @media (max-width: 480px) {
+   .experiment {
+     border-bottom: 1px solid var(--separator-color);
++    padding-bottom: 8px;
+   }
+ 
+   .experiment-name {
+@@ -172,7 +179,6 @@ input {
    .experiment .experiment-actions {
      max-width: 100%;
      padding-top: 12px;
@@ -1363,7 +1379,7 @@ diff --git a/components/flags_ui/resources/experiment.css b/components/flags_ui/
      width: 100%;
    }
  
-@@ -180,7 +184,6 @@ input {
+@@ -180,7 +186,6 @@ input {
    .body {
      overflow: hidden;
      text-overflow: ellipsis;
