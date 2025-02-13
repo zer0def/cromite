@@ -225,7 +225,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/bookmarks/Bookm
 diff --git a/chrome/browser/bookmarks/android/bookmark_bridge.cc b/chrome/browser/bookmarks/android/bookmark_bridge.cc
 --- a/chrome/browser/bookmarks/android/bookmark_bridge.cc
 +++ b/chrome/browser/bookmarks/android/bookmark_bridge.cc
-@@ -184,7 +184,7 @@ class FileBookmarksExportObserver: public BookmarksExportObserver {
+@@ -185,7 +185,7 @@ class FileBookmarksExportObserver: public BookmarksExportObserver {
  
      JNIEnv* env = AttachCurrentThread();
      Java_BookmarkBridge_bookmarksExported(env, obj_, window_->GetJavaObject(),
@@ -234,7 +234,7 @@ diff --git a/chrome/browser/bookmarks/android/bookmark_bridge.cc b/chrome/browse
                                            result == Result::kSuccess);
      delete this;
    }
-@@ -356,6 +356,33 @@ jboolean BookmarkBridge::AreAccountBookmarkFoldersActive(JNIEnv* env) {
+@@ -363,6 +363,33 @@ jboolean BookmarkBridge::AreAccountBookmarkFoldersActive(JNIEnv* env) {
    return bookmark_model_->account_mobile_node() != nullptr;
  }
  
@@ -268,7 +268,7 @@ diff --git a/chrome/browser/bookmarks/android/bookmark_bridge.cc b/chrome/browse
  base::android::ScopedJavaLocalRef<jobject>
  BookmarkBridge::GetMostRecentlyAddedUserBookmarkIdForUrl(JNIEnv* env,
                                                           const GURL& url) {
-@@ -468,6 +495,7 @@ void BookmarkBridge::GetAllFoldersWithDepths(
+@@ -475,6 +502,7 @@ void BookmarkBridge::GetAllFoldersWithDepths(
    // Vector to temporarily contain all child bookmarks at same level for sorting
    std::vector<const BookmarkNode*> bookmarks = {
        bookmark_model_->mobile_node(),
@@ -276,7 +276,7 @@ diff --git a/chrome/browser/bookmarks/android/bookmark_bridge.cc b/chrome/browse
        bookmark_model_->bookmark_bar_node(),
        bookmark_model_->other_node(),
    };
-@@ -561,6 +589,9 @@ std::vector<const BookmarkNode*> BookmarkBridge::GetTopLevelFolderIdsImpl(
+@@ -568,6 +596,9 @@ std::vector<const BookmarkNode*> BookmarkBridge::GetTopLevelFolderIdsImpl(
      top_level_folders.push_back(other_node);
    }
  
@@ -286,7 +286,7 @@ diff --git a/chrome/browser/bookmarks/android/bookmark_bridge.cc b/chrome/browse
    const BookmarkNode* reading_list_node =
        local_or_syncable_reading_list_manager_->GetRoot();
    if (IsPermanentFolderVisible(ignore_visibility, reading_list_node)) {
-@@ -1262,6 +1293,17 @@ void BookmarkBridge::GetBookmarksOfType(
+@@ -1269,6 +1300,17 @@ void BookmarkBridge::GetBookmarksOfType(
    AddBookmarkNodesToBookmarkIdList(env, j_list, results);
  }
  

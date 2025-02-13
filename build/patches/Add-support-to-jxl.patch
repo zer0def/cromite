@@ -2215,7 +2215,7 @@ diff --git a/third_party/blink/tools/commit_stats/git-dirs.txt b/third_party/bli
 diff --git a/third_party/blink/web_tests/TestExpectations b/third_party/blink/web_tests/TestExpectations
 --- a/third_party/blink/web_tests/TestExpectations
 +++ b/third_party/blink/web_tests/TestExpectations
-@@ -5446,6 +5446,12 @@ crbug.com/1199522 http/tests/devtools/layers/layers-3d-view-hit-testing.js [ Fai
+@@ -5454,6 +5454,12 @@ crbug.com/1199522 http/tests/devtools/layers/layers-3d-view-hit-testing.js [ Fai
  # Started failing after rolling new version of check-layout-th.js
  css3/flexbox/perpendicular-writing-modes-inside-flex-item.html [ Failure ]
  
