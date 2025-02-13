@@ -64,7 +64,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../site_settings/SingleWebsiteSettings.java  |  9 ++
  .../android/website_preference_bridge.cc      |  2 +-
  .../strings/android/browser_ui_strings.grd    |  5 ++
- .../core/browser/content_settings_utils.cc    | 36 ++++++++
+ .../core/browser/content_settings_utils.cc    | 42 ++++++++--
  .../core/browser/content_settings_utils.h     |  6 ++
  .../core/common/content_settings_enums.mojom  |  9 ++
  .../page_info/PageInfoController.java         |  4 +-
@@ -88,7 +88,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  components/permissions/permission_request.h   | 16 +++-
  .../permissions/permission_request_manager.cc | 45 ++++++----
  .../permissions/permission_request_manager.h  | 11 ++-
- 36 files changed, 490 insertions(+), 63 deletions(-)
+ 36 files changed, 490 insertions(+), 69 deletions(-)
 
 diff --git a/chrome/browser/permissions/last_tab_standing_tracker.cc b/chrome/browser/permissions/last_tab_standing_tracker.cc
 --- a/chrome/browser/permissions/last_tab_standing_tracker.cc
@@ -385,6 +385,26 @@ diff --git a/components/content_settings/core/browser/content_settings_utils.cc 
  bool CanTrackLastVisit(ContentSettingsType type) {
    // Last visit is not tracked for notification permission as it shouldn't be
    // auto-revoked.
+@@ -258,9 +294,6 @@ const std::vector<ContentSettingsType>& GetTypesWithTemporaryGrants() {
+       ContentSettingsType::CAPTURED_SURFACE_CONTROL,
+ #endif
+       ContentSettingsType::KEYBOARD_LOCK,
+-      ContentSettingsType::GEOLOCATION,
+-      ContentSettingsType::MEDIASTREAM_MIC,
+-      ContentSettingsType::MEDIASTREAM_CAMERA,
+       ContentSettingsType::HAND_TRACKING,
+       ContentSettingsType::SMART_CARD_DATA,
+   }};
+@@ -274,9 +307,6 @@ const std::vector<ContentSettingsType>& GetTypesWithTemporaryGrantsInHcsm() {
+       ContentSettingsType::CAPTURED_SURFACE_CONTROL,
+ #endif
+       ContentSettingsType::KEYBOARD_LOCK,
+-      ContentSettingsType::GEOLOCATION,
+-      ContentSettingsType::MEDIASTREAM_MIC,
+-      ContentSettingsType::MEDIASTREAM_CAMERA,
+       ContentSettingsType::HAND_TRACKING,
+   }};
+   return *types;
 diff --git a/components/content_settings/core/browser/content_settings_utils.h b/components/content_settings/core/browser/content_settings_utils.h
 --- a/components/content_settings/core/browser/content_settings_utils.h
 +++ b/components/content_settings/core/browser/content_settings_utils.h
