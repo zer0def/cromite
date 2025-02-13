@@ -7,17 +7,29 @@ Added a setting for the option
 need: Add-cromite-flags-support.patch
 License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
+ .../java/res/layout/tab_card_label_layout.xml |  1 +
  .../tab_management/TabUiFeatureUtilities.java |  4 +--
  .../java/res/xml/privacy_preferences.xml      |  6 ++++
  .../flags/cromite/sTabSwitcherListMode.java   | 33 +++++++++++++++++++
  .../Use-list-mode-for-tab-switcher.grdp       |  9 +++++
  .../browser/toolbar/top/ToolbarPhone.java     |  6 ++--
  .../tab-switcher-list-mode.inc                |  3 ++
- 6 files changed, 57 insertions(+), 4 deletions(-)
+ 7 files changed, 58 insertions(+), 4 deletions(-)
  create mode 100644 chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/cromite/sTabSwitcherListMode.java
  create mode 100644 chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Use-list-mode-for-tab-switcher.grdp
  create mode 100644 cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/tab-switcher-list-mode.inc
 
+diff --git a/chrome/android/features/tab_ui/java/res/layout/tab_card_label_layout.xml b/chrome/android/features/tab_ui/java/res/layout/tab_card_label_layout.xml
+--- a/chrome/android/features/tab_ui/java/res/layout/tab_card_label_layout.xml
++++ b/chrome/android/features/tab_ui/java/res/layout/tab_card_label_layout.xml
+@@ -11,6 +11,7 @@ found in the LICENSE file.
+   android:layout_width="wrap_content"
+   android:layout_height="@dimen/tab_card_label_height"
+   android:padding="4dp"
++  android:visibility="gone"
+   android:elevation="@dimen/default_elevation_3"
+   android:clipToOutline="true"
+   android:background="@drawable/tab_label_background"
 diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabUiFeatureUtilities.java b/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabUiFeatureUtilities.java
 --- a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabUiFeatureUtilities.java
 +++ b/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabUiFeatureUtilities.java
