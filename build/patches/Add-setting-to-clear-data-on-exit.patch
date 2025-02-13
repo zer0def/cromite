@@ -13,7 +13,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  chrome/app/settings_strings.grdp              | 10 +++
  .../browsing_data/browsing_data_bridge.cc     |  2 +-
  .../chrome_browsing_data_lifetime_manager.cc  | 22 +++++-
- .../chrome_browsing_data_remover_delegate.cc  | 14 ++++
+ .../chrome_browsing_data_remover_delegate.cc  | 15 ++++
  .../api/settings_private/prefs_util.cc        | 17 +++++
  .../browser/profiles/ProfileManagerUtils.java |  5 ++
  .../profiles/android/profile_manager_utils.cc |  5 ++
@@ -34,7 +34,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  content/browser/dips/dips_service_impl.cc     |  2 +-
  content/browser/storage_partition_impl.cc     |  1 +
  .../public/browser/browsing_data_remover.h    |  7 +-
- 30 files changed, 335 insertions(+), 23 deletions(-)
+ 30 files changed, 336 insertions(+), 23 deletions(-)
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/browsing_data/ClearBrowsingDataFragmentAtStart.java
 
 diff --git a/chrome/android/chrome_java_sources.gni b/chrome/android/chrome_java_sources.gni
@@ -311,7 +311,15 @@ diff --git a/chrome/browser/browsing_data/chrome_browsing_data_lifetime_manager.
 diff --git a/chrome/browser/browsing_data/chrome_browsing_data_remover_delegate.cc b/chrome/browser/browsing_data/chrome_browsing_data_remover_delegate.cc
 --- a/chrome/browser/browsing_data/chrome_browsing_data_remover_delegate.cc
 +++ b/chrome/browser/browsing_data/chrome_browsing_data_remover_delegate.cc
-@@ -462,6 +462,9 @@ void ChromeBrowsingDataRemoverDelegate::RemoveEmbedderData(
+@@ -355,6 +355,7 @@ void ChromeBrowsingDataRemoverDelegate::RemoveEmbedderData(
+     uint64_t origin_type_mask,
+     base::OnceCallback<void(uint64_t)> callback) {
+   CHECK(((remove_mask &
++          ~content::BrowsingDataRemover::DATA_TYPE_SKIP_SSL_HOST_STATE &
+           ~content::BrowsingDataRemover::DATA_TYPE_AVOID_CLOSING_CONNECTIONS &
+           ~constants::FILTERABLE_DATA_TYPES) == 0) ||
+         filter_builder->MatchesAllOriginsAndDomains());
+@@ -462,6 +463,9 @@ void ChromeBrowsingDataRemoverDelegate::RemoveEmbedderData(
            CreateTaskCompletionClosure(TracingDataType::kHistory),
            &history_task_tracker_);
      }
@@ -321,7 +329,7 @@ diff --git a/chrome/browser/browsing_data/chrome_browsing_data_remover_delegate.
      if (ClipboardRecentContent::GetInstance())
        ClipboardRecentContent::GetInstance()->SuppressClipboardContent();
  
-@@ -570,6 +573,11 @@ void ChromeBrowsingDataRemoverDelegate::RemoveEmbedderData(
+@@ -570,6 +574,11 @@ void ChromeBrowsingDataRemoverDelegate::RemoveEmbedderData(
      // and SSL host state are scoped to hosts and represent them as std::string.
      // Rename the method to indicate its more general usage.
      if (profile_->GetSSLHostStateDelegate()) {
@@ -333,7 +341,7 @@ diff --git a/chrome/browser/browsing_data/chrome_browsing_data_remover_delegate.
        profile_->GetSSLHostStateDelegate()->Clear(
            filter_builder->MatchesAllOriginsAndDomains()
                ? base::RepeatingCallback<bool(const std::string&)>()
-@@ -598,9 +606,13 @@ void ChromeBrowsingDataRemoverDelegate::RemoveEmbedderData(
+@@ -598,9 +607,13 @@ void ChromeBrowsingDataRemoverDelegate::RemoveEmbedderData(
      }
  
      device_event_log::Clear(delete_begin_, delete_end_);
@@ -347,7 +355,7 @@ diff --git a/chrome/browser/browsing_data/chrome_browsing_data_remover_delegate.
      content::BackgroundTracingManager::GetInstance().DeleteTracesInDateRange(
          delete_begin_, delete_end_);
  
-@@ -1281,6 +1293,8 @@ void ChromeBrowsingDataRemoverDelegate::RemoveEmbedderData(
+@@ -1281,6 +1294,8 @@ void ChromeBrowsingDataRemoverDelegate::RemoveEmbedderData(
  
      if (should_clear_zero_suggest_and_session_token && template_url_service)
        template_url_service->ClearSessionToken();
