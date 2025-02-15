@@ -60,17 +60,6 @@ The following files will be present for each release:
 #### Windows package:
 - [chrome-win.zip](https://github.com/uazo/cromite/releases/latest/download/chrome-win.zip)
 
-Additional files are also available:
-
-#### Vanilla Chromium for android (used for tests):
-- arm64_VanillaChromium.apk
-- arm_VanillaChromium.apk
-- x64_VanillaChromium.apk
-
-#### SystemWebView Shell (used for tests)
-- arm64_SystemWebViewShell.apk
-- x64_SystemWebViewShell.apk
-
 #### Debugging symbols and proguard file for java stacktrace deobfuscation
 - x64_ChromePublic.apk.mapping
 - arm64_ChromePublic.apk.mapping
@@ -81,6 +70,17 @@ Additional files are also available:
 
 #### Chrlauncher autoupdate file:
 - updateurl.txt
+
+Additional files are also available: please note that these files are created by an [additional build](https://github.com/uazo/cromite/actions/workflows/build_additional_targets.yaml) separate from the release process, and therefore may not be immediately available.
+
+#### Vanilla Chromium for android (used for tests):
+- arm64_VanillaChromium.apk
+- arm_VanillaChromium.apk
+- x64_VanillaChromium.apk
+
+#### SystemWebView Shell (used for tests)
+- arm64_SystemWebViewShell.apk
+- x64_SystemWebViewShell.apk
 
 ### F-droid
 
