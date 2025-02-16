@@ -25,6 +25,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../privacy/settings/PrivacySettings.java     |   2 +-
  .../settings/FragmentDependencyProvider.java  |  10 +-
  .../browser/settings/SettingsActivity.java    |  42 ++++-
+ .../tracing/settings/DeveloperSettings.java   |   5 +-
  chrome/browser/about_flags.cc                 |  11 ++
  chrome/browser/browser_features.cc            |   1 +
  chrome/browser/browser_features.h             |   1 +
@@ -105,7 +106,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  third_party/blink/public/common/features.h    |   1 +
  ui/base/ui_base_features.cc                   |   1 +
  ui/base/ui_base_features.h                    |   1 +
- 92 files changed, 805 insertions(+), 28 deletions(-)
+ 93 files changed, 808 insertions(+), 30 deletions(-)
  create mode 100644 chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/cromite/include_all_directory.java
  create mode 100644 chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/cromite/java_template/CromiteCachedFlag.java.tmpl
  create mode 100644 chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Add-cromite-flags-support.grdp
@@ -602,6 +603,32 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/settings/Settin
                  true /* recursive */);
          fragmentManager.registerFragmentLifecycleCallbacks(
                  new WideDisplayPaddingApplier(), false /* recursive */);
+diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tracing/settings/DeveloperSettings.java b/chrome/android/java/src/org/chromium/chrome/browser/tracing/settings/DeveloperSettings.java
+--- a/chrome/android/java/src/org/chromium/chrome/browser/tracing/settings/DeveloperSettings.java
++++ b/chrome/android/java/src/org/chromium/chrome/browser/tracing/settings/DeveloperSettings.java
+@@ -17,11 +17,12 @@ import org.chromium.base.version_info.VersionInfo;
+ import org.chromium.chrome.R;
+ import org.chromium.chrome.browser.preferences.ChromePreferenceKeys;
+ import org.chromium.chrome.browser.preferences.ChromeSharedPreferences;
++import org.chromium.chrome.browser.settings.ChromeBaseSettingsFragment;
+ import org.chromium.components.browser_ui.settings.EmbeddableSettingsPage;
+ import org.chromium.components.browser_ui.settings.SettingsUtils;
+ 
+ /** Settings fragment containing preferences aimed at Chrome and web developers. */
+-public class DeveloperSettings extends PreferenceFragmentCompat implements EmbeddableSettingsPage {
++public class DeveloperSettings extends ChromeBaseSettingsFragment implements EmbeddableSettingsPage {
+     private static final String UI_PREF_BETA_STABLE_HINT = "beta_stable_hint";
+ 
+     // Non-translated strings:
+@@ -52,7 +53,7 @@ public class DeveloperSettings extends PreferenceFragmentCompat implements Embed
+     }
+ 
+     @Override
+-    public void onCreatePreferences(Bundle savedInstanceState, String s) {
++    public void onCreatePreferencesCromite(Bundle savedInstanceState, String s) {
+         SettingsUtils.addPreferencesFromResource(this, R.xml.developer_preferences);
+ 
+         if (VersionInfo.isBetaBuild() || VersionInfo.isStableBuild()) {
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
