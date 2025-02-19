@@ -21,7 +21,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../font/public/cpp/font_service_thread.cc    |   48 +
  .../font/public/cpp/font_service_thread.h     |    5 +
  .../font/public/mojom/font_service.mojom      |    2 +
- content/browser/BUILD.gn                      |    9 +
+ content/browser/BUILD.gn                      |   11 +
  ...der_process_host_impl_receiver_bindings.cc |   12 +
  content/child/BUILD.gn                        |    7 +
  content/renderer/BUILD.gn                     |    4 +
@@ -39,7 +39,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../skia/src/ports/SkFontMgr_android_data.cpp | 1640 +++++++++++++++++
  .../src/ports/SkFontMgr_android_parser.cpp    |   49 +-
  .../skia/src/ports/SkFontMgr_android_parser.h |    5 +-
- 33 files changed, 2336 insertions(+), 52 deletions(-)
+ 33 files changed, 2338 insertions(+), 52 deletions(-)
  create mode 100644 chrome/browser/component_updater/fonts_pack_component_installer.cc
  create mode 100644 chrome/browser/component_updater/fonts_pack_component_installer.h
  create mode 100644 chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Android-fonts-fingerprinting-mitigation.grdp
@@ -567,7 +567,7 @@ diff --git a/components/services/font/public/mojom/font_service.mojom b/componen
 diff --git a/content/browser/BUILD.gn b/content/browser/BUILD.gn
 --- a/content/browser/BUILD.gn
 +++ b/content/browser/BUILD.gn
-@@ -2505,6 +2505,15 @@ source_set("browser") {
+@@ -2505,6 +2505,17 @@ source_set("browser") {
      ]
    }
  
@@ -576,6 +576,8 @@ diff --git a/content/browser/BUILD.gn b/content/browser/BUILD.gn
 +      "font_service.cc",
 +      "font_service.h",
 +    ]
++
++    deps += [ "//pdf:buildflags" ]
 +
 +    public_deps += [ "//components/services/font/public/mojom" ]
 +  }
@@ -758,7 +760,7 @@ new file mode 100644
 +
 +CROMITE_FEATURE(kAndroidFontsFingerprintingMitigation,
 +                "AndroidFontsFingerprintingMitigation",
-+                base::FEATURE_DISABLED_BY_DEFAULT);
++                base::FEATURE_ENABLED_BY_DEFAULT);
 +
 +#endif
 diff --git a/cromite_flags/third_party/blink/common/features_h/Android-fonts-fingerprinting-mitigation.inc b/cromite_flags/third_party/blink/common/features_h/Android-fonts-fingerprinting-mitigation.inc
