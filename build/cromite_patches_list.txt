@@ -24,7 +24,6 @@ Restore-classic-new-tab-page.patch
 Always-use-new-tab-page-for-default-home-page.patch
 disable-battery-status-updater.patch
 Battery-API-return-nothing.patch
-updater-disable-updater-pings.patch
 Disable-omission-of-URL-elements.patch
 Modify-default-preferences.patch
 Do-not-store-passwords-by-default.patch
@@ -183,7 +182,6 @@ WIN-Add-some-prefs-to-secure-preferences.patch
 WIN-Disable-search-for-image.patch
 
 AudioBuffer-AnalyserNode-fp-mitigations.patch
-Disable-Component-Updates.patch
 add-browser-policy.patch
 Always-open-browser-controls-in-new-tab.patch
 Partitioning-all-cookies-by-top-frame-domain.patch
@@ -304,6 +302,8 @@ Never-treat-Proguard-warnings-as-errors.patch
 Temp-disable-experimental-web-platform-features.patch
 Block-leakage-of-urls-in-sandbox-iframes.patch
 Fix-chromium-build-bugs.patch
+Enable-component-updater.patch
+Android-fonts-fingerprinting-mitigation.patch
 
 # adblock patches
 eyeo-beta-118.0.5993.48-base.patch

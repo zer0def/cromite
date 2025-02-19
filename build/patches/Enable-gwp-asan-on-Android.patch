@@ -83,20 +83,20 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tracing/setting
  import androidx.preference.PreferenceFragmentCompat;
  
  import org.chromium.base.ResettersForTesting;
-@@ -19,10 +21,12 @@ import org.chromium.chrome.browser.preferences.ChromePreferenceKeys;
- import org.chromium.chrome.browser.preferences.ChromeSharedPreferences;
+@@ -20,10 +22,12 @@ import org.chromium.chrome.browser.preferences.ChromeSharedPreferences;
+ import org.chromium.chrome.browser.settings.ChromeBaseSettingsFragment;
  import org.chromium.components.browser_ui.settings.EmbeddableSettingsPage;
  import org.chromium.components.browser_ui.settings.SettingsUtils;
 +import org.chromium.chrome.browser.util.PlatformUtil;
  
  /** Settings fragment containing preferences aimed at Chrome and web developers. */
- public class DeveloperSettings extends PreferenceFragmentCompat implements EmbeddableSettingsPage {
+ public class DeveloperSettings extends ChromeBaseSettingsFragment implements EmbeddableSettingsPage {
      private static final String UI_PREF_BETA_STABLE_HINT = "beta_stable_hint";
 +    private static final String TEST_GWP_ASAN_KEY = "test_gwp_asan";
  
      // Non-translated strings:
      private static final String MSG_DEVELOPER_OPTIONS_TITLE = "Developer options";
-@@ -58,6 +62,22 @@ public class DeveloperSettings extends PreferenceFragmentCompat implements Embed
+@@ -59,6 +63,22 @@ public class DeveloperSettings extends ChromeBaseSettingsFragment implements Emb
          if (VersionInfo.isBetaBuild() || VersionInfo.isStableBuild()) {
              getPreferenceScreen().removePreference(findPreference(UI_PREF_BETA_STABLE_HINT));
          }

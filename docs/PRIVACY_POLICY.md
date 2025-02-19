@@ -75,7 +75,10 @@ On desktop platforms it is possible to activate the automatic update of extensio
 
 In Android, the installation of PWAs is disabled and cannot be re-enabled.
 
-Cromite does not download or update any external components.
+Cromite does not download or update any google components.
+
+Cromite, by default, downloads from www.cromite.org a zip containing the fonts it uses for anti-fingerpriting protection. If the zip has already been downloaded, no connection is made again.
+In www.cromite.org, no log is active.
 
 #### NETWORK TIME
 Cromite never uses network time to verify SSL certificates, and no call is made to verify it.

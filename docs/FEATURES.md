@@ -25,7 +25,6 @@ Also disable gamepadconnected and gamepaddisconnected, see https://jshelter.org/
 - Disable WebGL by default
 - Disable WebRTC by default
 - Disable MIDI permission by default
-- Disable the use of non-standard and local fonts
 - Enable Canvas and Rect API fingerprinting mitigations
 - Enable Media API fingerprinting mitigations
 - AudioBuffer and AnalyserNode fingerprinting mitigations (https://fingerprint.com/blog/audio-fingerprinting/)
@@ -49,6 +48,8 @@ Also disable gamepadconnected and gamepaddisconnected, see https://jshelter.org/
 - (WINDOWS) Hide the presence of the webcam if the user has not given permission
 - (WINDOWS) PublicKeyCredential fingerprinting mitigations, see #1758
 - (DESKTOP) Disable Bluetooth API by default
+- (WINDOWS) Disable the use of non-standard and local fonts
+- (ANDROID) Replaces system fonts with a predefined set (https://github.com/uazo/cromite/issues/1829)
 
 #### Tracking navigation
 - Enable network isolation features
